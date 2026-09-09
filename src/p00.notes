@@ -1,2 +1,706 @@
-# Banco 00 (se ejecuta en 0x4000). Directivas: L etiqueta, C comentario de
+# Banco 0 (se ejecuta en 0x4000). Directivas: L etiqueta, C comentario de
 # linea, B cabecera de bloque, D rango de datos, F anchura de fila.
+#
+# Es el unico banco FIJO del cartucho: no hay registro que lo cambie, asi que
+# esta siempre en 0x4000-0x5FFF. Por eso lleva todo lo que tiene que estar
+# disponible pase lo que pase: las dos cabeceras, el arranque, el gancho de la
+# interrupcion, el despachador de la casa, las rutinas que cambian de banco y
+# el reparto de trabajo entre los modulos.
+
+# ======================================================================
+# LAS DOS CABECERAS
+# ======================================================================
+B 0x4000 LAS DOS CABECERAS DEL CARTUCHO
+D 0x4000 0x4010 cabecera  Cabecera de cartucho de MSX: "AB", INIT = 0x406A, y las otras tres entradas (STATEMENT, DEVICE, TEXT) a cero, mas seis bytes reservados. Sin STATEMENT no hay ninguna orden nueva de BASIC: este cartucho arranca y ya esta.
+F 0x4000 2,w1,w1,w1,w1,6
+
+# --- La segunda cabecera, la del Game Master. NINGUNA instruccion de este
+# cartucho la lee: la lee el OTRO cartucho, el Konami Game Master (RC-741), que
+# se enchufa en la ranura de al lado y necesita saber donde guarda este sus
+# cosas para poder trucarlas. Su rutina de 0x5E64 compara los dos primeros
+# bytes con "AB" y con "CD": si son "CD" -que es el formato de los titulos de
+# 1986-87- se lleva 21 bytes desde 0x4012 y los reparte segun un byte de
+# banderas, en el que cada bit CLARO quiere decir "este campo viene".
+#
+# Aqui el byte de banderas es 0x60 = 0110 0000, asi que vienen los campos 1, 2,
+# 3, 4, 5 y 8, y faltan el 6 y el 7 -las dos puntuaciones de dos jugadores, que
+# este juego no tiene-. La cuenta cierra exactamente en 0x4022, justo delante
+# del `call RDVDP` con el que empieza el codigo.
+D 0x4010 0x4012 gm_marca  La marca del formato: "CD" en ASCII (43 44). Es lo que el Game Master busca para saber que este cartucho trae la cabecera larga; los de 1985 traen "AB", que son 19 bytes y sin banderas.
+F 0x4010 2
+D 0x4012 0x4014 gm_catalogo  El numero de catalogo en BCD y por la cifra alta primero: 07 43, o sea RC-743. Es la SEGUNDA vez que el cartucho dice su numero: la otra esta escondida al final del banco 3.
+F 0x4012 2
+D 0x4014 0x4015 gm_banderas  0x60: que campos vienen detras. Se leen del bit 0 al 7 con `rra` y el bit CLARO significa "este campo viene en el flujo"; el puesto deja el valor por defecto que el Game Master trae en su 0x6034. Los bits 5 y 6 estan a uno.
+F 0x4014 1
+D 0x4015 0x4023 gm_campos  Los seis campos que anuncia el byte de banderas, en el orden de los bits: 0xE000 (la variable de fase, que el Game Master guarda en su 0xD304) y el 0x04 que va con ella; 0xE092 (0xD30A) y el 0x0D de detras, que son las TRECE fases del juego (0xD313, de donde el Game Master saca entre cuanto dividir); 0xE090 (0xD308); 0xE083 (0xD30C, los datos del juego); 0xE086 (0xD30E, el marcador); y el ultimo, 0x40F7, que NO es una variable sino la RUTINA de este mismo banco a la que el Game Master salta por CALSLT.
+F 0x4015 w1,1,w1,1,w1,w1,w1,w1
+
+# ======================================================================
+# LA INTERRUPCION
+# ======================================================================
+B 0x4023 LA INTERRUPCION. Cuelga de H.KEYI (0xFD9A), no de H.TIMI: la instala INIT en 0x40A5 escribiendo un 0xC3 en 0xFD9A y esta direccion en 0xFD9B. Ese `ld (0xFD9B),hl` es, ademas, la instruccion por la que el Game Master reconoce a los cartuchos de Konami.
+L 0x4023 interrupcion
+C 0x4023 lo primero, leer el estado del VDP: eso es lo que baja la linea de interrupcion
+C 0x4026 y a partir de aqui se toca el mapper, asi que nadie mas puede entrar
+C 0x4027 el banco 14 a 0x8000 y el 15 a 0xA000: los dos del sonido
+C 0x4029 SIN tocar la copia en RAM de 0xF0F2/0xF0F3, que es lo que permite devolverlos luego
+C 0x402D y su pareja en 0xA000, que son los datos del reproductor
+C 0x4030 el reproductor de sonido, que vive en el banco 14
+C 0x4033 al volver, otra vez con el mapper en la mano
+C 0x4034 y se devuelven las ranuras leyendo la copia en RAM: ahi esta lo que hubiera antes
+C 0x403A lo mismo para 0xA000
+C 0x4040 el semaforo de reentrada
+C 0x4043 si el bit 0 esta puesto es que el cuadro anterior sigue dentro
+C 0x4045 y entonces esta pasada se limita al sonido y se va
+C 0x4047 si no, se marca ocupado
+C 0x4048 y desde aqui SI se admiten interrupciones: el sonido no puede quedarse callado por mucho que tarde el cuadro
+C 0x4049 la parte del cuadro que vive en el banco fijo
+C 0x404C y la que vive en el banco que haya en 0x8000, que es el modulo que este mandando ahora
+C 0x404F ocupado a cero
+L 0x4053 interrupcion_sale
+
+# ======================================================================
+# LAS TRES SUMAS
+# ======================================================================
+B 0x4055 SUMAR UN INDICE A UN PUNTERO. Tres puertas de la misma rutina, y estan aqui, en el banco fijo, porque las usa todo el cartucho. Son la forma de la casa de recorrer una tabla: en vez de `ld c,a / ld b,0 / add hl,bc`, que gasta dos registros, se suma A al byte bajo y se arrastra el acarreo al alto.
+L 0x4055 dos_por_a_mas_hl   Entra doblando A: para tablas de PALABRAS.
+C 0x4055 A por dos, y sigue de largo a la de abajo
+L 0x4056 a_mas_hl   HL = HL + A, con A sin signo.
+C 0x4056 suma al byte bajo
+C 0x4058 si no hubo acarreo ya esta
+C 0x4059 y si lo hubo, una al alto
+L 0x405B a_mas_de   Lo mismo para DE.
+C 0x405B la misma cuenta sobre DE
+
+# ======================================================================
+# EL DESPACHADOR
+# ======================================================================
+B 0x4060 EL DESPACHADOR DE LA CASA. El truco de Konami para escribir una maquina de estados sin gastar una tabla con nombre: se llama con el numero de estado en A y la tabla de destinos va pegada JUSTO DETRAS del `call`, de modo que la direccion de vuelta que hay en la pila ES la base de la tabla. Nunca vuelve: salta al destino, y el `ret` de ese destino devuelve a quien llamo al que llamo.
+L 0x4060 despacha
+C 0x4060 la direccion de vuelta, que es donde empieza la tabla
+C 0x4061 dos bytes por entrada
+C 0x4062 HL = base + 2*A
+C 0x4065 y se lee la palabra que hay ahi
+C 0x4068 al par que sabe saltar
+C 0x4069 y alla va, sin dejar rastro en la pila
+
+# ======================================================================
+# INIT
+# ======================================================================
+B 0x406A INIT. La direccion que la BIOS saca de la cabecera "AB" y a la que llama al encender, con la ranura de este cartucho ya conectada en la pagina 1. Hace, por este orden: repartir los bancos, buscar donde hay RAM, colgarse de la interrupcion, borrar la RAM entera y arrancar el juego.
+L 0x406A init
+C 0x406A antes de tocar el mapper
+C 0x406B modo 1 de interrupcion: el vector es 0x0038, que es de la ROM de la BIOS
+C 0x406E HL hace de puntero a la copia en RAM mientras se reparte
+C 0x406F 0xF0F1, 0xF0F2 y 0xF0F3: una copia por ranura
+C 0x4072 el trio 1-2-3
+C 0x4074 el 1 a 0x6000
+C 0x4077 y apuntado en 0xF0F1
+C 0x4078 el 2
+C 0x4079 a 0x8000
+C 0x407E el 3
+C 0x407F a 0xA000, y con esto los 24 KB de 0x6000 a 0xBFFF quedan puestos
+C 0x4086 BIOS RSLREG: el registro de ranuras primarias
+C 0x4089 se queda con los dos bits de la pagina 3, que es donde hay RAM seguro
+C 0x408E la tabla de expansion de ranuras de la BIOS
+C 0x4094 el bit 7 dice si esa ranura primaria esta expandida
+C 0x409C y los dos bits de la subranura de la pagina 3
+C 0x40A0 H = 0x80: la pagina 2, que es la que se va a conectar
+C 0x40A2 BIOS ENASLT: mete en la pagina 2 la misma ranura donde esta la RAM
+C 0x40A5 el 0xC3 de un `jp`
+C 0x40A7 en H.KEYI, el gancho que la BIOS ejecuta en cada interrupcion
+C 0x40AA y detras la direccion del manejador
+C 0x40B0 borrar la RAM del juego de un tiron
+C 0x40B6 0x10EF bytes: de 0xE000 a 0xF0F0 inclusive
+C 0x40BD y una bandera mas, ya fuera del bloque
+C 0x40C0 DE quedo apuntando al final del borrado
+C 0x40C1 y ahi mismo se planta la pila
+C 0x40C2 ahora las copias del mapper, que estan por debajo de la pila
+C 0x40C8 quince bytes desde 0xF0F1
+C 0x40CE A = 1
+C 0x40CF el semaforo a ocupado: mientras dure el arranque, la interrupcion solo hara sonido
+C 0x40D2 el arranque de verdad
+C 0x40D6 y se suelta el semaforo
+C 0x40D9 BIOS RDVDP, para no comerse la interrupcion pendiente
+
+# ======================================================================
+# EL CALLBACK DEL GAME MASTER
+# ======================================================================
+B 0x40F7 LA RUTINA QUE LLAMA EL OTRO CARTUCHO. No la llama ni una instruccion de este cartucho: es la que anuncia el ultimo campo de la cabecera de 0x4010, y el Konami Game Master salta aqui por CALSLT despues de que el usuario haya pedido empezar en una fase concreta. Que es suya lo dice la primera instruccion: lee 0xD31A, que es RAM del Game Master -donde apunta la fase pedida-, y ahi un dato de este juego no tendria nada que hacer.
+L 0x40F7 arranca_en_la_fase_pedida
+C 0x40F7 la fase que ha pedido el usuario en el MODIFY MODE del Game Master
+C 0x40FA si es cero es que no ha pedido ninguna
+C 0x40FD y entonces se empieza por la primera
+C 0x4101 y con la fase en la mano se sacan las dos cosas que dependen de ella
+C 0x4104 las tablas van desde 1, no desde 0
+C 0x4105 la primera tabla
+C 0x4108 HL = 0x4120 + fase - 1
+C 0x410B el numero de fase tal como se pinta
+C 0x410F otra vez la fase
+C 0x4113 y la segunda tabla
+C 0x411A el decorado que le toca a esa fase
+C 0x411D y a montar la fase
+D 0x4120 0x412D numero_de_fase_pintado  Trece bytes, uno por fase, con el numero tal como sale en pantalla: 01..09 y luego 10, 11, 12 y 13, en BCD. Trece es justo lo que la cabecera de 0x4010 le declara al Game Master en su 0xD313.
+F 0x4120 13
+D 0x412D 0x413A decorado_de_cada_fase  Trece bytes mas, tambien uno por fase, con los valores 1, 2 y 3 dando vueltas. Es lo que 0x411A guarda en 0xE093.
+F 0x412D 13
+
+# ======================================================================
+# EL SONIDO, DESDE FUERA DE LA INTERRUPCION
+# ======================================================================
+B 0x413A PEDIR SONIDO. La otra puerta del banco 14, la que no es la interrupcion: se llama con el numero de efecto en A. Como puede llegar desde cualquier sitio, con cualquier reparto de bancos puesto, guarda las ranuras en una SEGUNDA copia -0xF0F4 y 0xF0F5- antes de meter el 14 y el 15, y las devuelve al salir. Esa segunda copia no la usa nadie mas en todo el cartucho.
+L 0x413A pide_sonido_si_esta_activo
+C 0x413A mientras se toca el mapper no entra nadie
+C 0x413C las banderas de la partida
+C 0x413F el bit 6 dice si el sonido esta encendido
+C 0x4141 y si no lo esta, ni se molesta
+L 0x4145 pide_sonido   La misma rutina saltandose la comprobacion del bit 6.
+C 0x4145 esta puerta suena pase lo que pase
+C 0x4147 se salva todo, que esto entra desde cualquier parte
+C 0x414E la SEGUNDA copia: lo que hubiera en 0x8000...
+C 0x4154 ...y en 0xA000
+C 0x415A el 14, que es el reproductor
+C 0x415C a 0x8000, y ahora si tocando la copia de siempre
+C 0x4162 el 15, sus datos
+C 0x416A A vuelve a llevar el numero de efecto
+C 0x416C la puerta del reproductor para los efectos
+C 0x4170 y a devolver las ranuras desde la segunda copia
+L 0x4189 pide_sonido_sale
+
+# ======================================================================
+# LOS TRES LECTORES DE DATOS
+# ======================================================================
+B 0x418C EL DESCOMPRESOR. Es el lector al que se le pasa en HL un puntero a los bancos de datos, y el que explica por que los bancos 12 y 13 no llevan ni una instruccion: el patron de todo el cartucho es mapearlos, hacer `ld hl,<direccion suya>` y llamar aqui. El guion trae su propio destino, asi que una sola llamada puede llenar varios sitios de la VRAM o de la RAM.
+B 0x418C EL FORMATO, que sale de las cinco instrucciones de 0x4190: una palabra con el destino y detras una tira de mandos de un byte. 0x00 acaba. 0x80 justo, vuelve a leer otra palabra de destino y sigue. Con el bit 7 PUESTO, los siete de abajo son cuantos bytes van copiados tal cual. Con el bit 7 CLARO, son cuantas veces se repite el byte que viene detras.
+L 0x418C descomprime
+C 0x418C los dos primeros bytes del guion son el destino
+C 0x4190 el mando
+C 0x4191 el cero cierra el guion
+C 0x4193 y si no, se pasa al argumento
+C 0x4194 B se queda con el byte entero
+C 0x4195 y A sin el bit 7
+C 0x4197 si no ha cambiado nada es que el bit 7 estaba claro
+C 0x4198 y eso es una repeticion
+C 0x419A con el bit 7 puesto y el resto a cero -o sea, 0x80- se empieza otro bloque
+C 0x419D los siete bits de abajo son la cuenta
+C 0x41A0 y se copian tal cual
+C 0x41A2 a por el mando siguiente
+L 0x41A4 descomprime_repite
+C 0x41A4 el byte que hay que repetir
+C 0x41A6 B veces, que es la cuenta con el bit 7 ya claro
+C 0x41AA y vuelta al guion
+B 0x41AD RELLENAR DE UNOS. La misma forma de guion -palabra de destino y tira de bytes-, pero aqui el byte que se lee NO se escribe: sea el que sea, lo que cae en el destino es un 0x01. Lo unico que decide es cuantos. Cierran 0xFF, y 0xFE empieza otro bloque con otro destino.
+L 0x41AD rellena_de_unos
+C 0x41AD el destino
+C 0x41B1 el byte del guion
+C 0x41B2 0xFF acaba
+C 0x41B4 0xFE, otro bloque
+C 0x41B7 y para todo lo demas, un uno
+C 0x41BB del guion solo se cuenta la longitud
+L 0x41AC rellena_de_unos_otro_bloque
+B 0x41BF COPIAR TAL CUAL. La tercera puerta y la mas sencilla: destino en la palabra de delante y detras los bytes, sin comprimir nada. 0xFF acaba y 0xFE abre otro bloque.
+L 0x41BF copia_bloques
+C 0x41BF el destino
+C 0x41C3 el byte
+C 0x41C4 0xFF acaba
+C 0x41C6 0xFE, otro bloque
+C 0x41C9 y si no, se copia y se sigue
+L 0x41BE copia_bloques_otro_bloque
+
+# ======================================================================
+# UNA VUELTA POR EL BANCO 6
+# ======================================================================
+B 0x41CD MEDIA VUELTA AL BANCO 4-5-6. Mete el trio 4-5-6, coge de la tabla de 0xBD89 -que cae en el banco 6- ocho bytes de patrones y ocho de colores, los suelta en la VRAM y devuelve el trio 1-2-3. C dice cual de las entradas, y cada una son ocho bytes: por eso el `add a,a` tres veces.
+L 0x41CD trae_un_caracter_del_banco_6
+C 0x41CD antes del mapper
+C 0x41D2 el trio 4-5-6 de una vez
+C 0x41D7 y apuntado en 0xF0F1, 0xF0F2 y 0xF0F3
+C 0x41E6 C es cual de las entradas
+C 0x41E7 por ocho, que es lo que mide cada una
+C 0x41EB la tabla de patrones, en el banco 6
+C 0x41EE DE = 0xBD89 + 8*C
+C 0x41F1 0x3718: la ultima fila de la tabla de patrones
+C 0x41F7 y para alla van los ocho bytes
+C 0x41FB la tabla de colores, veinte bytes mas abajo
+C 0x4201 0x1718, que en este cartucho es zona de sprites
+C 0x420F y a devolver el trio 1-2-3
+C 0x4222 con las ranuras como estaban
+
+# ======================================================================
+# LA VRAM
+# ======================================================================
+B 0x4224 BORRAR LA PANTALLA. Dos puertas: la de arriba borra la tabla de nombres entera y la de abajo se deja las dos primeras filas, que son el marcador.
+L 0x4224 borra_la_pantalla_entera
+C 0x4227 0x3800, la tabla de nombres
+C 0x422A las 768 casillas
+L 0x4232 borra_el_area_de_juego
+C 0x4232 0x3860 es la fila 3: las dos de arriba, que llevan el marcador, se quedan
+C 0x4235 672 casillas
+L 0x4238 borra_vram
+C 0x4238 con ceros
+C 0x4239 BIOS FILVRM
+L 0x423C abre_para_escribir_y_da_el_puerto
+C 0x423C BIOS SETWRT deja el VDP apuntando donde diga HL
+C 0x423F el puerto de datos del VDP sale de la tabla de la BIOS, en 0x0007
+C 0x4242 y se devuelve en C, listo para un `outi`
+L 0x4244 lee_puntero
+C 0x4244 HL trae la direccion de un puntero
+C 0x4245 se lee la palabra que hay ahi
+C 0x4249 y DE queda apuntando al byte siguiente
+
+# ======================================================================
+# EL ARRANQUE
+# ======================================================================
+B 0x4485 ARRANQUE. Lo llama INIT con el semaforo puesto. Calla el PSG, programa los ocho registros del VDP y borra los 16 KB de VRAM.
+L 0x4485 arranca
+C 0x4485 0xBF en el registro 7 del PSG: los tres canales de tono callados y el ruido tambien
+C 0x4487 y apuntado en RAM, que es de donde sale luego
+C 0x448B registro 7 del PSG
+C 0x4490 el efecto 0xCB
+C 0x4495 llenar la VRAM de ceros
+C 0x4499 0x4000 bytes: los 16 KB enteros
+L 0x449E programa_el_vdp
+C 0x449E la tabla de ocho valores
+C 0x44A1 se recorren del registro 7 al 0
+C 0x44A6 C es el numero de registro, y baja antes de escribir
+C 0x44A7 el valor
+D 0x44AE 0x44B6 registros_del_vdp  Los ocho valores del VDP, y van del registro 7 al 0, no al reves. De ahi sale el mapa de la VRAM entero, que en este cartucho esta del reves de lo habitual: R7=0xE4 borde, R6=0x03 patrones de sprite en 0x1800, R5=0x76 atributos de sprite en 0x3B00, R4=0x07 tabla de patrones en 0x2000-0x37FF, R3=0x7F tabla de COLORES en 0x0000-0x17FF con la mascara abierta, R2=0x0E tabla de nombres en 0x3800, R1=0xE2 pantalla encendida con interrupcion y sprites de 16x16, R0=0x02 modo 2. Ojo con R3 y R4: no son una direccion, son base y mascara.
+F 0x44AE 8
+L 0x44B6 escribe_el_registro_7
+C 0x44B6 el registro del color de borde
+
+# ======================================================================
+# VOLCAR LA RAM A LA VRAM
+# ======================================================================
+B 0x424B LOS TRES VOLCADOS. La pantalla se monta en RAM y se sube de golpe con `outi`, que es la unica forma de llenar la VRAM a la velocidad de un cuadro. Las tres puertas se diferencian solo en tres cosas -donde de la VRAM, de que buffer de RAM y cuantos bloques- y caen todas en el mismo bucle de 0x4270, que escribe A bloques de 0x40 bytes.
+L 0x424B sube_el_marcador
+C 0x424B 0x3820: la segunda fila de la tabla de nombres
+C 0x424E deja el VDP apuntando ahi y devuelve el puerto en C
+C 0x4251 el buffer de RAM del marcador
+C 0x4254 dos bloques
+L 0x4258 sube_la_mitad_de_abajo
+C 0x4258 0x3900, ya dentro de la pantalla
+C 0x425E su buffer
+C 0x4261 dieciseis bloques
+L 0x4265 sube_el_area_de_juego
+C 0x4265 0x3860, que es la fila 3: el marcador de arriba no se toca
+C 0x426B el buffer grande
+C 0x426E veintiun bloques
+L 0x4270 sube_bloques_de_64
+C 0x4270 el bloque es de 0x40 bytes
+C 0x4272 y B se recarga en cada vuelta
+C 0x4273 un byte por instruccion, sin tocar mas registros
+C 0x4277 un bloque menos
+L 0x4272 sube_bloques_otra_vuelta
+B 0x427B BORRAR EL AREA DE JUEGO EN LA VRAM. La misma geometria que el volcado de 0x4265 pero escribiendo ceros y con el bloque de 0x20: veintiuna filas de treinta y dos casillas desde la fila 3, que son las 672 de la zona de juego.
+L 0x427B borra_el_area_de_juego_en_vram
+C 0x427B la fila 3
+C 0x4281 con ceros
+C 0x4282 veintiuna filas
+C 0x4284 de treinta y dos casillas
+C 0x4286 al puerto de datos del VDP
+C 0x4288 el respiro que el VDP necesita entre dos escrituras seguidas
+C 0x428B una fila menos
+L 0x428F copia_a_vram
+C 0x428F LDIRVM quiere el origen en HL y el destino en DE, y aqui llegan al reves
+C 0x4290 BIOS LDIRVM
+B 0x4293 LLENAR LAS TRES TERCERAS PARTES. En modo 2 la pantalla son tres bloques de 2 KB que se pintan por separado, y casi todo lo que se hace hay que hacerlo tres veces. Esta rutina llena el mismo trozo en los tres, saltando de 0x800 en 0x800.
+L 0x4293 llena_los_tres_tercios
+C 0x4293 tres bloques
+C 0x4297 BIOS FILVRM llena el trozo de este bloque
+C 0x429A y el siguiente esta 2 KB mas arriba
+C 0x42A0 un bloque menos
+L 0x4295 llena_los_tres_tercios_vuelta
+B 0x42A4 PINTAR EN LOS TRES BLOQUES. Lo mismo pero llamando al pintor de 0x4386, y con C diciendo si se pintan colores o patrones. Entre bloque y bloque se suman 0x800 a H, que es lo que separa un tercio del siguiente.
+L 0x42A4 pinta_en_los_tres_con_color
+C 0x42A4 C = 1
+L 0x42A8 pinta_en_los_tres
+C 0x42A8 C = 0
+L 0x42AA pinta_en_los_tres_bucle
+C 0x42AA los tres bloques de 2 KB
+C 0x42AF el pintor
+C 0x42B3 0x800 al byte alto es saltar al tercio siguiente
+L 0x42AC pinta_en_los_tres_vuelta
+
+# ======================================================================
+# PINTAR EN LA VRAM, BYTE A BYTE
+# ======================================================================
+B 0x42BC ESCRIBIR UN GUION EN LA VRAM CON MASCARA. Recorre un guion de bytes -destino en la palabra de delante, 0xFF acaba, 0xFE abre otro bloque- y va escribiendo en la VRAM uno a uno. Lo que la hace util dos veces es C: entra a 0xFF y entonces los bytes pasan tal cual, o entra a 0x00 desde otra puerta y entonces todo lo que sale son ceros, o sea que el mismo guion sirve para pintar y para borrar.
+L 0x42BC pinta_guion_con_mascara
+C 0x42BC mascara abierta: los bytes pasan como estan
+L 0x42BE pinta_guion_lee_destino
+C 0x42BE la palabra de destino
+L 0x42C1 pinta_guion_bucle
+C 0x42C1 el byte del guion
+C 0x42C3 B se queda con el original
+C 0x42C4 0xFF acaba
+C 0x42C6 0xFE, otro bloque
+C 0x42C9 y aqui la mascara: con C a cero sale un cero
+C 0x42CA BIOS WRTVRM
+C 0x42CD la casilla siguiente
+
+# ======================================================================
+# LOS SPRITES
+# ======================================================================
+B 0x42D0 ESCONDER SPRITES. La tabla de atributos vive en 0xEE80 de la RAM -treinta y dos sprites de cuatro bytes: Y, X, patron y color- y se sube entera a 0x3B00 de la VRAM. Meter 0xE0 en la Y de un sprite es la forma de la casa de quitarlo de en medio sin borrar nada: el VDP no pinta nada por debajo de esa linea. Las dos puertas se diferencian solo en desde cual empiezan.
+L 0x42D0 esconde_los_sprites_de_arriba
+C 0x42D0 0xE0 en la Y saca el sprite de la pantalla
+C 0x42D2 desde el sprite 4
+C 0x42D5 y los veintiocho que quedan
+C 0x42D8 de cuatro en cuatro, que es lo que mide cada sprite
+L 0x42D7 esconde_los_sprites_vuelta
+L 0x42ED esconde_los_sprites
+C 0x42ED desde el primero
+C 0x42F0 los treinta y dos
+C 0x42F2 con la Y fuera de la pantalla
+L 0x42F4 esconde_todos_vuelta
+B 0x42FB SUBIR LOS SPRITES, ROTANDO CUAL VA PRIMERO. El VDP del MSX1 solo pinta cuatro sprites por linea y descarta los demas por orden de tabla, asi que el que este siempre el ultimo desaparece siempre. La solucion de la casa es no subir la tabla del tiron: se parte en trozos y se sube desplazada, de modo que el que hoy va el primero manana va el ultimo y el parpadeo se reparte. Cuanto se desplaza lo dice (0xE203).
+L 0x42FB sube_los_sprites
+C 0x42FB por donde va la rotacion
+C 0x42FE en el 4 se reparte de otra manera
+C 0x4302 la tabla de atributos, en la VRAM
+C 0x4305 y su copia en RAM
+C 0x4308 los 128 bytes de los treinta y dos sprites
+L 0x430E sube_los_sprites_rotado_4
+C 0x430E los ocho primeros bytes salen de 0xEE90
+C 0x431A y detras van los de 0xEE80
+C 0x4326 y el resto sigue en orden
+L 0x4332 sube_los_sprites_desde_arriba
+C 0x4332 la misma rotacion, pero para la otra mitad de la tabla
+C 0x4335 en el 16 se reparte de otra manera
+C 0x4339 los 32 primeros bytes desde 0xEEE0
+C 0x4345 y los 96 de detras desde 0xEE80
+L 0x4351 sube_los_sprites_rotado_16
+C 0x4351 igual, pero partido en cuatro trozos
+C 0x4360 cuatro bytes: un solo sprite
+C 0x436F seis sprites
+C 0x437B y los diecisiete que quedan
+
+# ======================================================================
+# EL PINTOR DE LA VRAM
+# ======================================================================
+B 0x4381 EL PINTOR. El mismo formato comprimido que el descompresor de 0x418C -bit 7 puesto son bytes tal cual, bit 7 claro es repetir, 0x00 acaba y 0x80 abre otro bloque-, pero en vez de escribir en la RAM escribe en el puerto del VDP, sin volver a decirle la direccion en cada byte. Y hay un paso mas por medio: cada byte pasa por 0x43F9 antes de salir, que es donde se le mete el color.
+L 0x4381 pinta_sin_color
+C 0x4381 sin color
+C 0x4383 el destino
+L 0x4386 pinta
+C 0x4386 BIOS SETWRT: a partir de aqui el VDP escribe solo
+C 0x4389 el juego de registros de repuesto se queda con el puerto
+C 0x438A el puerto de datos, de la tabla de la BIOS
+L 0x438F pinta_bucle
+C 0x438F el mando
+C 0x4390 el cero cierra
+C 0x4393 B con el original
+C 0x4394 y A sin el bit 7
+C 0x4396 iguales quiere decir bit 7 claro
+C 0x4397 y eso es repetir
+C 0x4399 el 0x80 pelado abre otro bloque
+C 0x439C la cuenta de bytes literales
+L 0x439D pinta_literales
+C 0x439D el byte, ya con su color
+C 0x43A1 y directo al VDP
+L 0x43A8 pinta_repetido
+C 0x43A8 el byte que se repite
+L 0x43AB pinta_repetido_vuelta
+C 0x43AC B veces al VDP
+
+B 0x43B3 PINTAR UN BLOQUE, Y OPCIONALMENTE ESPEJADO. El otro pintor: en vez de un guion comprimido lleva bytes sin comprimir y los sube de dieciseis en dieciseis, que es la altura de un caracter doble. El bit 0 de H manda: si esta puesto, cada columna se pinta DOS veces -la segunda dada la vuelta por 0x4402- y asi una figura simetrica se guarda a la mitad de tamano. Es de donde sale que en la ROM haya media nave, medio coche o medio lo que sea.
+L 0x43B3 pinta_bloque
+C 0x43B3 el destino
+C 0x43B6 BIOS SETWRT
+C 0x43B9 H se queda con las banderas y L con la cuenta de columnas
+C 0x43BB el puerto de datos
+L 0x43BF pinta_bloque_columna
+C 0x43C0 sin espejo
+C 0x43C1 dieciseis bytes: una columna entera
+C 0x43C4 y si el bit 0 de H esta puesto, hay espejo
+C 0x43C8 la misma columna otra vez
+C 0x43CE pero esta con los bits del reves
+L 0x43D3 pinta_bloque_segunda_mitad
+C 0x43D4 la segunda mitad, espejada
+C 0x43D9 con espejo, el origen no avanza igual
+C 0x43DD dieciseis bytes de salto
+L 0x43E2 pinta_bloque_siguiente
+C 0x43E2 una columna menos
+L 0x43E6 pinta_columna
+C 0x43E7 dieciseis bytes, que es lo que mide una columna de caracter doble
+C 0x43E9 H lleva la bandera de espejo de esta pasada
+L 0x43EA pinta_columna_bucle
+C 0x43EB el byte
+C 0x43EC si toca espejo...
+C 0x43EE ...se le da la vuelta a los ocho bits
+C 0x43F2 y al VDP
+B 0x43F9 EL BYTE, ANTES DE SALIR. Por aqui pasa cada byte que el pintor de 0x4386 manda a la VRAM, y C dice que hacerle: con el bit 7 puesto se le cambian los colores por la tabla de 0x440D, con el bit 0 puesto se le da la vuelta, y sin nada sale tal cual. Que la misma rutina sirva para patrones y para colores es lo que permite que un solo guion pinte las dos cosas.
+L 0x43F9 prepara_el_byte
+C 0x43F9 el byte del guion
+C 0x43FB bit 7 de C: cambiar colores
+C 0x43FF bit 0 de C: espejo
+C 0x4401 y si no, tal cual
+L 0x4402 da_la_vuelta_al_byte
+B 0x4402 DAR LA VUELTA A LOS OCHO BITS. Un caracter espejado es el mismo byte leido del reves, y esto es la forma corta de hacerlo: ocho veces sacar el bit de abajo de L y meterlo por arriba de A. B se salva en H porque el bucle lo gasta.
+C 0x4402 B a salvo, que el bucle lo usa de cuenta
+C 0x4403 el byte que hay que dar la vuelta
+C 0x4404 ocho bits
+C 0x4406 el de abajo sale al acarreo
+C 0x4408 y entra por arriba de A
+C 0x440B B como estaba
+B 0x440D CAMBIAR LOS COLORES DE UN BYTE. En modo 2 cada byte de la tabla de colores lleva dos: el de la tinta en el nibble alto y el del fondo en el bajo. Aqui se cambian los dos por separado, cada uno contra su tabla de seis parejas en RAM -0xE4EC para el nibble bajo y 0xE4E0 para el alto-, con la primera de cada pareja de "si es este color" y la segunda de "pon este otro". Seis parejas es el tope, y las comparaciones estan desplegadas una a una, sin bucle, porque esto pasa por cada byte de la pantalla.
+L 0x440D cambia_los_colores
+C 0x440D la tabla del nibble ALTO, la tinta
+C 0x4411 y la del BAJO, el fondo
+C 0x4415 H se queda con el byte entero
+C 0x4416 y A con el nibble de abajo
+C 0x4418 primera pareja
+C 0x441B su color de repuesto
+C 0x4420 segunda
+C 0x4428 tercera
+C 0x4430 cuarta
+C 0x4438 quinta
+C 0x4440 y sexta, que es la ultima
+L 0x4448 cambia_el_nibble_bajo
+C 0x4448 el byte entero
+C 0x4449 se le quita el nibble de abajo
+C 0x444B y se le mete el nuevo
+L 0x444D cambia_el_nibble_alto
+C 0x444D ahora el de arriba
+C 0x4450 las seis parejas otra vez, contra la otra tabla
+C 0x447E si ninguna casa, el byte se queda como esta
+L 0x4480 cambia_el_nibble_alto_hecho
+C 0x4480 se conserva el nibble de abajo, que ya esta cambiado
+C 0x4483 y se le mete la tinta nueva
+
+# ======================================================================
+# LOS MANDOS
+# ======================================================================
+B 0x44BB LEER LOS MANDOS. La llama la interrupcion antes que nada. Junta en un solo byte el joystick del puerto 1 y las teclas que hacen lo mismo, y ademas saca aparte cuales se acaban de pulsar en ESTE cuadro, que es lo que hace falta para que un disparo no se repita solo mientras el boton siga hundido.
+L 0x44BB lee_los_mandos
+C 0x44BB primero el estado de ahora
+L 0x44BE guarda_lo_que_se_acaba_de_pulsar
+C 0x44BE el estado del cuadro anterior
+C 0x44C1 C se queda con el viejo
+C 0x44C2 y en su sitio va el nuevo
+C 0x44C3 los bits que han CAMBIADO
+C 0x44C4 y de esos, los que ahora estan puestos: los recien pulsados
+C 0x44C6 que se guardan en 0xE006
+L 0x44C8 lee_el_estado_de_los_mandos
+C 0x44C8 0x8F en el registro 15 del PSG: el puerto 1 a leer y el 2 a escribir
+C 0x44CA registro 15
+C 0x44CF registro 14, que es por donde entra el joystick
+C 0x44D1 leer el PSG no admite que nadie se meta por medio
+C 0x44D2 BIOS RDPSG
+C 0x44D6 en el joystick el cero es pulsado, asi que se le da la vuelta
+C 0x44D7 y se queda con los seis bits que valen: cuatro direcciones y dos botones
+C 0x44D9 a la pila mientras se mira el teclado
+C 0x44DA fila 8 de la matriz: ahi estan las cuatro flechas y la barra
+C 0x44DC BIOS SNSMAT
+C 0x44DF tambien al reves
+C 0x44E0 y a colocar cada tecla en el bit que le toca en el byte del joystick
+C 0x44E3 arriba
+C 0x44EA izquierda y abajo
+C 0x44F0 derecha
+C 0x44F4 fila 6: ahi esta la de disparo
+C 0x44F6 BIOS SNSMAT
+C 0x44FC al bit 7
+C 0x4500 fila 4
+C 0x4509 al bit 5
+C 0x450D fila 7
+C 0x450F BIOS SNSMAT
+C 0x4516 al bit 6
+C 0x4519 y el joystick, que esperaba en la pila
+C 0x451A todo junto: da igual con que se juegue
+
+# ======================================================================
+# EL CUADRO
+# ======================================================================
+B 0x451C EL CUADRO. Lo que la interrupcion llama despues de los mandos, y es donde se ve el reparto del cartucho: casi todas las llamadas de aqui se van al banco 1 (0x6xxx), al 2 (0x8xxx-0x9xxx) o al 3 (0xAxxx-0xBxxx), que son los tres que estan puestos mientras se juega. Este banco solo pone el orden.
+L 0x451C cuadro
+C 0x451C lo primero, subir los sprites: eso tiene que caer dentro del borrado de pantalla
+C 0x451F el contador de la pausa que se hace al perder o al cambiar de fase
+C 0x4522 con el a cero se juega normal
+C 0x4525 y se sube el area de juego
+L 0x452A cuadro_en_pausa
+C 0x452A la pausa se acorta un cuadro
+C 0x452E si esta a cero, hay que retocar dos sprites
+C 0x4534 el patron 4
+C 0x4536 en el atributo del sprite 1
+C 0x453E y del 2
+L 0x4544 cuadro_pausa_sprites
+C 0x4544 el patron 5
+C 0x4546 en el sprite 18
+C 0x454E y en el 19
+C 0x4554 y la zona de juego se borra en vez de subirse
+L 0x4557 cuadro_llama_a_los_modulos
+C 0x4557 banco 1
+C 0x455A banco 2
+C 0x455D y una de este mismo banco
+C 0x4560 banco 1
+C 0x4563 banco 1
+C 0x4566 el modo en el que esta el juego
+C 0x456C las banderas de la partida
+C 0x456F el bit 6 es el sonido
+C 0x4573 banco 2
+C 0x4578 banco 2, la otra rama
+L 0x457B cuadro_sigue
+C 0x457B banco 1
+C 0x457E banco 1
+C 0x4581 banco 1
+C 0x4584 la bandera que corta el cuadro por la mitad
+C 0x4587 el bit 0 al acarreo
+C 0x4588 y si esta puesto, hasta aqui llega este cuadro
+C 0x4589 banco 2
+C 0x4596 banco 3
+C 0x4599 banco 2
+C 0x459C banco 2
+C 0x459F banco 3
+C 0x45A2 otra vez el modo
+C 0x45A8 banco 3
+C 0x45AB banco 3
+C 0x45AE banco 1
+L 0x45B1 cuadro_ultima_tanda
+C 0x45B1 banco 3
+C 0x45B4 banco 3
+C 0x45B7 banco 3
+C 0x45BA banco 3
+C 0x45BD banco 3
+C 0x45C0 banco 3
+C 0x45C3 banco 3
+C 0x45C6 banco 3
+C 0x45C9 y a partir de aqui se cambia de trio
+
+B 0x45C9 EL SEGUNDO TRIO DEL CUADRO. Aqui esta la prueba de que el banco 9 lleva codigo y no datos: se mete el trio 7-8-9 y se llama derecho a 0xA83F, 0xB616 y 0xBBA1, que caen dentro de el. Es el unico momento del cuadro en que los bancos 1, 2 y 3 no estan puestos, y por eso al acabar se devuelven en 0x4600 antes de seguir.
+C 0x45CE el trio 7-8-9
+C 0x45D0 el 7 a 0x6000
+C 0x45D5 el 8 a 0x8000
+C 0x45DB y el 9 a 0xA000
+C 0x45E2 el mismo modo que miraba antes
+C 0x45E8 banco 9
+C 0x45EB banco 9
+C 0x45EE banco 9
+L 0x45F1 cuadro_banco_9
+C 0x45F1 banco 9
+C 0x45F4 banco 9
+C 0x45F7 banco 9
+C 0x45FA banco 9
+C 0x45FD banco 9
+C 0x4605 y de vuelta al trio 1-2-3
+C 0x4619 banco 3
+C 0x461C banco 3
+C 0x461F banco 3
+C 0x4622 la bandera que decide si hay que hacer la ultima tanda
+C 0x4626 y si no, se acabo el cuadro
+C 0x4627 banco 3
+C 0x462A banco 3
+C 0x462D banco 1
+C 0x4630 banco 3
+C 0x4633 banco 1
+C 0x4636 banco 1
+C 0x4639 banco 3
+C 0x463C y la ultima, ya sin volver
+
+B 0x463F EMPEZAR UNA VIDA. Pone a cero los dos contadores del desplazamiento y saca de la pantalla los seis sprites de las tres parejas de 0xE3A0, 0xE3B0 y 0xE3C0, escribiendoles 0xE0 en la Y.
+L 0x463F empieza_una_vida
+C 0x463F los contadores del desplazamiento a cero
+C 0x4649 0xE0 en la Y: fuera de la pantalla
+C 0x464B la primera pareja
+C 0x4651 la segunda
+C 0x4657 y la tercera
+C 0x465D y a montar lo que toque, en el banco 1
+
+B 0x4660 MONTAR UNA FASE. La rutina mas larga del banco, y se entiende de un vistazo: primero borra de un tiron los 2.479 bytes de 0xE1F0 y los 800 de 0xEBE0 -que son las variables de la fase y el buffer de pantalla-, luego apaga una veintena de banderas sueltas, y despues llama en fila a los que montan cada cosa. Es tambien donde acaba el callback del Game Master: cuando el otro cartucho pide empezar en la fase 7, la rutina de 0x40F7 termina saltando a 0x46E3, o sea a la ultima parte de esta.
+L 0x4660 monta_la_fase
+C 0x4660 con ceros
+C 0x4661 desde 0xE1F0
+C 0x4667 2.479 bytes: todas las variables de la fase
+C 0x466D y el buffer grande de pantalla
+C 0x4673 800 bytes
+C 0x4679 el modo
+C 0x467C bandera
+C 0x468B las diez de 0xE0BB a 0xE0C4, seguidas
+C 0x46A6 y las cinco de 0xE0D7 a 0xE0DB
+C 0x46B8 la pausa
+C 0x46BB el objeto 6
+C 0x46BD banco 3: soltarlo
+C 0x46C0 y el 12
+C 0x46C5 un objeto que se lleva de una fase a la siguiente
+C 0x46C8 si no queda ninguno, no hay nada que poner
+C 0x46CB se gasta uno
+C 0x46CF el objeto 10
+L 0x46D4 monta_la_fase_segundo_objeto
+C 0x46D4 y lo mismo con el otro
+C 0x46DE el objeto 11
+L 0x46E3 monta_la_fase_desde_el_decorado   Aqui es donde entra el callback del Game Master (0x411D).
+C 0x46E3 banco 1
+C 0x46E6 banco 1
+C 0x46E9 banco 1
+C 0x46EC banco 1
+C 0x46EF banco 1
+C 0x46F2 banco 1
+C 0x46F5 con A a cero
+C 0x46F6 banco 1
+C 0x46F9 banco 1
+C 0x46FC banco 1
+C 0x46FF banco 1
+C 0x4702 banco 1
+C 0x4705 y la ultima, en el banco 3
+
+B 0x4708 REEMPEZAR SIN PERDER LA CUENTA. Casi igual que el borrado de arriba, pero mucho mas corto -527 bytes- y con una diferencia que lo explica todo: las tres cosas de 0xE300 se guardan en la pila antes de borrar y se devuelven despues. Eso es lo que sobrevive de una vida a la siguiente.
+L 0x4708 reempieza
+C 0x4708 lo que hay que salvar
+C 0x470E a la pila, que ahora se borra por encima
+C 0x4710 desde 0xE1F0
+C 0x4716 527 bytes
+C 0x471D la pausa tambien
+C 0x4720 y quince bytes mas de 0xE500
+C 0x472C y se devuelve lo salvado
+C 0x4735 el banco 10 a 0x8000
+C 0x473F y el 11 a 0xA000
+
+B 0x4748 LO QUE SE LLEVA DE UNA FASE A OTRA. Con los bancos 10 y 11 puestos, recorre las cinco ranuras de 0xE440 -dos bytes cada una- y, para las que llevan algo con el segundo byte por encima de 8, saca de las dos tablas encadenadas de 0x8682 el guion que hay que soltar. La rutina que lo suelta es la de rellenar de unos, o sea que lo que se escribe son marcas, no dibujos.
+L 0x4748 reparte_lo_que_se_lleva
+C 0x4748 las cinco ranuras
+C 0x474B cinco
+L 0x474D reparte_lo_que_se_lleva_vuelta
+C 0x474D la ranura
+C 0x474E vacia no hay nada que hacer
+C 0x474F y se salta diez bytes
+C 0x4753 el segundo byte de la ranura
+C 0x4756 por debajo de ocho tampoco
+C 0x4758 y entonces el salto es de catorce
+C 0x475D la ranura, a salvo
+C 0x475E el primer byte
+C 0x4760 la tabla de tablas, en el banco 10
+C 0x4763 dos bytes por entrada
+C 0x4766 y se lee el puntero a la tabla de dentro
+C 0x476A ahora el segundo byte
+C 0x476D otro salto de dos bytes
+C 0x4770 y ya se tiene el guion
+C 0x4774 que son marcas, no dibujos
+C 0x4779 y detras se limpian dieciseis bytes
+L 0x477C reparte_limpia_dieciseis
+L 0x4784 reparte_salta
+C 0x4784 a la ranura siguiente
+L 0x4786 reparte_siguiente
+C 0x4786 una ranura menos
+C 0x478A y a devolver el 2 y el 3
+
+B 0x479D DE QUE TAMANO ES LA FASE. Mete los bancos 12 y 13 solo para leer cuatro bytes: la tabla de 0xACBA lleva una entrada por fase, indexada por (0xE092), y de ella salen los doce bits que van a 0xE08B. La rutina es un ejemplo limpio de lo que hacen los bancos 12 y 13 en este cartucho: se mapean, se lee y se devuelven, sin ejecutar en ellos ni una instruccion.
+L 0x479D lee_los_datos_de_la_fase
+C 0x479E el banco 12
+C 0x47A8 y el 13
+C 0x47B1 la FASE, que va de 1 a 13
+C 0x47B4 las tablas empiezan en la 1
+C 0x47B8 por cuatro, que es lo que mide cada entrada
+C 0x47BA la tabla, en el banco 13
+C 0x47BE el byte bajo
+C 0x47C0 y del siguiente solo el nibble de abajo: son DOCE bits
+C 0x47C4 y de ahi sale el largo de la fase
+C 0x47C9 el 2 y el 3, de vuelta
+C 0x47DC banco 1
+C 0x47DF y la ultima, tambien en el banco 1
+
+B 0x47E2 LOS PUENTES AL BANCO 4-5-6. De aqui al final del banco hay una fila larga de rutinas que se parecen todas: meter un trio, hacer una sola cosa con el, y devolver el 1-2-3. Son los puentes por los que el codigo del juego llega a los datos que no caben en su ventana, y estan aqui, en el banco fijo, porque son el unico sitio desde el que se puede cambiar de banco sin quedarse sin suelo.
+L 0x47E2 pinta_del_banco_6
+C 0x47E7 el trio 4-5-6
+C 0x47FB un guion del banco 6
+C 0x47FE al pintor
+C 0x4806 y el 1-2-3 de vuelta

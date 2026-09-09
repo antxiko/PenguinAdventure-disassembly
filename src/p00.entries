@@ -13,9 +13,9 @@
 # Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
 0x4023   # gancho de interrupcion H.KEYI: INIT escribe 0xC3 en 0xFD9A y esta direccion en 0xFD9B (p00:40A5-p00:40AF)
 0x4055   # p01:6393 call
-0x4056   # p01:6713 call
 0x4060   # p02:8014 call
 0x406A   # cabecera AB: INIT
+0x40F7   # callback de la cabecera CD: el Game Master salta aqui por CALSLT con la direccion que le da 0x4021
 0x413A   # p09:BE36 call
 0x4145   # p02:9C95 call
 0x418C   # p01:6164 call
@@ -40,7 +40,6 @@
 0x451C   # p02:8247 call
 0x463F   # p02:8842 call
 0x4660   # p02:832D call
-0x46E3   # p02:89F6 call
 0x4708   # p02:883F call
 0x47E2   # p02:8A93 call
 0x481B   # p02:8848 call

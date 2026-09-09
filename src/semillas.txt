@@ -38,3 +38,16 @@ p09 0xBCBF 7 8 9   # tabla de 0xA8D1, entrada 11
 p09 0xBD0F 7 8 9   # tabla de 0xA8D1, entrada 12
 p09 0xBE01 7 8 9   # tabla de 0xA8D1, entrada 13
 p09 0xBE52 7 8 9   # tabla de 0xA8D1, entrada 14
+
+# ----------------------------------------------------------------------------
+# EL CALLBACK DE LA SEGUNDA CABECERA (p00:40F7)
+#
+# No lo llama ni una instruccion del cartucho: lo llama el OTRO cartucho. La
+# segunda cabecera de 0x4010 acaba en 0x4021 con los bytes F7 40, o sea 0x40F7,
+# y el Konami Game Master se los guarda en su 0xD314 y salta ahi por CALSLT
+# (`ld ix,(0xD314)` en su 0x5562).
+#
+# Que es codigo, y ademas SUYO, lo dice lo primero que hace: `ld a,(0xD31A)`,
+# que es una direccion de la RAM del Game Master -donde este apunta la fase que
+# ha pedido el usuario en su MODIFY MODE-. Un dato del juego no leeria ahi.
+p00 0x40F7 1 2 3   # callback de la cabecera CD: el Game Master salta aqui por CALSLT con la direccion que le da 0x4021

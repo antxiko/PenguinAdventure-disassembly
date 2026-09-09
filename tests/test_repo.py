@@ -30,11 +30,17 @@ OTROS_JUEGOS = (
     "Antarctic", "Pippols", "Frogger", "Time Pilot", "Super Cobra",
     "Billiards", "Mahjong", "Hyper Olympic", "Hyper Sports", "Hyper Rally",
     "Sky Jaguar", "Yie Ar", "Knightmare", "Twin Bee", "Road Fighter",
-    "Ping Pong", "Soccer", "Goonies", "Trailblazer", "Game Master",
+    "Ping Pong", "Soccer", "Goonies", "Trailblazer",
     "Boxing", "Bomber Man", "King's Valley", "Mopi Ranger", "Baseball",
     "Tennis", "Demonia", "Descubrimiento", "Cabbage Patch", "Casio World",
     "Hole in One", "3D Golf", "Konami's Golf", "Football",
 )
+
+# El Konami Game Master (RC-741) NO esta en la lista de arriba, y es a
+# proposito: no es un juego de la serie que se haya podido colar copiando, es un
+# cartucho con el que ESTE tiene una relacion documentada -le lee la segunda
+# cabecera de 0x4010 y le llama a la rutina de 0x40F7-, asi que su nombre sale
+# donde tiene que salir y prohibirlo solo obligaria a ir haciendo excepciones.
 
 # Los que SI pueden aparecer, y por que.
 PERMITIDO = {
@@ -46,13 +52,9 @@ PERMITIDO = {
     # test_cartucho.py habla del Konami Game Master porque la segunda
     # cabecera de 0x4010 es SUYA: la lee el cartucho de trucos desde la
     # otra ranura. Y compara con Nemesis lo de los bancos de relleno.
-    os.path.join("tests", "test_cartucho.py"): ("Nemesis", "Game Master"),
+    os.path.join("tests", "test_cartucho.py"): ("Nemesis",),
     os.path.join("src", "datos.txt"): (),
-    # Los avisos legales citan al Game Master porque de su desensamblado sale
-    # el significado de la segunda cabecera de 0x4010.
-    "AVISO-LEGAL.md": ("Game Master",),
-    "LEGAL-NOTICE.md": ("Game Master",),
-    # Y los README nombran Antarctic Adventure porque este juego ES su
+    # Los README nombran Antarctic Adventure porque este juego ES su
     # continuacion: no es un copia y pega, es el dato.
     "README.md": ("Antarctic",),
     "README.es.md": ("Antarctic",),
