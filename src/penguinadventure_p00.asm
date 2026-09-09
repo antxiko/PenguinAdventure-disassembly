@@ -486,34 +486,36 @@ lee_puntero:
 	ret			;424a
 
 ; ----------------------------------------------------------------------
-; LOS TRES VOLCADOS. La pantalla se monta en RAM y se sube de golpe con `outi`, que es la unica forma de llenar la VRAM a la velocidad de un cuadro. Las tres puertas se diferencian solo en tres cosas -donde de la VRAM, de que buffer de RAM y cuantos bloques- y caen todas en el mismo bucle de 0x4270, que escribe A bloques de 0x40 bytes.
+; LOS TRES VOLCADOS. La pantalla se monta en RAM y se sube de golpe con `outi`, que es la unica forma de llenar la VRAM a la velocidad de un cuadro. Las tres puertas se diferencian solo en tres cosas -donde de la VRAM, de que buffer de RAM y cuantas filas- y caen todas en el mismo bucle de 0x4270.
+; OJO CON LA CUENTA DEL BUCLE: `ld b,d` entra con 0x40, pero cada vuelta baja B DOS veces -una el `outi`, que es "saca y decrementa", y otra el `djnz`-, asi que salen 32 bytes por vuelta y no 64. Y 32 es justo el ancho de una fila. Con eso las tres puertas cuadran al byte: la de arriba sube dos filas, la de en medio dieciseis y la de abajo veintiuna.
+; DE AHI SALE EL ESPEJO ENTERO. La RAM de 0xEBA0 a 0xEEFF es copia exacta de la VRAM de 0x3820 a 0x3B7F, con 0x4C80 de diferencia: 0xEBA0 es la fila 1 de la pantalla, 0xEBE0 la 3 -donde empieza la zona de juego, y donde el banco 1 descomprime sus 672 bytes de decorado- y 0xEE80 la tabla de atributos de los sprites.
 ; ----------------------------------------------------------------------
 sube_el_marcador:
 	ld hl,03820h		;424b   ; 0x3820: la segunda fila de la tabla de nombres
 	call abre_para_escribir_y_da_el_puerto		;424e   ; deja el VDP apuntando ahi y devuelve el puerto en C
 	ld hl,0eba0h		;4251   ; el buffer de RAM del marcador
-	ld a,002h		;4254   ; dos bloques
-	jr sube_bloques_de_64		;4256
+	ld a,002h		;4254   ; dos filas: 0x3820 y 0x3840
+	jr sube_filas		;4256
 sube_la_mitad_de_abajo:
 	ld hl,03900h		;4258   ; 0x3900, ya dentro de la pantalla
 	call abre_para_escribir_y_da_el_puerto		;425b
 	ld hl,0ec80h		;425e   ; su buffer
-	ld a,010h		;4261   ; dieciseis bloques
-	jr sube_bloques_de_64		;4263
+	ld a,010h		;4261   ; dieciseis filas, de la 8 a la 23
+	jr sube_filas		;4263
 sube_el_area_de_juego:
 	ld hl,03860h		;4265   ; 0x3860, que es la fila 3: el marcador de arriba no se toca
 	call abre_para_escribir_y_da_el_puerto		;4268
 	ld hl,0ebe0h		;426b   ; el buffer grande
-	ld a,015h		;426e   ; veintiun bloques
-sube_bloques_de_64:
-	ld d,040h		;4270   ; el bloque es de 0x40 bytes
-sube_bloques_otra_vuelta:
-	ld b,d			;4272   ; y B se recarga en cada vuelta
+	ld a,015h		;426e   ; veintiuna filas, de la 3 a la 23: la zona de juego entera
+sube_filas:
+	ld d,040h		;4270   ; 0x40, que con las DOS bajadas de B por vuelta son 32 bytes: una fila
+sube_filas_otra:
+	ld b,d			;4272   ; y B se recarga en cada fila
 L_4273:
-	outi		;4273   ; un byte por instruccion, sin tocar mas registros
+	outi		;4273   ; saca un byte y baja B; el `djnz` de abajo lo baja otra vez
 	djnz L_4273		;4275
-	dec a			;4277   ; un bloque menos
-	jr nz,sube_bloques_otra_vuelta		;4278
+	dec a			;4277   ; una fila menos
+	jr nz,sube_filas_otra		;4278
 	ret			;427a
 
 ; ----------------------------------------------------------------------
