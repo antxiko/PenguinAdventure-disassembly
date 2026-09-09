@@ -1,0 +1,30 @@
+# Bancos que NO se ejecutan nunca: son biblioteca de datos.
+#
+# Por que hace falta decirlo a mano. El trazador de cartucho entero sigue el
+# acumulador y sabe que banco hay en cada ranura, pero NO modela el semaforo de
+# 0xE005, y el juego cambia de banco con las interrupciones abiertas:
+#
+#     p01:602A   di / ld a,0x0C / ld (0x8000),a / ld (0xF0F2),a / ei
+#                di / ld a,0x0D / ld (0xA000),a / ld (0xF0F3),a / ei
+#                ld hl,0x8014          <- un PUNTERO a datos del banco 12
+#                call 0x418C           <- el lector, que vive en el banco 0
+#                ...y al salir devuelve los bancos 2 y 3
+#
+# Mientras dura esa ventana la copia en RAM dice 12 y 13, asi que si el
+# trazador entra ahi por el gancho de interrupcion (p00:404C `call 0x8000`) se
+# pone a leer el banco 12 como si fuera codigo. Lo es tan poco que el
+# desensamblado da `illegal sequence` en 0x8010, y de esa pisada salian 14 KB
+# de codigo inventado que a su vez llamaban a 0x4016 -dentro de la CABECERA-,
+# realimentando el bucle.
+#
+# El juego no cae en la trampa porque la rutina de interrupcion mira antes el
+# semaforo de 0xE005 (p00:4043 `bit 0,(hl)` / `jr nz`), y quien cambia de banco
+# lo deja puesto. Eso es logica del juego, no del mapper, y el trazador no la
+# sigue: se le dice aqui.
+#
+# CRITERIO para meter un banco en esta lista: que TODAS sus apariciones sean
+# `ld hl,<direccion suya>` seguido de una llamada a un lector de otro banco, y
+# que ni una sola instruccion de control salte dentro de el.
+
+p12  # Datos. Se mapea en 0x8000 desde p00:47A0, p00:5C6E y catorce sitios de p01 (602D, 605F, 608E, 60C0, 60EF, 6121, 6150, 617F, 61AE...), y en todos el patron es el mismo: mapear 12 y 13, cargar HL con un puntero suyo (0x8014, 0x81EC...) y llamar al lector de 0x418C. Ningun salto ni llamada entra en el.
+p13  # Datos, la pareja de arriba en 0xA000. Ademas lleva la tabla de 0xACBA que p00:47B1 indexa con (0xE092) en entradas de cuatro bytes. Sus 807 bytes de cola son relleno 0xFF.

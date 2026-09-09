@@ -1,0 +1,12 @@
+# Zonas que el trazador NO puede entrar a desensamblar como codigo.
+#
+# La tabla de destinos del despachador de Konami (0x4060) va pegada JUSTO
+# DETRAS de su `call`: sin declararla, el trazador sigue de largo y se la come
+# como instrucciones, y ademas sigue desde ahi. Es la contaminacion mas facil
+# de este cartucho.
+#
+# Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
+#
+# BANCO DE DATOS entero, declarado en src/datos.txt:
+# Datos, la pareja de arriba en 0xA000. Ademas lleva la tabla de 0xACBA que p00:47B1 indexa con (0xE092) en entradas de cuatro bytes. Sus 807 bytes de cola son relleno 0xFF.
+0xA000 0xC000   el banco entero es datos

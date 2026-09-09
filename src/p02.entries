@@ -1,0 +1,71 @@
+# Puntos de entrada del banco 2 (se ejecuta en 0x8000).
+#
+# Cada uno lleva la instruccion que lo justifica. Los que ponen "pNN:XXXX"
+# vienen de OTRO banco: el trazador de una sola pagina no puede seguirlos,
+# porque en esa direccion -segun lo que haya en el registro del mapper- puede
+# estar cualquiera de cinco bancos. Los que ponen "tabla" salen de una tabla
+# del despachador 0x4060, que va pegada detras de su `call` y esta declarada
+# como datos en el .nocode: el trazador tampoco puede seguirla.
+#
+# Los saltos y llamadas DENTRO del propio banco no se ponen aqui: los
+# encuentra tools/z80trace.py solo, siguiendo el flujo.
+#
+# Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
+0x8000   # p00:404C call
+0x8037   # p02:8014 entrada 0 de la tabla de 0x8017 (call 0x4060 en 0x8014)
+0x8060   # p02:8014 entrada 1 de la tabla de 0x8017 (call 0x4060 en 0x8014)
+0x8073   # p02:8014 entrada 2 de la tabla de 0x8017 (call 0x4060 en 0x8014)
+0x8099   # p02:8014 entrada 3 de la tabla de 0x8017 (call 0x4060 en 0x8014)
+0x814B   # p02:8014 entrada 4 de la tabla de 0x8017 (call 0x4060 en 0x8014)
+0x81C5   # p02:8014 entrada 5 de la tabla de 0x8017 (call 0x4060 en 0x8014)
+0x8278   # p02:8014 entrada 6 de la tabla de 0x8017 (call 0x4060 en 0x8014)
+0x83A9   # p02:8014 entrada 7 de la tabla de 0x8017 (call 0x4060 en 0x8014)
+0x84E1   # p02:8014 entrada 8 de la tabla de 0x8017 (call 0x4060 en 0x8014)
+0x8538   # p02:8014 entrada 9 de la tabla de 0x8017 (call 0x4060 en 0x8014)
+0x85D2   # p02:8014 entrada 10 de la tabla de 0x8017 (call 0x4060 en 0x8014)
+0x8648   # p02:8014 entrada 11 de la tabla de 0x8017 (call 0x4060 en 0x8014)
+0x86C6   # p02:8014 entrada 12 de la tabla de 0x8017 (call 0x4060 en 0x8014)
+0x8800   # p02:8014 entrada 13 de la tabla de 0x8017 (call 0x4060 en 0x8014)
+0x8806   # p02:8014 entrada 14 de la tabla de 0x8017 (call 0x4060 en 0x8014)
+0x8933   # p02:8014 entrada 15 de la tabla de 0x8017 (call 0x4060 en 0x8014)
+0x91AD   # p00:455A call
+0x91C4   # p02:91B9 entrada 1 de la tabla de 0x91BC (call 0x4060 en 0x91B9)
+0x91E2   # p02:91B9 entrada 2 de la tabla de 0x91BC (call 0x4060 en 0x91B9)
+0x91F6   # p02:91B9 entrada 0 de la tabla de 0x91BC (call 0x4060 en 0x91B9)
+0x929F   # p00:459C call
+0x92EC   # p01:6536 call
+0x9325   # p00:5B91 call
+0x9367   # p03:A601 call
+0x9369   # p03:B4E8 jp
+0x9440   # p00:4578 call
+0x9485   # p01:7392 call
+0x96C3   # p02:9690 entrada 0 de la tabla de 0x9693 (call 0x4060 en 0x9690)
+0x96C4   # p02:9690 entrada 7 de la tabla de 0x9693 (call 0x4060 en 0x9690)
+0x96C9   # p02:9690 entrada 4 de la tabla de 0x9693 (call 0x4060 en 0x9690)
+0x96D2   # p02:9690 entrada 5 de la tabla de 0x9693 (call 0x4060 en 0x9690)
+0x96D7   # p02:9690 entrada 14 de la tabla de 0x9693 (call 0x4060 en 0x9690)
+0x96DF   # p02:9690 entrada 15 de la tabla de 0x9693 (call 0x4060 en 0x9690)
+0x96E5   # p02:9690 entrada 16 de la tabla de 0x9693 (call 0x4060 en 0x9690)
+0x96EB   # p02:9690 entrada 12 de la tabla de 0x9693 (call 0x4060 en 0x9690)
+0x96F0   # p02:9690 entrada 19 de la tabla de 0x9693 (call 0x4060 en 0x9690)
+0x9737   # p02:96FC entrada 0 de la tabla de 0x96FF (call 0x4060 en 0x96FC)
+0x979D   # p02:96FC entrada 1 de la tabla de 0x96FF (call 0x4060 en 0x96FC)
+0x9809   # p02:96FC entrada 2 de la tabla de 0x96FF (call 0x4060 en 0x96FC)
+0x98B0   # p02:96FC entrada 3 de la tabla de 0x96FF (call 0x4060 en 0x96FC)
+0x9961   # p02:96FC entrada 4 de la tabla de 0x96FF (call 0x4060 en 0x96FC)
+0x99E0   # p02:96FC entrada 5 de la tabla de 0x96FF (call 0x4060 en 0x96FC)
+0x9A1D   # p03:A268 jp
+0x9A63   # p02:96FC entrada 6 de la tabla de 0x96FF (call 0x4060 en 0x96FC)
+0x9ADB   # p02:96FC entrada 7 de la tabla de 0x96FF (call 0x4060 en 0x96FC)
+0x9B74   # p02:96FC entrada 8 de la tabla de 0x96FF (call 0x4060 en 0x96FC)
+0x9BF2   # p02:96FC entrada 9 de la tabla de 0x96FF (call 0x4060 en 0x96FC)
+0x9C3A   # p03:A288 jp
+0x9C80   # p02:96FC entrada 10 de la tabla de 0x96FF (call 0x4060 en 0x96FC)
+0x9D58   # p02:96FC entrada 11 de la tabla de 0x96FF (call 0x4060 en 0x96FC)
+0x9D69   # p02:96FC entrada 12 de la tabla de 0x96FF (call 0x4060 en 0x96FC)
+0x9DBA   # p02:96FC entrada 13 de la tabla de 0x96FF (call 0x4060 en 0x96FC)
+0x9E1E   # p02:96FC entrada 14 de la tabla de 0x96FF (call 0x4060 en 0x96FC)
+0x9EAD   # p02:96FC entrada 15 de la tabla de 0x96FF (call 0x4060 en 0x96FC)
+0x9ECF   # p01:7295 call
+0x9F80   # p02:96FC entrada 16 de la tabla de 0x96FF (call 0x4060 en 0x96FC)
+0x9FC9   # p02:96FC entrada 17 de la tabla de 0x96FF (call 0x4060 en 0x96FC)

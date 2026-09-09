@@ -1,0 +1,40 @@
+# Semillas a mano para el trazador de cartucho entero.
+#   pNN 0xADDR b6000 b8000 bA000   # por que
+#
+# Solo se pone aqui lo que el trazador NO puede deducir: destinos de saltos
+# indirectos cuya tabla no va pegada detras de un `call 0x4060`, y trozos de
+# codigo a los que se llega cruzando la frontera de un banco.
+#
+# ----------------------------------------------------------------------------
+# EL DESPACHADOR DEL BANCO 9 (p09:A8D0 `jp (hl)`)
+#
+# No es el despachador de la casa: aqui la tabla se indexa a mano y va pegada
+# justo detras del salto.
+#
+#     A8C1  ld a,c / dec a / add a,a       el indice, por dos
+#     A8C4  ld hl,0xA8D1                   la tabla, que empieza en la
+#                                          instruccion siguiente al `jp (hl)`
+#     A8C7  add a,l / ld l,a / jr nc / inc h
+#     A8CC  ld e,(hl) / inc hl / ld d,(hl) / ex de,hl
+#     A8D0  jp (hl)
+#
+# Son QUINCE palabras: de 0xA8D1 a 0xA8EE. Lo dice la propia tabla, no una
+# suposicion -la palabra 16 vale 0x0F21, que ni siquiera es una direccion del
+# cartucho, y las quince primeras caen todas entre 0xB581 y 0xBE52, dentro del
+# banco 9-. El reparto de bancos es el unico con el que el trazado llega a
+# 0xA8D0: 7 en 0x6000, 8 en 0x8000 y 9 en 0xA000.
+p09 0xB581 7 8 9   # tabla de 0xA8D1, entrada 0
+p09 0xB60A 7 8 9   # tabla de 0xA8D1, entrada 1
+p09 0xB60C 7 8 9   # tabla de 0xA8D1, entrada 2
+p09 0xB60E 7 8 9   # tabla de 0xA8D1, entrada 3
+p09 0xB610 7 8 9   # tabla de 0xA8D1, entrada 4
+p09 0xB6F4 7 8 9   # tabla de 0xA8D1, entrada 5
+p09 0xB873 7 8 9   # tabla de 0xA8D1, entrada 6
+p09 0xB909 7 8 9   # tabla de 0xA8D1, entrada 7
+p09 0xB90B 7 8 9   # tabla de 0xA8D1, entrada 8
+p09 0xBAE0 7 8 9   # tabla de 0xA8D1, entrada 9
+p09 0xBB9B 7 8 9   # tabla de 0xA8D1, entrada 10
+p09 0xBCBF 7 8 9   # tabla de 0xA8D1, entrada 11
+p09 0xBD0F 7 8 9   # tabla de 0xA8D1, entrada 12
+p09 0xBE01 7 8 9   # tabla de 0xA8D1, entrada 13
+p09 0xBE52 7 8 9   # tabla de 0xA8D1, entrada 14

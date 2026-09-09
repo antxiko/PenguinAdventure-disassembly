@@ -1,0 +1,82 @@
+# Puntos de entrada del banco 1 (se ejecuta en 0x6000).
+#
+# Cada uno lleva la instruccion que lo justifica. Los que ponen "pNN:XXXX"
+# vienen de OTRO banco: el trazador de una sola pagina no puede seguirlos,
+# porque en esa direccion -segun lo que haya en el registro del mapper- puede
+# estar cualquiera de cinco bancos. Los que ponen "tabla" salen de una tabla
+# del despachador 0x4060, que va pegada detras de su `call` y esta declarada
+# como datos en el .nocode: el trazador tampoco puede seguirla.
+#
+# Los saltos y llamadas DENTRO del propio banco no se ponen aqui: los
+# encuentra tools/z80trace.py solo, siguiendo el flujo.
+#
+# Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
+0x6000   # p02:867E call
+0x61F3   # p02:9322 jp
+0x61FF   # p00:46E3 call
+0x624C   # p00:46E6 call
+0x62A4   # p02:9D41 call
+0x62AD   # p03:BA14 call
+0x62B8   # p03:B944 call
+0x62BC   # p00:46E9 call
+0x62CB   # p00:46EF call
+0x62E0   # p03:B632 jp
+0x62EF   # p03:B62F call
+0x6323   # p00:46F2 call
+0x6370   # p00:46FF call
+0x63BC   # p00:46FC call
+0x63FD   # p00:46F9 call
+0x643F   # p00:4702 call
+0x64F0   # p00:4560 call
+0x6507   # p02:9D44 call
+0x6539   # p02:8681 call
+0x66DA   # p00:4557 call
+0x66ED   # p00:46F6 call
+0x6737   # p00:46EC call
+0x6799   # p00:457B call
+0x68CA   # p00:457E call
+0x68E2   # p02:9D47 jp
+0x6AA8   # p00:4581 call
+0x6BEF   # p02:86E2 call
+0x6C7F   # p02:8788 call
+0x6D7C   # p03:BA75 jp
+0x6DA2   # p03:BA64 jp cc
+0x6E1E   # p02:8737 call
+0x7015   # p02:87B6 call
+0x7059   # p00:462D call
+0x70D1   # p01:7082 entrada 0 de la tabla de 0x7085 (call 0x4060 en 0x7082)
+0x7127   # p01:7082 entrada 2 de la tabla de 0x7085 (call 0x4060 en 0x7082)
+0x7205   # p01:7082 entrada 5 de la tabla de 0x7085 (call 0x4060 en 0x7082)
+0x7242   # p01:7082 entrada 7 de la tabla de 0x7085 (call 0x4060 en 0x7082)
+0x72C4   # p01:7082 entrada 9 de la tabla de 0x7085 (call 0x4060 en 0x7082)
+0x7317   # p01:7082 entrada 11 de la tabla de 0x7085 (call 0x4060 en 0x7082)
+0x73A3   # p01:7082 entrada 13 de la tabla de 0x7085 (call 0x4060 en 0x7082)
+0x73A4   # p01:7082 entrada 16 de la tabla de 0x7085 (call 0x4060 en 0x7082)
+0x73FB   # p01:7082 entrada 18 de la tabla de 0x7085 (call 0x4060 en 0x7082)
+0x744A   # p01:7082 entrada 20 de la tabla de 0x7085 (call 0x4060 en 0x7082)
+0x74A5   # p01:7082 entrada 25 de la tabla de 0x7085 (call 0x4060 en 0x7082)
+0x7530   # p01:7082 entrada 31 de la tabla de 0x7085 (call 0x4060 en 0x7082)
+0x7531   # p00:4633 call
+0x7625   # p00:4636 call
+0x76F3   # p02:8416 call
+0x7730   # p00:463C jp
+0x7799   # p02:8419 call
+0x7809   # p02:875E call
+0x781E   # p02:876B call
+0x7B44   # p02:83F8 call
+0x7B5E   # p02:8854 call
+0x7B85   # p03:AABF call
+0x7BAE   # p03:ACD6 call
+0x7BC4   # p03:AC7D call cc
+0x7BE7   # p03:AB3D call
+0x7C01   # p02:8407 call
+0x7C3E   # p02:8434 call
+0x7C9F   # p03:B4C8 call
+0x7CF8   # p02:83CB call
+0x7D74   # p03:AFC8 jp
+0x7D9C   # p03:A6F1 call
+0x7DD5   # p03:A1DD call
+0x7E2D   # p00:5E8D call
+0x7E7F   # p02:808E call
+0x7F0E   # p02:8078 call
+0x7F11   # p02:8075 call

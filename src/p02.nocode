@@ -1,0 +1,12 @@
+# Zonas que el trazador NO puede entrar a desensamblar como codigo.
+#
+# La tabla de destinos del despachador de Konami (0x4060) va pegada JUSTO
+# DETRAS de su `call`: sin declararla, el trazador sigue de largo y se la come
+# como instrucciones, y ademas sigue desde ahi. Es la contaminacion mas facil
+# de este cartucho.
+#
+# Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
+0x8017 0x8037   tabla de 16 palabras del despachador (call 0x4060 en 0x8014)
+0x91BC 0x91C4   tabla de 4 palabras del despachador (call 0x4060 en 0x91B9)
+0x9693 0x96C3   tabla de 24 palabras del despachador (call 0x4060 en 0x9690)
+0x96FF 0x9737   tabla de 28 palabras del despachador (call 0x4060 en 0x96FC)

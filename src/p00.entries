@@ -1,0 +1,102 @@
+# Puntos de entrada del banco 0 (se ejecuta en 0x4000).
+#
+# Cada uno lleva la instruccion que lo justifica. Los que ponen "pNN:XXXX"
+# vienen de OTRO banco: el trazador de una sola pagina no puede seguirlos,
+# porque en esa direccion -segun lo que haya en el registro del mapper- puede
+# estar cualquiera de cinco bancos. Los que ponen "tabla" salen de una tabla
+# del despachador 0x4060, que va pegada detras de su `call` y esta declarada
+# como datos en el .nocode: el trazador tampoco puede seguirla.
+#
+# Los saltos y llamadas DENTRO del propio banco no se ponen aqui: los
+# encuentra tools/z80trace.py solo, siguiendo el flujo.
+#
+# Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
+0x4023   # gancho de interrupcion H.KEYI: INIT escribe 0xC3 en 0xFD9A y esta direccion en 0xFD9B (p00:40A5-p00:40AF)
+0x4055   # p01:6393 call
+0x4056   # p01:6713 call
+0x4060   # p02:8014 call
+0x406A   # cabecera AB: INIT
+0x413A   # p09:BE36 call
+0x4145   # p02:9C95 call
+0x418C   # p01:6164 call
+0x41AD   # p01:692D call
+0x41BF   # p01:699A call
+0x41CD   # p03:A6C8 jp
+0x4224   # p02:8A0F call
+0x4232   # p02:89F9 call
+0x424B   # p02:81AF call
+0x4258   # p02:83E6 call
+0x4265   # p02:85C2 call
+0x4293   # p02:932C call
+0x42BC   # p02:8A1D call
+0x42BE   # p02:8A52 jp
+0x42DF   # p02:8919 call
+0x42E8   # p02:868F call
+0x42FB   # p02:872B call
+0x4332   # p02:8808 call
+0x449E   # p02:8052 call
+0x44B6   # p02:8458 call
+0x44BE   # p01:7F45 call
+0x451C   # p02:8247 call
+0x463F   # p02:8842 call
+0x4660   # p02:832D call
+0x46E3   # p02:89F6 call
+0x4708   # p02:883F call
+0x47E2   # p02:8A93 call
+0x481B   # p02:8848 call
+0x48C3   # p03:AAA8 call
+0x48FC   # p03:AC48 call
+0x4995   # p02:8894 call
+0x49D2   # p02:889A call
+0x49FC   # p02:8897 call
+0x4BBF   # p01:6C34 call
+0x4C38   # p01:7809 call
+0x4CD1   # p02:966B call
+0x4D7F   # p02:966E call
+0x4E1A   # p02:9671 call
+0x4EB6   # p02:9674 call
+0x4F5B   # p02:9677 call
+0x4FAC   # p02:967A call
+0x502D   # p02:967D call
+0x50AA   # p02:9680 call
+0x5127   # p02:9683 call
+0x5166   # p02:9686 jp
+0x51CD   # p01:6C37 call
+0x5212   # p01:6632 call
+0x5256   # p01:6660 call
+0x529A   # p01:6645 call
+0x530A   # p01:667B call
+0x537A   # p01:6638 call
+0x53CF   # p01:6666 call
+0x5424   # p01:664B call
+0x5498   # p01:6681 call
+0x550C   # p02:84AA call
+0x5561   # p02:843F call
+0x55F7   # p02:839E call
+0x5667   # p02:84A7 call
+0x56A0   # p02:86B7 call
+0x56D9   # p03:AAA5 call
+0x5717   # p03:AC4B call
+0x5750   # p02:891F call
+0x5789   # p03:AAAB call
+0x57C2   # p02:88E6 call
+0x57FB   # p02:889D call
+0x58B1   # p03:B331 call
+0x58F0   # p02:9EE5 jp
+0x592C   # p02:9EE8 jp
+0x5974   # p02:823B call
+0x5990   # p02:96F0 call
+0x59C9   # p02:96C9 call
+0x5A02   # p02:96DA call
+0x5A3B   # p02:96F3 call
+0x5A74   # p02:96CC call
+0x5AAD   # p02:96F6 jp
+0x5AE6   # p02:96CF jp
+0x5B1F   # p02:9689 call
+0x5B58   # p02:96D7 call
+0x5B91   # p02:8A17 call
+0x5BB6   # p02:80BA call
+0x5C95   # p02:804C call
+0x5CD6   # p02:8063 call
+0x5E6E   # p02:8354 call
+0x5F77   # p03:A087 jp
