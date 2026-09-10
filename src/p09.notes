@@ -1,2 +1,176 @@
 # Banco 09 (se ejecuta en 0xa000). Directivas: L etiqueta, C comentario de
 # linea, B cabecera de bloque, D rango de datos, F anchura de fila.
+#
+# Este banco es el que decide QUE sale y CUANDO. Entra con el trio 7-8-9, que
+# el cuadro pone en p00:45C9, y solo mientras se juega.
+
+# ======================================================================
+# EL GUION DE LA FASE
+# ======================================================================
+B 0xA83F EL GUION DE LA FASE: QUE SALE Y CUANDO. Aqui esta escrito lo que uno se encuentra al avanzar. La tabla de 0xA8FB lleva un puntero por fase y detras va una lista de PAREJAS -que objeto y cuanto hay que andar hasta el siguiente-, cerrada con 0xFF. La distancia va en BCD, y de ahi el `daa` de 0xA88B: se resta en decimal, no en binario.
+B 0xA83F Lo que dispara todo es la comparacion de 0xA84B: (0xE08D) es la distancia a la que toca el objeto siguiente y (0xE301) lo andado; cuando coinciden, sale. Y hay tres huecos de objeto, de 0x20 bytes cada uno, a partir de 0xE310: si los tres estan ocupados, el objeto sencillamente no aparece.
+L 0xA83F saca_lo_que_toque
+C 0xA83F el modo en el que esta el juego
+C 0xA843 si no es el de jugar, no sale nada
+C 0xA844 la distancia a la que toca el objeto siguiente
+C 0xA848 y lo andado
+C 0xA84B DCOMPR: ¿hemos llegado?
+C 0xA84C si no, a esperar
+C 0xA84D la fase, de 1 a 13
+C 0xA850 las tablas van desde 1
+C 0xA854 la tabla de guiones, un puntero por fase
+C 0xA857 dos bytes por entrada
+C 0xA859 y ahi esta el guion de esta fase
+C 0xA85C por que pareja del guion va
+C 0xA860 la siguiente, para la proxima
+C 0xA861 dos bytes por pareja
+C 0xA867 el primer byte: QUE objeto
+C 0xA86A los tres huecos de objeto
+C 0xA86D 0x20 bytes cada uno
+C 0xA871 tres
+L 0xA873 busca_hueco_libre
+C 0xA873 ¿esta libre?
+C 0xA876 si lo esta, se mete ahi
+C 0xA87B y si no, al hueco siguiente
+L 0xA87E lee_la_distancia_siguiente
+C 0xA87F el segundo byte de la pareja
+C 0xA881 0xFF cierra el guion: ya no sale nada mas
+C 0xA885 y si no, es cuanto hay que andar
+C 0xA886 la distancia de ahora
+C 0xA88A menos la que dice el guion
+C 0xA88B EN BCD: por eso el `daa`
+C 0xA88F y el byte alto, con su acarreo
+
+L 0xA898 se_acabo_el_guion
+C 0xA898 0xFFFF: una distancia a la que no se llega nunca
+C 0xA89B y con eso el guion no vuelve a disparar
+B 0xA89F METER UN OBJETO EN SU HUECO. Los huecos son de 0x20 bytes y empiezan en 0xE310. Se borra el hueco entero menos el primer byte -que lleva el tipo- y se salta a la rutina del objeto por la tabla de 0xA8D1, que son las QUINCE clases que este cartucho sabe sacar.
+L 0xA89F mete_el_objeto
+C 0xA89F IX apunta al hueco
+C 0xA8A2 el tipo de objeto
+C 0xA8A3 el cero no es ningun objeto
+C 0xA8A5 el 5 y el 11 no se apuntan en el primer byte
+C 0xA8AD y los demas si
+L 0xA8AE borra_el_hueco
+C 0xA8B0 los 31 bytes que quedan del hueco
+L 0xA8B2 borra_el_hueco_bucle
+C 0xA8B6 el tipo otra vez
+C 0xA8B7 el 5 se salta este paso
+C 0xA8BC catorce bytes atras
+C 0xA8BF y ahi una marca de que el hueco esta vivo
+L 0xA8C1 salta_a_la_rutina_del_objeto
+C 0xA8C1 el tipo
+C 0xA8C2 la tabla va desde 1
+C 0xA8C3 dos bytes por entrada
+C 0xA8C4 LA TABLA DE LAS QUINCE CLASES DE OBJETO
+C 0xA8CC y de ahi sale a que rutina hay que ir
+D 0xA8D1 0xA8EF tabla_de_objetos  Las QUINCE clases de objeto que el guion puede sacar, cada una con la rutina que la monta: 0xB581, 0xB60A, 0xB60C, 0xB60E, 0xB610, 0xB6F4, 0xB873, 0xB909, 0xB90B, 0xBAE0, 0xBB9B, 0xBCBF, 0xBD0F, 0xBE01 y 0xBE52. Que son quince y no mas lo dice la propia tabla: la palabra numero dieciseis vale 0x0F21, que no es ni una direccion del cartucho.
+F 0xA8D1 w1
+
+# ======================================================================
+# LOS TRES OBJETOS
+# ======================================================================
+# Solo hay TRES huecos, de 0x20 bytes cada uno, a partir de 0xE310. Y el
+# reparto de esos 32 bytes, que sale de leer las cuatro rutinas de abajo, es lo
+# que explica como esta hecho el juego: cada objeto tiene TRES coordenadas, no
+# dos, y cada una con su velocidad.
+#
+#     +0x00  que clase de objeto es; un cero quiere decir hueco libre
+#     +0x02  la columna de la pantalla    +0x03  la fila
+#     +0x06  X, en 16 bits                +0x0C  su velocidad
+#     +0x08  Y, en 16 bits                +0x0E  su velocidad
+#     +0x0A  Z -la PROFUNDIDAD-, 16 bits  +0x10  su velocidad
+#     +0x12  si se mueve solo
+#
+# La Z es lo que hace que las cosas "vengan hacia ti": 0xA966 saca la columna de
+# la pantalla restando la profundidad a la X y quedandose con el byte alto.
+B 0xA92B ATENDER A LOS TRES OBJETOS. Cuatro pasos por objeto y en este orden: la rutina propia de su clase, mover, calcular donde cae en la pantalla y mirar si se ha ido. Los tres huecos se recorren con IX, sumandole 0x20.
+L 0xA92B atiende_los_objetos
+C 0xA92B el primer hueco
+C 0xA92F tres
+L 0xA931 atiende_los_objetos_vuelta
+C 0xA932 la clase
+C 0xA935 cero es hueco libre
+C 0xA938 lo que sea propio de su clase
+C 0xA93B moverlo
+C 0xA93E donde cae en la pantalla
+C 0xA941 y si se ha ido, quitarlo
+C 0xA945 0x20 bytes de un hueco al siguiente
+B 0xA94D ¿SE HA IDO? Tres topes, uno por coordenada: 0xC000 en X, 0xF000 en Y y 0xA800 en Z. Basta con pasarse de uno para que el hueco quede libre. Ojo con la Z: pasarse por ARRIBA es alejarse tanto que ya no se ve.
+L 0xA94D quita_si_se_ha_ido
+C 0xA94D la X, byte alto
+C 0xA950 el tope
+C 0xA954 la Y
+C 0xA95B y la Z, la profundidad
+C 0xA960 dentro de los tres topes, se queda
+L 0xA961 quita_el_objeto
+C 0xA961 hueco libre
+B 0xA966 DONDE CAE EN LA PANTALLA. La columna sale de restarle la profundidad a la X y quedarse con el byte alto, que es lo que da la perspectiva: cuanto mas lejos esta una cosa, mas se va hacia el centro. La fila es el byte alto de la Y, sin mas.
+L 0xA966 calcula_la_posicion
+C 0xA966 la X
+C 0xA96C y la Z
+C 0xA973 X menos profundidad
+C 0xA975 el byte alto es la columna
+C 0xA978 y la Y, byte alto
+L 0xA97F rutina_propia_de_la_clase
+C 0xA97F la clase
+C 0xA982 la tabla va desde 1
+C 0xA983 dos bytes por entrada
+C 0xA984 la SEGUNDA tabla de quince, la de atender
+C 0xA987 y se salta a la que toque
+D 0xA98A 0xA9A8 tabla_de_atender  La segunda tabla de quince, hermana de la de 0xA8D1: alli esta la rutina que MONTA cada clase de objeto y aqui la que la atiende en cada cuadro. Los quince destinos son 0xB5AD, 0xB60B, 0xB60D, 0xB60F, 0xB6C8, 0xB71B, 0xB8AE, 0xB90A, 0xB9C0, 0xBB1E, 0xBC3C, 0xBCFB, 0xBD33, 0xBE51 y 0xBE7E.
+F 0xA98A w1
+B 0xA9AA MOVER. Le suma a cada coordenada su velocidad, las tres de 16 bits. Es todo lo que hay: no hay gravedad ni rozamiento aqui, lo que cambie las velocidades lo hace la rutina propia de cada clase.
+L 0xA9AA mueve_el_objeto
+C 0xA9AA ¿se mueve solo?
+C 0xA9AE si no, no hay nada que hacer
+C 0xA9AF la X
+C 0xA9B5 y su velocidad
+C 0xA9BB sumadas
+C 0xA9C2 la Y
+C 0xA9C8 y la suya
+C 0xA9D5 y la Z
+C 0xA9DB con la suya
+
+B 0xA9E9 LOS OBJETOS, A LA TABLA DE SPRITES. Dos pasadas, una por cada capa de color: la primera lleva los tres objetos a 0xEEDC y la segunda su copia de 0xE2A0 a 0xEEE0. Cuatro bytes mas alla es justo el otro hueco de la pareja, que es como este cartucho pinta una figura de dos colores.
+L 0xA9E9 los_objetos_a_los_sprites
+C 0xA9E9 el hueco de sprite de la primera capa
+C 0xA9EC y los tres objetos
+C 0xA9F2 el hueco de la segunda capa, cuatro bytes mas alla
+C 0xA9F5 y la copia de los objetos
+L 0xA9F8 copia_tres_objetos_a_sprites
+C 0xA9F8 tres objetos, y B se queda con el 3
+L 0xA9FB copia_un_objeto_a_sprite
+C 0xA9FB la clase
+C 0xA9FE cero es hueco libre
+C 0xA9FF la fila
+C 0xAA02 y si el hueco esta libre, 0xE0: fuera de la pantalla
+L 0xAA04 copia_un_objeto_sigue
+C 0xAA04 la Y del sprite
+C 0xAA07 columna, patron y color, de un tiron
+C 0xAA0D 0x1A: lo que queda del hueco de 32 bytes
+C 0xAA11 y cuatro bytes al sprite siguiente
+B 0xAA18 QUE DIBUJO LE TOCA, SEGUN LO CERCA QUE ESTE. Aqui esta la perspectiva del juego: el byte alto de la X dice a que distancia esta el objeto, y de ahi salen cuatro dibujos distintos -0x40, 0x44, 0x48 y 0x30- que son el mismo bicho de mayor a menor. Por debajo de 0x60 ni se dibuja: esta demasiado cerca y ya ha pasado de largo.
+L 0xAA18 elige_el_dibujo_por_la_distancia
+C 0xAA18 los tres objetos
+C 0xAA1C y su copia
+C 0xAA22 la clase
+C 0xAA28 hueco libre, nada que hacer
+C 0xAA2B la fila
+C 0xAA31 la distancia
+C 0xAA34 por debajo de 0x60 no se dibuja
+C 0xAA39 los dos bits de arriba de la distancia
+C 0xAA3B seis vueltas: bajan a los dos de abajo
+C 0xAA41 y se le suman a la propia distancia: eso separa las columnas
+C 0xAA46 primera banda
+C 0xAA48 el dibujo grande
+C 0xAA4C segunda banda
+C 0xAA52 tercera
+C 0xAA58 y la de mas lejos, el mas pequeno
+L 0xAA5A guarda_el_dibujo
+C 0xAA5A el patron que le toca
+C 0xAA5D y color 1
+L 0xAA61 elige_el_dibujo_siguiente
+C 0xAA61 0x20 de un hueco al siguiente
+L 0xAA6B demasiado_cerca
+C 0xAA6B no se dibuja

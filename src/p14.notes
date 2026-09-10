@@ -1,2 +1,319 @@
 # Banco 14 (se ejecuta en 0x8000). Directivas: L etiqueta, C comentario de
 # linea, B cabecera de bloque, D rango de datos, F anchura de fila.
+
+# --- El protocolo del mapper, paso a paso. Lo genera tools/anota_mapper.py
+# siguiendo el estado real de HL y de A; la explicacion de por que se hace asi
+# esta en el banco 0.
+
+
+# ======================================================================
+# EL REPRODUCTOR DE SONIDO
+# ======================================================================
+# El banco 14 es el reproductor y el 15 sus datos, y los dos entran juntos en
+# 0x8000 y 0xA000. Se llega aqui por dos sitios: la INTERRUPCION, que llama a
+# 0x8082 en cada cuadro pase lo que pase -por eso el sonido no se corta aunque
+# el juego tarde-, y p00:413A, que llama a 0x86BA para pedir un efecto.
+#
+# CUATRO VOCES de 21 bytes cada una, a partir de 0xE010. IX apunta siempre a la
+# que se esta atendiendo y el `add ix,de` de 0x80C0 -con DE = 0x0015- salta a la
+# siguiente. Los campos que se usan aqui:
+#
+#     +0x00  cuantos cuadros le quedan a la nota que suena
+#     +0x01  el volumen
+#     +0x02  si esta callada
+#     +0x03  el puntero a la partitura, byte bajo y alto
+#     +0x05  el instrumento
+#     +0x0B  por donde va la repeticion
+#     +0x0E  si esta sonando un efecto, que manda sobre la musica
+#     +0x10  bandera de que lo que suena es un efecto
+#     +0x14  el volumen que le tocaria a la musica
+
+B 0x8000 ARRANCAR UNA VOZ. Copia los 21 bytes de una plantilla a la voz y la deja callada.
+L 0x8000 arranca_una_voz
+C 0x8000 los 21 bytes de una voz
+C 0x8007 y la marca de efecto, a cero
+B 0x800B REPETIR UN TROZO. El mando 0xFE de la partitura: detras lleva cuantas vueltas hay que dar y adonde volver. El contador vive en la propia voz (+0x0B), asi que cada voz lleva su cuenta.
+L 0x800B repite_un_trozo
+C 0x800B el byte de detras del 0xFE
+C 0x800D un cero quiere decir vueltas SIN FIN
+C 0x8010 por que vuelta va
+C 0x8014 contra las que pide la partitura
+C 0x8015 si ya estan dadas, se sigue de largo
+C 0x801B una vuelta mas
+C 0x801E y se vuelve al sitio que dice la partitura
+C 0x8020 el puntero, byte bajo
+C 0x8025 y byte alto
+L 0x802A repite_se_acabaron_las_vueltas
+C 0x802A se saltan los dos bytes del destino
+C 0x802C y la cuenta a cero, por si se vuelve a pasar por aqui
+L 0x8039 repite_sin_fin
+C 0x8039 la marca de efecto
+C 0x803F si hay efecto, se le baja
+C 0x8044 y si no, se le sube
+B 0x8049 EL REGISTRO 7 DEL PSG, EL DE LA MEZCLA. Es el unico registro del PSG que comparten las tres voces -tres bits para el tono y tres para el ruido-, asi que no se puede escribir a lo bruto: hay que respetar lo que hayan puesto las otras. Por eso se guarda una copia en 0xE079 y aqui se le encienden o se le apagan solo los bits de esta voz.
+L 0x8049 pon_la_mezcla
+C 0x8049 la copia de lo que hay ahora en el registro 7
+C 0x804D el instrumento de esta voz
+C 0x8050 los dos bits de abajo dicen si suena tono, ruido o los dos
+C 0x8053 el numero de voz
+C 0x805A el bit 1: el ruido
+C 0x805C apagado, se enciende el bit
+C 0x8061 encendido, se apaga
+C 0x8064 el numero de voz otra vez
+C 0x8065 tres vueltas: los bits de ruido van tres mas arriba
+C 0x8068 y ahora el bit 0, el del tono
+L 0x8072 escribe_la_mezcla
+C 0x8072 la copia nueva
+C 0x8076 registro 7
+C 0x8078 BIOS WRTPSG
+L 0x807B apaga_el_bit
+C 0x807B el bit del reves
+C 0x807C y se borra de la copia
+L 0x807F enciende_el_bit
+C 0x807F se anade a la copia
+B 0x8082 EL CUADRO DEL SONIDO. La llama la interrupcion (p00:4030) con los bancos 14 y 15 puestos, y es lo unico del cartucho que se ejecuta SIEMPRE, aunque el juego vaya con retraso. Recorre las cuatro voces de 0xE010 y a cada una le da un paso de su partitura.
+L 0x8082 cuadro_de_sonido
+C 0x8082 la copia del registro de mezcla
+C 0x8085 se vuelve a escribir tal cual: deja el PSG como estaba
+C 0x8088 C lleva la voz, y va de dos en dos
+C 0x808A la primera voz
+C 0x808E el juego de registros de repuesto guarda la cuenta
+C 0x808F cuatro voces
+C 0x8091 21 bytes de una a la siguiente
+L 0x8094 cuadro_de_sonido_voz
+C 0x8095 la voz que toca
+C 0x809A la bandera de silencio general
+C 0x80A1 la plantilla de voz callada
+C 0x80A7 y se le mete tal cual
+L 0x80AA cuadro_de_sonido_atiende
+C 0x80AA ¿esta callada?
+C 0x80B1 la voz 7 -el ruido- no se corta igual
+C 0x80B5 callar la voz
+C 0x80BA y si no, un paso de partitura
+L 0x80BD cuadro_de_sonido_siguiente
+C 0x80BD la voz siguiente, de dos en dos
+C 0x80C0 y 21 bytes mas alla en la RAM
+C 0x80C2 hasta las cuatro
+L 0x80C5 cuadro_de_sonido_efecto
+C 0x80C5 la bandera del efecto que manda sobre todo
+
+B 0x80D2 UN PASO DE PARTITURA. El corazon del reproductor: baja el contador de la nota que suena y, si llega a cero, lee el mando siguiente. EL LENGUAJE, que sale de las comparaciones de 0x80E8 y 0x80F8: 0xFE repite un trozo, 0xFF y arriba callan la voz, un byte de nibble alto 2 cambia el INSTRUMENTO -y si ademas trae el bit 3, la envolvente del PSG-, uno de nibble alto 1 pone el RUIDO, y cualquier otro es una NOTA, con el volumen en el nibble alto.
+L 0x80D2 un_paso_de_partitura
+C 0x80D2 ¿hay un efecto sonando encima?
+C 0x80D9 la marca de efecto, a cero
+C 0x80DD un cuadro menos de la nota que suena
+C 0x80E0 y mientras dure, no se lee nada
+L 0x80E1 lee_el_mando
+C 0x80E1 el puntero a la partitura
+C 0x80E7 el mando
+C 0x80E8 0xFE: repetir un trozo
+C 0x80ED 0xFF y arriba: se acabo, a callar
+C 0x80F0 si hay efecto, el mando se lee de otra manera
+L 0x80F8 mando_de_musica
+C 0x80F8 el nibble de arriba
+C 0x80FA 2: cambiar de instrumento
+C 0x80FE y el instrumento es el byte entero
+C 0x8103 si lo que suena es un efecto, el volumen no se toca
+C 0x810A y si no, el volumen nuevo
+C 0x810D pero se apunta igual, para cuando acabe el efecto
+C 0x8111 el instrumento otra vez
+C 0x8114 el 0x20 pelado es un caso aparte
+C 0x8124 el bit 3 del instrumento: lleva envolvente
+C 0x8128 el periodo de la envolvente, byte bajo
+C 0x812C registro 12 del PSG
+C 0x8130 y byte alto
+C 0x8134 registro 11
+L 0x8138 mando_de_ruido
+C 0x8138 el mando siguiente
+C 0x813B 1: el ruido
+C 0x8140 los cuatro bits de abajo son el periodo
+C 0x8142 por dos
+C 0x8144 registro 6 del PSG, el del ruido
+L 0x814A mando_de_nota
+C 0x814A el nibble de arriba es el VOLUMEN
+C 0x814E y el de abajo, con el byte siguiente, la nota
+C 0x8151 el segundo byte
+C 0x8152 si es un efecto, por otro camino
+L 0x815C nota_a_sonar
+C 0x815D el periodo de la nota al PSG
+C 0x8161 cuatro vueltas: el volumen baja al nibble de abajo
+C 0x8166 ¿es efecto?
+C 0x816D el volumen que le tocaria a la musica se guarda aparte
+L 0x8175 nota_de_musica
+C 0x8175 y la duracion sale del volumen apuntado
+B 0x817D CALLAR UNA VOZ. Pone a cero los siete campos que hacen que suene y devuelve la mezcla sin sus bits. Si la voz es la del ruido hace ademas una cosa mas: mira 0xE07C, y si hay un efecto pendiente lo arranca ahi mismo.
+L 0x817D calla_la_voz
+C 0x817E deja de estar callada... y todo lo demas a cero
+C 0x8182 el instrumento
+C 0x8185 la cuenta de repeticiones
+C 0x8188 la marca de efecto
+C 0x818E y la de que suena un efecto
+C 0x8191 el numero de voz
+C 0x8192 por debajo de 7 no hay nada mas que hacer
+C 0x819A la voz del ruido, que se apaga aparte
+C 0x81A0 ¿habia un efecto esperando?
+C 0x81A5 si no lo habia, se acabo
+C 0x81A7 se borra la peticion
+C 0x81AB y se arranca el efecto
+L 0x81AE baja_el_barrido
+L 0x81B1 baja_el_volumen
+C 0x81B1 el volumen que va bajando
+C 0x81B5 si ya estaba a cero, nada
+B 0x81BA ESCRIBIR EL VOLUMEN. El registro de volumen de cada voz sale de la cuenta de 0x81D2: `rrca` sobre el numero de voz y 0x88 encima, que da 8, 9 o 10. Y si el instrumento trae el bit 3, en vez del volumen se le mete 0x10, que es lo que le dice al PSG "el volumen lo lleva la envolvente".
+L 0x81BA escribe_el_volumen
+C 0x81BA la bandera de silencio de esta voz
+C 0x81BF por debajo de 5 se escribe siempre
+L 0x81CF escribe_el_volumen_de_verdad
+C 0x81CF primero la mezcla, que es de todos
+C 0x81D3 media vuelta al numero de voz...
+C 0x81D4 ...y 0x88 encima: sale el registro 8, 9 o 10
+C 0x81D7 el bit 3 del instrumento: envolvente
+C 0x81DD la forma de la envolvente
+C 0x81E0 registro 13 del PSG
+C 0x81E3 y 0x10 en el volumen: "que mande la envolvente"
+L 0x81E6 escribe_el_volumen_al_psg
+C 0x81E8 BIOS WRTPSG con el registro que toque
+B 0x81EB EL EFECTO, QUE MANDA SOBRE LA MUSICA. Mientras 0x0E de la voz no sea cero, lo que se atiende es el efecto y no la partitura: la nota va bajando de volumen sola, cuadro a cuadro, hasta que se acaba y la musica vuelve a tener la voz.
+L 0x81EB atiende_el_efecto
+C 0x81EB un cuadro menos
+C 0x81EE y cuando se acaba, se vuelve a la partitura
+C 0x81F1 ¿es un efecto de los otros?
+C 0x81F8 el barrido, un paso
+C 0x81FE contra lo que queda de nota
+C 0x8204 y contra el tope
+L 0x820C mando_de_efecto
+C 0x820C el mando
+C 0x820F 0xD0: fija un campo del efecto
+C 0x8214 los cuatro bits de abajo
+C 0x821B 0xF0 y arriba: el barrido
+C 0x821F los cuatro de abajo, y dos mas
+C 0x8226 el byte siguiente
+C 0x822A cuatro vueltas: el nibble de arriba
+
+C 0x8232 los cuatro de abajo
+C 0x8238 el byte siguiente
+L 0x8239 mando_de_efecto_mas
+C 0x8239 0xE0 y arriba: mandos de efecto
+C 0x823D los cuatro de abajo
+C 0x823F por debajo de 8, es el desplazamiento de octava
+C 0x8245 el 8 justo enciende una bandera
+C 0x824B el 0x0F apaga el efecto
+C 0x824F y del 9 al 14 se guarda restandole 8
+C 0x8256 a cero las dos banderas
+L 0x8260 mando_octava
+C 0x8260 el desplazamiento de octava
+L 0x8265 nota_del_efecto
+C 0x8265 los cuatro de abajo del mando
+C 0x8268 y el valor base de la duracion
+C 0x826D se multiplica sumando: B veces
+C 0x8272 y esa es la duracion de la nota
+C 0x8275 el byte de la nota
+C 0x8276 al PSG
+C 0x8279 el nibble de arriba
+C 0x827B cuatro vueltas para bajarlo
+C 0x8280 ¿es un efecto?
+C 0x8286 dos bytes por entrada
+C 0x8287 la tabla de guiones de efecto
+C 0x828F el puntero de ese efecto
+C 0x8294 la duracion
+C 0x829B otra vez dos por entrada
+C 0x82A1 y de ahi sale el guion que hay que seguir
+C 0x82AB su primer mando
+L 0x82AF nota_normal
+C 0x82AF el numero de nota
+C 0x82B0 el 12 es un caso aparte: no hay semitono numero doce
+C 0x82B4 y si no, el valor de siempre
+C 0x82BB la duracion
+C 0x82C1 el barrido se suma a la duracion
+C 0x82C9 LA TABLA DE LOS DOCE SEMITONOS
+C 0x82CC el que toca
+C 0x82D1 su periodo, que es de un solo byte
+C 0x82D4 el desplazamiento de octava
+C 0x82DB y cada vuelta es una octava mas grave: el periodo se dobla
+C 0x82DE el periodo, al PSG
+C 0x82E1 y el volumen detras
+L 0x82E4 escribe_el_periodo
+C 0x82E4 la bandera de silencio
+C 0x82E8 el numero de voz
+D 0x834E 0x835A los_doce_semitonos  Los doce semitonos de una octava, en periodos del PSG y de un solo byte: 0x6B, 0x65, 0x5F, 0x5A, 0x55, 0x50, 0x4C, 0x47, 0x43, 0x40, 0x3C y 0x39. Que sean doce y que el primero valga casi el doble que el ultimo -107 contra 57- es lo que dice que son una octava entera. La octava en la que suena la pone 0x82DB doblando el periodo tantas veces como diga el desplazamiento, que es lo mismo que bajar octavas.
+F 0x834E 12
+D 0x835A 0x8372 guiones_de_efecto  Los punteros a los guiones de los efectos, en parejas y dentro de este mismo banco. 0x8287 los indexa con la bandera de 0x10 de la voz, DESDE UNO -por eso la tabla se direcciona como si empezara en 0x8358-.
+F 0x835A w1
+
+C 0x82E9 la 5 y las de arriba tienen reglas propias
+C 0x82EF si la bandera esta puesta, esta voz no suena
+C 0x82F7 se escribe como si fuera la voz de dos antes
+L 0x82FF escribe_el_periodo_al_psg
+C 0x82FF la bandera de medio tono
+C 0x8305 que corre el periodo un byte
+C 0x8306 el registro del periodo de esta voz
+C 0x8307 byte ALTO primero
+C 0x8308 BIOS WRTPSG
+C 0x830C y el registro de al lado es el byte bajo
+C 0x8311 ¿es un efecto?
+C 0x8316 ¿o queda efecto sonando?
+C 0x831C instrumento 2 mientras dure
+L 0x8322 apunta_donde_se_quedo
+C 0x8322 el byte siguiente de la partitura
+C 0x8323 y se guarda en la voz, byte bajo y alto
+L 0x832A un_paso_de_efecto
+C 0x832A un cuadro menos del paso del efecto
+C 0x832E el puntero al guion del efecto
+C 0x8334 su mando
+C 0x8335 0xFF: se acabo el efecto
+C 0x8339 y si no, se lee como un mando de musica
+L 0x833C apunta_el_guion_del_efecto
+C 0x833D donde se quedo el guion del efecto
+
+B 0x86BA PEDIR UN EFECTO. La segunda puerta del banco, la que llama p00:416C con el numero de efecto en A. No todos los efectos mandan lo mismo: hay una tabla de PRIORIDADES en 0xE051, y un efecto solo entra si el que esta sonando vale menos que el. Asi el ruido de un salto no se come a la musica del final.
+L 0x86BA pide_un_efecto
+C 0x86BA el 0x3A es el que reinicia las voces
+C 0x86BE la primera voz
+C 0x86C1 y la plantilla de voz callada
+L 0x86C8 pide_un_efecto_elige_voz
+C 0x86C8 C se queda con el numero de efecto
+C 0x86C9 la segunda voz
+C 0x86CC y de momento, una sola
+C 0x86CF por debajo de 0x3B son efectos cortos
+C 0x86D3 el 0xCB gasta una voz mas
+C 0x86D8 y los de arriba, tres
+C 0x86DA el 0x8C ademas borra la prioridad
+L 0x86E5 pide_un_efecto_corto
+C 0x86E6 el 0x39 y el 0x3A entran siempre
+C 0x86EE la prioridad del que suena ahora
+C 0x86F0 pero si el juego esta en cierto estado, no entra ninguno
+C 0x86F6 la prioridad de ahora
+C 0x86F9 dos efectos se cuelan una posicion mas arriba
+C 0x8703 y si el nuevo no gana, no entra
+
+L 0x8706 arranca_el_efecto_en_la_voz
+C 0x8706 la tabla de guiones de efecto, al final del banco
+C 0x8709 dos bytes por entrada, con el acarreo a mano
+C 0x870D DE = 0x8738 + 2*efecto
+C 0x8712 dos bytes atras: al principio del campo
+L 0x8714 arranca_el_efecto_bucle
+C 0x8714 la voz, en marcha
+C 0x8716 y de dos en dos por los campos
+C 0x8718 el numero de efecto queda apuntado en la voz
+C 0x871A el guion, byte bajo...
+C 0x871E ...y byte alto
+C 0x8720 siete campos mas alla
+C 0x8724 a cero
+C 0x8726 y tres mas
+C 0x872A la marca de que lo que suena es un efecto
+C 0x872E y las dos de al lado, a cero
+
+C 0x8003 la plantilla, encima de la voz
+C 0x8005 C se queda con el numero de efecto, que el borrado no toca
+C 0x803C ¿hay efecto?
+C 0x803D si lo hay, por un lado; si no, por el otro
+C 0x8047 y en los dos casos se apunta donde se quedo
+C 0x800A la voz queda arrancada y callada
+C 0x8033 un mando mas de la partitura
+C 0x8036 y a atenderlo
+C 0x8098 la voz 1 es la que puede llevar el efecto de encima
+C 0x80AE si no esta callada, hay partitura que seguir
+C 0x80C4 las cuatro voces atendidas
+C 0x80C9 sin efecto, se atiende normal
+C 0x80CB el volumen entra a cero
+C 0x80CD y se escribe directamente

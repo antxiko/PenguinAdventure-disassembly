@@ -1,2 +1,7 @@
 # Banco 03 (se ejecuta en 0xa000). Directivas: L etiqueta, C comentario de
 # linea, B cabecera de bloque, D rango de datos, F anchura de fila.
+
+# --- El protocolo del mapper, paso a paso. Lo genera tools/anota_mapper.py
+# siguiendo el estado real de HL y de A; la explicacion de por que se hace asi
+# esta en el banco 0.
+

@@ -150,295 +150,374 @@ DATA_A000:
 ; ======================================================================
 
 
-L_A83F:
-	ld a,(0e0a2h)		;a83f
+
+; ----------------------------------------------------------------------
+; EL GUION DE LA FASE: QUE SALE Y CUANDO. Aqui esta escrito lo que uno se encuentra al avanzar. La tabla de 0xA8FB lleva un puntero por fase y detras va una lista de PAREJAS -que objeto y cuanto hay que andar hasta el siguiente-, cerrada con 0xFF. La distancia va en BCD, y de ahi el `daa` de 0xA88B: se resta en decimal, no en binario.
+; Lo que dispara todo es la comparacion de 0xA84B: (0xE08D) es la distancia a la que toca el objeto siguiente y (0xE301) lo andado; cuando coinciden, sale. Y hay tres huecos de objeto, de 0x20 bytes cada uno, a partir de 0xE310: si los tres estan ocupados, el objeto sencillamente no aparece.
+; ----------------------------------------------------------------------
+saca_lo_que_toque:
+	ld a,(0e0a2h)		;a83f   ; el modo en el que esta el juego
 	and a			;a842
-	ret nz			;a843
-	ld de,(0e08dh)		;a844
-	ld hl,(0e301h)		;a848
-	rst 20h			;a84b
-	ret nz			;a84c
-	ld a,(0e092h)		;a84d
-	dec a			;a850
+	ret nz			;a843   ; si no es el de jugar, no sale nada
+	ld de,(0e08dh)		;a844   ; la distancia a la que toca el objeto siguiente
+	ld hl,(0e301h)		;a848   ; y lo andado
+	rst 20h			;a84b   ; DCOMPR: ¿hemos llegado?
+	ret nz			;a84c   ; si no, a esperar
+	ld a,(0e092h)		;a84d   ; la fase, de 1 a 13
+	dec a			;a850   ; las tablas van desde 1
 	ld l,a			;a851
 	ld h,000h		;a852
-	ld de,0a8fbh		;a854
-	add hl,hl			;a857
+	ld de,0a8fbh		;a854   ; la tabla de guiones, un puntero por fase
+	add hl,hl			;a857   ; dos bytes por entrada
 	add hl,de			;a858
-	ld e,(hl)			;a859
+	ld e,(hl)			;a859   ; y ahi esta el guion de esta fase
 	inc hl			;a85a
 	ld d,(hl)			;a85b
-	ld hl,0e300h		;a85c
+	ld hl,0e300h		;a85c   ; por que pareja del guion va
 	ld a,(hl)			;a85f
-	inc (hl)			;a860
-	add a,a			;a861
+	inc (hl)			;a860   ; la siguiente, para la proxima
+	add a,a			;a861   ; dos bytes por pareja
 	add a,e			;a862
 	ld e,a			;a863
 	jr nc,L_A867		;a864
 	inc d			;a866
 L_A867:
-	ld a,(de)			;a867
+	ld a,(de)			;a867   ; el primer byte: QUE objeto
 	ld c,a			;a868
 	push de			;a869
-	ld hl,0e310h		;a86a
-	ld de,00020h		;a86d
+	ld hl,0e310h		;a86a   ; los tres huecos de objeto
+	ld de,00020h		;a86d   ; 0x20 bytes cada uno
 	xor a			;a870
-	ld b,003h		;a871
-L_A873:
-	cp (hl)			;a873
+	ld b,003h		;a871   ; tres
+busca_hueco_libre:
+	cp (hl)			;a873   ; ¿esta libre?
 	jr nz,L_A87B		;a874
-	call L_A89F		;a876
-	jr L_A87E		;a879
+	call mete_el_objeto		;a876   ; si lo esta, se mete ahi
+	jr lee_la_distancia_siguiente		;a879
 L_A87B:
-	add hl,de			;a87b
-	djnz L_A873		;a87c
-L_A87E:
+	add hl,de			;a87b   ; y si no, al hueco siguiente
+	djnz busca_hueco_libre		;a87c
+lee_la_distancia_siguiente:
 	pop de			;a87e
-	inc de			;a87f
+	inc de			;a87f   ; el segundo byte de la pareja
 	ld a,(de)			;a880
-	cp 0ffh		;a881
-	jr z,L_A898		;a883
-	ld c,a			;a885
-	ld hl,(0e08dh)		;a886
+	cp 0ffh		;a881   ; 0xFF cierra el guion: ya no sale nada mas
+	jr z,se_acabo_el_guion		;a883
+	ld c,a			;a885   ; y si no, es cuanto hay que andar
+	ld hl,(0e08dh)		;a886   ; la distancia de ahora
 	ld a,l			;a889
-	sub c			;a88a
-	daa			;a88b
+	sub c			;a88a   ; menos la que dice el guion
+	daa			;a88b   ; EN BCD: por eso el `daa`
 	ld l,a			;a88c
 	jr nc,L_A894		;a88d
-	ld a,h			;a88f
+	ld a,h			;a88f   ; y el byte alto, con su acarreo
 	sub 001h		;a890
 	daa			;a892
 	ld h,a			;a893
 L_A894:
 	ld (0e301h),hl		;a894
 	ret			;a897
-L_A898:
-	ld hl,0ffffh		;a898
-	ld (0e301h),hl		;a89b
+se_acabo_el_guion:
+	ld hl,0ffffh		;a898   ; 0xFFFF: una distancia a la que no se llega nunca
+	ld (0e301h),hl		;a89b   ; y con eso el guion no vuelve a disparar
 	ret			;a89e
-L_A89F:
-	push hl			;a89f
+
+; ----------------------------------------------------------------------
+; METER UN OBJETO EN SU HUECO. Los huecos son de 0x20 bytes y empiezan en 0xE310. Se borra el hueco entero menos el primer byte -que lleva el tipo- y se salta a la rutina del objeto por la tabla de 0xA8D1, que son las QUINCE clases que este cartucho sabe sacar.
+; ----------------------------------------------------------------------
+mete_el_objeto:
+	push hl			;a89f   ; IX apunta al hueco
 	pop ix		;a8a0
-	ld a,c			;a8a2
-	and a			;a8a3
+	ld a,c			;a8a2   ; el tipo de objeto
+	and a			;a8a3   ; el cero no es ningun objeto
 	ret z			;a8a4
-	cp 005h		;a8a5
-	jr z,L_A8AE		;a8a7
+	cp 005h		;a8a5   ; el 5 y el 11 no se apuntan en el primer byte
+	jr z,borra_el_hueco		;a8a7
 	cp 00bh		;a8a9
-	jr z,L_A8AE		;a8ab
-	ld (hl),c			;a8ad
-L_A8AE:
+	jr z,borra_el_hueco		;a8ab
+	ld (hl),c			;a8ad   ; y los demas si
+borra_el_hueco:
 	inc l			;a8ae
 	xor a			;a8af
-	ld b,01fh		;a8b0
-L_A8B2:
+	ld b,01fh		;a8b0   ; los 31 bytes que quedan del hueco
+borra_el_hueco_bucle:
 	ld (hl),a			;a8b2
 	inc l			;a8b3
-	djnz L_A8B2		;a8b4
-	ld a,c			;a8b6
-	cp 005h		;a8b7
-	jr z,L_A8C1		;a8b9
+	djnz borra_el_hueco_bucle		;a8b4
+	ld a,c			;a8b6   ; el tipo otra vez
+	cp 005h		;a8b7   ; el 5 se salta este paso
+	jr z,salta_a_la_rutina_del_objeto		;a8b9
 	ld a,l			;a8bb
-	sub 00eh		;a8bc
+	sub 00eh		;a8bc   ; catorce bytes atras
 	ld l,a			;a8be
-	ld (hl),001h		;a8bf
-L_A8C1:
-	ld a,c			;a8c1
-	dec a			;a8c2
-	add a,a			;a8c3
-	ld hl,0a8d1h		;a8c4
+	ld (hl),001h		;a8bf   ; y ahi una marca de que el hueco esta vivo
+salta_a_la_rutina_del_objeto:
+	ld a,c			;a8c1   ; el tipo
+	dec a			;a8c2   ; la tabla va desde 1
+	add a,a			;a8c3   ; dos bytes por entrada
+	ld hl,0a8d1h		;a8c4   ; LA TABLA DE LAS QUINCE CLASES DE OBJETO
 L_A8C7:
 	add a,l			;a8c7
 	ld l,a			;a8c8
 	jr nc,L_A8CC		;a8c9
 	inc h			;a8cb
 L_A8CC:
-	ld e,(hl)			;a8cc
+	ld e,(hl)			;a8cc   ; y de ahi sale a que rutina hay que ir
 	inc hl			;a8cd
 	ld d,(hl)			;a8ce
 	ex de,hl			;a8cf
 	jp (hl)			;a8d0
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa8d1..0xa92b  (90 bytes)
-DATA_A8D1:
-	defb 081h,0b5h,00ah,0b6h,00ch,0b6h,00eh,0b6h,010h,0b6h,0f4h,0b6h,073h,0b8h,009h,0b9h	; a8d1  ............s...
-	defb 00bh,0b9h,0e0h,0bah,09bh,0bbh,0bfh,0bch,00fh,0bdh,001h,0beh,052h,0beh,021h,00fh	; a8e1  ............R.!.
-	defb 0e3h,07eh,0a7h,0c8h,036h,000h,04fh,0c3h,06ah,0a8h,0c8h,0adh,0c9h,0adh,0cah,0adh	; a8f1  .~..6.O.j.......
-	defb 0feh,0adh,0ffh,0adh,023h,0aeh,05fh,0aeh,095h,0aeh,0cfh,0aeh,00dh,0afh,051h,0afh	; a901  ....#._.......Q.
-	defb 08dh,0afh,0e9h,0afh,00fh,0b0h,05dh,0b0h,0c9h,0b0h,04fh,0b1h,093h,0b1h,0f7h,0b1h	; a911  ......]...O.....
-	defb 0a1h,0b2h,0fdh,0b2h,09fh,0b3h,049h,0b4h,0c1h,0b4h	; a921  ......I...
+; DATOS tabla_de_objetos: Las QUINCE clases de objeto que el guion puede
+;   sacar, cada una con la rutina que la monta: 0xB581, 0xB60A, 0xB60C,
+;   0xB60E, 0xB610, 0xB6F4, 0xB873, 0xB909, 0xB90B, 0xBAE0, 0xBB9B, 0xBCBF,
+;   0xBD0F, 0xBE01 y 0xBE52. Que son quince y no mas lo dice la propia tabla:
+;   la palabra numero dieciseis vale 0x0F21, que no es ni una direccion del
+;   cartucho.
+;   0xa8d1..0xa8ef  (30 bytes)
+DATA_tabla_de_objetos:
+	defw 0b581h	; a8d1  -> L_B581
+	defw 0b60ah	; a8d3  -> L_B60A
+	defw 0b60ch	; a8d5  -> L_B60C
+	defw 0b60eh	; a8d7  -> L_B60E
+	defw 0b610h	; a8d9  -> L_B610
+	defw 0b6f4h	; a8db  -> L_B6F4
+	defw 0b873h	; a8dd  -> L_B873
+	defw 0b909h	; a8df  -> L_B909
+	defw 0b90bh	; a8e1  -> L_B90B
+	defw 0bae0h	; a8e3  -> L_BAE0
+	defw 0bb9bh	; a8e5  -> L_BB9B
+	defw 0bcbfh	; a8e7  -> L_BCBF
+	defw 0bd0fh	; a8e9  -> L_BD0F
+	defw 0be01h	; a8eb  -> L_BE01
+	defw 0be52h	; a8ed  -> L_BE52
+
+; ----------------------------------------------------------------------
+; DATOS sin identificar  0xa8ef..0xa92b  (60 bytes)
+DATA_A8EF:
+	defb 021h,00fh,0e3h,07eh,0a7h,0c8h,036h,000h,04fh,0c3h,06ah,0a8h,0c8h,0adh,0c9h,0adh	; a8ef  !..~..6.O.j.....
+	defb 0cah,0adh,0feh,0adh,0ffh,0adh,023h,0aeh,05fh,0aeh,095h,0aeh,0cfh,0aeh,00dh,0afh	; a8ff  ......#._.......
+	defb 051h,0afh,08dh,0afh,0e9h,0afh,00fh,0b0h,05dh,0b0h,0c9h,0b0h,04fh,0b1h,093h,0b1h	; a90f  Q.......]...O...
+	defb 0f7h,0b1h,0a1h,0b2h,0fdh,0b2h,09fh,0b3h,049h,0b4h,0c1h,0b4h	; a91f  ........I...
 
 ; ======================================================================
 ; CODIGO 0xa92b..0xa98a  (95 bytes)
 ; ======================================================================
 
 
-L_A92B:
-	ld ix,0e310h		;a92b
-	ld b,003h		;a92f
-L_A931:
-	push bc			;a931
-	ld a,(ix+000h)		;a932
-	and a			;a935
-	jr z,L_A944		;a936
-	call L_A97F		;a938
-	call L_A9AA		;a93b
-	call L_A966		;a93e
-	call L_A94D		;a941
-L_A944:
-	pop bc			;a944
-	ld de,00020h		;a945
-	add ix,de		;a948
-	djnz L_A931		;a94a
-	ret			;a94c
-L_A94D:
-	ld a,(ix+007h)		;a94d
-	cp 0c0h		;a950
-	jr nc,L_A961		;a952
-	ld a,(ix+009h)		;a954
-	cp 0f0h		;a957
-	jr nc,L_A961		;a959
-	ld a,(ix+00bh)		;a95b
-	cp 0a8h		;a95e
-	ret c			;a960
-L_A961:
-	ld (ix+000h),000h		;a961
-	ret			;a965
-L_A966:
-	ld l,(ix+006h)		;a966
-	ld h,(ix+007h)		;a969
-	ld e,(ix+00ah)		;a96c
-	ld d,(ix+00bh)		;a96f
-	and a			;a972
-	sbc hl,de		;a973
-	ld (ix+002h),h		;a975
-	ld a,(ix+009h)		;a978
-	ld (ix+003h),a		;a97b
-	ret			;a97e
-L_A97F:
-	ld a,(ix+000h)		;a97f
-	dec a			;a982
-	add a,a			;a983
-	ld hl,0a98ah		;a984
-	jp L_A8C7		;a987
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa98a..0xa9aa  (32 bytes)
-DATA_A98A:
-	defb 0adh,0b5h,00bh,0b6h,00dh,0b6h,00fh,0b6h,0c8h,0b6h,01bh,0b7h,0aeh,0b8h,00ah,0b9h	; a98a  ................
-	defb 0c0h,0b9h,01eh,0bbh,03ch,0bch,0fbh,0bch,033h,0bdh,051h,0beh,07eh,0beh,0c9h,0aah	; a99a  ....<...3.Q.~...
+; ATENDER A LOS TRES OBJETOS. Cuatro pasos por objeto y en este orden: la rutina propia de su clase, mover, calcular donde cae en la pantalla y mirar si se ha ido. Los tres huecos se recorren con IX, sumandole 0x20.
+; ----------------------------------------------------------------------
+atiende_los_objetos:
+	ld ix,0e310h		;a92b   ; el primer hueco
+	ld b,003h		;a92f   ; tres
+atiende_los_objetos_vuelta:
+	push bc			;a931
+	ld a,(ix+000h)		;a932   ; la clase
+	and a			;a935   ; cero es hueco libre
+	jr z,L_A944		;a936
+	call rutina_propia_de_la_clase		;a938   ; lo que sea propio de su clase
+	call mueve_el_objeto		;a93b   ; moverlo
+	call calcula_la_posicion		;a93e   ; donde cae en la pantalla
+	call quita_si_se_ha_ido		;a941   ; y si se ha ido, quitarlo
+L_A944:
+	pop bc			;a944
+	ld de,00020h		;a945   ; 0x20 bytes de un hueco al siguiente
+	add ix,de		;a948
+	djnz atiende_los_objetos_vuelta		;a94a
+	ret			;a94c
+
+; ----------------------------------------------------------------------
+; ¿SE HA IDO? Tres topes, uno por coordenada: 0xC000 en X, 0xF000 en Y y 0xA800 en Z. Basta con pasarse de uno para que el hueco quede libre. Ojo con la Z: pasarse por ARRIBA es alejarse tanto que ya no se ve.
+; ----------------------------------------------------------------------
+quita_si_se_ha_ido:
+	ld a,(ix+007h)		;a94d   ; la X, byte alto
+	cp 0c0h		;a950   ; el tope
+	jr nc,quita_el_objeto		;a952
+	ld a,(ix+009h)		;a954   ; la Y
+	cp 0f0h		;a957
+	jr nc,quita_el_objeto		;a959
+	ld a,(ix+00bh)		;a95b   ; y la Z, la profundidad
+	cp 0a8h		;a95e
+	ret c			;a960   ; dentro de los tres topes, se queda
+quita_el_objeto:
+	ld (ix+000h),000h		;a961   ; hueco libre
+	ret			;a965
+
+; ----------------------------------------------------------------------
+; DONDE CAE EN LA PANTALLA. La columna sale de restarle la profundidad a la X y quedarse con el byte alto, que es lo que da la perspectiva: cuanto mas lejos esta una cosa, mas se va hacia el centro. La fila es el byte alto de la Y, sin mas.
+; ----------------------------------------------------------------------
+calcula_la_posicion:
+	ld l,(ix+006h)		;a966   ; la X
+	ld h,(ix+007h)		;a969
+	ld e,(ix+00ah)		;a96c   ; y la Z
+	ld d,(ix+00bh)		;a96f
+	and a			;a972
+	sbc hl,de		;a973   ; X menos profundidad
+	ld (ix+002h),h		;a975   ; el byte alto es la columna
+	ld a,(ix+009h)		;a978   ; y la Y, byte alto
+	ld (ix+003h),a		;a97b
+	ret			;a97e
+rutina_propia_de_la_clase:
+	ld a,(ix+000h)		;a97f   ; la clase
+	dec a			;a982   ; la tabla va desde 1
+	add a,a			;a983   ; dos bytes por entrada
+	ld hl,0a98ah		;a984   ; la SEGUNDA tabla de quince, la de atender
+	jp L_A8C7		;a987   ; y se salta a la que toque
+
+; ----------------------------------------------------------------------
+; DATOS tabla_de_atender: La segunda tabla de quince, hermana de la de 0xA8D1:
+;   alli esta la rutina que MONTA cada clase de objeto y aqui la que la
+;   atiende en cada cuadro. Los quince destinos son 0xB5AD, 0xB60B, 0xB60D,
+;   0xB60F, 0xB6C8, 0xB71B, 0xB8AE, 0xB90A, 0xB9C0, 0xBB1E, 0xBC3C, 0xBCFB,
+;   0xBD33, 0xBE51 y 0xBE7E.
+;   0xa98a..0xa9a8  (30 bytes)
+DATA_tabla_de_atender:
+	defw 0b5adh	; a98a
+	defw 0b60bh	; a98c
+	defw 0b60dh	; a98e
+	defw 0b60fh	; a990
+	defw 0b6c8h	; a992
+	defw 0b71bh	; a994
+	defw 0b8aeh	; a996
+	defw 0b90ah	; a998
+	defw 0b9c0h	; a99a
+	defw 0bb1eh	; a99c
+	defw 0bc3ch	; a99e
+	defw 0bcfbh	; a9a0
+	defw 0bd33h	; a9a2
+	defw 0be51h	; a9a4
+	defw 0be7eh	; a9a6
+
+; ----------------------------------------------------------------------
+; DATOS sin identificar  0xa9a8..0xa9aa  (2 bytes)
+DATA_A9A8:
+	defb 0c9h,0aah	; a9a8
 
 ; ======================================================================
 ; CODIGO 0xa9aa..0xaa86  (220 bytes)
 ; ======================================================================
 
 
-L_A9AA:
-	ld a,(ix+012h)		;a9aa
+
+; ----------------------------------------------------------------------
+; MOVER. Le suma a cada coordenada su velocidad, las tres de 16 bits. Es todo lo que hay: no hay gravedad ni rozamiento aqui, lo que cambie las velocidades lo hace la rutina propia de cada clase.
+; ----------------------------------------------------------------------
+mueve_el_objeto:
+	ld a,(ix+012h)		;a9aa   ; ¿se mueve solo?
 	and a			;a9ad
-	ret z			;a9ae
-	ld l,(ix+006h)		;a9af
+	ret z			;a9ae   ; si no, no hay nada que hacer
+	ld l,(ix+006h)		;a9af   ; la X
 	ld h,(ix+007h)		;a9b2
-	ld e,(ix+00ch)		;a9b5
+	ld e,(ix+00ch)		;a9b5   ; y su velocidad
 	ld d,(ix+00dh)		;a9b8
-	add hl,de			;a9bb
+	add hl,de			;a9bb   ; sumadas
 	ld (ix+006h),l		;a9bc
 	ld (ix+007h),h		;a9bf
-	ld l,(ix+008h)		;a9c2
+	ld l,(ix+008h)		;a9c2   ; la Y
 	ld h,(ix+009h)		;a9c5
-	ld e,(ix+00eh)		;a9c8
+	ld e,(ix+00eh)		;a9c8   ; y la suya
 	ld d,(ix+00fh)		;a9cb
 	add hl,de			;a9ce
 	ld (ix+008h),l		;a9cf
 	ld (ix+009h),h		;a9d2
-	ld l,(ix+00ah)		;a9d5
+	ld l,(ix+00ah)		;a9d5   ; y la Z
 	ld h,(ix+00bh)		;a9d8
-	ld e,(ix+010h)		;a9db
+	ld e,(ix+010h)		;a9db   ; con la suya
 	ld d,(ix+011h)		;a9de
 	add hl,de			;a9e1
 	ld (ix+00ah),l		;a9e2
 	ld (ix+00bh),h		;a9e5
 	ret			;a9e8
-L_A9E9:
-	ld de,0eedch		;a9e9
-	ld hl,0e310h		;a9ec
-	call L_A9F8		;a9ef
-	ld de,0eee0h		;a9f2
-	ld hl,0e2a0h		;a9f5
-L_A9F8:
-	ld bc,003ffh		;a9f8
-L_A9FB:
-	ld a,(hl)			;a9fb
+
+; ----------------------------------------------------------------------
+; LOS OBJETOS, A LA TABLA DE SPRITES. Dos pasadas, una por cada capa de color: la primera lleva los tres objetos a 0xEEDC y la segunda su copia de 0xE2A0 a 0xEEE0. Cuatro bytes mas alla es justo el otro hueco de la pareja, que es como este cartucho pinta una figura de dos colores.
+; ----------------------------------------------------------------------
+los_objetos_a_los_sprites:
+	ld de,0eedch		;a9e9   ; el hueco de sprite de la primera capa
+	ld hl,0e310h		;a9ec   ; y los tres objetos
+	call copia_tres_objetos_a_sprites		;a9ef
+	ld de,0eee0h		;a9f2   ; el hueco de la segunda capa, cuatro bytes mas alla
+	ld hl,0e2a0h		;a9f5   ; y la copia de los objetos
+copia_tres_objetos_a_sprites:
+	ld bc,003ffh		;a9f8   ; tres objetos, y B se queda con el 3
+copia_un_objeto_a_sprite:
+	ld a,(hl)			;a9fb   ; la clase
 	inc l			;a9fc
 	inc l			;a9fd
-	and a			;a9fe
-	ld a,(hl)			;a9ff
-	jr nz,L_AA04		;aa00
-	ld a,0e0h		;aa02
-L_AA04:
-	ld (de),a			;aa04
+	and a			;a9fe   ; cero es hueco libre
+	ld a,(hl)			;a9ff   ; la fila
+	jr nz,copia_un_objeto_sigue		;aa00
+	ld a,0e0h		;aa02   ; y si el hueco esta libre, 0xE0: fuera de la pantalla
+copia_un_objeto_sigue:
+	ld (de),a			;aa04   ; la Y del sprite
 	inc l			;aa05
 	inc e			;aa06
-	ldi		;aa07
+	ldi		;aa07   ; columna, patron y color, de un tiron
 	ldi		;aa09
 	ldi		;aa0b
-	ld a,01ah		;aa0d
+	ld a,01ah		;aa0d   ; 0x1A: lo que queda del hueco de 32 bytes
 	add a,l			;aa0f
 	ld l,a			;aa10
-	inc e			;aa11
+	inc e			;aa11   ; y cuatro bytes al sprite siguiente
 	inc e			;aa12
 	inc e			;aa13
 	inc e			;aa14
-	djnz L_A9FB		;aa15
+	djnz copia_un_objeto_a_sprite		;aa15
 	ret			;aa17
-L_AA18:
-	ld ix,0e310h		;aa18
-	ld iy,0e2a0h		;aa1c
+
+; ----------------------------------------------------------------------
+; QUE DIBUJO LE TOCA, SEGUN LO CERCA QUE ESTE. Aqui esta la perspectiva del juego: el byte alto de la X dice a que distancia esta el objeto, y de ahi salen cuatro dibujos distintos -0x40, 0x44, 0x48 y 0x30- que son el mismo bicho de mayor a menor. Por debajo de 0x60 ni se dibuja: esta demasiado cerca y ya ha pasado de largo.
+; ----------------------------------------------------------------------
+elige_el_dibujo_por_la_distancia:
+	ld ix,0e310h		;aa18   ; los tres objetos
+	ld iy,0e2a0h		;aa1c   ; y su copia
 	ld b,003h		;aa20
 L_AA22:
-	ld a,(ix+000h)		;aa22
+	ld a,(ix+000h)		;aa22   ; la clase
 	ld (iy+000h),a		;aa25
-	and a			;aa28
-	jr z,L_AA61		;aa29
-	ld a,(ix+003h)		;aa2b
+	and a			;aa28   ; hueco libre, nada que hacer
+	jr z,elige_el_dibujo_siguiente		;aa29
+	ld a,(ix+003h)		;aa2b   ; la fila
 	ld (iy+003h),a		;aa2e
-	ld a,(ix+007h)		;aa31
-	cp 060h		;aa34
-	jr c,L_AA6B		;aa36
+	ld a,(ix+007h)		;aa31   ; la distancia
+	cp 060h		;aa34   ; por debajo de 0x60 no se dibuja
+	jr c,demasiado_cerca		;aa36
 	ld c,a			;aa38
-	and 0c0h		;aa39
-	rra			;aa3b
+	and 0c0h		;aa39   ; los dos bits de arriba de la distancia
+	rra			;aa3b   ; seis vueltas: bajan a los dos de abajo
 	rra			;aa3c
 	rra			;aa3d
 	rra			;aa3e
 	rra			;aa3f
 	rra			;aa40
-	add a,c			;aa41
+	add a,c			;aa41   ; y se le suman a la propia distancia: eso separa las columnas
 	ld (iy+002h),a		;aa42
 	ld a,c			;aa45
-	cp 070h		;aa46
-	ld c,040h		;aa48
-	jr c,L_AA5A		;aa4a
-	cp 088h		;aa4c
+	cp 070h		;aa46   ; primera banda
+	ld c,040h		;aa48   ; el dibujo grande
+	jr c,guarda_el_dibujo		;aa4a
+	cp 088h		;aa4c   ; segunda banda
 	ld c,044h		;aa4e
-	jr c,L_AA5A		;aa50
-	cp 0a8h		;aa52
+	jr c,guarda_el_dibujo		;aa50
+	cp 0a8h		;aa52   ; tercera
 	ld c,048h		;aa54
-	jr c,L_AA5A		;aa56
-	ld c,030h		;aa58
-L_AA5A:
-	ld (iy+004h),c		;aa5a
-	ld (iy+005h),001h		;aa5d
-L_AA61:
-	ld de,00020h		;aa61
+	jr c,guarda_el_dibujo		;aa56
+	ld c,030h		;aa58   ; y la de mas lejos, el mas pequeno
+guarda_el_dibujo:
+	ld (iy+004h),c		;aa5a   ; el patron que le toca
+	ld (iy+005h),001h		;aa5d   ; y color 1
+elige_el_dibujo_siguiente:
+	ld de,00020h		;aa61   ; 0x20 de un hueco al siguiente
 	add ix,de		;aa64
 	add iy,de		;aa66
 	djnz L_AA22		;aa68
 	ret			;aa6a
-L_AA6B:
-	ld (iy+000h),000h		;aa6b
-	jr L_AA61		;aa6f
+demasiado_cerca:
+	ld (iy+000h),000h		;aa6b   ; no se dibuja
+	jr elige_el_dibujo_siguiente		;aa6f
 L_AA71:
 	ld (ix+00ch),e		;aa71
 	ld (ix+00dh),d		;aa74

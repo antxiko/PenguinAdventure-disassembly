@@ -14,632 +14,698 @@
 ; ======================================================================
 
 
-L_8000:
-	ld bc,00015h		;8000
-	ldir		;8003
-	ld c,a			;8005
+
+; ----------------------------------------------------------------------
+; ARRANCAR UNA VOZ. Copia los 21 bytes de una plantilla a la voz y la deja callada.
+; ----------------------------------------------------------------------
+arranca_una_voz:
+	ld bc,00015h		;8000   ; los 21 bytes de una voz
+	ldir		;8003   ; la plantilla, encima de la voz
+	ld c,a			;8005   ; C se queda con el numero de efecto, que el borrado no toca
 	xor a			;8006
-	ld (0e07ah),a		;8007
-	ret			;800a
-L_800B:
-	inc hl			;800b
+	ld (0e07ah),a		;8007   ; y la marca de efecto, a cero
+	ret			;800a   ; la voz queda arrancada y callada
+
+; ----------------------------------------------------------------------
+; REPETIR UN TROZO. El mando 0xFE de la partitura: detras lleva cuantas vueltas hay que dar y adonde volver. El contador vive en la propia voz (+0x0B), asi que cada voz lleva su cuenta.
+; ----------------------------------------------------------------------
+repite_un_trozo:
+	inc hl			;800b   ; el byte de detras del 0xFE
 	ld a,(hl)			;800c
-	or a			;800d
-	jr z,L_8039		;800e
-	ld a,(ix+00bh)		;8010
+	or a			;800d   ; un cero quiere decir vueltas SIN FIN
+	jr z,repite_sin_fin		;800e
+	ld a,(ix+00bh)		;8010   ; por que vuelta va
 	inc a			;8013
-	cp (hl)			;8014
-	jr z,L_802A		;8015
+	cp (hl)			;8014   ; contra las que pide la partitura
+	jr z,repite_se_acabaron_las_vueltas		;8015   ; si ya estan dadas, se sigue de largo
 	jp m,L_801B		;8017
 	dec a			;801a
 L_801B:
-	ld (ix+00bh),a		;801b
-	inc hl			;801e
+	ld (ix+00bh),a		;801b   ; una vuelta mas
+	inc hl			;801e   ; y se vuelve al sitio que dice la partitura
 	ld a,(hl)			;801f
-	ld (ix+003h),a		;8020
+	ld (ix+003h),a		;8020   ; el puntero, byte bajo
 	inc hl			;8023
 	ld a,(hl)			;8024
-	ld (ix+004h),a		;8025
+	ld (ix+004h),a		;8025   ; y byte alto
 	jr L_8033		;8028
-L_802A:
-	inc hl			;802a
+repite_se_acabaron_las_vueltas:
+	inc hl			;802a   ; se saltan los dos bytes del destino
 	inc hl			;802b
-	xor a			;802c
+	xor a			;802c   ; y la cuenta a cero, por si se vuelve a pasar por aqui
 	ld (ix+00bh),a		;802d
 L_8030:
-	call L_8322		;8030
+	call apunta_donde_se_quedo		;8030
 L_8033:
-	inc (ix+000h)		;8033
-	jp L_80D2		;8036
-L_8039:
-	ld a,(ix+00eh)		;8039
-	or a			;803c
-	jr z,L_8044		;803d
-	dec (ix+00eh)		;803f
+	inc (ix+000h)		;8033   ; un mando mas de la partitura
+	jp un_paso_de_partitura		;8036   ; y a atenderlo
+repite_sin_fin:
+	ld a,(ix+00eh)		;8039   ; la marca de efecto
+	or a			;803c   ; ¿hay efecto?
+	jr z,L_8044		;803d   ; si lo hay, por un lado; si no, por el otro
+	dec (ix+00eh)		;803f   ; si hay efecto, se le baja
 	jr L_8047		;8042
 L_8044:
-	inc (ix+00eh)		;8044
+	inc (ix+00eh)		;8044   ; y si no, se le sube
 L_8047:
-	jr L_8030		;8047
-L_8049:
-	ld a,(0e079h)		;8049
+	jr L_8030		;8047   ; y en los dos casos se apunta donde se quedo
+
+; ----------------------------------------------------------------------
+; EL REGISTRO 7 DEL PSG, EL DE LA MEZCLA. Es el unico registro del PSG que comparten las tres voces -tres bits para el tono y tres para el ruido-, asi que no se puede escribir a lo bruto: hay que respetar lo que hayan puesto las otras. Por eso se guarda una copia en 0xE079 y aqui se le encienden o se le apagan solo los bits de esta voz.
+; ----------------------------------------------------------------------
+pon_la_mezcla:
+	ld a,(0e079h)		;8049   ; la copia de lo que hay ahora en el registro 7
 	ld e,a			;804c
-	ld a,(ix+005h)		;804d
-	and 003h		;8050
+	ld a,(ix+005h)		;804d   ; el instrumento de esta voz
+	and 003h		;8050   ; los dos bits de abajo dicen si suena tono, ruido o los dos
 	ld d,a			;8052
-	ld a,c			;8053
+	ld a,c			;8053   ; el numero de voz
 	cp 001h		;8054
 	jr z,L_8059		;8056
 	dec a			;8058
 L_8059:
 	ld b,a			;8059
-	bit 1,d		;805a
-	call z,L_807F		;805c
+	bit 1,d		;805a   ; el bit 1: el ruido
+	call z,enciende_el_bit		;805c   ; apagado, se enciende el bit
 	bit 1,d		;805f
-	call nz,L_807B		;8061
-	ld a,b			;8064
-	rlca			;8065
+	call nz,apaga_el_bit		;8061   ; encendido, se apaga
+	ld a,b			;8064   ; el numero de voz otra vez
+	rlca			;8065   ; tres vueltas: los bits de ruido van tres mas arriba
 	rlca			;8066
 	rlca			;8067
-	bit 0,d		;8068
-	call z,L_807F		;806a
+	bit 0,d		;8068   ; y ahora el bit 0, el del tono
+	call z,enciende_el_bit		;806a
 	bit 0,d		;806d
-	call nz,L_807B		;806f
-L_8072:
-	ld (0e079h),a		;8072
+	call nz,apaga_el_bit		;806f
+escribe_la_mezcla:
+	ld (0e079h),a		;8072   ; la copia nueva
 	ld e,a			;8075
-	ld a,007h		;8076
-	jp 00093h		;8078   ; BIOS WRTPSG - Writes data to PSG-register
-L_807B:
-	cpl			;807b
-	and e			;807c
+	ld a,007h		;8076   ; registro 7
+	jp 00093h		;8078   ; BIOS WRTPSG - Writes data to PSG-register | BIOS WRTPSG
+apaga_el_bit:
+	cpl			;807b   ; el bit del reves
+	and e			;807c   ; y se borra de la copia
 	ld e,a			;807d
 	ret			;807e
-L_807F:
-	or e			;807f
+enciende_el_bit:
+	or e			;807f   ; se anade a la copia
 	ld e,a			;8080
 	ret			;8081
-L_8082:
-	ld a,(0e079h)		;8082
-	call L_8072		;8085
-	ld c,001h		;8088
-	ld ix,0e010h		;808a
-	exx			;808e
-	ld b,004h		;808f
-	ld de,00015h		;8091
-L_8094:
+
+; ----------------------------------------------------------------------
+; EL CUADRO DEL SONIDO. La llama la interrupcion (p00:4030) con los bancos 14 y 15 puestos, y es lo unico del cartucho que se ejecuta SIEMPRE, aunque el juego vaya con retraso. Recorre las cuatro voces de 0xE010 y a cada una le da un paso de su partitura.
+; ----------------------------------------------------------------------
+cuadro_de_sonido:
+	ld a,(0e079h)		;8082   ; la copia del registro de mezcla
+	call escribe_la_mezcla		;8085   ; se vuelve a escribir tal cual: deja el PSG como estaba
+	ld c,001h		;8088   ; C lleva la voz, y va de dos en dos
+	ld ix,0e010h		;808a   ; la primera voz
+	exx			;808e   ; el juego de registros de repuesto guarda la cuenta
+	ld b,004h		;808f   ; cuatro voces
+	ld de,00015h		;8091   ; 21 bytes de una a la siguiente
+cuadro_de_sonido_voz:
 	exx			;8094
-	ld a,c			;8095
+	ld a,c			;8095   ; la voz que toca
 	cp 001h		;8096
-	jr nz,L_80C5		;8098
-	ld a,(0e07ah)		;809a
+	jr nz,cuadro_de_sonido_efecto		;8098   ; la voz 1 es la que puede llevar el efecto de encima
+	ld a,(0e07ah)		;809a   ; la bandera de silencio general
 	or a			;809d
-	jr z,L_80AA		;809e
+	jr z,cuadro_de_sonido_atiende		;809e
 	ld a,c			;80a0
-	ld hl,0e064h		;80a1
+	ld hl,0e064h		;80a1   ; la plantilla de voz callada
 	ld de,0e010h		;80a4
-	call L_8000		;80a7
-L_80AA:
-	ld a,(ix+002h)		;80aa
+	call arranca_una_voz		;80a7   ; y se le mete tal cual
+cuadro_de_sonido_atiende:
+	ld a,(ix+002h)		;80aa   ; ¿esta callada?
 	or a			;80ad
-	jr nz,L_80BA		;80ae
+	jr nz,L_80BA		;80ae   ; si no esta callada, hay partitura que seguir
 	ld a,c			;80b0
-	cp 007h		;80b1
+	cp 007h		;80b1   ; la voz 7 -el ruido- no se corta igual
 	jr z,L_80B8		;80b3
-	call L_817D		;80b5
+	call calla_la_voz		;80b5   ; callar la voz
 L_80B8:
-	jr L_80BD		;80b8
+	jr cuadro_de_sonido_siguiente		;80b8
 L_80BA:
-	call L_80D2		;80ba
-L_80BD:
-	inc c			;80bd
+	call un_paso_de_partitura		;80ba   ; y si no, un paso de partitura
+cuadro_de_sonido_siguiente:
+	inc c			;80bd   ; la voz siguiente, de dos en dos
 	inc c			;80be
 	exx			;80bf
-	add ix,de		;80c0
-	djnz L_8094		;80c2
-	ret			;80c4
-L_80C5:
-	ld a,(0e0a0h)		;80c5
+	add ix,de		;80c0   ; y 21 bytes mas alla en la RAM
+	djnz cuadro_de_sonido_voz		;80c2   ; hasta las cuatro
+	ret			;80c4   ; las cuatro voces atendidas
+cuadro_de_sonido_efecto:
+	ld a,(0e0a0h)		;80c5   ; la bandera del efecto que manda sobre todo
 	or a			;80c8
-	jr z,L_80AA		;80c9
-	ld h,000h		;80cb
-	call L_81BA		;80cd
-	jr L_80BD		;80d0
-L_80D2:
-	ld a,(ix+00eh)		;80d2
+	jr z,cuadro_de_sonido_atiende		;80c9   ; sin efecto, se atiende normal
+	ld h,000h		;80cb   ; el volumen entra a cero
+	call escribe_el_volumen		;80cd   ; y se escribe directamente
+	jr cuadro_de_sonido_siguiente		;80d0
+
+; ----------------------------------------------------------------------
+; UN PASO DE PARTITURA. El corazon del reproductor: baja el contador de la nota que suena y, si llega a cero, lee el mando siguiente. EL LENGUAJE, que sale de las comparaciones de 0x80E8 y 0x80F8: 0xFE repite un trozo, 0xFF y arriba callan la voz, un byte de nibble alto 2 cambia el INSTRUMENTO -y si ademas trae el bit 3, la envolvente del PSG-, uno de nibble alto 1 pone el RUIDO, y cualquier otro es una NOTA, con el volumen en el nibble alto.
+; ----------------------------------------------------------------------
+un_paso_de_partitura:
+	ld a,(ix+00eh)		;80d2   ; ¿hay un efecto sonando encima?
 	or a			;80d5
-	jp nz,L_81EB		;80d6
-	ld (ix+010h),000h		;80d9
-	dec (ix+000h)		;80dd
-	ret nz			;80e0
-L_80E1:
-	ld l,(ix+003h)		;80e1
+	jp nz,atiende_el_efecto		;80d6
+	ld (ix+010h),000h		;80d9   ; la marca de efecto, a cero
+	dec (ix+000h)		;80dd   ; un cuadro menos de la nota que suena
+	ret nz			;80e0   ; y mientras dure, no se lee nada
+lee_el_mando:
+	ld l,(ix+003h)		;80e1   ; el puntero a la partitura
 	ld h,(ix+004h)		;80e4
-	ld a,(hl)			;80e7
-	cp 0feh		;80e8
-	jp z,L_800B		;80ea
-	jp nc,L_817D		;80ed
-	ld a,(ix+00eh)		;80f0
+	ld a,(hl)			;80e7   ; el mando
+	cp 0feh		;80e8   ; 0xFE: repetir un trozo
+	jp z,repite_un_trozo		;80ea
+	jp nc,calla_la_voz		;80ed   ; 0xFF y arriba: se acabo, a callar
+	ld a,(ix+00eh)		;80f0   ; si hay efecto, el mando se lee de otra manera
 	or a			;80f3
 	ld a,(hl)			;80f4
-	jp nz,L_820C		;80f5
-L_80F8:
-	and 0f0h		;80f8
-	cp 020h		;80fa
-	jr nz,L_8138		;80fc
-	ld a,(hl)			;80fe
+	jp nz,mando_de_efecto		;80f5
+mando_de_musica:
+	and 0f0h		;80f8   ; el nibble de arriba
+	cp 020h		;80fa   ; 2: cambiar de instrumento
+	jr nz,mando_de_ruido		;80fc
+	ld a,(hl)			;80fe   ; y el instrumento es el byte entero
 	ld (ix+005h),a		;80ff
 	inc hl			;8102
-	ld a,(ix+010h)		;8103
+	ld a,(ix+010h)		;8103   ; si lo que suena es un efecto, el volumen no se toca
 	or a			;8106
 	ld a,(hl)			;8107
 	jr nz,L_810D		;8108
-	ld (ix+001h),a		;810a
+	ld (ix+001h),a		;810a   ; y si no, el volumen nuevo
 L_810D:
-	ld (ix+014h),a		;810d
+	ld (ix+014h),a		;810d   ; pero se apunta igual, para cuando acabe el efecto
 	inc hl			;8110
-	ld a,(ix+005h)		;8111
-	cp 020h		;8114
+	ld a,(ix+005h)		;8111   ; el instrumento otra vez
+	cp 020h		;8114   ; el 0x20 pelado es un caso aparte
 	jr nz,L_8124		;8116
 	dec hl			;8118
 	xor a			;8119
 	ld b,a			;811a
 	ld a,(ix+010h)		;811b
 	or a			;811e
-	jp nz,L_833C		;811f
+	jp nz,apunta_el_guion_del_efecto		;811f
 	jr L_8159		;8122
 L_8124:
-	bit 3,a		;8124
-	jr z,L_8138		;8126
-	ld a,(hl)			;8128
+	bit 3,a		;8124   ; el bit 3 del instrumento: lleva envolvente
+	jr z,mando_de_ruido		;8126
+	ld a,(hl)			;8128   ; el periodo de la envolvente, byte bajo
 	ld e,a			;8129
 	ld a,00ch		;812a
-	call 00093h		;812c   ; BIOS WRTPSG - Writes data to PSG-register
+	call 00093h		;812c   ; BIOS WRTPSG - Writes data to PSG-register | registro 12 del PSG
 	inc hl			;812f
-	ld a,(hl)			;8130
+	ld a,(hl)			;8130   ; y byte alto
 	ld e,a			;8131
 	ld a,00bh		;8132
-	call 00093h		;8134   ; BIOS WRTPSG - Writes data to PSG-register
+	call 00093h		;8134   ; BIOS WRTPSG - Writes data to PSG-register | registro 11
 	inc hl			;8137
-L_8138:
-	ld a,(hl)			;8138
+mando_de_ruido:
+	ld a,(hl)			;8138   ; el mando siguiente
 	and 0f0h		;8139
-	cp 010h		;813b
-	jr nz,L_814A		;813d
+	cp 010h		;813b   ; 1: el ruido
+	jr nz,mando_de_nota		;813d
 	ld a,(hl)			;813f
-	and 00fh		;8140
-	add a,a			;8142
+	and 00fh		;8140   ; los cuatro bits de abajo son el periodo
+	add a,a			;8142   ; por dos
 	ld e,a			;8143
-	ld a,006h		;8144
+	ld a,006h		;8144   ; registro 6 del PSG, el del ruido
 	call 00093h		;8146   ; BIOS WRTPSG - Writes data to PSG-register
 	inc hl			;8149
-L_814A:
-	ld a,(hl)			;814a
+mando_de_nota:
+	ld a,(hl)			;814a   ; el nibble de arriba es el VOLUMEN
 	and 0f0h		;814b
 	ld b,a			;814d
-	xor (hl)			;814e
+	xor (hl)			;814e   ; y el de abajo, con el byte siguiente, la nota
 	ld d,a			;814f
 	inc hl			;8150
-	ld e,(hl)			;8151
-	ld a,(ix+010h)		;8152
+	ld e,(hl)			;8151   ; el segundo byte
+	ld a,(ix+010h)		;8152   ; si es un efecto, por otro camino
 	or a			;8155
-	jp nz,L_833C		;8156
+	jp nz,apunta_el_guion_del_efecto		;8156
 L_8159:
-	call L_8322		;8159
-L_815C:
+	call apunta_donde_se_quedo		;8159
+nota_a_sonar:
 	ex de,hl			;815c
-	call L_82E4		;815d
+	call escribe_el_periodo		;815d   ; el periodo de la nota al PSG
 	ld a,b			;8160
-	rrca			;8161
+	rrca			;8161   ; cuatro vueltas: el volumen baja al nibble de abajo
 	rrca			;8162
 	rrca			;8163
 	rrca			;8164
 	ld h,a			;8165
-	ld a,(ix+010h)		;8166
+	ld a,(ix+010h)		;8166   ; ¿es efecto?
 	or a			;8169
-	jp z,L_8175		;816a
-	ld a,(ix+014h)		;816d
+	jp z,nota_de_musica		;816a
+	ld a,(ix+014h)		;816d   ; el volumen que le tocaria a la musica se guarda aparte
 	ld (ix+013h),a		;8170
-	jr L_81BA		;8173
-L_8175:
-	ld a,(ix+001h)		;8175
+	jr escribe_el_volumen		;8173
+nota_de_musica:
+	ld a,(ix+001h)		;8175   ; y la duracion sale del volumen apuntado
 	ld (ix+000h),a		;8178
-	jr L_81BA		;817b
-L_817D:
+	jr escribe_el_volumen		;817b
+
+; ----------------------------------------------------------------------
+; CALLAR UNA VOZ. Pone a cero los siete campos que hacen que suene y devuelve la mezcla sin sus bits. Si la voz es la del ruido hace ademas una cosa mas: mira 0xE07C, y si hay un efecto pendiente lo arranca ahi mismo.
+; ----------------------------------------------------------------------
+calla_la_voz:
 	xor a			;817d
-	ld (ix+002h),a		;817e
+	ld (ix+002h),a		;817e   ; deja de estar callada... y todo lo demas a cero
 	ld h,a			;8181
-	ld (ix+005h),a		;8182
-	ld (ix+00bh),a		;8185
-	ld (ix+00eh),a		;8188
+	ld (ix+005h),a		;8182   ; el instrumento
+	ld (ix+00bh),a		;8185   ; la cuenta de repeticiones
+	ld (ix+00eh),a		;8188   ; la marca de efecto
 	ld (ix+00fh),a		;818b
-	ld (ix+010h),a		;818e
-	ld a,c			;8191
-	cp 007h		;8192
-	jr c,L_81BA		;8194
+	ld (ix+010h),a		;818e   ; y la de que suena un efecto
+	ld a,c			;8191   ; el numero de voz
+	cp 007h		;8192   ; por debajo de 7 no hay nada mas que hacer
+	jr c,escribe_el_volumen		;8194
 	ld l,000h		;8196
 	dec c			;8198
 	dec c			;8199
-	call L_82FF		;819a
-	call L_81CF		;819d
-	ld a,(0e07ch)		;81a0
+	call escribe_el_periodo_al_psg		;819a   ; la voz del ruido, que se apaga aparte
+	call escribe_el_volumen_de_verdad		;819d
+	ld a,(0e07ch)		;81a0   ; ¿habia un efecto esperando?
 	ld b,a			;81a3
 	or a			;81a4
-	ret z			;81a5
+	ret z			;81a5   ; si no lo habia, se acabo
 	xor a			;81a6
-	ld (0e07ch),a		;81a7
+	ld (0e07ch),a		;81a7   ; se borra la peticion
 	ld a,b			;81aa
-	jp L_86BA		;81ab
-L_81AE:
+	jp pide_un_efecto		;81ab   ; y se arranca el efecto
+baja_el_barrido:
 	dec (ix+00ah)		;81ae
-L_81B1:
-	ld a,(ix+008h)		;81b1
+baja_el_volumen:
+	ld a,(ix+008h)		;81b1   ; el volumen que va bajando
 	dec a			;81b4
-	ret m			;81b5
+	ret m			;81b5   ; si ya estaba a cero, nada
 	ld (ix+008h),a		;81b6
 	ld h,a			;81b9
-L_81BA:
-	ld a,(0e051h)		;81ba
+
+; ----------------------------------------------------------------------
+; ESCRIBIR EL VOLUMEN. El registro de volumen de cada voz sale de la cuenta de 0x81D2: `rrca` sobre el numero de voz y 0x88 encima, que da 8, 9 o 10. Y si el instrumento trae el bit 3, en vez del volumen se le mete 0x10, que es lo que le dice al PSG "el volumen lo lleva la envolvente".
+; ----------------------------------------------------------------------
+escribe_el_volumen:
+	ld a,(0e051h)		;81ba   ; la bandera de silencio de esta voz
 	ld e,a			;81bd
 	ld a,c			;81be
-	cp 005h		;81bf
-	jr c,L_81CF		;81c1
+	cp 005h		;81bf   ; por debajo de 5 se escribe siempre
+	jr c,escribe_el_volumen_de_verdad		;81c1
 	jr nz,L_81CA		;81c3
 	ld a,e			;81c5
 	or a			;81c6
 	ret nz			;81c7
-	jr L_81CF		;81c8
+	jr escribe_el_volumen_de_verdad		;81c8
 L_81CA:
 	ld a,e			;81ca
 	or a			;81cb
 	ret z			;81cc
 	dec c			;81cd
 	dec c			;81ce
-L_81CF:
-	call L_8049		;81cf
+escribe_el_volumen_de_verdad:
+	call pon_la_mezcla		;81cf   ; primero la mezcla, que es de todos
 	ld a,c			;81d2
-	rrca			;81d3
-	add a,088h		;81d4
+	rrca			;81d3   ; media vuelta al numero de voz...
+	add a,088h		;81d4   ; ...y 0x88 encima: sale el registro 8, 9 o 10
 	ld d,a			;81d6
-	bit 3,(ix+005h)		;81d7
-	jr z,L_81E6		;81db
-	ld e,h			;81dd
+	bit 3,(ix+005h)		;81d7   ; el bit 3 del instrumento: envolvente
+	jr z,escribe_el_volumen_al_psg		;81db
+	ld e,h			;81dd   ; la forma de la envolvente
 	ld a,00dh		;81de
-	call 00093h		;81e0   ; BIOS WRTPSG - Writes data to PSG-register
-	ld a,010h		;81e3
+	call 00093h		;81e0   ; BIOS WRTPSG - Writes data to PSG-register | registro 13 del PSG
+	ld a,010h		;81e3   ; y 0x10 en el volumen: "que mande la envolvente"
 	ld h,a			;81e5
-L_81E6:
+escribe_el_volumen_al_psg:
 	ld a,d			;81e6
 	ld e,h			;81e7
-	jp 00093h		;81e8   ; BIOS WRTPSG - Writes data to PSG-register
-L_81EB:
-	dec (ix+000h)		;81eb
-	jp z,L_80E1		;81ee
-	ld a,(ix+010h)		;81f1
+	jp 00093h		;81e8   ; BIOS WRTPSG - Writes data to PSG-register | BIOS WRTPSG con el registro que toque
+
+; ----------------------------------------------------------------------
+; EL EFECTO, QUE MANDA SOBRE LA MUSICA. Mientras 0x0E de la voz no sea cero, lo que se atiende es el efecto y no la partitura: la nota va bajando de volumen sola, cuadro a cuadro, hasta que se acaba y la musica vuelve a tener la voz.
+; ----------------------------------------------------------------------
+atiende_el_efecto:
+	dec (ix+000h)		;81eb   ; un cuadro menos
+	jp z,lee_el_mando		;81ee   ; y cuando se acaba, se vuelve a la partitura
+	ld a,(ix+010h)		;81f1   ; ¿es un efecto de los otros?
 	or a			;81f4
-	jp nz,L_832A		;81f5
-	dec (ix+00ah)		;81f8
+	jp nz,un_paso_de_efecto		;81f5
+	dec (ix+00ah)		;81f8   ; el barrido, un paso
 	ld a,(ix+00ah)		;81fb
-	cp (ix+000h)		;81fe
-	jr nz,L_81AE		;8201
+	cp (ix+000h)		;81fe   ; contra lo que queda de nota
+	jr nz,baja_el_barrido		;8201
 	ld e,a			;8203
-	ld a,(ix+00dh)		;8204
+	ld a,(ix+00dh)		;8204   ; y contra el tope
 	cp e			;8207
 	ld a,e			;8208
-	jr nc,L_81B1		;8209
+	jr nc,baja_el_volumen		;8209
 	ret			;820b
-L_820C:
-	ld a,(hl)			;820c
+mando_de_efecto:
+	ld a,(hl)			;820c   ; el mando
 	and 0f0h		;820d
-	cp 0d0h		;820f
+	cp 0d0h		;820f   ; 0xD0: fija un campo del efecto
 	ld a,(hl)			;8211
 	jr nz,L_821B		;8212
-	and 00fh		;8214
+	and 00fh		;8214   ; los cuatro bits de abajo
 	ld (ix+006h),a		;8216
 	inc hl			;8219
 	ld a,(hl)			;821a
 L_821B:
-	cp 0f0h		;821b
-	jr c,L_8239		;821d
-	and 00fh		;821f
+	cp 0f0h		;821b   ; 0xF0 y arriba: el barrido
+	jr c,mando_de_efecto_mas		;821d
+	and 00fh		;821f   ; los cuatro de abajo, y dos mas
 	inc a			;8221
 	inc a			;8222
 	ld (ix+007h),a		;8223
-	inc hl			;8226
+	inc hl			;8226   ; el byte siguiente
 	ld a,(hl)			;8227
 	and 0f0h		;8228
-	rrca			;822a
+	rrca			;822a   ; cuatro vueltas: el nibble de arriba
 	rrca			;822b
 	rrca			;822c
 	rrca			;822d
 	ld (ix+00ch),a		;822e
 	ld a,(hl)			;8231
-	and 00fh		;8232
+	and 00fh		;8232   ; los cuatro de abajo
 	ld (ix+00dh),a		;8234
 	inc hl			;8237
-	ld a,(hl)			;8238
-L_8239:
-	cp 0e0h		;8239
-	jr c,L_8265		;823b
-	and 00fh		;823d
-	cp 008h		;823f
-	jr c,L_8260		;8241
+	ld a,(hl)			;8238   ; el byte siguiente
+mando_de_efecto_mas:
+	cp 0e0h		;8239   ; 0xE0 y arriba: mandos de efecto
+	jr c,nota_del_efecto		;823b
+	and 00fh		;823d   ; los cuatro de abajo
+	cp 008h		;823f   ; por debajo de 8, es el desplazamiento de octava
+	jr c,mando_octava		;8241
 	jr nz,L_824B		;8243
-	ld (ix+00fh),a		;8245
+	ld (ix+00fh),a		;8245   ; el 8 justo enciende una bandera
 	inc hl			;8248
-	jr L_820C		;8249
+	jr mando_de_efecto		;8249
 L_824B:
-	cp 00fh		;824b
+	cp 00fh		;824b   ; el 0x0F apaga el efecto
 	jr z,L_8256		;824d
-	sub 008h		;824f
+	sub 008h		;824f   ; y del 9 al 14 se guarda restandole 8
 	ld (ix+010h),a		;8251
 	jr L_8263		;8254
 L_8256:
-	xor a			;8256
+	xor a			;8256   ; a cero las dos banderas
 	ld (ix+00fh),a		;8257
 	ld (ix+010h),a		;825a
 	inc hl			;825d
-	jr L_820C		;825e
-L_8260:
-	ld (ix+009h),a		;8260
+	jr mando_de_efecto		;825e
+mando_octava:
+	ld (ix+009h),a		;8260   ; el desplazamiento de octava
 L_8263:
 	inc hl			;8263
 	ld a,(hl)			;8264
-L_8265:
-	and 00fh		;8265
+nota_del_efecto:
+	and 00fh		;8265   ; los cuatro de abajo del mando
 	ld b,a			;8267
-	ld a,(ix+006h)		;8268
+	ld a,(ix+006h)		;8268   ; y el valor base de la duracion
 	jr z,L_8272		;826b
 L_826D:
-	add a,(ix+006h)		;826d
+	add a,(ix+006h)		;826d   ; se multiplica sumando: B veces
 	djnz L_826D		;8270
 L_8272:
-	ld (ix+001h),a		;8272
-	ld a,(hl)			;8275
-	call L_8322		;8276
-	and 0f0h		;8279
-	rrca			;827b
+	ld (ix+001h),a		;8272   ; y esa es la duracion de la nota
+	ld a,(hl)			;8275   ; el byte de la nota
+	call apunta_donde_se_quedo		;8276   ; al PSG
+	and 0f0h		;8279   ; el nibble de arriba
+	rrca			;827b   ; cuatro vueltas para bajarlo
 	rrca			;827c
 	rrca			;827d
 	rrca			;827e
 	ld b,a			;827f
-	ld a,(ix+010h)		;8280
+	ld a,(ix+010h)		;8280   ; ¿es un efecto?
 	or a			;8283
-	jr z,L_82AF		;8284
-	add a,a			;8286
-	ld de,08358h		;8287
+	jr z,nota_normal		;8284
+	add a,a			;8286   ; dos bytes por entrada
+	ld de,08358h		;8287   ; la tabla de guiones de efecto
 	add a,e			;828a
 	ld e,a			;828b
 	jr nc,L_828F		;828c
 	inc d			;828e
 L_828F:
-	ld a,(de)			;828f
+	ld a,(de)			;828f   ; el puntero de ese efecto
 	ld l,a			;8290
 	inc de			;8291
 	ld a,(de)			;8292
 	ld h,a			;8293
-	ld a,(ix+001h)		;8294
+	ld a,(ix+001h)		;8294   ; la duracion
 	ld (ix+000h),a		;8297
 	ld a,b			;829a
-	add a,a			;829b
+	add a,a			;829b   ; otra vez dos por entrada
 	add a,l			;829c
 	ld l,a			;829d
 	jr nc,L_82A1		;829e
 	inc h			;82a0
 L_82A1:
-	ld e,(hl)			;82a1
+	ld e,(hl)			;82a1   ; y de ahi sale el guion que hay que seguir
 	ld (ix+011h),e		;82a2
 	inc hl			;82a5
 	ld d,(hl)			;82a6
 	ld (ix+012h),d		;82a7
 	ex de,hl			;82aa
-	ld a,(hl)			;82ab
-	jp L_80F8		;82ac
-L_82AF:
-	ld a,b			;82af
-	sub 00ch		;82b0
+	ld a,(hl)			;82ab   ; su primer mando
+	jp mando_de_musica		;82ac
+nota_normal:
+	ld a,b			;82af   ; el numero de nota
+	sub 00ch		;82b0   ; el 12 es un caso aparte: no hay semitono numero doce
 	jr z,L_82B7		;82b2
-	ld a,(ix+007h)		;82b4
+	ld a,(ix+007h)		;82b4   ; y si no, el valor de siempre
 L_82B7:
 	ld (ix+008h),a		;82b7
 	ld d,a			;82ba
-	ld e,(ix+001h)		;82bb
+	ld e,(ix+001h)		;82bb   ; la duracion
 	ld (ix+000h),e		;82be
-	ld a,(ix+00ch)		;82c1
+	ld a,(ix+00ch)		;82c1   ; el barrido se suma a la duracion
 	add a,e			;82c4
 	ld (ix+00ah),a		;82c5
 	ld a,b			;82c8
-	ld hl,0834eh		;82c9
-	add a,l			;82cc
+	ld hl,0834eh		;82c9   ; LA TABLA DE LOS DOCE SEMITONOS
+	add a,l			;82cc   ; el que toca
 	ld l,a			;82cd
 	jr nc,L_82D1		;82ce
 	inc h			;82d0
 L_82D1:
-	ld l,(hl)			;82d1
+	ld l,(hl)			;82d1   ; su periodo, que es de un solo byte
 	ld h,000h		;82d2
-	ld a,(ix+009h)		;82d4
+	ld a,(ix+009h)		;82d4   ; el desplazamiento de octava
 	or a			;82d7
 	jr z,L_82DE		;82d8
 	ld b,a			;82da
 L_82DB:
-	add hl,hl			;82db
+	add hl,hl			;82db   ; y cada vuelta es una octava mas grave: el periodo se dobla
 	djnz L_82DB		;82dc
 L_82DE:
-	call L_82E4		;82de
-	jp L_81BA		;82e1
-L_82E4:
-	ld a,(0e051h)		;82e4
+	call escribe_el_periodo		;82de   ; el periodo, al PSG
+	jp escribe_el_volumen		;82e1   ; y el volumen detras
+escribe_el_periodo:
+	ld a,(0e051h)		;82e4   ; la bandera de silencio
 	ld e,a			;82e7
-	ld a,c			;82e8
-	cp 005h		;82e9
-	jr c,L_82FF		;82eb
+	ld a,c			;82e8   ; el numero de voz
+	cp 005h		;82e9   ; la 5 y las de arriba tienen reglas propias
+	jr c,escribe_el_periodo_al_psg		;82eb
 	jr nz,L_82F4		;82ed
-	ld a,e			;82ef
+	ld a,e			;82ef   ; si la bandera esta puesta, esta voz no suena
 	or a			;82f0
 	ret nz			;82f1
-	jr L_82FF		;82f2
+	jr escribe_el_periodo_al_psg		;82f2
 L_82F4:
 	ld a,e			;82f4
 	or a			;82f5
 	ret z			;82f6
-	dec c			;82f7
+	dec c			;82f7   ; se escribe como si fuera la voz de dos antes
 	dec c			;82f8
-	call L_82FF		;82f9
+	call escribe_el_periodo_al_psg		;82f9
 	inc c			;82fc
 	inc c			;82fd
 	ret			;82fe
-L_82FF:
-	ld a,(ix+00fh)		;82ff
+escribe_el_periodo_al_psg:
+	ld a,(ix+00fh)		;82ff   ; la bandera de medio tono
 	or a			;8302
 	jr z,L_8306		;8303
-	inc hl			;8305
+	inc hl			;8305   ; que corre el periodo un byte
 L_8306:
-	ld a,c			;8306
-	ld e,h			;8307
-	call 00093h		;8308   ; BIOS WRTPSG - Writes data to PSG-register
+	ld a,c			;8306   ; el registro del periodo de esta voz
+	ld e,h			;8307   ; byte ALTO primero
+	call 00093h		;8308   ; BIOS WRTPSG - Writes data to PSG-register | BIOS WRTPSG
 	ld a,c			;830b
-	dec a			;830c
+	dec a			;830c   ; y el registro de al lado es el byte bajo
 	ld e,l			;830d
 	call 00093h		;830e   ; BIOS WRTPSG - Writes data to PSG-register
-	ld a,(ix+010h)		;8311
+	ld a,(ix+010h)		;8311   ; ¿es un efecto?
 	or a			;8314
 	ret nz			;8315
-	ld a,(ix+00eh)		;8316
+	ld a,(ix+00eh)		;8316   ; ¿o queda efecto sonando?
 	or a			;8319
 	ret z			;831a
 	ld h,d			;831b
-	ld a,002h		;831c
+	ld a,002h		;831c   ; instrumento 2 mientras dure
 	ld (ix+005h),a		;831e
 	ret			;8321
-L_8322:
-	inc hl			;8322
-	ld (ix+003h),l		;8323
+apunta_donde_se_quedo:
+	inc hl			;8322   ; el byte siguiente de la partitura
+	ld (ix+003h),l		;8323   ; y se guarda en la voz, byte bajo y alto
 	ld (ix+004h),h		;8326
 	ret			;8329
-L_832A:
-	dec (ix+013h)		;832a
+un_paso_de_efecto:
+	dec (ix+013h)		;832a   ; un cuadro menos del paso del efecto
 	ret nz			;832d
-	ld l,(ix+011h)		;832e
+	ld l,(ix+011h)		;832e   ; el puntero al guion del efecto
 	ld h,(ix+012h)		;8331
-	ld a,(hl)			;8334
-	cp 0ffh		;8335
+	ld a,(hl)			;8334   ; su mando
+	cp 0ffh		;8335   ; 0xFF: se acabo el efecto
 	jr z,L_8346		;8337
-	jp L_80F8		;8339
-L_833C:
+	jp mando_de_musica		;8339   ; y si no, se lee como un mando de musica
+apunta_el_guion_del_efecto:
 	inc hl			;833c
-	ld (ix+011h),l		;833d
+	ld (ix+011h),l		;833d   ; donde se quedo el guion del efecto
 	ld (ix+012h),h		;8340
-	jp L_815C		;8343
+	jp nota_a_sonar		;8343
 L_8346:
 	xor a			;8346
 	ld h,a			;8347
 	ld (ix+005h),a		;8348
-	jp L_81BA		;834b
+	jp escribe_el_volumen		;834b
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x834e..0x86ba  (876 bytes)
-DATA_834E:
-	defb 06bh,065h,05fh,05ah,055h,050h,04ch,047h,043h,040h,03ch,039h,060h,083h,0ddh,084h	; 834e  ke_ZUPLGC@<9`...
-	defb 0d6h,085h,07ah,083h,080h,083h,08eh,083h,0a1h,083h,0afh,083h,0bdh,083h,0e6h,083h	; 835e  ..z.............
-	defb 00fh,084h,038h,084h,067h,084h,096h,084h,0c1h,084h,0cfh,084h,021h,001h,010h,0a0h	; 836e  ..8.g.......!...
-	defb 000h,0ffh,023h,001h,013h,091h,080h,022h,001h,082h,000h,072h,070h,063h,030h,0ffh	; 837e  ..#...."...rpc0.
-	defb 023h,001h,010h,0cah,000h,021h,004h,010h,0a0h,000h,090h,000h,080h,000h,070h,000h	; 838e  #....!........p.
-	defb 060h,000h,0ffh,023h,001h,013h,0c1h,030h,022h,001h,0c1h,0a0h,092h,020h,072h,0f0h	; 839e  `..#...0".... r.
-	defb 0ffh,023h,001h,013h,0c1h,080h,022h,001h,0c2h,000h,092h,070h,073h,030h,0ffh,022h	; 83ae  .#...."....ps0."
-	defb 001h,0b1h,050h,0a1h,05ah,0a1h,065h,091h,070h,091h,07ah,091h,085h,081h,090h,081h	; 83be  ..P.Z.e.p.z.....
-	defb 09ah,081h,0a5h,081h,0b0h,071h,0bah,071h,0c5h,071h,0d0h,071h,0dah,071h,0e5h,071h	; 83ce  .....q.q.q.q.q.q
-	defb 0f0h,061h,0fah,062h,025h,052h,030h,0ffh,022h,001h,0b1h,0a0h,0a1h,0aah,0a1h,0b5h	; 83de  .a.b%R0.".......
-	defb 091h,0c0h,091h,0cah,091h,0d5h,081h,0e0h,081h,0eah,081h,0f5h,082h,000h,072h,00ah	; 83ee  ..............r.
-	defb 072h,015h,072h,020h,072h,02ah,072h,035h,072h,040h,062h,04ah,062h,055h,052h,060h	; 83fe  r.r r*r5r@bJbUR`
-	defb 0ffh,022h,001h,0b1h,000h,0a1h,00ah,0a1h,015h,091h,020h,091h,02ah,091h,035h,081h	; 840e  ."........ .*.5.
-	defb 040h,081h,04ah,081h,055h,081h,060h,071h,06ah,071h,075h,071h,080h,071h,08ah,071h	; 841e  @.J.U.`qjquq.q.q
-	defb 095h,071h,0a0h,061h,0aah,061h,0b5h,051h,0c0h,0ffh,022h,001h,0c2h,000h,0b2h,00ah	; 842e  .q.a.a.Q..".....
-	defb 0b2h,015h,0a2h,020h,0a2h,02ah,0a2h,035h,092h,040h,092h,04ah,092h,055h,092h,060h	; 843e  ... .*.5.@.J.U.`
-	defb 082h,06ah,082h,075h,082h,080h,082h,08ah,082h,095h,072h,0a0h,072h,0aah,072h,0b5h	; 844e  .j.u......r.r.r.
-	defb 072h,0c0h,062h,0cah,062h,0d5h,052h,0e0h,0ffh,022h,001h,0d3h,000h,0c3h,00ah,0c3h	; 845e  r.b.b.R.."......
-	defb 015h,0b3h,020h,0b3h,02ah,0b3h,035h,0a3h,040h,0a3h,04ah,0a3h,055h,0a3h,060h,093h	; 846e  .. .*.5.@.J.U.`.
-	defb 06ah,093h,075h,093h,080h,093h,08ah,093h,095h,083h,0a0h,083h,0aah,083h,0b5h,073h	; 847e  j.u............s
-	defb 0c0h,073h,0cah,063h,0d5h,053h,0e0h,0ffh,022h,001h,0e4h,000h,0d4h,015h,0c4h,030h	; 848e  .s.c.S.."......0
-	defb 0c4h,045h,0b4h,060h,0b4h,075h,0b4h,090h,0a4h,0b0h,0a4h,0d0h,0a4h,0f0h,0a5h,010h	; 849e  .E.`.u..........
-	defb 095h,030h,095h,050h,094h,070h,094h,090h,094h,0b0h,084h,0d0h,084h,0f0h,075h,010h	; 84ae  .0.P.p........u.
-	defb 065h,030h,0ffh,023h,001h,013h,081h,080h,022h,001h,072h,000h,062h,070h,053h,030h	; 84be  e0.#....".r.bpS0
-	defb 0ffh,023h,001h,013h,061h,080h,022h,001h,052h,000h,042h,070h,033h,030h,0ffh,0f7h	; 84ce  .#..a.".R.Bp30..
-	defb 084h,008h,085h,019h,085h,02ah,085h,03dh,085h,04eh,085h,05fh,085h,070h,085h,081h	; 84de  .....*.=.N._.p..
-	defb 085h,092h,085h,0a3h,085h,0b4h,085h,0c5h,085h,022h,004h,090h,036h,080h,036h,070h	; 84ee  ........."..6.6p
-	defb 036h,060h,036h,050h,036h,040h,036h,030h,036h,0ffh,022h,004h,090h,040h,080h,040h	; 84fe  6`6P6@606."..@.@
-	defb 070h,040h,060h,040h,050h,040h,040h,040h,030h,040h,0ffh,022h,004h,090h,02fh,080h	; 850e  p@`@P@@@0@."../.
-	defb 02fh,070h,02fh,060h,02fh,050h,02fh,040h,02fh,030h,02fh,0ffh,022h,004h,090h,02dh	; 851e  /p/`/P/@/0/."..-
-	defb 080h,02dh,070h,02dh,060h,02dh,050h,02dh,040h,02dh,030h,02dh,020h,02dh,0ffh,022h	; 852e  .-p-`-P-@-0- -."
-	defb 004h,090h,02ah,080h,02ah,070h,02ah,060h,02ah,050h,02ah,040h,02ah,030h,02ah,0ffh	; 853e  ..*.*p*`*P*@*0*.
-	defb 022h,004h,090h,028h,080h,028h,070h,028h,060h,028h,050h,028h,040h,028h,030h,028h	; 854e  "..(.(p(`(P(@(0(
-	defb 0ffh,022h,004h,090h,026h,080h,026h,070h,026h,060h,026h,050h,026h,040h,026h,030h	; 855e  ."..&.&p&`&P&@&0
-	defb 026h,0ffh,022h,004h,090h,024h,080h,024h,070h,024h,060h,024h,050h,024h,040h,024h	; 856e  &."..$.$p$`$P$@$
-	defb 030h,024h,0ffh,022h,004h,090h,022h,080h,022h,070h,022h,060h,022h,050h,022h,040h	; 857e  0$.".."."p"`"P"@
-	defb 022h,030h,022h,0ffh,022h,004h,090h,020h,080h,020h,070h,020h,060h,020h,050h,020h	; 858e  "0".".. . p ` P
-	defb 040h,020h,030h,020h,0ffh,022h,004h,090h,01eh,080h,01eh,070h,01eh,060h,01eh,050h	; 859e  @ 0 .".....p.`.P
-	defb 01eh,040h,01eh,030h,01eh,0ffh,022h,004h,090h,01ch,080h,01ch,070h,01ch,060h,01ch	; 85ae  .@.0..".....p.`.
-	defb 050h,01ch,040h,01ch,030h,01ch,0ffh,022h,004h,090h,039h,080h,039h,070h,039h,060h	; 85be  P.@.0.."..9.9p9`
-	defb 039h,050h,039h,040h,039h,030h,039h,0ffh,0eeh,085h,0ffh,085h,010h,086h,021h,086h	; 85ce  9P9@909.......!.
-	defb 032h,086h,043h,086h,054h,086h,065h,086h,076h,086h,087h,086h,098h,086h,0a9h,086h	; 85de  2.C.T.e.v.......
-	defb 022h,004h,090h,050h,080h,050h,070h,050h,060h,050h,050h,050h,040h,050h,030h,050h	; 85ee  "..P.PpP`PPP@P0P
-	defb 0ffh,022h,002h,090h,032h,080h,032h,070h,032h,060h,032h,050h,032h,040h,032h,030h	; 85fe  ."..2.2p2`2P2@20
-	defb 032h,0ffh,022h,004h,090h,018h,080h,018h,070h,018h,060h,018h,050h,018h,040h,018h	; 860e  2.".....p.`.P.@.
-	defb 030h,018h,0ffh,022h,002h,090h,02fh,080h,02fh,070h,02fh,060h,02fh,050h,02fh,040h	; 861e  0..".././p/`/P/@
-	defb 02fh,030h,02fh,0ffh,022h,004h,090h,055h,080h,055h,070h,055h,060h,055h,050h,055h	; 862e  /0/."..U.UpU`UPU
-	defb 040h,055h,030h,055h,0ffh,022h,002h,090h,02ah,080h,02ah,070h,02ah,060h,02ah,050h	; 863e  @U0U."..*.*p*`*P
-	defb 02ah,040h,02ah,030h,02ah,0ffh,022h,002h,090h,026h,080h,026h,070h,026h,060h,026h	; 864e  *@*0*."..&.&p&`&
-	defb 050h,026h,040h,026h,030h,026h,0ffh,022h,004h,090h,047h,080h,047h,070h,047h,060h	; 865e  P&@&0&."..G.GpG`
-	defb 047h,050h,047h,040h,047h,030h,047h,0ffh,022h,004h,090h,043h,080h,043h,070h,043h	; 866e  GPG@G0G."..C.CpC
-	defb 060h,043h,050h,043h,040h,043h,030h,043h,0ffh,022h,004h,090h,03ch,080h,03ch,070h	; 867e  `CPC@C0C."..<.<p
-	defb 03ch,060h,03ch,050h,03ch,040h,03ch,030h,03ch,0ffh,022h,004h,090h,048h,080h,048h	; 868e  <`<P<@<0<."..H.H
-	defb 070h,048h,060h,048h,050h,048h,040h,048h,030h,048h,0ffh,022h,004h,090h,01bh,080h	; 869e  pH`HPH@H0H."....
-	defb 01bh,070h,01bh,060h,01bh,050h,01bh,040h,01bh,030h,01bh,0ffh	; 86ae  .p.`.P.@.0..
+; DATOS los_doce_semitonos: Los doce semitonos de una octava, en periodos del
+;   PSG y de un solo byte: 0x6B, 0x65, 0x5F, 0x5A, 0x55, 0x50, 0x4C, 0x47,
+;   0x43, 0x40, 0x3C y 0x39. Que sean doce y que el primero valga casi el
+;   doble que el ultimo -107 contra 57- es lo que dice que son una octava
+;   entera. La octava en la que suena la pone 0x82DB doblando el periodo
+;   tantas veces como diga el desplazamiento, que es lo mismo que bajar
+;   octavas.
+;   0x834e..0x835a  (12 bytes)
+DATA_los_doce_semitonos:
+	defb 06bh,065h,05fh,05ah,055h,050h,04ch,047h,043h,040h,03ch,039h	; 834e  ke_ZUPLGC@<9
+
+; ----------------------------------------------------------------------
+; DATOS guiones_de_efecto: Los punteros a los guiones de los efectos, en
+;   parejas y dentro de este mismo banco. 0x8287 los indexa con la bandera de
+;   0x10 de la voz, DESDE UNO -por eso la tabla se direcciona como si empezara
+;   en 0x8358-.
+;   0x835a..0x8372  (24 bytes)
+DATA_guiones_de_efecto:
+	defw 08360h	; 835a
+	defw 084ddh	; 835c
+	defw 085d6h	; 835e
+	defw 0837ah	; 8360
+	defw 08380h	; 8362
+	defw 0838eh	; 8364
+	defw 083a1h	; 8366
+	defw 083afh	; 8368
+	defw 083bdh	; 836a
+	defw 083e6h	; 836c
+	defw 0840fh	; 836e
+	defw 08438h	; 8370
+
+; ----------------------------------------------------------------------
+; DATOS sin identificar  0x8372..0x86ba  (840 bytes)
+DATA_8372:
+	defb 067h,084h,096h,084h,0c1h,084h,0cfh,084h,021h,001h,010h,0a0h,000h,0ffh,023h,001h	; 8372  g.......!.....#.
+	defb 013h,091h,080h,022h,001h,082h,000h,072h,070h,063h,030h,0ffh,023h,001h,010h,0cah	; 8382  ..."...rpc0.#...
+	defb 000h,021h,004h,010h,0a0h,000h,090h,000h,080h,000h,070h,000h,060h,000h,0ffh,023h	; 8392  .!........p.`..#
+	defb 001h,013h,0c1h,030h,022h,001h,0c1h,0a0h,092h,020h,072h,0f0h,0ffh,023h,001h,013h	; 83a2  ...0".... r..#..
+	defb 0c1h,080h,022h,001h,0c2h,000h,092h,070h,073h,030h,0ffh,022h,001h,0b1h,050h,0a1h	; 83b2  .."....ps0."..P.
+	defb 05ah,0a1h,065h,091h,070h,091h,07ah,091h,085h,081h,090h,081h,09ah,081h,0a5h,081h	; 83c2  Z.e.p.z.........
+	defb 0b0h,071h,0bah,071h,0c5h,071h,0d0h,071h,0dah,071h,0e5h,071h,0f0h,061h,0fah,062h	; 83d2  .q.q.q.q.q.q.a.b
+	defb 025h,052h,030h,0ffh,022h,001h,0b1h,0a0h,0a1h,0aah,0a1h,0b5h,091h,0c0h,091h,0cah	; 83e2  %R0."...........
+	defb 091h,0d5h,081h,0e0h,081h,0eah,081h,0f5h,082h,000h,072h,00ah,072h,015h,072h,020h	; 83f2  ..........r.r.r
+	defb 072h,02ah,072h,035h,072h,040h,062h,04ah,062h,055h,052h,060h,0ffh,022h,001h,0b1h	; 8402  r*r5r@bJbUR`."..
+	defb 000h,0a1h,00ah,0a1h,015h,091h,020h,091h,02ah,091h,035h,081h,040h,081h,04ah,081h	; 8412  ...... .*.5.@.J.
+	defb 055h,081h,060h,071h,06ah,071h,075h,071h,080h,071h,08ah,071h,095h,071h,0a0h,061h	; 8422  U.`qjquq.q.q.q.a
+	defb 0aah,061h,0b5h,051h,0c0h,0ffh,022h,001h,0c2h,000h,0b2h,00ah,0b2h,015h,0a2h,020h	; 8432  .a.Q.."........
+	defb 0a2h,02ah,0a2h,035h,092h,040h,092h,04ah,092h,055h,092h,060h,082h,06ah,082h,075h	; 8442  .*.5.@.J.U.`.j.u
+	defb 082h,080h,082h,08ah,082h,095h,072h,0a0h,072h,0aah,072h,0b5h,072h,0c0h,062h,0cah	; 8452  ......r.r.r.r.b.
+	defb 062h,0d5h,052h,0e0h,0ffh,022h,001h,0d3h,000h,0c3h,00ah,0c3h,015h,0b3h,020h,0b3h	; 8462  b.R.."........ .
+	defb 02ah,0b3h,035h,0a3h,040h,0a3h,04ah,0a3h,055h,0a3h,060h,093h,06ah,093h,075h,093h	; 8472  *.5.@.J.U.`.j.u.
+	defb 080h,093h,08ah,093h,095h,083h,0a0h,083h,0aah,083h,0b5h,073h,0c0h,073h,0cah,063h	; 8482  ...........s.s.c
+	defb 0d5h,053h,0e0h,0ffh,022h,001h,0e4h,000h,0d4h,015h,0c4h,030h,0c4h,045h,0b4h,060h	; 8492  .S.."......0.E.`
+	defb 0b4h,075h,0b4h,090h,0a4h,0b0h,0a4h,0d0h,0a4h,0f0h,0a5h,010h,095h,030h,095h,050h	; 84a2  .u...........0.P
+	defb 094h,070h,094h,090h,094h,0b0h,084h,0d0h,084h,0f0h,075h,010h,065h,030h,0ffh,023h	; 84b2  .p........u.e0.#
+	defb 001h,013h,081h,080h,022h,001h,072h,000h,062h,070h,053h,030h,0ffh,023h,001h,013h	; 84c2  ....".r.bpS0.#..
+	defb 061h,080h,022h,001h,052h,000h,042h,070h,033h,030h,0ffh,0f7h,084h,008h,085h,019h	; 84d2  a.".R.Bp30......
+	defb 085h,02ah,085h,03dh,085h,04eh,085h,05fh,085h,070h,085h,081h,085h,092h,085h,0a3h	; 84e2  .*.=.N._.p......
+	defb 085h,0b4h,085h,0c5h,085h,022h,004h,090h,036h,080h,036h,070h,036h,060h,036h,050h	; 84f2  ....."..6.6p6`6P
+	defb 036h,040h,036h,030h,036h,0ffh,022h,004h,090h,040h,080h,040h,070h,040h,060h,040h	; 8502  6@606."..@.@p@`@
+	defb 050h,040h,040h,040h,030h,040h,0ffh,022h,004h,090h,02fh,080h,02fh,070h,02fh,060h	; 8512  P@@@0@.".././p/`
+	defb 02fh,050h,02fh,040h,02fh,030h,02fh,0ffh,022h,004h,090h,02dh,080h,02dh,070h,02dh	; 8522  /P/@/0/."..-.-p-
+	defb 060h,02dh,050h,02dh,040h,02dh,030h,02dh,020h,02dh,0ffh,022h,004h,090h,02ah,080h	; 8532  `-P-@-0- -."..*.
+	defb 02ah,070h,02ah,060h,02ah,050h,02ah,040h,02ah,030h,02ah,0ffh,022h,004h,090h,028h	; 8542  *p*`*P*@*0*."..(
+	defb 080h,028h,070h,028h,060h,028h,050h,028h,040h,028h,030h,028h,0ffh,022h,004h,090h	; 8552  .(p(`(P(@(0(."..
+	defb 026h,080h,026h,070h,026h,060h,026h,050h,026h,040h,026h,030h,026h,0ffh,022h,004h	; 8562  &.&p&`&P&@&0&.".
+	defb 090h,024h,080h,024h,070h,024h,060h,024h,050h,024h,040h,024h,030h,024h,0ffh,022h	; 8572  .$.$p$`$P$@$0$."
+	defb 004h,090h,022h,080h,022h,070h,022h,060h,022h,050h,022h,040h,022h,030h,022h,0ffh	; 8582  .."."p"`"P"@"0".
+	defb 022h,004h,090h,020h,080h,020h,070h,020h,060h,020h,050h,020h,040h,020h,030h,020h	; 8592  ".. . p ` P @ 0
+	defb 0ffh,022h,004h,090h,01eh,080h,01eh,070h,01eh,060h,01eh,050h,01eh,040h,01eh,030h	; 85a2  .".....p.`.P.@.0
+	defb 01eh,0ffh,022h,004h,090h,01ch,080h,01ch,070h,01ch,060h,01ch,050h,01ch,040h,01ch	; 85b2  ..".....p.`.P.@.
+	defb 030h,01ch,0ffh,022h,004h,090h,039h,080h,039h,070h,039h,060h,039h,050h,039h,040h	; 85c2  0.."..9.9p9`9P9@
+	defb 039h,030h,039h,0ffh,0eeh,085h,0ffh,085h,010h,086h,021h,086h,032h,086h,043h,086h	; 85d2  909.......!.2.C.
+	defb 054h,086h,065h,086h,076h,086h,087h,086h,098h,086h,0a9h,086h,022h,004h,090h,050h	; 85e2  T.e.v......."..P
+	defb 080h,050h,070h,050h,060h,050h,050h,050h,040h,050h,030h,050h,0ffh,022h,002h,090h	; 85f2  .PpP`PPP@P0P."..
+	defb 032h,080h,032h,070h,032h,060h,032h,050h,032h,040h,032h,030h,032h,0ffh,022h,004h	; 8602  2.2p2`2P2@202.".
+	defb 090h,018h,080h,018h,070h,018h,060h,018h,050h,018h,040h,018h,030h,018h,0ffh,022h	; 8612  ....p.`.P.@.0.."
+	defb 002h,090h,02fh,080h,02fh,070h,02fh,060h,02fh,050h,02fh,040h,02fh,030h,02fh,0ffh	; 8622  .././p/`/P/@/0/.
+	defb 022h,004h,090h,055h,080h,055h,070h,055h,060h,055h,050h,055h,040h,055h,030h,055h	; 8632  "..U.UpU`UPU@U0U
+	defb 0ffh,022h,002h,090h,02ah,080h,02ah,070h,02ah,060h,02ah,050h,02ah,040h,02ah,030h	; 8642  ."..*.*p*`*P*@*0
+	defb 02ah,0ffh,022h,002h,090h,026h,080h,026h,070h,026h,060h,026h,050h,026h,040h,026h	; 8652  *."..&.&p&`&P&@&
+	defb 030h,026h,0ffh,022h,004h,090h,047h,080h,047h,070h,047h,060h,047h,050h,047h,040h	; 8662  0&."..G.GpG`GPG@
+	defb 047h,030h,047h,0ffh,022h,004h,090h,043h,080h,043h,070h,043h,060h,043h,050h,043h	; 8672  G0G."..C.CpC`CPC
+	defb 040h,043h,030h,043h,0ffh,022h,004h,090h,03ch,080h,03ch,070h,03ch,060h,03ch,050h	; 8682  @C0C."..<.<p<`<P
+	defb 03ch,040h,03ch,030h,03ch,0ffh,022h,004h,090h,048h,080h,048h,070h,048h,060h,048h	; 8692  <@<0<."..H.HpH`H
+	defb 050h,048h,040h,048h,030h,048h,0ffh,022h,004h,090h,01bh,080h,01bh,070h,01bh,060h	; 86a2  PH@H0H.".....p.`
+	defb 01bh,050h,01bh,040h,01bh,030h,01bh,0ffh	; 86b2  .P.@.0..
 
 ; ======================================================================
 ; CODIGO 0x86ba..0x873a  (128 bytes)
 ; ======================================================================
 
 
-L_86BA:
-	cp 03ah		;86ba
-	jr nz,L_86C8		;86bc
-	ld hl,0e010h		;86be
-	ld de,0e064h		;86c1
-	call L_8000		;86c4
+
+; ----------------------------------------------------------------------
+; PEDIR UN EFECTO. La segunda puerta del banco, la que llama p00:416C con el numero de efecto en A. No todos los efectos mandan lo mismo: hay una tabla de PRIORIDADES en 0xE051, y un efecto solo entra si el que esta sonando vale menos que el. Asi el ruido de un salto no se come a la musica del final.
+; ----------------------------------------------------------------------
+pide_un_efecto:
+	cp 03ah		;86ba   ; el 0x3A es el que reinicia las voces
+	jr nz,pide_un_efecto_elige_voz		;86bc
+	ld hl,0e010h		;86be   ; la primera voz
+	ld de,0e064h		;86c1   ; y la plantilla de voz callada
+	call arranca_una_voz		;86c4
 	ld a,c			;86c7
-L_86C8:
-	ld c,a			;86c8
-	ld hl,0e012h		;86c9
-	ld b,001h		;86cc
+pide_un_efecto_elige_voz:
+	ld c,a			;86c8   ; C se queda con el numero de efecto
+	ld hl,0e012h		;86c9   ; la segunda voz
+	ld b,001h		;86cc   ; y de momento, una sola
 	ld a,c			;86ce
-	cp 03bh		;86cf
-	jr c,L_86E5		;86d1
-	cp 0cbh		;86d3
+	cp 03bh		;86cf   ; por debajo de 0x3B son efectos cortos
+	jr c,pide_un_efecto_corto		;86d1
+	cp 0cbh		;86d3   ; el 0xCB gasta una voz mas
 	jr nz,L_86D8		;86d5
 	inc b			;86d7
 L_86D8:
-	inc b			;86d8
+	inc b			;86d8   ; y los de arriba, tres
 	inc b			;86d9
-	cp 08ch		;86da
-	jr nz,L_8706		;86dc
+	cp 08ch		;86da   ; el 0x8C ademas borra la prioridad
+	jr nz,arranca_el_efecto_en_la_voz		;86dc
 	xor a			;86de
 	ld (0e051h),a		;86df
 	ld a,c			;86e2
-	jr L_8706		;86e3
-L_86E5:
+	jr arranca_el_efecto_en_la_voz		;86e3
+pide_un_efecto_corto:
 	ld a,c			;86e5
-	cp 039h		;86e6
-	jr z,L_8706		;86e8
+	cp 039h		;86e6   ; el 0x39 y el 0x3A entran siempre
+	jr z,arranca_el_efecto_en_la_voz		;86e8
 	cp 03ah		;86ea
-	jr z,L_8706		;86ec
-	ld l,051h		;86ee
-	ld a,(0e03ch)		;86f0
+	jr z,arranca_el_efecto_en_la_voz		;86ec
+	ld l,051h		;86ee   ; la prioridad del que suena ahora
+	ld a,(0e03ch)		;86f0   ; pero si el juego esta en cierto estado, no entra ninguno
 	cp 07ah		;86f3
 	ret nc			;86f5
-	ld a,(hl)			;86f6
+	ld a,(hl)			;86f6   ; la prioridad de ahora
 	ld e,a			;86f7
 	ld a,c			;86f8
-	cp 005h		;86f9
+	cp 005h		;86f9   ; dos efectos se cuelan una posicion mas arriba
 	jr nz,L_86FE		;86fb
 	inc a			;86fd
 L_86FE:
@@ -647,46 +713,46 @@ L_86FE:
 	jr nz,L_8703		;8700
 	inc a			;8702
 L_8703:
-	cp e			;8703
+	cp e			;8703   ; y si el nuevo no gana, no entra
 	ret c			;8704
 	ld a,c			;8705
-L_8706:
-	ld de,08738h		;8706
-	add a,a			;8709
+arranca_el_efecto_en_la_voz:
+	ld de,08738h		;8706   ; la tabla de guiones de efecto, al final del banco
+	add a,a			;8709   ; dos bytes por entrada, con el acarreo a mano
 	jr nc,L_870D		;870a
 	inc d			;870c
 L_870D:
-	add a,e			;870d
+	add a,e			;870d   ; DE = 0x8738 + 2*efecto
 	ld e,a			;870e
 	jr nc,L_8712		;870f
 	inc d			;8711
 L_8712:
-	dec l			;8712
+	dec l			;8712   ; dos bytes atras: al principio del campo
 	dec l			;8713
-L_8714:
-	ld (hl),001h		;8714
-	inc l			;8716
+arranca_el_efecto_bucle:
+	ld (hl),001h		;8714   ; la voz, en marcha
+	inc l			;8716   ; y de dos en dos por los campos
 	inc l			;8717
-	ld (hl),c			;8718
+	ld (hl),c			;8718   ; el numero de efecto queda apuntado en la voz
 	inc l			;8719
-	ld a,(de)			;871a
+	ld a,(de)			;871a   ; el guion, byte bajo...
 	ld (hl),a			;871b
 	inc l			;871c
 	inc de			;871d
-	ld a,(de)			;871e
+	ld a,(de)			;871e   ; ...y byte alto
 	ld (hl),a			;871f
-	ld a,007h		;8720
+	ld a,007h		;8720   ; siete campos mas alla
 	add a,l			;8722
 	ld l,a			;8723
-	xor a			;8724
+	xor a			;8724   ; a cero
 	ld (hl),a			;8725
-	ld a,003h		;8726
+	ld a,003h		;8726   ; y tres mas
 	add a,l			;8728
 	ld l,a			;8729
-	ld a,001h		;872a
+	ld a,001h		;872a   ; la marca de que lo que suena es un efecto
 	ld (hl),a			;872c
 	inc l			;872d
-	dec a			;872e
+	dec a			;872e   ; y las dos de al lado, a cero
 	ld (hl),a			;872f
 	inc l			;8730
 	ld (hl),a			;8731
@@ -694,7 +760,7 @@ L_8714:
 	add a,l			;8734
 	ld l,a			;8735
 	inc de			;8736
-	djnz L_8714		;8737
+	djnz arranca_el_efecto_bucle		;8737
 	ret			;8739
 
 ; ----------------------------------------------------------------------

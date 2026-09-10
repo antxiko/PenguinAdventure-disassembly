@@ -38,224 +38,224 @@ L_6000:
 	jp z,L_614D		;6026
 	ret			;6029
 L_602A:
-	di			;602a
+	di			;602a   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;602b
-	ld (08000h),a		;602d
-	ld (0f0f2h),a		;6030
-	ei			;6033
-	di			;6034
+	ld (08000h),a		;602d   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;6030   ; y en su copia de RAM
+	ei			;6033   ; el mapa ya esta entero
+	di			;6034   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;6035
-	ld (0a000h),a		;6037
-	ld (0f0f3h),a		;603a
-	ei			;603d
+	ld (0a000h),a		;6037   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;603a   ; y en su copia de RAM
+	ei			;603d   ; el mapa ya esta entero
 	ld hl,08014h		;603e
 	call 0418ch		;6041
 	call L_61DD		;6044
-	di			;6047
+	di			;6047   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6048
-	ld (08000h),a		;604a
-	ld (0f0f2h),a		;604d
-	ei			;6050
-	di			;6051
+	ld (08000h),a		;604a   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;604d   ; y en su copia de RAM
+	ei			;6050   ; el mapa ya esta entero
+	di			;6051   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;6052
-	ld (0a000h),a		;6054
-	ld (0f0f3h),a		;6057
-	ei			;605a
+	ld (0a000h),a		;6054   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;6057   ; y en su copia de RAM
+	ei			;605a   ; el mapa ya esta entero
 	ret			;605b
 L_605C:
-	di			;605c
+	di			;605c   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;605d
-	ld (08000h),a		;605f
-	ld (0f0f2h),a		;6062
-	ei			;6065
-	di			;6066
+	ld (08000h),a		;605f   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;6062   ; y en su copia de RAM
+	ei			;6065   ; el mapa ya esta entero
+	di			;6066   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;6067
-	ld (0a000h),a		;6069
-	ld (0f0f3h),a		;606c
-	ei			;606f
+	ld (0a000h),a		;6069   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;606c   ; y en su copia de RAM
+	ei			;606f   ; el mapa ya esta entero
 	ld hl,081ech		;6070
 	call 0418ch		;6073
-	di			;6076
+	di			;6076   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6077
-	ld (08000h),a		;6079
-	ld (0f0f2h),a		;607c
-	ei			;607f
-	di			;6080
+	ld (08000h),a		;6079   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;607c   ; y en su copia de RAM
+	ei			;607f   ; el mapa ya esta entero
+	di			;6080   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;6081
-	ld (0a000h),a		;6083
-	ld (0f0f3h),a		;6086
-	ei			;6089
+	ld (0a000h),a		;6083   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;6086   ; y en su copia de RAM
+	ei			;6089   ; el mapa ya esta entero
 	ret			;608a
 L_608B:
-	di			;608b
+	di			;608b   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;608c
-	ld (08000h),a		;608e
-	ld (0f0f2h),a		;6091
-	ei			;6094
-	di			;6095
+	ld (08000h),a		;608e   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;6091   ; y en su copia de RAM
+	ei			;6094   ; el mapa ya esta entero
+	di			;6095   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;6096
-	ld (0a000h),a		;6098
-	ld (0f0f3h),a		;609b
-	ei			;609e
+	ld (0a000h),a		;6098   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;609b   ; y en su copia de RAM
+	ei			;609e   ; el mapa ya esta entero
 	ld hl,08725h		;609f
 	call 0418ch		;60a2
 	call L_61DD		;60a5
-	di			;60a8
+	di			;60a8   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;60a9
-	ld (08000h),a		;60ab
-	ld (0f0f2h),a		;60ae
-	ei			;60b1
-	di			;60b2
+	ld (08000h),a		;60ab   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;60ae   ; y en su copia de RAM
+	ei			;60b1   ; el mapa ya esta entero
+	di			;60b2   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;60b3
-	ld (0a000h),a		;60b5
-	ld (0f0f3h),a		;60b8
-	ei			;60bb
+	ld (0a000h),a		;60b5   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;60b8   ; y en su copia de RAM
+	ei			;60bb   ; el mapa ya esta entero
 	ret			;60bc
 L_60BD:
-	di			;60bd
+	di			;60bd   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;60be
-	ld (08000h),a		;60c0
-	ld (0f0f2h),a		;60c3
-	ei			;60c6
-	di			;60c7
+	ld (08000h),a		;60c0   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;60c3   ; y en su copia de RAM
+	ei			;60c6   ; el mapa ya esta entero
+	di			;60c7   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;60c8
-	ld (0a000h),a		;60ca
-	ld (0f0f3h),a		;60cd
-	ei			;60d0
+	ld (0a000h),a		;60ca   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;60cd   ; y en su copia de RAM
+	ei			;60d0   ; el mapa ya esta entero
 	ld hl,089b0h		;60d1
 	call 0418ch		;60d4
-	di			;60d7
+	di			;60d7   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;60d8
-	ld (08000h),a		;60da
-	ld (0f0f2h),a		;60dd
-	ei			;60e0
-	di			;60e1
+	ld (08000h),a		;60da   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;60dd   ; y en su copia de RAM
+	ei			;60e0   ; el mapa ya esta entero
+	di			;60e1   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;60e2
-	ld (0a000h),a		;60e4
-	ld (0f0f3h),a		;60e7
-	ei			;60ea
+	ld (0a000h),a		;60e4   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;60e7   ; y en su copia de RAM
+	ei			;60ea   ; el mapa ya esta entero
 	ret			;60eb
 L_60EC:
-	di			;60ec
+	di			;60ec   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;60ed
-	ld (08000h),a		;60ef
-	ld (0f0f2h),a		;60f2
-	ei			;60f5
-	di			;60f6
+	ld (08000h),a		;60ef   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;60f2   ; y en su copia de RAM
+	ei			;60f5   ; el mapa ya esta entero
+	di			;60f6   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;60f7
-	ld (0a000h),a		;60f9
-	ld (0f0f3h),a		;60fc
-	ei			;60ff
+	ld (0a000h),a		;60f9   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;60fc   ; y en su copia de RAM
+	ei			;60ff   ; el mapa ya esta entero
 	ld hl,08ee9h		;6100
 	call 0418ch		;6103
 	call L_61DD		;6106
-	di			;6109
+	di			;6109   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;610a
-	ld (08000h),a		;610c
-	ld (0f0f2h),a		;610f
-	ei			;6112
-	di			;6113
+	ld (08000h),a		;610c   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;610f   ; y en su copia de RAM
+	ei			;6112   ; el mapa ya esta entero
+	di			;6113   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;6114
-	ld (0a000h),a		;6116
-	ld (0f0f3h),a		;6119
-	ei			;611c
+	ld (0a000h),a		;6116   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;6119   ; y en su copia de RAM
+	ei			;611c   ; el mapa ya esta entero
 	ret			;611d
 L_611E:
-	di			;611e
+	di			;611e   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;611f
-	ld (08000h),a		;6121
-	ld (0f0f2h),a		;6124
-	ei			;6127
-	di			;6128
+	ld (08000h),a		;6121   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;6124   ; y en su copia de RAM
+	ei			;6127   ; el mapa ya esta entero
+	di			;6128   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;6129
-	ld (0a000h),a		;612b
-	ld (0f0f3h),a		;612e
-	ei			;6131
+	ld (0a000h),a		;612b   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;612e   ; y en su copia de RAM
+	ei			;6131   ; el mapa ya esta entero
 	ld hl,090efh		;6132
 	call 0418ch		;6135
-	di			;6138
+	di			;6138   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6139
-	ld (08000h),a		;613b
-	ld (0f0f2h),a		;613e
-	ei			;6141
-	di			;6142
+	ld (08000h),a		;613b   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;613e   ; y en su copia de RAM
+	ei			;6141   ; el mapa ya esta entero
+	di			;6142   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;6143
-	ld (0a000h),a		;6145
-	ld (0f0f3h),a		;6148
-	ei			;614b
+	ld (0a000h),a		;6145   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;6148   ; y en su copia de RAM
+	ei			;614b   ; el mapa ya esta entero
 	ret			;614c
 L_614D:
-	di			;614d
+	di			;614d   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;614e
-	ld (08000h),a		;6150
-	ld (0f0f2h),a		;6153
-	ei			;6156
-	di			;6157
+	ld (08000h),a		;6150   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;6153   ; y en su copia de RAM
+	ei			;6156   ; el mapa ya esta entero
+	di			;6157   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;6158
-	ld (0a000h),a		;615a
-	ld (0f0f3h),a		;615d
-	ei			;6160
+	ld (0a000h),a		;615a   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;615d   ; y en su copia de RAM
+	ei			;6160   ; el mapa ya esta entero
 	ld hl,09735h		;6161
 	call 0418ch		;6164
-	di			;6167
+	di			;6167   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6168
-	ld (08000h),a		;616a
-	ld (0f0f2h),a		;616d
-	ei			;6170
-	di			;6171
+	ld (08000h),a		;616a   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;616d   ; y en su copia de RAM
+	ei			;6170   ; el mapa ya esta entero
+	di			;6171   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;6172
-	ld (0a000h),a		;6174
-	ld (0f0f3h),a		;6177
-	ei			;617a
+	ld (0a000h),a		;6174   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;6177   ; y en su copia de RAM
+	ei			;617a   ; el mapa ya esta entero
 	ret			;617b
 L_617C:
-	di			;617c
+	di			;617c   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;617d
-	ld (08000h),a		;617f
-	ld (0f0f2h),a		;6182
-	ei			;6185
-	di			;6186
+	ld (08000h),a		;617f   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;6182   ; y en su copia de RAM
+	ei			;6185   ; el mapa ya esta entero
+	di			;6186   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;6187
-	ld (0a000h),a		;6189
-	ld (0f0f3h),a		;618c
-	ei			;618f
+	ld (0a000h),a		;6189   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;618c   ; y en su copia de RAM
+	ei			;618f   ; el mapa ya esta entero
 	ld hl,09d72h		;6190
 	call 0418ch		;6193
-	di			;6196
+	di			;6196   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6197
-	ld (08000h),a		;6199
-	ld (0f0f2h),a		;619c
-	ei			;619f
-	di			;61a0
+	ld (08000h),a		;6199   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;619c   ; y en su copia de RAM
+	ei			;619f   ; el mapa ya esta entero
+	di			;61a0   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;61a1
-	ld (0a000h),a		;61a3
-	ld (0f0f3h),a		;61a6
-	ei			;61a9
+	ld (0a000h),a		;61a3   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;61a6   ; y en su copia de RAM
+	ei			;61a9   ; el mapa ya esta entero
 	ret			;61aa
 L_61AB:
-	di			;61ab
+	di			;61ab   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;61ac
-	ld (08000h),a		;61ae
-	ld (0f0f2h),a		;61b1
-	ei			;61b4
-	di			;61b5
+	ld (08000h),a		;61ae   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;61b1   ; y en su copia de RAM
+	ei			;61b4   ; el mapa ya esta entero
+	di			;61b5   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;61b6
-	ld (0a000h),a		;61b8
-	ld (0f0f3h),a		;61bb
-	ei			;61be
+	ld (0a000h),a		;61b8   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;61bb   ; y en su copia de RAM
+	ei			;61be   ; el mapa ya esta entero
 	ld hl,0a314h		;61bf
 	call 0418ch		;61c2
 	call L_7E47		;61c5
-	di			;61c8
+	di			;61c8   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;61c9
-	ld (08000h),a		;61cb
-	ld (0f0f2h),a		;61ce
-	ei			;61d1
-	di			;61d2
+	ld (08000h),a		;61cb   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;61ce   ; y en su copia de RAM
+	ei			;61d1   ; el mapa ya esta entero
+	di			;61d2   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;61d3
-	ld (0a000h),a		;61d5
-	ld (0f0f3h),a		;61d8
-	ei			;61db
+	ld (0a000h),a		;61d5   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;61d8   ; y en su copia de RAM
+	ei			;61db   ; el mapa ya esta entero
 	ret			;61dc
 L_61DD:
 	ld a,(0e0a1h)		;61dd
@@ -276,16 +276,16 @@ L_61F3:
 	ldir		;61fc
 	ret			;61fe
 L_61FF:
-	di			;61ff
+	di			;61ff   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;6200
-	ld (08000h),a		;6202
-	ld (0f0f2h),a		;6205
-	ei			;6208
-	di			;6209
+	ld (08000h),a		;6202   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;6205   ; y en su copia de RAM
+	ei			;6208   ; el mapa ya esta entero
+	di			;6209   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;620a
-	ld (0a000h),a		;620c
-	ld (0f0f3h),a		;620f
-	ei			;6212
+	ld (0a000h),a		;620c   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;620f   ; y en su copia de RAM
+	ei			;6212   ; el mapa ya esta entero
 	call L_64E7		;6213
 	add hl,hl			;6216
 	ld de,0acbah		;6217
@@ -308,28 +308,28 @@ L_61FF:
 	inc hl			;6231
 	ld d,(hl)			;6232
 	ld (0e08dh),de		;6233
-	di			;6237
+	di			;6237   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6238
-	ld (08000h),a		;623a
-	ld (0f0f2h),a		;623d
-	ei			;6240
-	di			;6241
+	ld (08000h),a		;623a   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;623d   ; y en su copia de RAM
+	ei			;6240   ; el mapa ya esta entero
+	di			;6241   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;6242
-	ld (0a000h),a		;6244
-	ld (0f0f3h),a		;6247
-	ei			;624a
+	ld (0a000h),a		;6244   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;6247   ; y en su copia de RAM
+	ei			;624a   ; el mapa ya esta entero
 	ret			;624b
 L_624C:
-	di			;624c
+	di			;624c   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;624d
-	ld (08000h),a		;624f
-	ld (0f0f2h),a		;6252
-	ei			;6255
-	di			;6256
+	ld (08000h),a		;624f   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;6252   ; y en su copia de RAM
+	ei			;6255   ; el mapa ya esta entero
+	di			;6256   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;6257
-	ld (0a000h),a		;6259
-	ld (0f0f3h),a		;625c
-	ei			;625f
+	ld (0a000h),a		;6259   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;625c   ; y en su copia de RAM
+	ei			;625f   ; el mapa ya esta entero
 	xor a			;6260
 	ld (0e201h),a		;6261
 	ld (0e202h),a		;6264
@@ -355,16 +355,16 @@ L_627A:
 	inc hl			;628a
 	ld a,(hl)			;628b
 	ld (0e203h),a		;628c
-	di			;628f
+	di			;628f   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6290
-	ld (08000h),a		;6292
-	ld (0f0f2h),a		;6295
-	ei			;6298
-	di			;6299
+	ld (08000h),a		;6292   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;6295   ; y en su copia de RAM
+	ei			;6298   ; el mapa ya esta entero
+	di			;6299   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;629a
-	ld (0a000h),a		;629c
-	ld (0f0f3h),a		;629f
-	ei			;62a2
+	ld (0a000h),a		;629c   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;629f   ; y en su copia de RAM
+	ei			;62a2   ; el mapa ya esta entero
 	ret			;62a3
 L_62A4:
 	ld a,017h		;62a4
@@ -417,42 +417,42 @@ DATA_62EC:
 
 
 L_62EF:
-	di			;62ef
+	di			;62ef   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;62f0
-	ld (08000h),a		;62f2
-	ld (0f0f2h),a		;62f5
-	ei			;62f8
-	di			;62f9
+	ld (08000h),a		;62f2   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;62f5   ; y en su copia de RAM
+	ei			;62f8   ; el mapa ya esta entero
+	di			;62f9   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;62fa
-	ld (0a000h),a		;62fc
-	ld (0f0f3h),a		;62ff
-	ei			;6302
+	ld (0a000h),a		;62fc   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;62ff   ; y en su copia de RAM
+	ei			;6302   ; el mapa ya esta entero
 	ld hl,0ad38h		;6303
 	ld de,0e570h		;6306
 	ld bc,00030h		;6309
 	ldir		;630c
-	di			;630e
+	di			;630e   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;630f
-	ld (08000h),a		;6311
-	ld (0f0f2h),a		;6314
-	ei			;6317
-	di			;6318
+	ld (08000h),a		;6311   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;6314   ; y en su copia de RAM
+	ei			;6317   ; el mapa ya esta entero
+	di			;6318   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;6319
-	ld (0a000h),a		;631b
-	ld (0f0f3h),a		;631e
-	ei			;6321
+	ld (0a000h),a		;631b   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;631e   ; y en su copia de RAM
+	ei			;6321   ; el mapa ya esta entero
 	ret			;6322
 L_6323:
-	di			;6323
+	di			;6323   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;6324
-	ld (08000h),a		;6326
-	ld (0f0f2h),a		;6329
-	ei			;632c
-	di			;632d
+	ld (08000h),a		;6326   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;6329   ; y en su copia de RAM
+	ei			;632c   ; el mapa ya esta entero
+	di			;632d   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;632e
-	ld (0a000h),a		;6330
-	ld (0f0f3h),a		;6333
-	ei			;6336
+	ld (0a000h),a		;6330   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;6333   ; y en su copia de RAM
+	ei			;6336   ; el mapa ya esta entero
 	ld hl,0ad68h		;6337
 	ld de,0ee80h		;633a
 	ld bc,00080h		;633d
@@ -470,28 +470,28 @@ L_6353:
 	ld (0eecbh),a		;6355
 	ld (0eecfh),a		;6358
 L_635B:
-	di			;635b
+	di			;635b   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;635c
-	ld (08000h),a		;635e
-	ld (0f0f2h),a		;6361
-	ei			;6364
-	di			;6365
+	ld (08000h),a		;635e   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;6361   ; y en su copia de RAM
+	ei			;6364   ; el mapa ya esta entero
+	di			;6365   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;6366
-	ld (0a000h),a		;6368
-	ld (0f0f3h),a		;636b
-	ei			;636e
+	ld (0a000h),a		;6368   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;636b   ; y en su copia de RAM
+	ei			;636e   ; el mapa ya esta entero
 	ret			;636f
 L_6370:
-	di			;6370
+	di			;6370   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;6371
-	ld (08000h),a		;6373
-	ld (0f0f2h),a		;6376
-	ei			;6379
-	di			;637a
+	ld (08000h),a		;6373   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;6376   ; y en su copia de RAM
+	ei			;6379   ; el mapa ya esta entero
+	di			;637a   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;637b
-	ld (0a000h),a		;637d
-	ld (0f0f3h),a		;6380
-	ei			;6383
+	ld (0a000h),a		;637d   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;6380   ; y en su copia de RAM
+	ei			;6383   ; el mapa ya esta entero
 	call L_64E7		;6384
 	ld de,0b046h		;6387
 	add hl,de			;638a
@@ -512,28 +512,28 @@ L_6370:
 	inc hl			;63a2
 	ld a,(hl)			;63a3
 	ld (0e0b2h),a		;63a4
-	di			;63a7
+	di			;63a7   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;63a8
-	ld (08000h),a		;63aa
-	ld (0f0f2h),a		;63ad
-	ei			;63b0
-	di			;63b1
+	ld (08000h),a		;63aa   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;63ad   ; y en su copia de RAM
+	ei			;63b0   ; el mapa ya esta entero
+	di			;63b1   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;63b2
-	ld (0a000h),a		;63b4
-	ld (0f0f3h),a		;63b7
-	ei			;63ba
+	ld (0a000h),a		;63b4   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;63b7   ; y en su copia de RAM
+	ei			;63ba   ; el mapa ya esta entero
 	ret			;63bb
 L_63BC:
-	di			;63bc
+	di			;63bc   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;63bd
-	ld (08000h),a		;63bf
-	ld (0f0f2h),a		;63c2
-	ei			;63c5
-	di			;63c6
+	ld (08000h),a		;63bf   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;63c2   ; y en su copia de RAM
+	ei			;63c5   ; el mapa ya esta entero
+	di			;63c6   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;63c7
-	ld (0a000h),a		;63c9
-	ld (0f0f3h),a		;63cc
-	ei			;63cf
+	ld (0a000h),a		;63c9   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;63cc   ; y en su copia de RAM
+	ei			;63cf   ; el mapa ya esta entero
 	call L_64E7		;63d0
 	ld de,0b192h		;63d3
 	add hl,de			;63d6
@@ -547,28 +547,28 @@ L_63BC:
 	inc hl			;63e2
 	ld d,(hl)			;63e3
 	ld (0e0d5h),de		;63e4
-	di			;63e8
+	di			;63e8   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;63e9
-	ld (08000h),a		;63eb
-	ld (0f0f2h),a		;63ee
-	ei			;63f1
-	di			;63f2
+	ld (08000h),a		;63eb   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;63ee   ; y en su copia de RAM
+	ei			;63f1   ; el mapa ya esta entero
+	di			;63f2   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;63f3
-	ld (0a000h),a		;63f5
-	ld (0f0f3h),a		;63f8
-	ei			;63fb
+	ld (0a000h),a		;63f5   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;63f8   ; y en su copia de RAM
+	ei			;63fb   ; el mapa ya esta entero
 	ret			;63fc
 L_63FD:
-	di			;63fd
+	di			;63fd   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;63fe
-	ld (08000h),a		;6400
-	ld (0f0f2h),a		;6403
-	ei			;6406
-	di			;6407
+	ld (08000h),a		;6400   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;6403   ; y en su copia de RAM
+	ei			;6406   ; el mapa ya esta entero
+	di			;6407   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;6408
-	ld (0a000h),a		;640a
-	ld (0f0f3h),a		;640d
-	ei			;6410
+	ld (0a000h),a		;640a   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;640d   ; y en su copia de RAM
+	ei			;6410   ; el mapa ya esta entero
 	call L_64E7		;6411
 	ld de,0b28ch		;6414
 	add hl,hl			;6417
@@ -583,28 +583,28 @@ L_63FD:
 	inc hl			;6425
 	ld a,(hl)			;6426
 	ld (0e0aeh),a		;6427
-	di			;642a
+	di			;642a   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;642b
-	ld (08000h),a		;642d
-	ld (0f0f2h),a		;6430
-	ei			;6433
-	di			;6434
+	ld (08000h),a		;642d   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;6430   ; y en su copia de RAM
+	ei			;6433   ; el mapa ya esta entero
+	di			;6434   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;6435
-	ld (0a000h),a		;6437
-	ld (0f0f3h),a		;643a
-	ei			;643d
+	ld (0a000h),a		;6437   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;643a   ; y en su copia de RAM
+	ei			;643d   ; el mapa ya esta entero
 	ret			;643e
 L_643F:
-	di			;643f
+	di			;643f   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;6440
-	ld (08000h),a		;6442
-	ld (0f0f2h),a		;6445
-	ei			;6448
-	di			;6449
+	ld (08000h),a		;6442   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;6445   ; y en su copia de RAM
+	ei			;6448   ; el mapa ya esta entero
+	di			;6449   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;644a
-	ld (0a000h),a		;644c
-	ld (0f0f3h),a		;644f
-	ei			;6452
+	ld (0a000h),a		;644c   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;644f   ; y en su copia de RAM
+	ei			;6452   ; el mapa ya esta entero
 	call L_64E7		;6453
 	ld de,0ac8ah		;6456
 	add hl,de			;6459
@@ -612,16 +612,16 @@ L_643F:
 	inc hl			;645b
 	ld d,(hl)			;645c
 	ld (0e301h),de		;645d
-	di			;6461
+	di			;6461   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6462
-	ld (08000h),a		;6464
-	ld (0f0f2h),a		;6467
-	ei			;646a
-	di			;646b
+	ld (08000h),a		;6464   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;6467   ; y en su copia de RAM
+	ei			;646a   ; el mapa ya esta entero
+	di			;646b   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;646c
-	ld (0a000h),a		;646e
-	ld (0f0f3h),a		;6471
-	ei			;6474
+	ld (0a000h),a		;646e   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;6471   ; y en su copia de RAM
+	ei			;6474   ; el mapa ya esta entero
 	ret			;6475
 L_6476:
 	and a			;6476
@@ -735,16 +735,16 @@ L_6507:
 L_6536:
 	call 092ech		;6536
 L_6539:
-	di			;6539
+	di			;6539   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;653a
-	ld (08000h),a		;653c
-	ld (0f0f2h),a		;653f
-	ei			;6542
-	di			;6543
+	ld (08000h),a		;653c   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;653f   ; y en su copia de RAM
+	ei			;6542   ; el mapa ya esta entero
+	di			;6543   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;6544
-	ld (0a000h),a		;6546
-	ld (0f0f3h),a		;6549
-	ei			;654c
+	ld (0a000h),a		;6546   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;6549   ; y en su copia de RAM
+	ei			;654c   ; el mapa ya esta entero
 	ld hl,0e4c2h		;654d
 	inc (hl)			;6550
 	ld a,(hl)			;6551
@@ -789,16 +789,16 @@ L_657F:
 	ex de,hl			;658e
 	call 041bfh		;658f
 L_6592:
-	di			;6592
+	di			;6592   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6593
-	ld (08000h),a		;6595
-	ld (0f0f2h),a		;6598
-	ei			;659b
-	di			;659c
+	ld (08000h),a		;6595   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;6598   ; y en su copia de RAM
+	ei			;659b   ; el mapa ya esta entero
+	di			;659c   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;659d
-	ld (0a000h),a		;659f
-	ld (0f0f3h),a		;65a2
-	ei			;65a5
+	ld (0a000h),a		;659f   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;65a2   ; y en su copia de RAM
+	ei			;65a5   ; el mapa ya esta entero
 	ret			;65a6
 L_65A7:
 	ld a,(0e092h)		;65a7
@@ -916,16 +916,16 @@ L_668F:
 	call L_6697		;6691
 	jp L_6536		;6694
 L_6697:
-	di			;6697
+	di			;6697   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;6698
-	ld (08000h),a		;669a
-	ld (0f0f2h),a		;669d
-	ei			;66a0
-	di			;66a1
+	ld (08000h),a		;669a   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;669d   ; y en su copia de RAM
+	ei			;66a0   ; el mapa ya esta entero
+	di			;66a1   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;66a2
-	ld (0a000h),a		;66a4
-	ld (0f0f3h),a		;66a7
-	ei			;66aa
+	ld (0a000h),a		;66a4   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;66a7   ; y en su copia de RAM
+	ei			;66aa   ; el mapa ya esta entero
 	ld a,(0e093h)		;66ab
 	cp 003h		;66ae
 	ld hl,0a605h		;66b0
@@ -962,16 +962,16 @@ L_66DA:
 	ld a,(hl)			;66ec
 L_66ED:
 	ld c,a			;66ed
-	di			;66ee
+	di			;66ee   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;66ef
-	ld (08000h),a		;66f1
-	ld (0f0f2h),a		;66f4
-	ei			;66f7
-	di			;66f8
+	ld (08000h),a		;66f1   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;66f4   ; y en su copia de RAM
+	ei			;66f7   ; el mapa ya esta entero
+	di			;66f8   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;66f9
-	ld (0a000h),a		;66fb
-	ld (0f0f3h),a		;66fe
-	ei			;6701
+	ld (0a000h),a		;66fb   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;66fe   ; y en su copia de RAM
+	ei			;6701   ; el mapa ya esta entero
 	ld hl,0ade8h		;6702
 	ld a,(0e092h)		;6705
 	dec a			;6708
@@ -991,31 +991,31 @@ L_66ED:
 	inc hl			;671d
 	ld a,(hl)			;671e
 	ld (0e0a6h),a		;671f
-	di			;6722
+	di			;6722   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6723
-	ld (08000h),a		;6725
-	ld (0f0f2h),a		;6728
-	ei			;672b
-	di			;672c
+	ld (08000h),a		;6725   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;6728   ; y en su copia de RAM
+	ei			;672b   ; el mapa ya esta entero
+	di			;672c   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;672d
-	ld (0a000h),a		;672f
-	ld (0f0f3h),a		;6732
-	ei			;6735
+	ld (0a000h),a		;672f   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;6732   ; y en su copia de RAM
+	ei			;6735   ; el mapa ya esta entero
 	ret			;6736
 L_6737:
 	ld a,(0e0a2h)		;6737
 	dec a			;673a
 	ret z			;673b
-	di			;673c
+	di			;673c   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;673d
-	ld (08000h),a		;673f
-	ld (0f0f2h),a		;6742
-	ei			;6745
-	di			;6746
+	ld (08000h),a		;673f   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;6742   ; y en su copia de RAM
+	ei			;6745   ; el mapa ya esta entero
+	di			;6746   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;6747
-	ld (0a000h),a		;6749
-	ld (0f0f3h),a		;674c
-	ei			;674f
+	ld (0a000h),a		;6749   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;674c   ; y en su copia de RAM
+	ei			;674f   ; el mapa ya esta entero
 	ld a,(0e0a2h)		;6750
 	and a			;6753
 	jr z,L_675B		;6754
@@ -1047,16 +1047,16 @@ L_6773:
 	ld (0e402h),a		;677d
 	xor a			;6780
 	ld (0e403h),a		;6781
-	di			;6784
+	di			;6784   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6785
-	ld (08000h),a		;6787
-	ld (0f0f2h),a		;678a
-	ei			;678d
-	di			;678e
+	ld (08000h),a		;6787   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;678a   ; y en su copia de RAM
+	ei			;678d   ; el mapa ya esta entero
+	di			;678e   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;678f
-	ld (0a000h),a		;6791
-	ld (0f0f3h),a		;6794
-	ei			;6797
+	ld (0a000h),a		;6791   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;6794   ; y en su copia de RAM
+	ei			;6797   ; el mapa ya esta entero
 	ret			;6798
 L_6799:
 	ld a,(0e0a5h)		;6799
@@ -1073,16 +1073,16 @@ L_6799:
 	ld a,(hl)			;67aa
 	inc hl			;67ab
 	ld (hl),a			;67ac
-	di			;67ad
+	di			;67ad   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;67ae
-	ld (08000h),a		;67b0
-	ld (0f0f2h),a		;67b3
-	ei			;67b6
-	di			;67b7
+	ld (08000h),a		;67b0   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;67b3   ; y en su copia de RAM
+	ei			;67b6   ; el mapa ya esta entero
+	di			;67b7   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;67b8
-	ld (0a000h),a		;67ba
-	ld (0f0f3h),a		;67bd
-	ei			;67c0
+	ld (0a000h),a		;67ba   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;67bd   ; y en su copia de RAM
+	ei			;67c0   ; el mapa ya esta entero
 L_67C1:
 	ld a,(0e0a2h)		;67c1
 	dec a			;67c4
@@ -1161,16 +1161,16 @@ L_6833:
 	ld l,a			;683a
 	djnz L_6833		;683b
 L_683D:
-	di			;683d
+	di			;683d   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;683e
-	ld (08000h),a		;6840
-	ld (0f0f2h),a		;6843
-	ei			;6846
-	di			;6847
+	ld (08000h),a		;6840   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;6843   ; y en su copia de RAM
+	ei			;6846   ; el mapa ya esta entero
+	di			;6847   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;6848
-	ld (0a000h),a		;684a
-	ld (0f0f3h),a		;684d
-	ei			;6850
+	ld (0a000h),a		;684a   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;684d   ; y en su copia de RAM
+	ei			;6850   ; el mapa ya esta entero
 	ret			;6851
 L_6852:
 	ld (hl),001h		;6852
@@ -1263,16 +1263,16 @@ L_68CA:
 	cp c			;68e0
 	ret nz			;68e1
 L_68E2:
-	di			;68e2
+	di			;68e2   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;68e3
-	ld (08000h),a		;68e5
-	ld (0f0f2h),a		;68e8
-	ei			;68eb
-	di			;68ec
+	ld (08000h),a		;68e5   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;68e8   ; y en su copia de RAM
+	ei			;68eb   ; el mapa ya esta entero
+	di			;68ec   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;68ed
-	ld (0a000h),a		;68ef
-	ld (0f0f3h),a		;68f2
-	ei			;68f5
+	ld (0a000h),a		;68ef   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;68f2   ; y en su copia de RAM
+	ei			;68f5   ; el mapa ya esta entero
 	ld de,0e440h		;68f6
 	ld b,005h		;68f9
 	xor a			;68fb
@@ -1328,26 +1328,26 @@ L_693A:
 	ld hl,0e0e3h		;693d
 	inc (hl)			;6940
 	djnz L_68FF		;6941
-	di			;6943
+	di			;6943   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6944
-	ld (08000h),a		;6946
-	ld (0f0f2h),a		;6949
-	ei			;694c
-	di			;694d
+	ld (08000h),a		;6946   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;6949   ; y en su copia de RAM
+	ei			;694c   ; el mapa ya esta entero
+	di			;694d   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;694e
-	ld (0a000h),a		;6950
-	ld (0f0f3h),a		;6953
-	ei			;6956
-	di			;6957
+	ld (0a000h),a		;6950   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;6953   ; y en su copia de RAM
+	ei			;6956   ; el mapa ya esta entero
+	di			;6957   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;6958
-	ld (08000h),a		;695a
-	ld (0f0f2h),a		;695d
-	ei			;6960
-	di			;6961
+	ld (08000h),a		;695a   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;695d   ; y en su copia de RAM
+	ei			;6960   ; el mapa ya esta entero
+	di			;6961   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;6962
-	ld (0a000h),a		;6964
-	ld (0f0f3h),a		;6967
-	ei			;696a
+	ld (0a000h),a		;6964   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;6967   ; y en su copia de RAM
+	ei			;696a   ; el mapa ya esta entero
 	ld de,0e440h		;696b
 	ld b,005h		;696e
 	xor a			;6970
@@ -1392,16 +1392,16 @@ L_69A1:
 	ld hl,0e0e3h		;69a4
 	inc (hl)			;69a7
 	djnz L_6974		;69a8
-	di			;69aa
+	di			;69aa   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;69ab
-	ld (08000h),a		;69ad
-	ld (0f0f2h),a		;69b0
-	ei			;69b3
-	di			;69b4
+	ld (08000h),a		;69ad   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;69b0   ; y en su copia de RAM
+	ei			;69b3   ; el mapa ya esta entero
+	di			;69b4   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;69b5
-	ld (0a000h),a		;69b7
-	ld (0f0f3h),a		;69ba
-	ei			;69bd
+	ld (0a000h),a		;69b7   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;69ba   ; y en su copia de RAM
+	ei			;69bd   ; el mapa ya esta entero
 	ret			;69be
 L_69BF:
 	dec e			;69bf
@@ -1584,16 +1584,16 @@ L_6AD0:
 	ld a,(hl)			;6ae1
 	rra			;6ae2
 	ret nc			;6ae3
-	di			;6ae4
+	di			;6ae4   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;6ae5
-	ld (08000h),a		;6ae7
-	ld (0f0f2h),a		;6aea
-	ei			;6aed
-	di			;6aee
+	ld (08000h),a		;6ae7   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;6aea   ; y en su copia de RAM
+	ei			;6aed   ; el mapa ya esta entero
+	di			;6aee   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;6aef
-	ld (0a000h),a		;6af1
-	ld (0f0f3h),a		;6af4
-	ei			;6af7
+	ld (0a000h),a		;6af1   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;6af4   ; y en su copia de RAM
+	ei			;6af7   ; el mapa ya esta entero
 	ld de,0e409h		;6af8
 	ld a,(0e4e0h)		;6afb
 	ld b,a			;6afe
@@ -1633,26 +1633,26 @@ L_6B28:
 	dec e			;6b28
 	pop bc			;6b29
 	djnz L_6AFF		;6b2a
-	di			;6b2c
+	di			;6b2c   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6b2d
-	ld (08000h),a		;6b2f
-	ld (0f0f2h),a		;6b32
-	ei			;6b35
-	di			;6b36
+	ld (08000h),a		;6b2f   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;6b32   ; y en su copia de RAM
+	ei			;6b35   ; el mapa ya esta entero
+	di			;6b36   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;6b37
-	ld (0a000h),a		;6b39
-	ld (0f0f3h),a		;6b3c
-	ei			;6b3f
-	di			;6b40
+	ld (0a000h),a		;6b39   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;6b3c   ; y en su copia de RAM
+	ei			;6b3f   ; el mapa ya esta entero
+	di			;6b40   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;6b41
-	ld (08000h),a		;6b43
-	ld (0f0f2h),a		;6b46
-	ei			;6b49
-	di			;6b4a
+	ld (08000h),a		;6b43   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;6b46   ; y en su copia de RAM
+	ei			;6b49   ; el mapa ya esta entero
+	di			;6b4a   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;6b4b
-	ld (0a000h),a		;6b4d
-	ld (0f0f3h),a		;6b50
-	ei			;6b53
+	ld (0a000h),a		;6b4d   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;6b50   ; y en su copia de RAM
+	ei			;6b53   ; el mapa ya esta entero
 	ld de,0e409h		;6b54
 	ld a,(0e4e0h)		;6b57
 	ld b,a			;6b5a
@@ -1682,31 +1682,31 @@ L_6B79:
 	dec e			;6b79
 	pop bc			;6b7a
 	djnz L_6B5B		;6b7b
-	di			;6b7d
+	di			;6b7d   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6b7e
-	ld (08000h),a		;6b80
-	ld (0f0f2h),a		;6b83
-	ei			;6b86
-	di			;6b87
+	ld (08000h),a		;6b80   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;6b83   ; y en su copia de RAM
+	ei			;6b86   ; el mapa ya esta entero
+	di			;6b87   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;6b88
-	ld (0a000h),a		;6b8a
-	ld (0f0f3h),a		;6b8d
-	ei			;6b90
+	ld (0a000h),a		;6b8a   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;6b8d   ; y en su copia de RAM
+	ei			;6b90   ; el mapa ya esta entero
 	ret			;6b91
 L_6B92:
 	ld a,(0e0a2h)		;6b92
 	dec a			;6b95
 	ret nz			;6b96
-	di			;6b97
+	di			;6b97   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;6b98
-	ld (08000h),a		;6b9a
-	ld (0f0f2h),a		;6b9d
-	ei			;6ba0
-	di			;6ba1
+	ld (08000h),a		;6b9a   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;6b9d   ; y en su copia de RAM
+	ei			;6ba0   ; el mapa ya esta entero
+	di			;6ba1   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;6ba2
-	ld (0a000h),a		;6ba4
-	ld (0f0f3h),a		;6ba7
-	ei			;6baa
+	ld (0a000h),a		;6ba4   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;6ba7   ; y en su copia de RAM
+	ei			;6baa   ; el mapa ya esta entero
 	ld hl,0e40ah		;6bab
 	ld de,0eeb8h		;6bae
 	ld bc,0aed0h		;6bb1
@@ -1715,16 +1715,16 @@ L_6B92:
 	call L_6BD8		;6bba
 	ld bc,0af50h		;6bbd
 	call L_6BD8		;6bc0
-	di			;6bc3
+	di			;6bc3   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6bc4
-	ld (08000h),a		;6bc6
-	ld (0f0f2h),a		;6bc9
-	ei			;6bcc
-	di			;6bcd
+	ld (08000h),a		;6bc6   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;6bc9   ; y en su copia de RAM
+	ei			;6bcc   ; el mapa ya esta entero
+	di			;6bcd   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;6bce
-	ld (0a000h),a		;6bd0
-	ld (0f0f3h),a		;6bd3
-	ei			;6bd6
+	ld (0a000h),a		;6bd0   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;6bd3   ; y en su copia de RAM
+	ei			;6bd6   ; el mapa ya esta entero
 	ret			;6bd7
 L_6BD8:
 	push hl			;6bd8
@@ -1776,16 +1776,16 @@ L_6BEF:
 	call 04bbfh		;6c34
 	call 051cdh		;6c37
 L_6C3A:
-	di			;6c3a
+	di			;6c3a   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;6c3b
-	ld (08000h),a		;6c3d
-	ld (0f0f2h),a		;6c40
-	ei			;6c43
-	di			;6c44
+	ld (08000h),a		;6c3d   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;6c40   ; y en su copia de RAM
+	ei			;6c43   ; el mapa ya esta entero
+	di			;6c44   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;6c45
-	ld (0a000h),a		;6c47
-	ld (0f0f3h),a		;6c4a
-	ei			;6c4d
+	ld (0a000h),a		;6c47   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;6c4a   ; y en su copia de RAM
+	ei			;6c4d   ; el mapa ya esta entero
 	ld de,0a563h		;6c4e
 	ld a,(0e0a2h)		;6c51
 	sub 003h		;6c54
@@ -2234,28 +2234,28 @@ L_6F57:
 	ld a,025h		;6f57
 	jp 0413ah		;6f59
 L_6F5C:
-	di			;6f5c
+	di			;6f5c   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6f5d
-	ld (08000h),a		;6f5f
-	ld (0f0f2h),a		;6f62
-	ei			;6f65
-	di			;6f66
+	ld (08000h),a		;6f5f   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;6f62   ; y en su copia de RAM
+	ei			;6f65   ; el mapa ya esta entero
+	di			;6f66   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;6f67
-	ld (0a000h),a		;6f69
-	ld (0f0f3h),a		;6f6c
-	ei			;6f6f
+	ld (0a000h),a		;6f69   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;6f6c   ; y en su copia de RAM
+	ei			;6f6f   ; el mapa ya esta entero
 	ret			;6f70
 L_6F71:
-	di			;6f71
+	di			;6f71   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;6f72
-	ld (08000h),a		;6f74
-	ld (0f0f2h),a		;6f77
-	ei			;6f7a
-	di			;6f7b
+	ld (08000h),a		;6f74   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;6f77   ; y en su copia de RAM
+	ei			;6f7a   ; el mapa ya esta entero
+	di			;6f7b   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;6f7c
-	ld (0a000h),a		;6f7e
-	ld (0f0f3h),a		;6f81
-	ei			;6f84
+	ld (0a000h),a		;6f7e   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;6f81   ; y en su copia de RAM
+	ei			;6f84   ; el mapa ya esta entero
 	ret			;6f85
 L_6F86:
 	ld a,(ix+000h)		;6f86
@@ -3929,16 +3929,16 @@ DATA_7B50:
 
 
 L_7B5E:
-	di			;7b5e
+	di			;7b5e   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;7b5f
-	ld (08000h),a		;7b61
-	ld (0f0f2h),a		;7b64
-	ei			;7b67
-	di			;7b68
+	ld (08000h),a		;7b61   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;7b64   ; y en su copia de RAM
+	ei			;7b67   ; el mapa ya esta entero
+	di			;7b68   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;7b69
-	ld (0a000h),a		;7b6b
-	ld (0f0f3h),a		;7b6e
-	ei			;7b71
+	ld (0a000h),a		;7b6b   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;7b6e   ; y en su copia de RAM
+	ei			;7b71   ; el mapa ya esta entero
 	ld a,r		;7b72
 	and 007h		;7b74
 	ld hl,0ba0bh		;7b76
@@ -3949,16 +3949,16 @@ L_7B5E:
 	call 042bch		;7b7f
 	jp L_7C8A		;7b82
 L_7B85:
-	di			;7b85
+	di			;7b85   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;7b86
-	ld (08000h),a		;7b88
-	ld (0f0f2h),a		;7b8b
-	ei			;7b8e
-	di			;7b8f
+	ld (08000h),a		;7b88   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;7b8b   ; y en su copia de RAM
+	ei			;7b8e   ; el mapa ya esta entero
+	di			;7b8f   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;7b90
-	ld (0a000h),a		;7b92
-	ld (0f0f3h),a		;7b95
-	ei			;7b98
+	ld (0a000h),a		;7b92   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;7b95   ; y en su copia de RAM
+	ei			;7b98   ; el mapa ya esta entero
 	call L_7BAE		;7b99
 L_7B9C:
 	ld a,(de)			;7b9c
@@ -3986,16 +3986,16 @@ L_7BBC:
 	ld b,015h		;7bc1
 	ret			;7bc3
 L_7BC4:
-	di			;7bc4
+	di			;7bc4   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;7bc5
-	ld (08000h),a		;7bc7
-	ld (0f0f2h),a		;7bca
-	ei			;7bcd
-	di			;7bce
+	ld (08000h),a		;7bc7   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;7bca   ; y en su copia de RAM
+	ei			;7bcd   ; el mapa ya esta entero
+	di			;7bce   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;7bcf
-	ld (0a000h),a		;7bd1
-	ld (0f0f3h),a		;7bd4
-	ei			;7bd7
+	ld (0a000h),a		;7bd1   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;7bd4   ; y en su copia de RAM
+	ei			;7bd7   ; el mapa ya esta entero
 	ld hl,0e0b8h		;7bd8
 	call L_7BB2		;7bdb
 	ld b,005h		;7bde
@@ -4003,29 +4003,29 @@ L_7BC4:
 	call 04056h		;7be2
 	jr L_7B9C		;7be5
 L_7BE7:
-	di			;7be7
+	di			;7be7   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;7be8
-	ld (08000h),a		;7bea
-	ld (0f0f2h),a		;7bed
-	ei			;7bf0
-	di			;7bf1
+	ld (08000h),a		;7bea   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;7bed   ; y en su copia de RAM
+	ei			;7bf0   ; el mapa ya esta entero
+	di			;7bf1   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;7bf2
-	ld (0a000h),a		;7bf4
-	ld (0f0f3h),a		;7bf7
-	ei			;7bfa
+	ld (0a000h),a		;7bf4   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;7bf7   ; y en su copia de RAM
+	ei			;7bfa   ; el mapa ya esta entero
 	call 0418ch		;7bfb
 	jp L_7C8A		;7bfe
 L_7C01:
-	di			;7c01
+	di			;7c01   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;7c02
-	ld (08000h),a		;7c04
-	ld (0f0f2h),a		;7c07
-	ei			;7c0a
-	di			;7c0b
+	ld (08000h),a		;7c04   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;7c07   ; y en su copia de RAM
+	ei			;7c0a   ; el mapa ya esta entero
+	di			;7c0b   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;7c0c
-	ld (0a000h),a		;7c0e
-	ld (0f0f3h),a		;7c11
-	ei			;7c14
+	ld (0a000h),a		;7c0e   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;7c11   ; y en su copia de RAM
+	ei			;7c14   ; el mapa ya esta entero
 	ld a,(0e537h)		;7c15
 	ld hl,07ceeh		;7c18
 	call 04055h		;7c1b
@@ -4052,16 +4052,16 @@ L_7C01:
 	ld l,a			;7c3b
 	jr L_7C74		;7c3c
 L_7C3E:
-	di			;7c3e
+	di			;7c3e   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;7c3f
-	ld (08000h),a		;7c41
-	ld (0f0f2h),a		;7c44
-	ei			;7c47
-	di			;7c48
+	ld (08000h),a		;7c41   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;7c44   ; y en su copia de RAM
+	ei			;7c47   ; el mapa ya esta entero
+	di			;7c48   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;7c49
-	ld (0a000h),a		;7c4b
-	ld (0f0f3h),a		;7c4e
-	ei			;7c51
+	ld (0a000h),a		;7c4b   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;7c4e   ; y en su copia de RAM
+	ei			;7c51   ; el mapa ya esta entero
 	ld a,(0e530h)		;7c52
 	and a			;7c55
 	jr z,L_7C8A		;7c56
@@ -4097,28 +4097,28 @@ L_7C7F:
 	ldi		;7c86
 	jr L_7C7F		;7c88
 L_7C8A:
-	di			;7c8a
+	di			;7c8a   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;7c8b
-	ld (08000h),a		;7c8d
-	ld (0f0f2h),a		;7c90
-	ei			;7c93
-	di			;7c94
+	ld (08000h),a		;7c8d   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;7c90   ; y en su copia de RAM
+	ei			;7c93   ; el mapa ya esta entero
+	di			;7c94   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;7c95
-	ld (0a000h),a		;7c97
-	ld (0f0f3h),a		;7c9a
-	ei			;7c9d
+	ld (0a000h),a		;7c97   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;7c9a   ; y en su copia de RAM
+	ei			;7c9d   ; el mapa ya esta entero
 	ret			;7c9e
 L_7C9F:
-	di			;7c9f
+	di			;7c9f   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;7ca0
-	ld (08000h),a		;7ca2
-	ld (0f0f2h),a		;7ca5
-	ei			;7ca8
-	di			;7ca9
+	ld (08000h),a		;7ca2   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;7ca5   ; y en su copia de RAM
+	ei			;7ca8   ; el mapa ya esta entero
+	di			;7ca9   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;7caa
-	ld (0a000h),a		;7cac
-	ld (0f0f3h),a		;7caf
-	ei			;7cb2
+	ld (0a000h),a		;7cac   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;7caf   ; y en su copia de RAM
+	ei			;7cb2   ; el mapa ya esta entero
 	ld a,(0e537h)		;7cb3
 	ld hl,07ceeh		;7cb6
 	call 04055h		;7cb9
@@ -4173,16 +4173,16 @@ DATA_7CEE:
 
 
 L_7CF8:
-	di			;7cf8
+	di			;7cf8   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;7cf9
-	ld (08000h),a		;7cfb
-	ld (0f0f2h),a		;7cfe
-	ei			;7d01
-	di			;7d02
+	ld (08000h),a		;7cfb   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;7cfe   ; y en su copia de RAM
+	ei			;7d01   ; el mapa ya esta entero
+	di			;7d02   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;7d03
-	ld (0a000h),a		;7d05
-	ld (0f0f3h),a		;7d08
-	ei			;7d0b
+	ld (0a000h),a		;7d05   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;7d08   ; y en su copia de RAM
+	ei			;7d0b   ; el mapa ya esta entero
 	ld b,004h		;7d0c
 	ld hl,0e550h		;7d0e
 	ld de,0eea8h		;7d11
@@ -4265,16 +4265,16 @@ DATA_7D6C:
 
 
 L_7D74:
-	di			;7d74
+	di			;7d74   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;7d75
-	ld (08000h),a		;7d77
-	ld (0f0f2h),a		;7d7a
-	ei			;7d7d
-	di			;7d7e
+	ld (08000h),a		;7d77   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;7d7a   ; y en su copia de RAM
+	ei			;7d7d   ; el mapa ya esta entero
+	di			;7d7e   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;7d7f
-	ld (0a000h),a		;7d81
-	ld (0f0f3h),a		;7d84
-	ei			;7d87
+	ld (0a000h),a		;7d81   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;7d84   ; y en su copia de RAM
+	ei			;7d87   ; el mapa ya esta entero
 	ld hl,(0e53ah)		;7d88
 	ld e,(hl)			;7d8b
 	inc hl			;7d8c
@@ -4290,87 +4290,87 @@ L_7D74:
 L_7D99:
 	jp L_7C8A		;7d99
 L_7D9C:
-	di			;7d9c
+	di			;7d9c   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;7d9d
-	ld (08000h),a		;7d9f
-	ld (0f0f2h),a		;7da2
-	ei			;7da5
-	di			;7da6
+	ld (08000h),a		;7d9f   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;7da2   ; y en su copia de RAM
+	ei			;7da5   ; el mapa ya esta entero
+	di			;7da6   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;7da7
-	ld (0a000h),a		;7da9
-	ld (0f0f3h),a		;7dac
-	ei			;7daf
+	ld (0a000h),a		;7da9   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;7dac   ; y en su copia de RAM
+	ei			;7daf   ; el mapa ya esta entero
 	jp L_7C78		;7db0
 L_7DB3:
-	di			;7db3
+	di			;7db3   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;7db4
-	ld (08000h),a		;7db6
-	ld (0f0f2h),a		;7db9
-	ei			;7dbc
-	di			;7dbd
+	ld (08000h),a		;7db6   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;7db9   ; y en su copia de RAM
+	ei			;7dbc   ; el mapa ya esta entero
+	di			;7dbd   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;7dbe
-	ld (0a000h),a		;7dc0
-	ld (0f0f3h),a		;7dc3
-	ei			;7dc6
+	ld (0a000h),a		;7dc0   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;7dc3   ; y en su copia de RAM
+	ei			;7dc6   ; el mapa ya esta entero
 	ld hl,0bc99h		;7dc7
 	ld de,0eee0h		;7dca
 	ld bc,00020h		;7dcd
 	ldir		;7dd0
 	jp L_7C8A		;7dd2
 L_7DD5:
-	di			;7dd5
+	di			;7dd5   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;7dd6
-	ld (08000h),a		;7dd8
-	ld (0f0f2h),a		;7ddb
-	ei			;7dde
-	di			;7ddf
+	ld (08000h),a		;7dd8   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;7ddb   ; y en su copia de RAM
+	ei			;7dde   ; el mapa ya esta entero
+	di			;7ddf   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;7de0
-	ld (0a000h),a		;7de2
-	ld (0f0f3h),a		;7de5
-	ei			;7de8
+	ld (0a000h),a		;7de2   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;7de5   ; y en su copia de RAM
+	ei			;7de8   ; el mapa ya esta entero
 	ld hl,0bcb9h		;7de9
 	ld de,0eee0h		;7dec
 	ld bc,00020h		;7def
 	ldir		;7df2
 	jp L_7C8A		;7df4
 L_7DF7:
-	di			;7df7
+	di			;7df7   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;7df8
-	ld (08000h),a		;7dfa
-	ld (0f0f2h),a		;7dfd
-	ei			;7e00
-	di			;7e01
+	ld (08000h),a		;7dfa   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;7dfd   ; y en su copia de RAM
+	ei			;7e00   ; el mapa ya esta entero
+	di			;7e01   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;7e02
-	ld (0a000h),a		;7e04
-	ld (0f0f3h),a		;7e07
-	ei			;7e0a
+	ld (0a000h),a		;7e04   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;7e07   ; y en su copia de RAM
+	ei			;7e0a   ; el mapa ya esta entero
 	call 042bch		;7e0b
 	jp L_7C8A		;7e0e
 L_7E11:
-	di			;7e11
+	di			;7e11   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;7e12
-	ld (08000h),a		;7e14
-	ld (0f0f2h),a		;7e17
-	ei			;7e1a
-	di			;7e1b
+	ld (08000h),a		;7e14   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;7e17   ; y en su copia de RAM
+	ei			;7e1a   ; el mapa ya esta entero
+	di			;7e1b   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;7e1c
-	ld (0a000h),a		;7e1e
-	ld (0f0f3h),a		;7e21
-	ei			;7e24
+	ld (0a000h),a		;7e1e   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;7e21   ; y en su copia de RAM
+	ei			;7e24   ; el mapa ya esta entero
 	ld c,000h		;7e25
 	call 042beh		;7e27
 	jp L_7C8A		;7e2a
 L_7E2D:
-	di			;7e2d
+	di			;7e2d   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;7e2e
-	ld (08000h),a		;7e30
-	ld (0f0f2h),a		;7e33
-	ei			;7e36
-	di			;7e37
+	ld (08000h),a		;7e30   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;7e33   ; y en su copia de RAM
+	ei			;7e36   ; el mapa ya esta entero
+	di			;7e37   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;7e38
-	ld (0a000h),a		;7e3a
-	ld (0f0f3h),a		;7e3d
-	ei			;7e40
+	ld (0a000h),a		;7e3a   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;7e3d   ; y en su copia de RAM
+	ei			;7e40   ; el mapa ya esta entero
 	call 0418ch		;7e41
 	jp L_7C8A		;7e44
 L_7E47:
@@ -4482,16 +4482,16 @@ DATA_7EF6:
 L_7F0E:
 	jp 0451ch		;7f0e
 L_7F11:
-	di			;7f11
+	di			;7f11   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;7f12
-	ld (08000h),a		;7f14
-	ld (0f0f2h),a		;7f17
-	ei			;7f1a
-	di			;7f1b
+	ld (08000h),a		;7f14   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;7f17   ; y en su copia de RAM
+	ei			;7f1a   ; el mapa ya esta entero
+	di			;7f1b   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;7f1c
-	ld (0a000h),a		;7f1e
-	ld (0f0f3h),a		;7f21
-	ei			;7f24
+	ld (0a000h),a		;7f1e   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;7f21   ; y en su copia de RAM
+	ei			;7f24   ; el mapa ya esta entero
 	di			;7f25
 	ld de,(0e13ah)		;7f26
 	ld a,(0e009h)		;7f2a
@@ -4513,16 +4513,16 @@ L_7F40:
 	ld a,(de)			;7f44
 	call 044beh		;7f45
 L_7F48:
-	di			;7f48
+	di			;7f48   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;7f49
-	ld (08000h),a		;7f4b
-	ld (0f0f2h),a		;7f4e
-	ei			;7f51
-	di			;7f52
+	ld (08000h),a		;7f4b   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;7f4e   ; y en su copia de RAM
+	ei			;7f51   ; el mapa ya esta entero
+	di			;7f52   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;7f53
-	ld (0a000h),a		;7f55
-	ld (0f0f3h),a		;7f58
-	ei			;7f5b
+	ld (0a000h),a		;7f55   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;7f58   ; y en su copia de RAM
+	ei			;7f5b   ; el mapa ya esta entero
 	ret			;7f5c
 L_7F5D:
 	ld (0e097h),a		;7f5d

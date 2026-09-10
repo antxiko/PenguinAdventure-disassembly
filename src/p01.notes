@@ -1,2 +1,598 @@
 # Banco 01 (se ejecuta en 0x6000). Directivas: L etiqueta, C comentario de
 # linea, B cabecera de bloque, D rango de datos, F anchura de fila.
+
+# --- El protocolo del mapper, paso a paso. Lo genera tools/anota_mapper.py
+# siguiendo el estado real de HL y de A; la explicacion de por que se hace asi
+# esta en el banco 0.
+C 0x602A sin interrupciones mientras cambia el mapa
+C 0x602D el banco 12 a 0x8000
+C 0x6030 y en su copia de RAM
+C 0x6033 el mapa ya esta entero
+C 0x6034 sin interrupciones mientras cambia el mapa
+C 0x6037 el banco 13 a 0xA000
+C 0x603A y en su copia de RAM
+C 0x603D el mapa ya esta entero
+C 0x6047 sin interrupciones mientras cambia el mapa
+C 0x604A el banco 2 a 0x8000
+C 0x604D y en su copia de RAM
+C 0x6050 el mapa ya esta entero
+C 0x6051 sin interrupciones mientras cambia el mapa
+C 0x6054 el banco 3 a 0xA000
+C 0x6057 y en su copia de RAM
+C 0x605A el mapa ya esta entero
+C 0x605C sin interrupciones mientras cambia el mapa
+C 0x605F el banco 12 a 0x8000
+C 0x6062 y en su copia de RAM
+C 0x6065 el mapa ya esta entero
+C 0x6066 sin interrupciones mientras cambia el mapa
+C 0x6069 el banco 13 a 0xA000
+C 0x606C y en su copia de RAM
+C 0x606F el mapa ya esta entero
+C 0x6076 sin interrupciones mientras cambia el mapa
+C 0x6079 el banco 2 a 0x8000
+C 0x607C y en su copia de RAM
+C 0x607F el mapa ya esta entero
+C 0x6080 sin interrupciones mientras cambia el mapa
+C 0x6083 el banco 3 a 0xA000
+C 0x6086 y en su copia de RAM
+C 0x6089 el mapa ya esta entero
+C 0x608B sin interrupciones mientras cambia el mapa
+C 0x608E el banco 12 a 0x8000
+C 0x6091 y en su copia de RAM
+C 0x6094 el mapa ya esta entero
+C 0x6095 sin interrupciones mientras cambia el mapa
+C 0x6098 el banco 13 a 0xA000
+C 0x609B y en su copia de RAM
+C 0x609E el mapa ya esta entero
+C 0x60A8 sin interrupciones mientras cambia el mapa
+C 0x60AB el banco 2 a 0x8000
+C 0x60AE y en su copia de RAM
+C 0x60B1 el mapa ya esta entero
+C 0x60B2 sin interrupciones mientras cambia el mapa
+C 0x60B5 el banco 3 a 0xA000
+C 0x60B8 y en su copia de RAM
+C 0x60BB el mapa ya esta entero
+C 0x60BD sin interrupciones mientras cambia el mapa
+C 0x60C0 el banco 12 a 0x8000
+C 0x60C3 y en su copia de RAM
+C 0x60C6 el mapa ya esta entero
+C 0x60C7 sin interrupciones mientras cambia el mapa
+C 0x60CA el banco 13 a 0xA000
+C 0x60CD y en su copia de RAM
+C 0x60D0 el mapa ya esta entero
+C 0x60D7 sin interrupciones mientras cambia el mapa
+C 0x60DA el banco 2 a 0x8000
+C 0x60DD y en su copia de RAM
+C 0x60E0 el mapa ya esta entero
+C 0x60E1 sin interrupciones mientras cambia el mapa
+C 0x60E4 el banco 3 a 0xA000
+C 0x60E7 y en su copia de RAM
+C 0x60EA el mapa ya esta entero
+C 0x60EC sin interrupciones mientras cambia el mapa
+C 0x60EF el banco 12 a 0x8000
+C 0x60F2 y en su copia de RAM
+C 0x60F5 el mapa ya esta entero
+C 0x60F6 sin interrupciones mientras cambia el mapa
+C 0x60F9 el banco 13 a 0xA000
+C 0x60FC y en su copia de RAM
+C 0x60FF el mapa ya esta entero
+C 0x6109 sin interrupciones mientras cambia el mapa
+C 0x610C el banco 2 a 0x8000
+C 0x610F y en su copia de RAM
+C 0x6112 el mapa ya esta entero
+C 0x6113 sin interrupciones mientras cambia el mapa
+C 0x6116 el banco 3 a 0xA000
+C 0x6119 y en su copia de RAM
+C 0x611C el mapa ya esta entero
+C 0x611E sin interrupciones mientras cambia el mapa
+C 0x6121 el banco 12 a 0x8000
+C 0x6124 y en su copia de RAM
+C 0x6127 el mapa ya esta entero
+C 0x6128 sin interrupciones mientras cambia el mapa
+C 0x612B el banco 13 a 0xA000
+C 0x612E y en su copia de RAM
+C 0x6131 el mapa ya esta entero
+C 0x6138 sin interrupciones mientras cambia el mapa
+C 0x613B el banco 2 a 0x8000
+C 0x613E y en su copia de RAM
+C 0x6141 el mapa ya esta entero
+C 0x6142 sin interrupciones mientras cambia el mapa
+C 0x6145 el banco 3 a 0xA000
+C 0x6148 y en su copia de RAM
+C 0x614B el mapa ya esta entero
+C 0x614D sin interrupciones mientras cambia el mapa
+C 0x6150 el banco 12 a 0x8000
+C 0x6153 y en su copia de RAM
+C 0x6156 el mapa ya esta entero
+C 0x6157 sin interrupciones mientras cambia el mapa
+C 0x615A el banco 13 a 0xA000
+C 0x615D y en su copia de RAM
+C 0x6160 el mapa ya esta entero
+C 0x6167 sin interrupciones mientras cambia el mapa
+C 0x616A el banco 2 a 0x8000
+C 0x616D y en su copia de RAM
+C 0x6170 el mapa ya esta entero
+C 0x6171 sin interrupciones mientras cambia el mapa
+C 0x6174 el banco 3 a 0xA000
+C 0x6177 y en su copia de RAM
+C 0x617A el mapa ya esta entero
+C 0x617C sin interrupciones mientras cambia el mapa
+C 0x617F el banco 12 a 0x8000
+C 0x6182 y en su copia de RAM
+C 0x6185 el mapa ya esta entero
+C 0x6186 sin interrupciones mientras cambia el mapa
+C 0x6189 el banco 13 a 0xA000
+C 0x618C y en su copia de RAM
+C 0x618F el mapa ya esta entero
+C 0x6196 sin interrupciones mientras cambia el mapa
+C 0x6199 el banco 2 a 0x8000
+C 0x619C y en su copia de RAM
+C 0x619F el mapa ya esta entero
+C 0x61A0 sin interrupciones mientras cambia el mapa
+C 0x61A3 el banco 3 a 0xA000
+C 0x61A6 y en su copia de RAM
+C 0x61A9 el mapa ya esta entero
+C 0x61AB sin interrupciones mientras cambia el mapa
+C 0x61AE el banco 12 a 0x8000
+C 0x61B1 y en su copia de RAM
+C 0x61B4 el mapa ya esta entero
+C 0x61B5 sin interrupciones mientras cambia el mapa
+C 0x61B8 el banco 13 a 0xA000
+C 0x61BB y en su copia de RAM
+C 0x61BE el mapa ya esta entero
+C 0x61C8 sin interrupciones mientras cambia el mapa
+C 0x61CB el banco 2 a 0x8000
+C 0x61CE y en su copia de RAM
+C 0x61D1 el mapa ya esta entero
+C 0x61D2 sin interrupciones mientras cambia el mapa
+C 0x61D5 el banco 3 a 0xA000
+C 0x61D8 y en su copia de RAM
+C 0x61DB el mapa ya esta entero
+C 0x61FF sin interrupciones mientras cambia el mapa
+C 0x6202 el banco 12 a 0x8000
+C 0x6205 y en su copia de RAM
+C 0x6208 el mapa ya esta entero
+C 0x6209 sin interrupciones mientras cambia el mapa
+C 0x620C el banco 13 a 0xA000
+C 0x620F y en su copia de RAM
+C 0x6212 el mapa ya esta entero
+C 0x6237 sin interrupciones mientras cambia el mapa
+C 0x623A el banco 2 a 0x8000
+C 0x623D y en su copia de RAM
+C 0x6240 el mapa ya esta entero
+C 0x6241 sin interrupciones mientras cambia el mapa
+C 0x6244 el banco 3 a 0xA000
+C 0x6247 y en su copia de RAM
+C 0x624A el mapa ya esta entero
+C 0x624C sin interrupciones mientras cambia el mapa
+C 0x624F el banco 12 a 0x8000
+C 0x6252 y en su copia de RAM
+C 0x6255 el mapa ya esta entero
+C 0x6256 sin interrupciones mientras cambia el mapa
+C 0x6259 el banco 13 a 0xA000
+C 0x625C y en su copia de RAM
+C 0x625F el mapa ya esta entero
+C 0x628F sin interrupciones mientras cambia el mapa
+C 0x6292 el banco 2 a 0x8000
+C 0x6295 y en su copia de RAM
+C 0x6298 el mapa ya esta entero
+C 0x6299 sin interrupciones mientras cambia el mapa
+C 0x629C el banco 3 a 0xA000
+C 0x629F y en su copia de RAM
+C 0x62A2 el mapa ya esta entero
+C 0x62EF sin interrupciones mientras cambia el mapa
+C 0x62F2 el banco 12 a 0x8000
+C 0x62F5 y en su copia de RAM
+C 0x62F8 el mapa ya esta entero
+C 0x62F9 sin interrupciones mientras cambia el mapa
+C 0x62FC el banco 13 a 0xA000
+C 0x62FF y en su copia de RAM
+C 0x6302 el mapa ya esta entero
+C 0x630E sin interrupciones mientras cambia el mapa
+C 0x6311 el banco 2 a 0x8000
+C 0x6314 y en su copia de RAM
+C 0x6317 el mapa ya esta entero
+C 0x6318 sin interrupciones mientras cambia el mapa
+C 0x631B el banco 3 a 0xA000
+C 0x631E y en su copia de RAM
+C 0x6321 el mapa ya esta entero
+C 0x6323 sin interrupciones mientras cambia el mapa
+C 0x6326 el banco 12 a 0x8000
+C 0x6329 y en su copia de RAM
+C 0x632C el mapa ya esta entero
+C 0x632D sin interrupciones mientras cambia el mapa
+C 0x6330 el banco 13 a 0xA000
+C 0x6333 y en su copia de RAM
+C 0x6336 el mapa ya esta entero
+C 0x635B sin interrupciones mientras cambia el mapa
+C 0x635E el banco 2 a 0x8000
+C 0x6361 y en su copia de RAM
+C 0x6364 el mapa ya esta entero
+C 0x6365 sin interrupciones mientras cambia el mapa
+C 0x6368 el banco 3 a 0xA000
+C 0x636B y en su copia de RAM
+C 0x636E el mapa ya esta entero
+C 0x6370 sin interrupciones mientras cambia el mapa
+C 0x6373 el banco 12 a 0x8000
+C 0x6376 y en su copia de RAM
+C 0x6379 el mapa ya esta entero
+C 0x637A sin interrupciones mientras cambia el mapa
+C 0x637D el banco 13 a 0xA000
+C 0x6380 y en su copia de RAM
+C 0x6383 el mapa ya esta entero
+C 0x63A7 sin interrupciones mientras cambia el mapa
+C 0x63AA el banco 2 a 0x8000
+C 0x63AD y en su copia de RAM
+C 0x63B0 el mapa ya esta entero
+C 0x63B1 sin interrupciones mientras cambia el mapa
+C 0x63B4 el banco 3 a 0xA000
+C 0x63B7 y en su copia de RAM
+C 0x63BA el mapa ya esta entero
+C 0x63BC sin interrupciones mientras cambia el mapa
+C 0x63BF el banco 12 a 0x8000
+C 0x63C2 y en su copia de RAM
+C 0x63C5 el mapa ya esta entero
+C 0x63C6 sin interrupciones mientras cambia el mapa
+C 0x63C9 el banco 13 a 0xA000
+C 0x63CC y en su copia de RAM
+C 0x63CF el mapa ya esta entero
+C 0x63E8 sin interrupciones mientras cambia el mapa
+C 0x63EB el banco 2 a 0x8000
+C 0x63EE y en su copia de RAM
+C 0x63F1 el mapa ya esta entero
+C 0x63F2 sin interrupciones mientras cambia el mapa
+C 0x63F5 el banco 3 a 0xA000
+C 0x63F8 y en su copia de RAM
+C 0x63FB el mapa ya esta entero
+C 0x63FD sin interrupciones mientras cambia el mapa
+C 0x6400 el banco 12 a 0x8000
+C 0x6403 y en su copia de RAM
+C 0x6406 el mapa ya esta entero
+C 0x6407 sin interrupciones mientras cambia el mapa
+C 0x640A el banco 13 a 0xA000
+C 0x640D y en su copia de RAM
+C 0x6410 el mapa ya esta entero
+C 0x642A sin interrupciones mientras cambia el mapa
+C 0x642D el banco 2 a 0x8000
+C 0x6430 y en su copia de RAM
+C 0x6433 el mapa ya esta entero
+C 0x6434 sin interrupciones mientras cambia el mapa
+C 0x6437 el banco 3 a 0xA000
+C 0x643A y en su copia de RAM
+C 0x643D el mapa ya esta entero
+C 0x643F sin interrupciones mientras cambia el mapa
+C 0x6442 el banco 12 a 0x8000
+C 0x6445 y en su copia de RAM
+C 0x6448 el mapa ya esta entero
+C 0x6449 sin interrupciones mientras cambia el mapa
+C 0x644C el banco 13 a 0xA000
+C 0x644F y en su copia de RAM
+C 0x6452 el mapa ya esta entero
+C 0x6461 sin interrupciones mientras cambia el mapa
+C 0x6464 el banco 2 a 0x8000
+C 0x6467 y en su copia de RAM
+C 0x646A el mapa ya esta entero
+C 0x646B sin interrupciones mientras cambia el mapa
+C 0x646E el banco 3 a 0xA000
+C 0x6471 y en su copia de RAM
+C 0x6474 el mapa ya esta entero
+C 0x6539 sin interrupciones mientras cambia el mapa
+C 0x653C el banco 12 a 0x8000
+C 0x653F y en su copia de RAM
+C 0x6542 el mapa ya esta entero
+C 0x6543 sin interrupciones mientras cambia el mapa
+C 0x6546 el banco 13 a 0xA000
+C 0x6549 y en su copia de RAM
+C 0x654C el mapa ya esta entero
+C 0x6592 sin interrupciones mientras cambia el mapa
+C 0x6595 el banco 2 a 0x8000
+C 0x6598 y en su copia de RAM
+C 0x659B el mapa ya esta entero
+C 0x659C sin interrupciones mientras cambia el mapa
+C 0x659F el banco 3 a 0xA000
+C 0x65A2 y en su copia de RAM
+C 0x65A5 el mapa ya esta entero
+C 0x6697 sin interrupciones mientras cambia el mapa
+C 0x669A el banco 10 a 0x8000
+C 0x669D y en su copia de RAM
+C 0x66A0 el mapa ya esta entero
+C 0x66A1 sin interrupciones mientras cambia el mapa
+C 0x66A4 el banco 11 a 0xA000
+C 0x66A7 y en su copia de RAM
+C 0x66AA el mapa ya esta entero
+C 0x66EE sin interrupciones mientras cambia el mapa
+C 0x66F1 el banco 12 a 0x8000
+C 0x66F4 y en su copia de RAM
+C 0x66F7 el mapa ya esta entero
+C 0x66F8 sin interrupciones mientras cambia el mapa
+C 0x66FB el banco 13 a 0xA000
+C 0x66FE y en su copia de RAM
+C 0x6701 el mapa ya esta entero
+C 0x6722 sin interrupciones mientras cambia el mapa
+C 0x6725 el banco 2 a 0x8000
+C 0x6728 y en su copia de RAM
+C 0x672B el mapa ya esta entero
+C 0x672C sin interrupciones mientras cambia el mapa
+C 0x672F el banco 3 a 0xA000
+C 0x6732 y en su copia de RAM
+C 0x6735 el mapa ya esta entero
+C 0x673C sin interrupciones mientras cambia el mapa
+C 0x673F el banco 10 a 0x8000
+C 0x6742 y en su copia de RAM
+C 0x6745 el mapa ya esta entero
+C 0x6746 sin interrupciones mientras cambia el mapa
+C 0x6749 el banco 11 a 0xA000
+C 0x674C y en su copia de RAM
+C 0x674F el mapa ya esta entero
+C 0x6784 sin interrupciones mientras cambia el mapa
+C 0x6787 el banco 2 a 0x8000
+C 0x678A y en su copia de RAM
+C 0x678D el mapa ya esta entero
+C 0x678E sin interrupciones mientras cambia el mapa
+C 0x6791 el banco 3 a 0xA000
+C 0x6794 y en su copia de RAM
+C 0x6797 el mapa ya esta entero
+C 0x67AD sin interrupciones mientras cambia el mapa
+C 0x67B0 el banco 10 a 0x8000
+C 0x67B3 y en su copia de RAM
+C 0x67B6 el mapa ya esta entero
+C 0x67B7 sin interrupciones mientras cambia el mapa
+C 0x67BA el banco 11 a 0xA000
+C 0x67BD y en su copia de RAM
+C 0x67C0 el mapa ya esta entero
+C 0x683D sin interrupciones mientras cambia el mapa
+C 0x6840 el banco 2 a 0x8000
+C 0x6843 y en su copia de RAM
+C 0x6846 el mapa ya esta entero
+C 0x6847 sin interrupciones mientras cambia el mapa
+C 0x684A el banco 3 a 0xA000
+C 0x684D y en su copia de RAM
+C 0x6850 el mapa ya esta entero
+C 0x68E2 sin interrupciones mientras cambia el mapa
+C 0x68E5 el banco 10 a 0x8000
+C 0x68E8 y en su copia de RAM
+C 0x68EB el mapa ya esta entero
+C 0x68EC sin interrupciones mientras cambia el mapa
+C 0x68EF el banco 11 a 0xA000
+C 0x68F2 y en su copia de RAM
+C 0x68F5 el mapa ya esta entero
+C 0x6943 sin interrupciones mientras cambia el mapa
+C 0x6946 el banco 2 a 0x8000
+C 0x6949 y en su copia de RAM
+C 0x694C el mapa ya esta entero
+C 0x694D sin interrupciones mientras cambia el mapa
+C 0x6950 el banco 3 a 0xA000
+C 0x6953 y en su copia de RAM
+C 0x6956 el mapa ya esta entero
+C 0x6957 sin interrupciones mientras cambia el mapa
+C 0x695A el banco 10 a 0x8000
+C 0x695D y en su copia de RAM
+C 0x6960 el mapa ya esta entero
+C 0x6961 sin interrupciones mientras cambia el mapa
+C 0x6964 el banco 11 a 0xA000
+C 0x6967 y en su copia de RAM
+C 0x696A el mapa ya esta entero
+C 0x69AA sin interrupciones mientras cambia el mapa
+C 0x69AD el banco 2 a 0x8000
+C 0x69B0 y en su copia de RAM
+C 0x69B3 el mapa ya esta entero
+C 0x69B4 sin interrupciones mientras cambia el mapa
+C 0x69B7 el banco 3 a 0xA000
+C 0x69BA y en su copia de RAM
+C 0x69BD el mapa ya esta entero
+C 0x6AE4 sin interrupciones mientras cambia el mapa
+C 0x6AE7 el banco 10 a 0x8000
+C 0x6AEA y en su copia de RAM
+C 0x6AED el mapa ya esta entero
+C 0x6AEE sin interrupciones mientras cambia el mapa
+C 0x6AF1 el banco 11 a 0xA000
+C 0x6AF4 y en su copia de RAM
+C 0x6AF7 el mapa ya esta entero
+C 0x6B2C sin interrupciones mientras cambia el mapa
+C 0x6B2F el banco 2 a 0x8000
+C 0x6B32 y en su copia de RAM
+C 0x6B35 el mapa ya esta entero
+C 0x6B36 sin interrupciones mientras cambia el mapa
+C 0x6B39 el banco 3 a 0xA000
+C 0x6B3C y en su copia de RAM
+C 0x6B3F el mapa ya esta entero
+C 0x6B40 sin interrupciones mientras cambia el mapa
+C 0x6B43 el banco 10 a 0x8000
+C 0x6B46 y en su copia de RAM
+C 0x6B49 el mapa ya esta entero
+C 0x6B4A sin interrupciones mientras cambia el mapa
+C 0x6B4D el banco 11 a 0xA000
+C 0x6B50 y en su copia de RAM
+C 0x6B53 el mapa ya esta entero
+C 0x6B7D sin interrupciones mientras cambia el mapa
+C 0x6B80 el banco 2 a 0x8000
+C 0x6B83 y en su copia de RAM
+C 0x6B86 el mapa ya esta entero
+C 0x6B87 sin interrupciones mientras cambia el mapa
+C 0x6B8A el banco 3 a 0xA000
+C 0x6B8D y en su copia de RAM
+C 0x6B90 el mapa ya esta entero
+C 0x6B97 sin interrupciones mientras cambia el mapa
+C 0x6B9A el banco 10 a 0x8000
+C 0x6B9D y en su copia de RAM
+C 0x6BA0 el mapa ya esta entero
+C 0x6BA1 sin interrupciones mientras cambia el mapa
+C 0x6BA4 el banco 11 a 0xA000
+C 0x6BA7 y en su copia de RAM
+C 0x6BAA el mapa ya esta entero
+C 0x6BC3 sin interrupciones mientras cambia el mapa
+C 0x6BC6 el banco 2 a 0x8000
+C 0x6BC9 y en su copia de RAM
+C 0x6BCC el mapa ya esta entero
+C 0x6BCD sin interrupciones mientras cambia el mapa
+C 0x6BD0 el banco 3 a 0xA000
+C 0x6BD3 y en su copia de RAM
+C 0x6BD6 el mapa ya esta entero
+C 0x6C3A sin interrupciones mientras cambia el mapa
+C 0x6C3D el banco 12 a 0x8000
+C 0x6C40 y en su copia de RAM
+C 0x6C43 el mapa ya esta entero
+C 0x6C44 sin interrupciones mientras cambia el mapa
+C 0x6C47 el banco 13 a 0xA000
+C 0x6C4A y en su copia de RAM
+C 0x6C4D el mapa ya esta entero
+C 0x6F5C sin interrupciones mientras cambia el mapa
+C 0x6F5F el banco 2 a 0x8000
+C 0x6F62 y en su copia de RAM
+C 0x6F65 el mapa ya esta entero
+C 0x6F66 sin interrupciones mientras cambia el mapa
+C 0x6F69 el banco 3 a 0xA000
+C 0x6F6C y en su copia de RAM
+C 0x6F6F el mapa ya esta entero
+C 0x6F71 sin interrupciones mientras cambia el mapa
+C 0x6F74 el banco 10 a 0x8000
+C 0x6F77 y en su copia de RAM
+C 0x6F7A el mapa ya esta entero
+C 0x6F7B sin interrupciones mientras cambia el mapa
+C 0x6F7E el banco 11 a 0xA000
+C 0x6F81 y en su copia de RAM
+C 0x6F84 el mapa ya esta entero
+C 0x7B5E sin interrupciones mientras cambia el mapa
+C 0x7B61 el banco 12 a 0x8000
+C 0x7B64 y en su copia de RAM
+C 0x7B67 el mapa ya esta entero
+C 0x7B68 sin interrupciones mientras cambia el mapa
+C 0x7B6B el banco 13 a 0xA000
+C 0x7B6E y en su copia de RAM
+C 0x7B71 el mapa ya esta entero
+C 0x7B85 sin interrupciones mientras cambia el mapa
+C 0x7B88 el banco 12 a 0x8000
+C 0x7B8B y en su copia de RAM
+C 0x7B8E el mapa ya esta entero
+C 0x7B8F sin interrupciones mientras cambia el mapa
+C 0x7B92 el banco 13 a 0xA000
+C 0x7B95 y en su copia de RAM
+C 0x7B98 el mapa ya esta entero
+C 0x7BC4 sin interrupciones mientras cambia el mapa
+C 0x7BC7 el banco 12 a 0x8000
+C 0x7BCA y en su copia de RAM
+C 0x7BCD el mapa ya esta entero
+C 0x7BCE sin interrupciones mientras cambia el mapa
+C 0x7BD1 el banco 13 a 0xA000
+C 0x7BD4 y en su copia de RAM
+C 0x7BD7 el mapa ya esta entero
+C 0x7BE7 sin interrupciones mientras cambia el mapa
+C 0x7BEA el banco 12 a 0x8000
+C 0x7BED y en su copia de RAM
+C 0x7BF0 el mapa ya esta entero
+C 0x7BF1 sin interrupciones mientras cambia el mapa
+C 0x7BF4 el banco 13 a 0xA000
+C 0x7BF7 y en su copia de RAM
+C 0x7BFA el mapa ya esta entero
+C 0x7C01 sin interrupciones mientras cambia el mapa
+C 0x7C04 el banco 10 a 0x8000
+C 0x7C07 y en su copia de RAM
+C 0x7C0A el mapa ya esta entero
+C 0x7C0B sin interrupciones mientras cambia el mapa
+C 0x7C0E el banco 11 a 0xA000
+C 0x7C11 y en su copia de RAM
+C 0x7C14 el mapa ya esta entero
+C 0x7C3E sin interrupciones mientras cambia el mapa
+C 0x7C41 el banco 10 a 0x8000
+C 0x7C44 y en su copia de RAM
+C 0x7C47 el mapa ya esta entero
+C 0x7C48 sin interrupciones mientras cambia el mapa
+C 0x7C4B el banco 11 a 0xA000
+C 0x7C4E y en su copia de RAM
+C 0x7C51 el mapa ya esta entero
+C 0x7C8A sin interrupciones mientras cambia el mapa
+C 0x7C8D el banco 2 a 0x8000
+C 0x7C90 y en su copia de RAM
+C 0x7C93 el mapa ya esta entero
+C 0x7C94 sin interrupciones mientras cambia el mapa
+C 0x7C97 el banco 3 a 0xA000
+C 0x7C9A y en su copia de RAM
+C 0x7C9D el mapa ya esta entero
+C 0x7C9F sin interrupciones mientras cambia el mapa
+C 0x7CA2 el banco 10 a 0x8000
+C 0x7CA5 y en su copia de RAM
+C 0x7CA8 el mapa ya esta entero
+C 0x7CA9 sin interrupciones mientras cambia el mapa
+C 0x7CAC el banco 11 a 0xA000
+C 0x7CAF y en su copia de RAM
+C 0x7CB2 el mapa ya esta entero
+C 0x7CF8 sin interrupciones mientras cambia el mapa
+C 0x7CFB el banco 10 a 0x8000
+C 0x7CFE y en su copia de RAM
+C 0x7D01 el mapa ya esta entero
+C 0x7D02 sin interrupciones mientras cambia el mapa
+C 0x7D05 el banco 11 a 0xA000
+C 0x7D08 y en su copia de RAM
+C 0x7D0B el mapa ya esta entero
+C 0x7D74 sin interrupciones mientras cambia el mapa
+C 0x7D77 el banco 10 a 0x8000
+C 0x7D7A y en su copia de RAM
+C 0x7D7D el mapa ya esta entero
+C 0x7D7E sin interrupciones mientras cambia el mapa
+C 0x7D81 el banco 11 a 0xA000
+C 0x7D84 y en su copia de RAM
+C 0x7D87 el mapa ya esta entero
+C 0x7D9C sin interrupciones mientras cambia el mapa
+C 0x7D9F el banco 10 a 0x8000
+C 0x7DA2 y en su copia de RAM
+C 0x7DA5 el mapa ya esta entero
+C 0x7DA6 sin interrupciones mientras cambia el mapa
+C 0x7DA9 el banco 11 a 0xA000
+C 0x7DAC y en su copia de RAM
+C 0x7DAF el mapa ya esta entero
+C 0x7DB3 sin interrupciones mientras cambia el mapa
+C 0x7DB6 el banco 12 a 0x8000
+C 0x7DB9 y en su copia de RAM
+C 0x7DBC el mapa ya esta entero
+C 0x7DBD sin interrupciones mientras cambia el mapa
+C 0x7DC0 el banco 13 a 0xA000
+C 0x7DC3 y en su copia de RAM
+C 0x7DC6 el mapa ya esta entero
+C 0x7DD5 sin interrupciones mientras cambia el mapa
+C 0x7DD8 el banco 12 a 0x8000
+C 0x7DDB y en su copia de RAM
+C 0x7DDE el mapa ya esta entero
+C 0x7DDF sin interrupciones mientras cambia el mapa
+C 0x7DE2 el banco 13 a 0xA000
+C 0x7DE5 y en su copia de RAM
+C 0x7DE8 el mapa ya esta entero
+C 0x7DF7 sin interrupciones mientras cambia el mapa
+C 0x7DFA el banco 10 a 0x8000
+C 0x7DFD y en su copia de RAM
+C 0x7E00 el mapa ya esta entero
+C 0x7E01 sin interrupciones mientras cambia el mapa
+C 0x7E04 el banco 11 a 0xA000
+C 0x7E07 y en su copia de RAM
+C 0x7E0A el mapa ya esta entero
+C 0x7E11 sin interrupciones mientras cambia el mapa
+C 0x7E14 el banco 10 a 0x8000
+C 0x7E17 y en su copia de RAM
+C 0x7E1A el mapa ya esta entero
+C 0x7E1B sin interrupciones mientras cambia el mapa
+C 0x7E1E el banco 11 a 0xA000
+C 0x7E21 y en su copia de RAM
+C 0x7E24 el mapa ya esta entero
+C 0x7E2D sin interrupciones mientras cambia el mapa
+C 0x7E30 el banco 10 a 0x8000
+C 0x7E33 y en su copia de RAM
+C 0x7E36 el mapa ya esta entero
+C 0x7E37 sin interrupciones mientras cambia el mapa
+C 0x7E3A el banco 11 a 0xA000
+C 0x7E3D y en su copia de RAM
+C 0x7E40 el mapa ya esta entero
+C 0x7F11 sin interrupciones mientras cambia el mapa
+C 0x7F14 el banco 10 a 0x8000
+C 0x7F17 y en su copia de RAM
+C 0x7F1A el mapa ya esta entero
+C 0x7F1B sin interrupciones mientras cambia el mapa
+C 0x7F1E el banco 11 a 0xA000
+C 0x7F21 y en su copia de RAM
+C 0x7F24 el mapa ya esta entero
+C 0x7F48 sin interrupciones mientras cambia el mapa
+C 0x7F4B el banco 2 a 0x8000
+C 0x7F4E y en su copia de RAM
+C 0x7F51 el mapa ya esta entero
+C 0x7F52 sin interrupciones mientras cambia el mapa
+C 0x7F55 el banco 3 a 0xA000
+C 0x7F58 y en su copia de RAM
+C 0x7F5B el mapa ya esta entero
