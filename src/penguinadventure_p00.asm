@@ -1360,248 +1360,248 @@ lee_los_datos_de_la_fase:
 ; LOS PUENTES AL BANCO 4-5-6. De aqui al final del banco hay una fila larga de rutinas que se parecen todas: meter un trio, hacer una sola cosa con el, y devolver el 1-2-3. Son los puentes por los que el codigo del juego llega a los datos que no caben en su ventana, y estan aqui, en el banco fijo, porque son el unico sitio desde el que se puede cambiar de banco sin quedarse sin suelo.
 ; ----------------------------------------------------------------------
 pinta_del_banco_6:
-	di			;47e2
-	push hl			;47e3
-	ld hl,0f0f1h		;47e4
+	di			;47e2   ; sin interrupciones mientras cambia el mapa
+	push hl			;47e3   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;47e4   ; las tres copias, seguidas
 	ld a,004h		;47e7   ; el trio 4-5-6
-	ld (06000h),a		;47e9
-	ld (hl),a			;47ec
+	ld (06000h),a		;47e9   ; el banco 4 a 0x6000
+	ld (hl),a			;47ec   ; apuntado en 0xF0F1
 	inc a			;47ed
-	ld (08000h),a		;47ee
-	inc hl			;47f1
-	ld (hl),a			;47f2
+	ld (08000h),a		;47ee   ; el banco 5 a 0x8000
+	inc hl			;47f1   ; la copia siguiente
+	ld (hl),a			;47f2   ; apuntado en 0xF0F2
 	inc a			;47f3
-	ld (0a000h),a		;47f4
-	inc hl			;47f7
-	ld (hl),a			;47f8
-	pop hl			;47f9
-	ei			;47fa
+	ld (0a000h),a		;47f4   ; el banco 6 a 0xA000
+	inc hl			;47f7   ; la copia siguiente
+	ld (hl),a			;47f8   ; apuntado en 0xF0F3
+	pop hl			;47f9   ; HL, como estaba
+	ei			;47fa   ; el mapa ya esta entero
 	ld de,0b5b9h		;47fb   ; un guion del banco 6
 	call pinta_sin_color		;47fe   ; al pintor
-	di			;4801
-	push hl			;4802
-	ld hl,0f0f1h		;4803
+	di			;4801   ; sin interrupciones mientras cambia el mapa
+	push hl			;4802   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4803   ; las tres copias, seguidas
 	ld a,001h		;4806   ; y el 1-2-3 de vuelta
-	ld (06000h),a		;4808
-	ld (hl),a			;480b
+	ld (06000h),a		;4808   ; el banco 1 a 0x6000
+	ld (hl),a			;480b   ; apuntado en 0xF0F1
 	inc a			;480c
-	ld (08000h),a		;480d
-	inc hl			;4810
-	ld (hl),a			;4811
+	ld (08000h),a		;480d   ; el banco 2 a 0x8000
+	inc hl			;4810   ; la copia siguiente
+	ld (hl),a			;4811   ; apuntado en 0xF0F2
 	inc a			;4812
-	ld (0a000h),a		;4813
-	inc hl			;4816
-	ld (hl),a			;4817
-	pop hl			;4818
-	ei			;4819
+	ld (0a000h),a		;4813   ; el banco 3 a 0xA000
+	inc hl			;4816   ; la copia siguiente
+	ld (hl),a			;4817   ; apuntado en 0xF0F3
+	pop hl			;4818   ; HL, como estaba
+	ei			;4819   ; el mapa ya esta entero
 	ret			;481a
 L_481B:
-	di			;481b
-	push hl			;481c
-	ld hl,0f0f1h		;481d
+	di			;481b   ; sin interrupciones mientras cambia el mapa
+	push hl			;481c   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;481d   ; las tres copias, seguidas
 	ld a,004h		;4820
-	ld (06000h),a		;4822
-	ld (hl),a			;4825
+	ld (06000h),a		;4822   ; el banco 4 a 0x6000
+	ld (hl),a			;4825   ; apuntado en 0xF0F1
 	inc a			;4826
-	ld (08000h),a		;4827
-	inc hl			;482a
-	ld (hl),a			;482b
+	ld (08000h),a		;4827   ; el banco 5 a 0x8000
+	inc hl			;482a   ; la copia siguiente
+	ld (hl),a			;482b   ; apuntado en 0xF0F2
 	inc a			;482c
-	ld (0a000h),a		;482d
-	inc hl			;4830
-	ld (hl),a			;4831
-	pop hl			;4832
-	ei			;4833
+	ld (0a000h),a		;482d   ; el banco 6 a 0xA000
+	inc hl			;4830   ; la copia siguiente
+	ld (hl),a			;4831   ; apuntado en 0xF0F3
+	pop hl			;4832   ; HL, como estaba
+	ei			;4833   ; el mapa ya esta entero
 	ld de,0a77ah		;4834
-	call pinta_sin_color		;4837
+	call pinta_sin_color		;4837   ; el guion 0xA77A del banco 6: 1136 bytes de patrones (0x2A00-0x2E6F)
 	ld de,0aabbh		;483a
 	ld hl,02e70h		;483d
 	ld c,001h		;4840
-	call pinta		;4842
+	call pinta		;4842   ; el guion 0xAABB del banco 6: 40 bytes de patrones (0x2E70-0x2E97)
 	ld de,0aba5h		;4845
-	call pinta_sin_color		;4848
+	call pinta_sin_color		;4848   ; el guion 0xABA5 del banco 6: 1152 bytes de patrones (0x3200-0x367F)
 	ld de,0af15h		;484b
 	ld hl,03680h		;484e
 	ld c,001h		;4851
-	call pinta		;4853
+	call pinta		;4853   ; el guion 0xAF15 del banco 6: 32 bytes de patrones (0x3680-0x369F)
 	ld de,0aadbh		;4856
-	call pinta_sin_color		;4859
+	call pinta_sin_color		;4859   ; el guion 0xAADB del banco 6: 1136 bytes de colores (0x0A00-0x0E6F)
 	ld de,0ab93h		;485c
 	ld hl,00e70h		;485f
 	ld c,000h		;4862
-	call pinta		;4864
+	call pinta		;4864   ; el guion 0xAB93 del banco 6: 40 bytes de colores (0x0E70-0x0E97)
 	ld de,0af34h		;4867
-	call pinta_sin_color		;486a
+	call pinta_sin_color		;486a   ; el guion 0xAF34 del banco 6: 1152 bytes de colores (0x1200-0x167F)
 	ld de,0b003h		;486d
 	ld hl,01680h		;4870
 	ld c,000h		;4873
-	call pinta		;4875
+	call pinta		;4875   ; el guion 0xB003 del banco 6: 32 bytes de colores (0x1680-0x169F)
 	ld de,0b006h		;4878
 	ld bc,00601h		;487b
 	call pinta_bloque		;487e
-	di			;4881
-	push hl			;4882
-	ld hl,0f0f1h		;4883
+	di			;4881   ; sin interrupciones mientras cambia el mapa
+	push hl			;4882   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4883   ; las tres copias, seguidas
 	ld a,001h		;4886
-	ld (06000h),a		;4888
-	ld (hl),a			;488b
+	ld (06000h),a		;4888   ; el banco 1 a 0x6000
+	ld (hl),a			;488b   ; apuntado en 0xF0F1
 	inc a			;488c
-	ld (08000h),a		;488d
-	inc hl			;4890
-	ld (hl),a			;4891
+	ld (08000h),a		;488d   ; el banco 2 a 0x8000
+	inc hl			;4890   ; la copia siguiente
+	ld (hl),a			;4891   ; apuntado en 0xF0F2
 	inc a			;4892
-	ld (0a000h),a		;4893
-	inc hl			;4896
-	ld (hl),a			;4897
-	pop hl			;4898
-	ei			;4899
+	ld (0a000h),a		;4893   ; el banco 3 a 0xA000
+	inc hl			;4896   ; la copia siguiente
+	ld (hl),a			;4897   ; apuntado en 0xF0F3
+	pop hl			;4898   ; HL, como estaba
+	ei			;4899   ; el mapa ya esta entero
 	ld a,(0e0a0h)		;489a
 	and a			;489d
 	ret z			;489e
-	di			;489f
-	push hl			;48a0
-	ld hl,0f0f1h		;48a1
+	di			;489f   ; sin interrupciones mientras cambia el mapa
+	push hl			;48a0   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;48a1   ; las tres copias, seguidas
 	ld a,004h		;48a4
-	ld (06000h),a		;48a6
-	ld (hl),a			;48a9
+	ld (06000h),a		;48a6   ; el banco 4 a 0x6000
+	ld (hl),a			;48a9   ; apuntado en 0xF0F1
 	inc a			;48aa
-	ld (08000h),a		;48ab
-	inc hl			;48ae
-	ld (hl),a			;48af
+	ld (08000h),a		;48ab   ; el banco 5 a 0x8000
+	inc hl			;48ae   ; la copia siguiente
+	ld (hl),a			;48af   ; apuntado en 0xF0F2
 	inc a			;48b0
-	ld (0a000h),a		;48b1
-	inc hl			;48b4
-	ld (hl),a			;48b5
-	pop hl			;48b6
-	ei			;48b7
+	ld (0a000h),a		;48b1   ; el banco 6 a 0xA000
+	inc hl			;48b4   ; la copia siguiente
+	ld (hl),a			;48b5   ; apuntado en 0xF0F3
+	pop hl			;48b6   ; HL, como estaba
+	ei			;48b7   ; el mapa ya esta entero
 	ld de,0ba5ah		;48b8
 	ld bc,01301h		;48bb
 	call pinta_bloque		;48be
 	jr L_48E2		;48c1
 L_48C3:
-	di			;48c3
-	push hl			;48c4
-	ld hl,0f0f1h		;48c5
+	di			;48c3   ; sin interrupciones mientras cambia el mapa
+	push hl			;48c4   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;48c5   ; las tres copias, seguidas
 	ld a,004h		;48c8
-	ld (06000h),a		;48ca
-	ld (hl),a			;48cd
+	ld (06000h),a		;48ca   ; el banco 4 a 0x6000
+	ld (hl),a			;48cd   ; apuntado en 0xF0F1
 	inc a			;48ce
-	ld (08000h),a		;48cf
-	inc hl			;48d2
-	ld (hl),a			;48d3
+	ld (08000h),a		;48cf   ; el banco 5 a 0x8000
+	inc hl			;48d2   ; la copia siguiente
+	ld (hl),a			;48d3   ; apuntado en 0xF0F2
 	inc a			;48d4
-	ld (0a000h),a		;48d5
-	inc hl			;48d8
-	ld (hl),a			;48d9
-	pop hl			;48da
-	ei			;48db
+	ld (0a000h),a		;48d5   ; el banco 6 a 0xA000
+	inc hl			;48d8   ; la copia siguiente
+	ld (hl),a			;48d9   ; apuntado en 0xF0F3
+	pop hl			;48da   ; HL, como estaba
+	ei			;48db   ; el mapa ya esta entero
 	ld de,08afbh		;48dc
-	call pinta_sin_color		;48df
+	call pinta_sin_color		;48df   ; el guion 0x8AFB del banco 5: 6784 bytes de colores y patrones (0x0200-0x0407 0x0808-0x0C67 0x1008-0x16DF)
 L_48E2:
-	di			;48e2
-	push hl			;48e3
-	ld hl,0f0f1h		;48e4
+	di			;48e2   ; sin interrupciones mientras cambia el mapa
+	push hl			;48e3   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;48e4   ; las tres copias, seguidas
 	ld a,001h		;48e7
-	ld (06000h),a		;48e9
-	ld (hl),a			;48ec
+	ld (06000h),a		;48e9   ; el banco 1 a 0x6000
+	ld (hl),a			;48ec   ; apuntado en 0xF0F1
 	inc a			;48ed
-	ld (08000h),a		;48ee
-	inc hl			;48f1
-	ld (hl),a			;48f2
+	ld (08000h),a		;48ee   ; el banco 2 a 0x8000
+	inc hl			;48f1   ; la copia siguiente
+	ld (hl),a			;48f2   ; apuntado en 0xF0F2
 	inc a			;48f3
-	ld (0a000h),a		;48f4
-	inc hl			;48f7
-	ld (hl),a			;48f8
-	pop hl			;48f9
-	ei			;48fa
+	ld (0a000h),a		;48f4   ; el banco 3 a 0xA000
+	inc hl			;48f7   ; la copia siguiente
+	ld (hl),a			;48f8   ; apuntado en 0xF0F3
+	pop hl			;48f9   ; HL, como estaba
+	ei			;48fa   ; el mapa ya esta entero
 	ret			;48fb
 L_48FC:
-	di			;48fc
-	push hl			;48fd
-	ld hl,0f0f1h		;48fe
+	di			;48fc   ; sin interrupciones mientras cambia el mapa
+	push hl			;48fd   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;48fe   ; las tres copias, seguidas
 	ld a,004h		;4901
-	ld (06000h),a		;4903
-	ld (hl),a			;4906
+	ld (06000h),a		;4903   ; el banco 4 a 0x6000
+	ld (hl),a			;4906   ; apuntado en 0xF0F1
 	inc a			;4907
-	ld (08000h),a		;4908
-	inc hl			;490b
-	ld (hl),a			;490c
+	ld (08000h),a		;4908   ; el banco 5 a 0x8000
+	inc hl			;490b   ; la copia siguiente
+	ld (hl),a			;490c   ; apuntado en 0xF0F2
 	inc a			;490d
-	ld (0a000h),a		;490e
-	inc hl			;4911
-	ld (hl),a			;4912
-	pop hl			;4913
-	ei			;4914
+	ld (0a000h),a		;490e   ; el banco 6 a 0xA000
+	inc hl			;4911   ; la copia siguiente
+	ld (hl),a			;4912   ; apuntado en 0xF0F3
+	pop hl			;4913   ; HL, como estaba
+	ei			;4914   ; el mapa ya esta entero
 	ld de,09bb6h		;4915
-	call pinta_sin_color		;4918
+	call pinta_sin_color		;4918   ; el guion 0x9BB6 del banco 5: 632 bytes de patrones (0x2200-0x2477)
 	ld de,09d25h		;491b
 	ld hl,02478h		;491e
 	ld c,001h		;4921
-	call pinta		;4923
+	call pinta		;4923   ; el guion 0x9D25 del banco 5: 224 bytes de patrones (0x2478-0x2557)
 	ld de,09dfah		;4926
-	call pinta_sin_color		;4929
+	call pinta_sin_color		;4929   ; el guion 0x9DFA del banco 5: 1592 bytes de patrones (0x2808-0x2E3F)
 	ld de,0a1e1h		;492c
 	ld hl,02e40h		;492f
 	ld c,001h		;4932
-	call pinta		;4934
+	call pinta		;4934   ; el guion 0xA1E1 del banco 6: 448 bytes de patrones (0x2E40-0x2FFF)
 	ld de,0a52ch		;4937
-	call pinta_sin_color		;493a
+	call pinta_sin_color		;493a   ; el guion 0xA52C del banco 6: 456 bytes de patrones (0x3008-0x31CF)
 	ld de,0a575h		;493d
 	ld hl,031d0h		;4940
 	ld c,001h		;4943
-	call pinta		;4945
+	call pinta		;4945   ; el guion 0xA575 del banco 6: 368 bytes de patrones (0x31D0-0x333F)
 	ld de,09de5h		;4948
-	call pinta_sin_color		;494b
+	call pinta_sin_color		;494b   ; el guion 0x9DE5 del banco 5: 632 bytes de colores (0x0200-0x0477)
 	ld de,09df1h		;494e
 	ld hl,00478h		;4951
 	ld c,000h		;4954
-	call pinta		;4956
+	call pinta		;4956   ; el guion 0x9DF1 del banco 5: 224 bytes de colores (0x0478-0x0557)
 	ld de,0a387h		;4959
-	call pinta_sin_color		;495c
+	call pinta_sin_color		;495c   ; el guion 0xA387 del banco 6: 1592 bytes de colores (0x0808-0x0E3F)
 	ld de,0a4f6h		;495f
 	ld hl,00e40h		;4962
 	ld c,000h		;4965
-	call pinta		;4967
+	call pinta		;4967   ; el guion 0xA4F6 del banco 6: 448 bytes de colores (0x0E40-0x0FFF)
 	ld de,0a6b7h		;496a
-	call pinta_sin_color		;496d
+	call pinta_sin_color		;496d   ; el guion 0xA6B7 del banco 6: 456 bytes de colores (0x1008-0x11CF)
 	ld de,0a6edh		;4970
 	ld hl,011d0h		;4973
 	ld c,000h		;4976
-	call pinta		;4978
-	di			;497b
-	push hl			;497c
-	ld hl,0f0f1h		;497d
+	call pinta		;4978   ; el guion 0xA6ED del banco 6: 368 bytes de colores (0x11D0-0x133F)
+	di			;497b   ; sin interrupciones mientras cambia el mapa
+	push hl			;497c   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;497d   ; las tres copias, seguidas
 	ld a,001h		;4980
-	ld (06000h),a		;4982
-	ld (hl),a			;4985
+	ld (06000h),a		;4982   ; el banco 1 a 0x6000
+	ld (hl),a			;4985   ; apuntado en 0xF0F1
 	inc a			;4986
-	ld (08000h),a		;4987
-	inc hl			;498a
-	ld (hl),a			;498b
+	ld (08000h),a		;4987   ; el banco 2 a 0x8000
+	inc hl			;498a   ; la copia siguiente
+	ld (hl),a			;498b   ; apuntado en 0xF0F2
 	inc a			;498c
-	ld (0a000h),a		;498d
-	inc hl			;4990
-	ld (hl),a			;4991
-	pop hl			;4992
-	ei			;4993
+	ld (0a000h),a		;498d   ; el banco 3 a 0xA000
+	inc hl			;4990   ; la copia siguiente
+	ld (hl),a			;4991   ; apuntado en 0xF0F3
+	pop hl			;4992   ; HL, como estaba
+	ei			;4993   ; el mapa ya esta entero
 	ret			;4994
 L_4995:
-	di			;4995
-	push hl			;4996
-	ld hl,0f0f1h		;4997
+	di			;4995   ; sin interrupciones mientras cambia el mapa
+	push hl			;4996   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4997   ; las tres copias, seguidas
 	ld a,004h		;499a
-	ld (06000h),a		;499c
-	ld (hl),a			;499f
+	ld (06000h),a		;499c   ; el banco 4 a 0x6000
+	ld (hl),a			;499f   ; apuntado en 0xF0F1
 	inc a			;49a0
-	ld (08000h),a		;49a1
-	inc hl			;49a4
-	ld (hl),a			;49a5
+	ld (08000h),a		;49a1   ; el banco 5 a 0x8000
+	inc hl			;49a4   ; la copia siguiente
+	ld (hl),a			;49a5   ; apuntado en 0xF0F2
 	inc a			;49a6
-	ld (0a000h),a		;49a7
-	inc hl			;49aa
-	ld (hl),a			;49ab
-	pop hl			;49ac
-	ei			;49ad
+	ld (0a000h),a		;49a7   ; el banco 6 a 0xA000
+	inc hl			;49aa   ; la copia siguiente
+	ld (hl),a			;49ab   ; apuntado en 0xF0F3
+	pop hl			;49ac   ; HL, como estaba
+	ei			;49ad   ; el mapa ya esta entero
 	ld a,(0e0a1h)		;49ae
 	ld hl,04a89h		;49b1
 	call a_mas_hl		;49b4
@@ -1616,22 +1616,22 @@ L_4995:
 	ld hl,04a93h		;49cd
 	jr L_4A24		;49d0
 L_49D2:
-	di			;49d2
-	push hl			;49d3
-	ld hl,0f0f1h		;49d4
+	di			;49d2   ; sin interrupciones mientras cambia el mapa
+	push hl			;49d3   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;49d4   ; las tres copias, seguidas
 	ld a,004h		;49d7
-	ld (06000h),a		;49d9
-	ld (hl),a			;49dc
+	ld (06000h),a		;49d9   ; el banco 4 a 0x6000
+	ld (hl),a			;49dc   ; apuntado en 0xF0F1
 	inc a			;49dd
-	ld (08000h),a		;49de
-	inc hl			;49e1
-	ld (hl),a			;49e2
+	ld (08000h),a		;49de   ; el banco 5 a 0x8000
+	inc hl			;49e1   ; la copia siguiente
+	ld (hl),a			;49e2   ; apuntado en 0xF0F2
 	inc a			;49e3
-	ld (0a000h),a		;49e4
-	inc hl			;49e7
-	ld (hl),a			;49e8
-	pop hl			;49e9
-	ei			;49ea
+	ld (0a000h),a		;49e4   ; el banco 6 a 0xA000
+	inc hl			;49e7   ; la copia siguiente
+	ld (hl),a			;49e8   ; apuntado en 0xF0F3
+	pop hl			;49e9   ; HL, como estaba
+	ei			;49ea   ; el mapa ya esta entero
 	ld hl,03008h		;49eb
 	ld (0e4e0h),hl		;49ee
 	ld hl,01008h		;49f1
@@ -1639,22 +1639,22 @@ L_49D2:
 	ld hl,04b5bh		;49f7
 	jr L_4A24		;49fa
 L_49FC:
-	di			;49fc
-	push hl			;49fd
-	ld hl,0f0f1h		;49fe
+	di			;49fc   ; sin interrupciones mientras cambia el mapa
+	push hl			;49fd   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;49fe   ; las tres copias, seguidas
 	ld a,004h		;4a01
-	ld (06000h),a		;4a03
-	ld (hl),a			;4a06
+	ld (06000h),a		;4a03   ; el banco 4 a 0x6000
+	ld (hl),a			;4a06   ; apuntado en 0xF0F1
 	inc a			;4a07
-	ld (08000h),a		;4a08
-	inc hl			;4a0b
-	ld (hl),a			;4a0c
+	ld (08000h),a		;4a08   ; el banco 5 a 0x8000
+	inc hl			;4a0b   ; la copia siguiente
+	ld (hl),a			;4a0c   ; apuntado en 0xF0F2
 	inc a			;4a0d
-	ld (0a000h),a		;4a0e
-	inc hl			;4a11
-	ld (hl),a			;4a12
-	pop hl			;4a13
-	ei			;4a14
+	ld (0a000h),a		;4a0e   ; el banco 6 a 0xA000
+	inc hl			;4a11   ; la copia siguiente
+	ld (hl),a			;4a12   ; apuntado en 0xF0F3
+	pop hl			;4a13   ; HL, como estaba
+	ei			;4a14   ; el mapa ya esta entero
 	ld hl,02808h		;4a15
 	ld (0e4e0h),hl		;4a18
 	ld hl,00808h		;4a1b
@@ -1709,22 +1709,22 @@ L_4A24:
 	sbc hl,bc		;4a68
 	ld c,000h		;4a6a
 	call pinta		;4a6c
-	di			;4a6f
-	push hl			;4a70
-	ld hl,0f0f1h		;4a71
+	di			;4a6f   ; sin interrupciones mientras cambia el mapa
+	push hl			;4a70   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4a71   ; las tres copias, seguidas
 	ld a,001h		;4a74
-	ld (06000h),a		;4a76
-	ld (hl),a			;4a79
+	ld (06000h),a		;4a76   ; el banco 1 a 0x6000
+	ld (hl),a			;4a79   ; apuntado en 0xF0F1
 	inc a			;4a7a
-	ld (08000h),a		;4a7b
-	inc hl			;4a7e
-	ld (hl),a			;4a7f
+	ld (08000h),a		;4a7b   ; el banco 2 a 0x8000
+	inc hl			;4a7e   ; la copia siguiente
+	ld (hl),a			;4a7f   ; apuntado en 0xF0F2
 	inc a			;4a80
-	ld (0a000h),a		;4a81
-	inc hl			;4a84
-	ld (hl),a			;4a85
-	pop hl			;4a86
-	ei			;4a87
+	ld (0a000h),a		;4a81   ; el banco 3 a 0xA000
+	inc hl			;4a84   ; la copia siguiente
+	ld (hl),a			;4a85   ; apuntado en 0xF0F3
+	pop hl			;4a86   ; HL, como estaba
+	ei			;4a87   ; el mapa ya esta entero
 	ret			;4a88
 
 ; ----------------------------------------------------------------------
@@ -1757,166 +1757,166 @@ DATA_4A89:
 
 
 L_4BBF:
-	di			;4bbf
-	push hl			;4bc0
-	ld hl,0f0f1h		;4bc1
+	di			;4bbf   ; sin interrupciones mientras cambia el mapa
+	push hl			;4bc0   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4bc1   ; las tres copias, seguidas
 	ld a,004h		;4bc4
-	ld (06000h),a		;4bc6
-	ld (hl),a			;4bc9
+	ld (06000h),a		;4bc6   ; el banco 4 a 0x6000
+	ld (hl),a			;4bc9   ; apuntado en 0xF0F1
 	inc a			;4bca
-	ld (08000h),a		;4bcb
-	inc hl			;4bce
-	ld (hl),a			;4bcf
+	ld (08000h),a		;4bcb   ; el banco 5 a 0x8000
+	inc hl			;4bce   ; la copia siguiente
+	ld (hl),a			;4bcf   ; apuntado en 0xF0F2
 	inc a			;4bd0
-	ld (0a000h),a		;4bd1
-	inc hl			;4bd4
-	ld (hl),a			;4bd5
-	pop hl			;4bd6
-	ei			;4bd7
+	ld (0a000h),a		;4bd1   ; el banco 6 a 0xA000
+	inc hl			;4bd4   ; la copia siguiente
+	ld (hl),a			;4bd5   ; apuntado en 0xF0F3
+	pop hl			;4bd6   ; HL, como estaba
+	ei			;4bd7   ; el mapa ya esta entero
 	ld de,088cah		;4bd8
 	ld hl,02200h		;4bdb
-	call pinta_en_los_tres		;4bde
+	call pinta_en_los_tres		;4bde   ; el guion 0x88CA del banco 5: 1080 bytes de patrones (0x2200-0x2367 0x2A00-0x2B67 0x3200-0x3367)
 	ld de,0898ah		;4be1
 	ld hl,02368h		;4be4
-	call pinta_en_los_tres_con_color		;4be7
+	call pinta_en_los_tres_con_color		;4be7   ; el guion 0x898A del banco 5: 360 bytes de patrones (0x2368-0x23DF 0x2B68-0x2BDF 0x3368-0x33DF)
 	ld de,089fdh		;4bea
 	ld hl,00200h		;4bed
-	call pinta_en_los_tres		;4bf0
+	call pinta_en_los_tres		;4bf0   ; el guion 0x89FD del banco 5: 1080 bytes de colores (0x0200-0x0367 0x0A00-0x0B67 0x1200-0x1367)
 	ld de,08a6ch		;4bf3
 	ld hl,00368h		;4bf6
-	call pinta_en_los_tres		;4bf9
+	call pinta_en_los_tres		;4bf9   ; el guion 0x8A6C del banco 5: 360 bytes de colores (0x0368-0x03DF 0x0B68-0x0BDF 0x1368-0x13DF)
 	ld a,(0e0a2h)		;4bfc
 	cp 004h		;4bff
 	jr nz,L_4C1E		;4c01
 	ld de,08abbh		;4c03
 	ld hl,00248h		;4c06
-	call pinta_en_los_tres		;4c09
+	call pinta_en_los_tres		;4c09   ; el guion 0x8ABB del banco 5: 240 bytes de colores (0x0248-0x0297 0x0A48-0x0A97 0x1248-0x1297)
 	ld de,08af0h		;4c0c
 	ld hl,00318h		;4c0f
-	call pinta_en_los_tres		;4c12
+	call pinta_en_los_tres		;4c12   ; el guion 0x8AF0 del banco 5: 48 bytes de colores (0x0318-0x0327 0x0B18-0x0B27 0x1318-0x1327)
 	ld de,08af0h		;4c15
 	ld hl,00390h		;4c18
-	call pinta_en_los_tres		;4c1b
+	call pinta_en_los_tres		;4c1b   ; el guion 0x8AF0 del banco 5: 48 bytes de colores (0x0390-0x039F 0x0B90-0x0B9F 0x1390-0x139F)
 L_4C1E:
-	di			;4c1e
-	push hl			;4c1f
-	ld hl,0f0f1h		;4c20
+	di			;4c1e   ; sin interrupciones mientras cambia el mapa
+	push hl			;4c1f   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4c20   ; las tres copias, seguidas
 	ld a,001h		;4c23
-	ld (06000h),a		;4c25
-	ld (hl),a			;4c28
+	ld (06000h),a		;4c25   ; el banco 1 a 0x6000
+	ld (hl),a			;4c28   ; apuntado en 0xF0F1
 	inc a			;4c29
-	ld (08000h),a		;4c2a
-	inc hl			;4c2d
-	ld (hl),a			;4c2e
+	ld (08000h),a		;4c2a   ; el banco 2 a 0x8000
+	inc hl			;4c2d   ; la copia siguiente
+	ld (hl),a			;4c2e   ; apuntado en 0xF0F2
 	inc a			;4c2f
-	ld (0a000h),a		;4c30
-	inc hl			;4c33
-	ld (hl),a			;4c34
-	pop hl			;4c35
-	ei			;4c36
+	ld (0a000h),a		;4c30   ; el banco 3 a 0xA000
+	inc hl			;4c33   ; la copia siguiente
+	ld (hl),a			;4c34   ; apuntado en 0xF0F3
+	pop hl			;4c35   ; HL, como estaba
+	ei			;4c36   ; el mapa ya esta entero
 	ret			;4c37
 L_4C38:
-	di			;4c38
-	push hl			;4c39
-	ld hl,0f0f1h		;4c3a
+	di			;4c38   ; sin interrupciones mientras cambia el mapa
+	push hl			;4c39   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4c3a   ; las tres copias, seguidas
 	ld a,004h		;4c3d
-	ld (06000h),a		;4c3f
-	ld (hl),a			;4c42
+	ld (06000h),a		;4c3f   ; el banco 4 a 0x6000
+	ld (hl),a			;4c42   ; apuntado en 0xF0F1
 	inc a			;4c43
-	ld (08000h),a		;4c44
-	inc hl			;4c47
-	ld (hl),a			;4c48
+	ld (08000h),a		;4c44   ; el banco 5 a 0x8000
+	inc hl			;4c47   ; la copia siguiente
+	ld (hl),a			;4c48   ; apuntado en 0xF0F2
 	inc a			;4c49
-	ld (0a000h),a		;4c4a
-	inc hl			;4c4d
-	ld (hl),a			;4c4e
-	pop hl			;4c4f
-	ei			;4c50
+	ld (0a000h),a		;4c4a   ; el banco 6 a 0xA000
+	inc hl			;4c4d   ; la copia siguiente
+	ld (hl),a			;4c4e   ; apuntado en 0xF0F3
+	pop hl			;4c4f   ; HL, como estaba
+	ei			;4c50   ; el mapa ya esta entero
 	ld de,0b0c8h		;4c51
-	call pinta_sin_color		;4c54
+	call pinta_sin_color		;4c54   ; el guion 0xB0C8 del banco 6: 96 bytes de patrones (0x23E0-0x243F)
 	ld de,0b0feh		;4c57
 	ld hl,02440h		;4c5a
 	ld c,001h		;4c5d
-	call pinta		;4c5f
+	call pinta		;4c5f   ; el guion 0xB0FE del banco 6: 32 bytes de patrones (0x2440-0x245F)
 	ld de,0b13ch		;4c62
-	call pinta_sin_color		;4c65
+	call pinta_sin_color		;4c65   ; el guion 0xB13C del banco 6: 248 bytes de patrones (0x2BE0-0x2CD7)
 	ld de,0b1dch		;4c68
 	ld hl,02cd8h		;4c6b
 	ld c,001h		;4c6e
-	call pinta		;4c70
+	call pinta		;4c70   ; el guion 0xB1DC del banco 6: 56 bytes de patrones (0x2CD8-0x2D0F)
 	ld de,0b260h		;4c73
-	call pinta_sin_color		;4c76
+	call pinta_sin_color		;4c76   ; el guion 0xB260 del banco 6: 376 bytes de patrones (0x33E0-0x3557)
 	ld de,0b36eh		;4c79
 	ld hl,03558h		;4c7c
 	ld c,001h		;4c7f
-	call pinta		;4c81
+	call pinta		;4c81   ; el guion 0xB36E del banco 6: 48 bytes de patrones (0x3558-0x3587)
 	ld de,0b110h		;4c84
-	call pinta_sin_color		;4c87
+	call pinta_sin_color		;4c87   ; el guion 0xB110 del banco 6: 96 bytes de colores (0x03E0-0x043F)
 	ld de,0b129h		;4c8a
 	ld hl,00440h		;4c8d
 	ld c,000h		;4c90
-	call pinta		;4c92
+	call pinta		;4c92   ; el guion 0xB129 del banco 6: 32 bytes de colores (0x0440-0x045F)
 	ld de,0b200h		;4c95
-	call pinta_sin_color		;4c98
+	call pinta_sin_color		;4c98   ; el guion 0xB200 del banco 6: 248 bytes de colores (0x0BE0-0x0CD7)
 	ld de,0b24dh		;4c9b
 	ld hl,00cd8h		;4c9e
 	ld c,000h		;4ca1
-	call pinta		;4ca3
+	call pinta		;4ca3   ; el guion 0xB24D del banco 6: 56 bytes de colores (0x0CD8-0x0D0F)
 	ld de,0b38fh		;4ca6
-	call pinta_sin_color		;4ca9
+	call pinta_sin_color		;4ca9   ; el guion 0xB38F del banco 6: 376 bytes de colores (0x13E0-0x1557)
 	ld de,0b407h		;4cac
 	ld hl,01558h		;4caf
 	ld c,000h		;4cb2
-	call pinta		;4cb4
-	di			;4cb7
-	push hl			;4cb8
-	ld hl,0f0f1h		;4cb9
+	call pinta		;4cb4   ; el guion 0xB407 del banco 6: 48 bytes de colores (0x1558-0x1587)
+	di			;4cb7   ; sin interrupciones mientras cambia el mapa
+	push hl			;4cb8   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4cb9   ; las tres copias, seguidas
 	ld a,001h		;4cbc
-	ld (06000h),a		;4cbe
-	ld (hl),a			;4cc1
+	ld (06000h),a		;4cbe   ; el banco 1 a 0x6000
+	ld (hl),a			;4cc1   ; apuntado en 0xF0F1
 	inc a			;4cc2
-	ld (08000h),a		;4cc3
-	inc hl			;4cc6
-	ld (hl),a			;4cc7
+	ld (08000h),a		;4cc3   ; el banco 2 a 0x8000
+	inc hl			;4cc6   ; la copia siguiente
+	ld (hl),a			;4cc7   ; apuntado en 0xF0F2
 	inc a			;4cc8
-	ld (0a000h),a		;4cc9
-	inc hl			;4ccc
-	ld (hl),a			;4ccd
-	pop hl			;4cce
-	ei			;4ccf
+	ld (0a000h),a		;4cc9   ; el banco 3 a 0xA000
+	inc hl			;4ccc   ; la copia siguiente
+	ld (hl),a			;4ccd   ; apuntado en 0xF0F3
+	pop hl			;4cce   ; HL, como estaba
+	ei			;4ccf   ; el mapa ya esta entero
 	ret			;4cd0
 L_4CD1:
 	ld a,(0e0a1h)		;4cd1
 	cp 008h		;4cd4
 	ret z			;4cd6
-	di			;4cd7
-	push hl			;4cd8
-	ld hl,0f0f1h		;4cd9
+	di			;4cd7   ; sin interrupciones mientras cambia el mapa
+	push hl			;4cd8   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4cd9   ; las tres copias, seguidas
 	ld a,007h		;4cdc
-	ld (06000h),a		;4cde
-	ld (hl),a			;4ce1
+	ld (06000h),a		;4cde   ; el banco 7 a 0x6000
+	ld (hl),a			;4ce1   ; apuntado en 0xF0F1
 	inc a			;4ce2
-	ld (08000h),a		;4ce3
-	inc hl			;4ce6
-	ld (hl),a			;4ce7
+	ld (08000h),a		;4ce3   ; el banco 8 a 0x8000
+	inc hl			;4ce6   ; la copia siguiente
+	ld (hl),a			;4ce7   ; apuntado en 0xF0F2
 	inc a			;4ce8
-	ld (0a000h),a		;4ce9
-	inc hl			;4cec
-	ld (hl),a			;4ced
-	pop hl			;4cee
-	ei			;4cef
+	ld (0a000h),a		;4ce9   ; el banco 9 a 0xA000
+	inc hl			;4cec   ; la copia siguiente
+	ld (hl),a			;4ced   ; apuntado en 0xF0F3
+	pop hl			;4cee   ; HL, como estaba
+	ei			;4cef   ; el mapa ya esta entero
 	ld de,06000h		;4cf0
-	call pinta_sin_color		;4cf3
+	call pinta_sin_color		;4cf3   ; el guion 0x6000 del banco 7: 216 bytes de patrones (0x2F00-0x2FD7)
 	ld de,06089h		;4cf6
 	ld hl,02fd8h		;4cf9
 	ld c,001h		;4cfc
-	call pinta		;4cfe
+	call pinta		;4cfe   ; el guion 0x6089 del banco 7: 24 bytes de patrones (0x2FD8-0x2FEF)
 	ld de,060e8h		;4d01
-	call pinta_sin_color		;4d04
+	call pinta_sin_color		;4d04   ; el guion 0x60E8 del banco 7: 384 bytes de patrones (0x3570-0x36EF)
 	ld de,06230h		;4d07
 	ld hl,036f0h		;4d0a
 	ld c,001h		;4d0d
-	call pinta		;4d0f
+	call pinta		;4d0f   ; el guion 0x6230 del banco 7: 8 bytes de patrones (0x36F0-0x36F7)
 	ld a,(0e0a1h)		;4d12
 	cp 002h		;4d15
 	ld hl,0970eh		;4d17
@@ -1937,64 +1937,64 @@ L_4D31:
 	ld de,06095h		;4d39
 	ld hl,00f00h		;4d3c
 	ld c,080h		;4d3f
-	call pinta		;4d41
+	call pinta		;4d41   ; el guion 0x6095 del banco 7: 216 bytes de colores (0x0F00-0x0FD7)
 	ld de,060e3h		;4d44
 	ld hl,00fd8h		;4d47
 	ld c,080h		;4d4a
-	call pinta		;4d4c
+	call pinta		;4d4c   ; el guion 0x60E3 del banco 7: 24 bytes de colores (0x0FD8-0x0FEF)
 	ld de,06237h		;4d4f
 	ld hl,01570h		;4d52
 	ld c,080h		;4d55
-	call pinta		;4d57
+	call pinta		;4d57   ; el guion 0x6237 del banco 7: 384 bytes de colores (0x1570-0x16EF)
 	ld de,062feh		;4d5a
 	ld hl,016f0h		;4d5d
 	ld c,080h		;4d60
-	call pinta		;4d62
-	di			;4d65
-	push hl			;4d66
-	ld hl,0f0f1h		;4d67
+	call pinta		;4d62   ; el guion 0x62FE del banco 7: 8 bytes de colores (0x16F0-0x16F7)
+	di			;4d65   ; sin interrupciones mientras cambia el mapa
+	push hl			;4d66   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4d67   ; las tres copias, seguidas
 	ld a,001h		;4d6a
-	ld (06000h),a		;4d6c
-	ld (hl),a			;4d6f
+	ld (06000h),a		;4d6c   ; el banco 1 a 0x6000
+	ld (hl),a			;4d6f   ; apuntado en 0xF0F1
 	inc a			;4d70
-	ld (08000h),a		;4d71
-	inc hl			;4d74
-	ld (hl),a			;4d75
+	ld (08000h),a		;4d71   ; el banco 2 a 0x8000
+	inc hl			;4d74   ; la copia siguiente
+	ld (hl),a			;4d75   ; apuntado en 0xF0F2
 	inc a			;4d76
-	ld (0a000h),a		;4d77
-	inc hl			;4d7a
-	ld (hl),a			;4d7b
-	pop hl			;4d7c
-	ei			;4d7d
+	ld (0a000h),a		;4d77   ; el banco 3 a 0xA000
+	inc hl			;4d7a   ; la copia siguiente
+	ld (hl),a			;4d7b   ; apuntado en 0xF0F3
+	pop hl			;4d7c   ; HL, como estaba
+	ei			;4d7d   ; el mapa ya esta entero
 	ret			;4d7e
 L_4D7F:
 	ld a,(0e0a1h)		;4d7f
 	cp 008h		;4d82
 	ret z			;4d84
-	di			;4d85
-	push hl			;4d86
-	ld hl,0f0f1h		;4d87
+	di			;4d85   ; sin interrupciones mientras cambia el mapa
+	push hl			;4d86   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4d87   ; las tres copias, seguidas
 	ld a,007h		;4d8a
-	ld (06000h),a		;4d8c
-	ld (hl),a			;4d8f
+	ld (06000h),a		;4d8c   ; el banco 7 a 0x6000
+	ld (hl),a			;4d8f   ; apuntado en 0xF0F1
 	inc a			;4d90
-	ld (08000h),a		;4d91
-	inc hl			;4d94
-	ld (hl),a			;4d95
+	ld (08000h),a		;4d91   ; el banco 8 a 0x8000
+	inc hl			;4d94   ; la copia siguiente
+	ld (hl),a			;4d95   ; apuntado en 0xF0F2
 	inc a			;4d96
-	ld (0a000h),a		;4d97
-	inc hl			;4d9a
-	ld (hl),a			;4d9b
-	pop hl			;4d9c
-	ei			;4d9d
+	ld (0a000h),a		;4d97   ; el banco 9 a 0xA000
+	inc hl			;4d9a   ; la copia siguiente
+	ld (hl),a			;4d9b   ; apuntado en 0xF0F3
+	pop hl			;4d9c   ; HL, como estaba
+	ei			;4d9d   ; el mapa ya esta entero
 	ld de,06304h		;4d9e
-	call pinta_sin_color		;4da1
+	call pinta_sin_color		;4da1   ; el guion 0x6304 del banco 7: 152 bytes de patrones (0x2E38-0x2ECF)
 	ld de,06360h		;4da4
 	ld hl,02ed0h		;4da7
 	ld c,001h		;4daa
-	call pinta		;4dac
+	call pinta		;4dac   ; el guion 0x6360 del banco 7: 48 bytes de patrones (0x2ED0-0x2EFF)
 	ld de,063b9h		;4daf
-	call pinta_sin_color		;4db2
+	call pinta_sin_color		;4db2   ; el guion 0x63B9 del banco 7: 216 bytes de patrones (0x3718-0x37EF)
 	ld a,(0e0a1h)		;4db5
 	cp 002h		;4db8
 	ld hl,09756h		;4dba
@@ -2016,64 +2016,64 @@ L_4DD7:
 	ld de,06386h		;4ddf
 	ld hl,00e38h		;4de2
 	ld c,080h		;4de5
-	call pinta		;4de7
+	call pinta		;4de7   ; el guion 0x6386 del banco 7: 152 bytes de colores (0x0E38-0x0ECF)
 	ld de,063a0h		;4dea
 	ld hl,00ed0h		;4ded
 	ld c,080h		;4df0
-	call pinta		;4df2
+	call pinta		;4df2   ; el guion 0x63A0 del banco 7: 48 bytes de colores (0x0ED0-0x0EFF)
 	ld de,06473h		;4df5
 	ld hl,01718h		;4df8
 	ld c,080h		;4dfb
-	call pinta		;4dfd
-	di			;4e00
-	push hl			;4e01
-	ld hl,0f0f1h		;4e02
+	call pinta		;4dfd   ; el guion 0x6473 del banco 7: 216 bytes de colores (0x1718-0x17EF)
+	di			;4e00   ; sin interrupciones mientras cambia el mapa
+	push hl			;4e01   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4e02   ; las tres copias, seguidas
 	ld a,001h		;4e05
-	ld (06000h),a		;4e07
-	ld (hl),a			;4e0a
+	ld (06000h),a		;4e07   ; el banco 1 a 0x6000
+	ld (hl),a			;4e0a   ; apuntado en 0xF0F1
 	inc a			;4e0b
-	ld (08000h),a		;4e0c
-	inc hl			;4e0f
-	ld (hl),a			;4e10
+	ld (08000h),a		;4e0c   ; el banco 2 a 0x8000
+	inc hl			;4e0f   ; la copia siguiente
+	ld (hl),a			;4e10   ; apuntado en 0xF0F2
 	inc a			;4e11
-	ld (0a000h),a		;4e12
-	inc hl			;4e15
-	ld (hl),a			;4e16
-	pop hl			;4e17
-	ei			;4e18
+	ld (0a000h),a		;4e12   ; el banco 3 a 0xA000
+	inc hl			;4e15   ; la copia siguiente
+	ld (hl),a			;4e16   ; apuntado en 0xF0F3
+	pop hl			;4e17   ; HL, como estaba
+	ei			;4e18   ; el mapa ya esta entero
 	ret			;4e19
 L_4E1A:
 	ld a,(0e0a1h)		;4e1a
 	cp 004h		;4e1d
 	ret nc			;4e1f
-	di			;4e20
-	push hl			;4e21
-	ld hl,0f0f1h		;4e22
+	di			;4e20   ; sin interrupciones mientras cambia el mapa
+	push hl			;4e21   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4e22   ; las tres copias, seguidas
 	ld a,007h		;4e25
-	ld (06000h),a		;4e27
-	ld (hl),a			;4e2a
+	ld (06000h),a		;4e27   ; el banco 7 a 0x6000
+	ld (hl),a			;4e2a   ; apuntado en 0xF0F1
 	inc a			;4e2b
-	ld (08000h),a		;4e2c
-	inc hl			;4e2f
-	ld (hl),a			;4e30
+	ld (08000h),a		;4e2c   ; el banco 8 a 0x8000
+	inc hl			;4e2f   ; la copia siguiente
+	ld (hl),a			;4e30   ; apuntado en 0xF0F2
 	inc a			;4e31
-	ld (0a000h),a		;4e32
-	inc hl			;4e35
-	ld (hl),a			;4e36
-	pop hl			;4e37
-	ei			;4e38
+	ld (0a000h),a		;4e32   ; el banco 9 a 0xA000
+	inc hl			;4e35   ; la copia siguiente
+	ld (hl),a			;4e36   ; apuntado en 0xF0F3
+	pop hl			;4e37   ; HL, como estaba
+	ei			;4e38   ; el mapa ya esta entero
 	ld de,06496h		;4e39
-	call pinta_sin_color		;4e3c
+	call pinta_sin_color		;4e3c   ; el guion 0x6496 del banco 7: 120 bytes de patrones (0x2C68-0x2CDF)
 	ld de,0649ch		;4e3f
 	ld hl,02ce0h		;4e42
 	ld c,001h		;4e45
-	call pinta		;4e47
+	call pinta		;4e47   ; el guion 0x649C del banco 7: 104 bytes de patrones (0x2CE0-0x2D47)
 	ld de,064e4h		;4e4a
-	call pinta_sin_color		;4e4d
+	call pinta_sin_color		;4e4d   ; el guion 0x64E4 del banco 7: 192 bytes de patrones (0x32B8-0x3377)
 	ld de,06538h		;4e50
 	ld hl,03378h		;4e53
 	ld c,001h		;4e56
-	call pinta		;4e58
+	call pinta		;4e58   ; el guion 0x6538 del banco 7: 56 bytes de patrones (0x3378-0x33AF)
 	ld a,(0e0a1h)		;4e5b
 	cp 002h		;4e5e
 	ld hl,097b6h		;4e60
@@ -2086,35 +2086,35 @@ L_4E68:
 	ld de,064d9h		;4e70
 	ld hl,00c68h		;4e73
 	ld c,080h		;4e76
-	call pinta		;4e78
+	call pinta		;4e78   ; el guion 0x64D9 del banco 7: 120 bytes de colores (0x0C68-0x0CDF)
 	ld de,064deh		;4e7b
 	ld hl,00ce0h		;4e7e
 	ld c,080h		;4e81
-	call pinta		;4e83
+	call pinta		;4e83   ; el guion 0x64DE del banco 7: 104 bytes de colores (0x0CE0-0x0D47)
 	ld de,06562h		;4e86
 	ld hl,012b8h		;4e89
 	ld c,080h		;4e8c
-	call pinta		;4e8e
+	call pinta		;4e8e   ; el guion 0x6562 del banco 7: 192 bytes de colores (0x12B8-0x1377)
 	ld de,06586h		;4e91
 	ld hl,01378h		;4e94
 	ld c,080h		;4e97
-	call pinta		;4e99
-	di			;4e9c
-	push hl			;4e9d
-	ld hl,0f0f1h		;4e9e
+	call pinta		;4e99   ; el guion 0x6586 del banco 7: 56 bytes de colores (0x1378-0x13AF)
+	di			;4e9c   ; sin interrupciones mientras cambia el mapa
+	push hl			;4e9d   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4e9e   ; las tres copias, seguidas
 	ld a,001h		;4ea1
-	ld (06000h),a		;4ea3
-	ld (hl),a			;4ea6
+	ld (06000h),a		;4ea3   ; el banco 1 a 0x6000
+	ld (hl),a			;4ea6   ; apuntado en 0xF0F1
 	inc a			;4ea7
-	ld (08000h),a		;4ea8
-	inc hl			;4eab
-	ld (hl),a			;4eac
+	ld (08000h),a		;4ea8   ; el banco 2 a 0x8000
+	inc hl			;4eab   ; la copia siguiente
+	ld (hl),a			;4eac   ; apuntado en 0xF0F2
 	inc a			;4ead
-	ld (0a000h),a		;4eae
-	inc hl			;4eb1
-	ld (hl),a			;4eb2
-	pop hl			;4eb3
-	ei			;4eb4
+	ld (0a000h),a		;4eae   ; el banco 3 a 0xA000
+	inc hl			;4eb1   ; la copia siguiente
+	ld (hl),a			;4eb2   ; apuntado en 0xF0F3
+	pop hl			;4eb3   ; HL, como estaba
+	ei			;4eb4   ; el mapa ya esta entero
 	ret			;4eb5
 L_4EB6:
 	ld a,(0e0a1h)		;4eb6
@@ -2126,34 +2126,34 @@ L_4EB6:
 	ret z			;4ec1
 	cp 008h		;4ec2
 	ret z			;4ec4
-	di			;4ec5
-	push hl			;4ec6
-	ld hl,0f0f1h		;4ec7
+	di			;4ec5   ; sin interrupciones mientras cambia el mapa
+	push hl			;4ec6   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4ec7   ; las tres copias, seguidas
 	ld a,007h		;4eca
-	ld (06000h),a		;4ecc
-	ld (hl),a			;4ecf
+	ld (06000h),a		;4ecc   ; el banco 7 a 0x6000
+	ld (hl),a			;4ecf   ; apuntado en 0xF0F1
 	inc a			;4ed0
-	ld (08000h),a		;4ed1
-	inc hl			;4ed4
-	ld (hl),a			;4ed5
+	ld (08000h),a		;4ed1   ; el banco 8 a 0x8000
+	inc hl			;4ed4   ; la copia siguiente
+	ld (hl),a			;4ed5   ; apuntado en 0xF0F2
 	inc a			;4ed6
-	ld (0a000h),a		;4ed7
-	inc hl			;4eda
-	ld (hl),a			;4edb
-	pop hl			;4edc
-	ei			;4edd
+	ld (0a000h),a		;4ed7   ; el banco 9 a 0xA000
+	inc hl			;4eda   ; la copia siguiente
+	ld (hl),a			;4edb   ; apuntado en 0xF0F3
+	pop hl			;4edc   ; HL, como estaba
+	ei			;4edd   ; el mapa ya esta entero
 	ld de,06591h		;4ede
-	call pinta_sin_color		;4ee1
+	call pinta_sin_color		;4ee1   ; el guion 0x6591 del banco 7: 136 bytes de patrones (0x2D58-0x2DDF)
 	ld de,065b1h		;4ee4
 	ld hl,02de0h		;4ee7
 	ld c,001h		;4eea
-	call pinta		;4eec
+	call pinta		;4eec   ; el guion 0x65B1 del banco 7: 88 bytes de patrones (0x2DE0-0x2E37)
 	ld de,06630h		;4eef
-	call pinta_sin_color		;4ef2
+	call pinta_sin_color		;4ef2   ; el guion 0x6630 del banco 7: 192 bytes de patrones (0x33B0-0x346F)
 	ld de,0665ah		;4ef5
 	ld hl,03470h		;4ef8
 	ld c,001h		;4efb
-	call pinta		;4efd
+	call pinta		;4efd   ; el guion 0x665A del banco 7: 152 bytes de patrones (0x3470-0x3507)
 	ld a,(0e0a1h)		;4f00
 	cp 002h		;4f03
 	ld hl,097ceh		;4f05
@@ -2166,80 +2166,80 @@ L_4F0D:
 	ld de,065f2h		;4f15
 	ld hl,00d58h		;4f18
 	ld c,080h		;4f1b
-	call pinta		;4f1d
+	call pinta		;4f1d   ; el guion 0x65F2 del banco 7: 136 bytes de colores (0x0D58-0x0DDF)
 	ld de,06606h		;4f20
 	ld hl,00de0h		;4f23
 	ld c,080h		;4f26
-	call pinta		;4f28
+	call pinta		;4f28   ; el guion 0x6606 del banco 7: 88 bytes de colores (0x0DE0-0x0E37)
 	ld de,066dah		;4f2b
 	ld hl,013b0h		;4f2e
 	ld c,080h		;4f31
-	call pinta		;4f33
+	call pinta		;4f33   ; el guion 0x66DA del banco 7: 192 bytes de colores (0x13B0-0x146F)
 	ld de,066f5h		;4f36
 	ld hl,01470h		;4f39
 	ld c,080h		;4f3c
-	call pinta		;4f3e
-	di			;4f41
-	push hl			;4f42
-	ld hl,0f0f1h		;4f43
+	call pinta		;4f3e   ; el guion 0x66F5 del banco 7: 152 bytes de colores (0x1470-0x1507)
+	di			;4f41   ; sin interrupciones mientras cambia el mapa
+	push hl			;4f42   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4f43   ; las tres copias, seguidas
 	ld a,001h		;4f46
-	ld (06000h),a		;4f48
-	ld (hl),a			;4f4b
+	ld (06000h),a		;4f48   ; el banco 1 a 0x6000
+	ld (hl),a			;4f4b   ; apuntado en 0xF0F1
 	inc a			;4f4c
-	ld (08000h),a		;4f4d
-	inc hl			;4f50
-	ld (hl),a			;4f51
+	ld (08000h),a		;4f4d   ; el banco 2 a 0x8000
+	inc hl			;4f50   ; la copia siguiente
+	ld (hl),a			;4f51   ; apuntado en 0xF0F2
 	inc a			;4f52
-	ld (0a000h),a		;4f53
-	inc hl			;4f56
-	ld (hl),a			;4f57
-	pop hl			;4f58
-	ei			;4f59
+	ld (0a000h),a		;4f53   ; el banco 3 a 0xA000
+	inc hl			;4f56   ; la copia siguiente
+	ld (hl),a			;4f57   ; apuntado en 0xF0F3
+	pop hl			;4f58   ; HL, como estaba
+	ei			;4f59   ; el mapa ya esta entero
 	ret			;4f5a
 L_4F5B:
 	ld a,(0e0a1h)		;4f5b
 	cp 007h		;4f5e
 	ret nz			;4f60
-	di			;4f61
-	push hl			;4f62
-	ld hl,0f0f1h		;4f63
+	di			;4f61   ; sin interrupciones mientras cambia el mapa
+	push hl			;4f62   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4f63   ; las tres copias, seguidas
 	ld a,007h		;4f66
-	ld (06000h),a		;4f68
-	ld (hl),a			;4f6b
+	ld (06000h),a		;4f68   ; el banco 7 a 0x6000
+	ld (hl),a			;4f6b   ; apuntado en 0xF0F1
 	inc a			;4f6c
-	ld (08000h),a		;4f6d
-	inc hl			;4f70
-	ld (hl),a			;4f71
+	ld (08000h),a		;4f6d   ; el banco 8 a 0x8000
+	inc hl			;4f70   ; la copia siguiente
+	ld (hl),a			;4f71   ; apuntado en 0xF0F2
 	inc a			;4f72
-	ld (0a000h),a		;4f73
-	inc hl			;4f76
-	ld (hl),a			;4f77
-	pop hl			;4f78
-	ei			;4f79
+	ld (0a000h),a		;4f73   ; el banco 9 a 0xA000
+	inc hl			;4f76   ; la copia siguiente
+	ld (hl),a			;4f77   ; apuntado en 0xF0F3
+	pop hl			;4f78   ; HL, como estaba
+	ei			;4f79   ; el mapa ya esta entero
 	ld de,06714h		;4f7a
-	call pinta_sin_color		;4f7d
+	call pinta_sin_color		;4f7d   ; el guion 0x6714 del banco 7: 240 bytes de patrones (0x2C68-0x2D57)
 	ld de,0682fh		;4f80
-	call pinta_sin_color		;4f83
+	call pinta_sin_color		;4f83   ; el guion 0x682F del banco 7: 232 bytes de patrones (0x32B8-0x339F)
 	ld de,067cbh		;4f86
-	call pinta_sin_color		;4f89
+	call pinta_sin_color		;4f89   ; el guion 0x67CB del banco 7: 240 bytes de colores (0x0C68-0x0D57)
 	ld de,068eah		;4f8c
-	call pinta_sin_color		;4f8f
-	di			;4f92
-	push hl			;4f93
-	ld hl,0f0f1h		;4f94
+	call pinta_sin_color		;4f8f   ; el guion 0x68EA del banco 7: 232 bytes de colores (0x12B8-0x139F)
+	di			;4f92   ; sin interrupciones mientras cambia el mapa
+	push hl			;4f93   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4f94   ; las tres copias, seguidas
 	ld a,001h		;4f97
-	ld (06000h),a		;4f99
-	ld (hl),a			;4f9c
+	ld (06000h),a		;4f99   ; el banco 1 a 0x6000
+	ld (hl),a			;4f9c   ; apuntado en 0xF0F1
 	inc a			;4f9d
-	ld (08000h),a		;4f9e
-	inc hl			;4fa1
-	ld (hl),a			;4fa2
+	ld (08000h),a		;4f9e   ; el banco 2 a 0x8000
+	inc hl			;4fa1   ; la copia siguiente
+	ld (hl),a			;4fa2   ; apuntado en 0xF0F2
 	inc a			;4fa3
-	ld (0a000h),a		;4fa4
-	inc hl			;4fa7
-	ld (hl),a			;4fa8
-	pop hl			;4fa9
-	ei			;4faa
+	ld (0a000h),a		;4fa4   ; el banco 3 a 0xA000
+	inc hl			;4fa7   ; la copia siguiente
+	ld (hl),a			;4fa8   ; apuntado en 0xF0F3
+	pop hl			;4fa9   ; HL, como estaba
+	ei			;4faa   ; el mapa ya esta entero
 	ret			;4fab
 L_4FAC:
 	ld a,(0e0a1h)		;4fac
@@ -2248,223 +2248,223 @@ L_4FAC:
 	cp 005h		;4fb3
 	ret nz			;4fb5
 L_4FB6:
-	di			;4fb6
-	push hl			;4fb7
-	ld hl,0f0f1h		;4fb8
+	di			;4fb6   ; sin interrupciones mientras cambia el mapa
+	push hl			;4fb7   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;4fb8   ; las tres copias, seguidas
 	ld a,007h		;4fbb
-	ld (06000h),a		;4fbd
-	ld (hl),a			;4fc0
+	ld (06000h),a		;4fbd   ; el banco 7 a 0x6000
+	ld (hl),a			;4fc0   ; apuntado en 0xF0F1
 	inc a			;4fc1
-	ld (08000h),a		;4fc2
-	inc hl			;4fc5
-	ld (hl),a			;4fc6
+	ld (08000h),a		;4fc2   ; el banco 8 a 0x8000
+	inc hl			;4fc5   ; la copia siguiente
+	ld (hl),a			;4fc6   ; apuntado en 0xF0F2
 	inc a			;4fc7
-	ld (0a000h),a		;4fc8
-	inc hl			;4fcb
-	ld (hl),a			;4fcc
-	pop hl			;4fcd
-	ei			;4fce
+	ld (0a000h),a		;4fc8   ; el banco 9 a 0xA000
+	inc hl			;4fcb   ; la copia siguiente
+	ld (hl),a			;4fcc   ; apuntado en 0xF0F3
+	pop hl			;4fcd   ; HL, como estaba
+	ei			;4fce   ; el mapa ya esta entero
 	ld de,06932h		;4fcf
-	call pinta_sin_color		;4fd2
+	call pinta_sin_color		;4fd2   ; el guion 0x6932 del banco 7: 144 bytes de patrones (0x2D58-0x2DE7)
 	ld de,06965h		;4fd5
 	ld hl,02de8h		;4fd8
 	ld c,001h		;4fdb
-	call pinta		;4fdd
+	call pinta		;4fdd   ; el guion 0x6965 del banco 7: 80 bytes de patrones (0x2DE8-0x2E37)
 	ld de,069f5h		;4fe0
-	call pinta_sin_color		;4fe3
+	call pinta_sin_color		;4fe3   ; el guion 0x69F5 del banco 7: 256 bytes de patrones (0x3360-0x345F)
 	ld de,06aafh		;4fe6
 	ld hl,03460h		;4fe9
 	ld c,001h		;4fec
-	call pinta		;4fee
+	call pinta		;4fee   ; el guion 0x6AAF del banco 7: 48 bytes de patrones (0x3460-0x348F)
 	ld de,069a0h		;4ff1
-	call pinta_sin_color		;4ff4
+	call pinta_sin_color		;4ff4   ; el guion 0x69A0 del banco 7: 144 bytes de colores (0x0D58-0x0DE7)
 	ld de,069cfh		;4ff7
 	ld hl,00de8h		;4ffa
 	ld c,000h		;4ffd
-	call pinta		;4fff
+	call pinta		;4fff   ; el guion 0x69CF del banco 7: 80 bytes de colores (0x0DE8-0x0E37)
 	ld de,06ad6h		;5002
-	call pinta_sin_color		;5005
+	call pinta_sin_color		;5005   ; el guion 0x6AD6 del banco 7: 256 bytes de colores (0x1360-0x145F)
 	ld de,06b48h		;5008
 	ld hl,01460h		;500b
 	ld c,000h		;500e
-	call pinta		;5010
-	di			;5013
-	push hl			;5014
-	ld hl,0f0f1h		;5015
+	call pinta		;5010   ; el guion 0x6B48 del banco 7: 48 bytes de colores (0x1460-0x148F)
+	di			;5013   ; sin interrupciones mientras cambia el mapa
+	push hl			;5014   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5015   ; las tres copias, seguidas
 	ld a,001h		;5018
-	ld (06000h),a		;501a
-	ld (hl),a			;501d
+	ld (06000h),a		;501a   ; el banco 1 a 0x6000
+	ld (hl),a			;501d   ; apuntado en 0xF0F1
 	inc a			;501e
-	ld (08000h),a		;501f
-	inc hl			;5022
-	ld (hl),a			;5023
+	ld (08000h),a		;501f   ; el banco 2 a 0x8000
+	inc hl			;5022   ; la copia siguiente
+	ld (hl),a			;5023   ; apuntado en 0xF0F2
 	inc a			;5024
-	ld (0a000h),a		;5025
-	inc hl			;5028
-	ld (hl),a			;5029
-	pop hl			;502a
-	ei			;502b
+	ld (0a000h),a		;5025   ; el banco 3 a 0xA000
+	inc hl			;5028   ; la copia siguiente
+	ld (hl),a			;5029   ; apuntado en 0xF0F3
+	pop hl			;502a   ; HL, como estaba
+	ei			;502b   ; el mapa ya esta entero
 	ret			;502c
 L_502D:
 	ld a,(0e0a1h)		;502d
 	cp 007h		;5030
 	ret nz			;5032
-	di			;5033
-	push hl			;5034
-	ld hl,0f0f1h		;5035
+	di			;5033   ; sin interrupciones mientras cambia el mapa
+	push hl			;5034   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5035   ; las tres copias, seguidas
 	ld a,007h		;5038
-	ld (06000h),a		;503a
-	ld (hl),a			;503d
+	ld (06000h),a		;503a   ; el banco 7 a 0x6000
+	ld (hl),a			;503d   ; apuntado en 0xF0F1
 	inc a			;503e
-	ld (08000h),a		;503f
-	inc hl			;5042
-	ld (hl),a			;5043
+	ld (08000h),a		;503f   ; el banco 8 a 0x8000
+	inc hl			;5042   ; la copia siguiente
+	ld (hl),a			;5043   ; apuntado en 0xF0F2
 	inc a			;5044
-	ld (0a000h),a		;5045
-	inc hl			;5048
-	ld (hl),a			;5049
-	pop hl			;504a
-	ei			;504b
+	ld (0a000h),a		;5045   ; el banco 9 a 0xA000
+	inc hl			;5048   ; la copia siguiente
+	ld (hl),a			;5049   ; apuntado en 0xF0F3
+	pop hl			;504a   ; HL, como estaba
+	ei			;504b   ; el mapa ya esta entero
 	ld de,06b64h		;504c
-	call pinta_sin_color		;504f
+	call pinta_sin_color		;504f   ; el guion 0x6B64 del banco 7: 128 bytes de patrones (0x2D58-0x2DD7)
 	ld de,06b82h		;5052
 	ld hl,02dd8h		;5055
 	ld c,001h		;5058
-	call pinta		;505a
+	call pinta		;505a   ; el guion 0x6B82 del banco 7: 96 bytes de patrones (0x2DD8-0x2E37)
 	ld de,06c11h		;505d
-	call pinta_sin_color		;5060
+	call pinta_sin_color		;5060   ; el guion 0x6C11 del banco 7: 112 bytes de patrones (0x33B0-0x341F)
 	ld de,06c13h		;5063
 	ld hl,03420h		;5066
 	ld c,001h		;5069
-	call pinta		;506b
+	call pinta		;506b   ; el guion 0x6C13 del banco 7: 112 bytes de patrones (0x3420-0x348F)
 	ld de,06bdbh		;506e
-	call pinta_sin_color		;5071
+	call pinta_sin_color		;5071   ; el guion 0x6BDB del banco 7: 128 bytes de colores (0x0D58-0x0DD7)
 	ld de,06be9h		;5074
 	ld hl,00dd8h		;5077
 	ld c,000h		;507a
-	call pinta		;507c
+	call pinta		;507c   ; el guion 0x6BE9 del banco 7: 96 bytes de colores (0x0DD8-0x0E37)
 	ld de,06c7ah		;507f
-	call pinta_sin_color		;5082
+	call pinta_sin_color		;5082   ; el guion 0x6C7A del banco 7: 112 bytes de colores (0x13B0-0x141F)
 	ld de,06c7ch		;5085
 	ld hl,01420h		;5088
 	ld c,000h		;508b
-	call pinta		;508d
-	di			;5090
-	push hl			;5091
-	ld hl,0f0f1h		;5092
+	call pinta		;508d   ; el guion 0x6C7C del banco 7: 112 bytes de colores (0x1420-0x148F)
+	di			;5090   ; sin interrupciones mientras cambia el mapa
+	push hl			;5091   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5092   ; las tres copias, seguidas
 	ld a,001h		;5095
-	ld (06000h),a		;5097
-	ld (hl),a			;509a
+	ld (06000h),a		;5097   ; el banco 1 a 0x6000
+	ld (hl),a			;509a   ; apuntado en 0xF0F1
 	inc a			;509b
-	ld (08000h),a		;509c
-	inc hl			;509f
-	ld (hl),a			;50a0
+	ld (08000h),a		;509c   ; el banco 2 a 0x8000
+	inc hl			;509f   ; la copia siguiente
+	ld (hl),a			;50a0   ; apuntado en 0xF0F2
 	inc a			;50a1
-	ld (0a000h),a		;50a2
-	inc hl			;50a5
-	ld (hl),a			;50a6
-	pop hl			;50a7
-	ei			;50a8
+	ld (0a000h),a		;50a2   ; el banco 3 a 0xA000
+	inc hl			;50a5   ; la copia siguiente
+	ld (hl),a			;50a6   ; apuntado en 0xF0F3
+	pop hl			;50a7   ; HL, como estaba
+	ei			;50a8   ; el mapa ya esta entero
 	ret			;50a9
 L_50AA:
 	ld a,(0e0a1h)		;50aa
 	cp 008h		;50ad
 	ret nz			;50af
-	di			;50b0
-	push hl			;50b1
-	ld hl,0f0f1h		;50b2
+	di			;50b0   ; sin interrupciones mientras cambia el mapa
+	push hl			;50b1   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;50b2   ; las tres copias, seguidas
 	ld a,007h		;50b5
-	ld (06000h),a		;50b7
-	ld (hl),a			;50ba
+	ld (06000h),a		;50b7   ; el banco 7 a 0x6000
+	ld (hl),a			;50ba   ; apuntado en 0xF0F1
 	inc a			;50bb
-	ld (08000h),a		;50bc
-	inc hl			;50bf
-	ld (hl),a			;50c0
+	ld (08000h),a		;50bc   ; el banco 8 a 0x8000
+	inc hl			;50bf   ; la copia siguiente
+	ld (hl),a			;50c0   ; apuntado en 0xF0F2
 	inc a			;50c1
-	ld (0a000h),a		;50c2
-	inc hl			;50c5
-	ld (hl),a			;50c6
-	pop hl			;50c7
-	ei			;50c8
+	ld (0a000h),a		;50c2   ; el banco 9 a 0xA000
+	inc hl			;50c5   ; la copia siguiente
+	ld (hl),a			;50c6   ; apuntado en 0xF0F3
+	pop hl			;50c7   ; HL, como estaba
+	ei			;50c8   ; el mapa ya esta entero
 	ld de,06c9ch		;50c9
-	call pinta_sin_color		;50cc
+	call pinta_sin_color		;50cc   ; el guion 0x6C9C del banco 7: 904 bytes de patrones (0x2010-0x2027 0x2200-0x256F)
 	ld de,06fb9h		;50cf
 	ld hl,02570h		;50d2
 	ld c,001h		;50d5
-	call pinta		;50d7
+	call pinta		;50d7   ; el guion 0x6FB9 del banco 7: 16 bytes de patrones (0x2570-0x257F)
 	ld de,06fdbh		;50da
-	call pinta_sin_color		;50dd
+	call pinta_sin_color		;50dd   ; el guion 0x6FDB del banco 7: 1976 bytes de patrones (0x2810-0x2FC7)
 	ld de,07640h		;50e0
 	ld hl,02fc8h		;50e3
 	ld c,001h		;50e6
-	call pinta		;50e8
+	call pinta		;50e8   ; el guion 0x7640 del banco 7: 40 bytes de patrones (0x2FC8-0x2FEF)
 	ld de,06fc3h		;50eb
-	call pinta_sin_color		;50ee
+	call pinta_sin_color		;50ee   ; el guion 0x6FC3 del banco 7: 904 bytes de colores (0x0010-0x0027 0x0200-0x056F)
 	ld de,06fd8h		;50f1
 	ld hl,00570h		;50f4
 	ld c,000h		;50f7
-	call pinta		;50f9
+	call pinta		;50f9   ; el guion 0x6FD8 del banco 7: 16 bytes de colores (0x0570-0x057F)
 	ld de,07655h		;50fc
-	call pinta_sin_color		;50ff
+	call pinta_sin_color		;50ff   ; el guion 0x7655 del banco 7: 1976 bytes de colores (0x0810-0x0FC7)
 	ld de,07683h		;5102
 	ld hl,00fc8h		;5105
 	ld c,000h		;5108
-	call pinta		;510a
-	di			;510d
-	push hl			;510e
-	ld hl,0f0f1h		;510f
+	call pinta		;510a   ; el guion 0x7683 del banco 7: 40 bytes de colores (0x0FC8-0x0FEF)
+	di			;510d   ; sin interrupciones mientras cambia el mapa
+	push hl			;510e   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;510f   ; las tres copias, seguidas
 	ld a,001h		;5112
-	ld (06000h),a		;5114
-	ld (hl),a			;5117
+	ld (06000h),a		;5114   ; el banco 1 a 0x6000
+	ld (hl),a			;5117   ; apuntado en 0xF0F1
 	inc a			;5118
-	ld (08000h),a		;5119
-	inc hl			;511c
-	ld (hl),a			;511d
+	ld (08000h),a		;5119   ; el banco 2 a 0x8000
+	inc hl			;511c   ; la copia siguiente
+	ld (hl),a			;511d   ; apuntado en 0xF0F2
 	inc a			;511e
-	ld (0a000h),a		;511f
-	inc hl			;5122
-	ld (hl),a			;5123
-	pop hl			;5124
-	ei			;5125
+	ld (0a000h),a		;511f   ; el banco 3 a 0xA000
+	inc hl			;5122   ; la copia siguiente
+	ld (hl),a			;5123   ; apuntado en 0xF0F3
+	pop hl			;5124   ; HL, como estaba
+	ei			;5125   ; el mapa ya esta entero
 	ret			;5126
 L_5127:
 	ld a,(0e0a1h)		;5127
 	cp 008h		;512a
 	ret nz			;512c
-	di			;512d
-	push hl			;512e
-	ld hl,0f0f1h		;512f
+	di			;512d   ; sin interrupciones mientras cambia el mapa
+	push hl			;512e   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;512f   ; las tres copias, seguidas
 	ld a,007h		;5132
-	ld (06000h),a		;5134
-	ld (hl),a			;5137
+	ld (06000h),a		;5134   ; el banco 7 a 0x6000
+	ld (hl),a			;5137   ; apuntado en 0xF0F1
 	inc a			;5138
-	ld (08000h),a		;5139
-	inc hl			;513c
-	ld (hl),a			;513d
+	ld (08000h),a		;5139   ; el banco 8 a 0x8000
+	inc hl			;513c   ; la copia siguiente
+	ld (hl),a			;513d   ; apuntado en 0xF0F2
 	inc a			;513e
-	ld (0a000h),a		;513f
-	inc hl			;5142
-	ld (hl),a			;5143
-	pop hl			;5144
-	ei			;5145
+	ld (0a000h),a		;513f   ; el banco 9 a 0xA000
+	inc hl			;5142   ; la copia siguiente
+	ld (hl),a			;5143   ; apuntado en 0xF0F3
+	pop hl			;5144   ; HL, como estaba
+	ei			;5145   ; el mapa ya esta entero
 	ld de,07686h		;5146
-	call pinta_sin_color		;5149
-	di			;514c
-	push hl			;514d
-	ld hl,0f0f1h		;514e
+	call pinta_sin_color		;5149   ; el guion 0x7686 del banco 7: 608 bytes de patrones de sprite (0x1C20-0x1E7F)
+	di			;514c   ; sin interrupciones mientras cambia el mapa
+	push hl			;514d   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;514e   ; las tres copias, seguidas
 	ld a,001h		;5151
-	ld (06000h),a		;5153
-	ld (hl),a			;5156
+	ld (06000h),a		;5153   ; el banco 1 a 0x6000
+	ld (hl),a			;5156   ; apuntado en 0xF0F1
 	inc a			;5157
-	ld (08000h),a		;5158
-	inc hl			;515b
-	ld (hl),a			;515c
+	ld (08000h),a		;5158   ; el banco 2 a 0x8000
+	inc hl			;515b   ; la copia siguiente
+	ld (hl),a			;515c   ; apuntado en 0xF0F2
 	inc a			;515d
-	ld (0a000h),a		;515e
-	inc hl			;5161
-	ld (hl),a			;5162
-	pop hl			;5163
-	ei			;5164
+	ld (0a000h),a		;515e   ; el banco 3 a 0xA000
+	inc hl			;5161   ; la copia siguiente
+	ld (hl),a			;5162   ; apuntado en 0xF0F3
+	pop hl			;5163   ; HL, como estaba
+	ei			;5164   ; el mapa ya esta entero
 	ret			;5165
 L_5166:
 	ld a,(0e0a1h)		;5166
@@ -2478,188 +2478,188 @@ L_5166:
 	ret z			;5174
 	cp 009h		;5175
 	ret z			;5177
-	di			;5178
-	push hl			;5179
-	ld hl,0f0f1h		;517a
+	di			;5178   ; sin interrupciones mientras cambia el mapa
+	push hl			;5179   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;517a   ; las tres copias, seguidas
 	ld a,007h		;517d
-	ld (06000h),a		;517f
-	ld (hl),a			;5182
+	ld (06000h),a		;517f   ; el banco 7 a 0x6000
+	ld (hl),a			;5182   ; apuntado en 0xF0F1
 	inc a			;5183
-	ld (08000h),a		;5184
-	inc hl			;5187
-	ld (hl),a			;5188
+	ld (08000h),a		;5184   ; el banco 8 a 0x8000
+	inc hl			;5187   ; la copia siguiente
+	ld (hl),a			;5188   ; apuntado en 0xF0F2
 	inc a			;5189
-	ld (0a000h),a		;518a
-	inc hl			;518d
-	ld (hl),a			;518e
-	pop hl			;518f
-	ei			;5190
+	ld (0a000h),a		;518a   ; el banco 9 a 0xA000
+	inc hl			;518d   ; la copia siguiente
+	ld (hl),a			;518e   ; apuntado en 0xF0F3
+	pop hl			;518f   ; HL, como estaba
+	ei			;5190   ; el mapa ya esta entero
 	ld de,07806h		;5191
-	call pinta_sin_color		;5194
+	call pinta_sin_color		;5194   ; el guion 0x7806 del banco 7: 176 bytes de patrones (0x2440-0x24EF)
 	ld de,07857h		;5197
 	ld hl,024f0h		;519a
 	ld c,001h		;519d
-	call pinta		;519f
+	call pinta		;519f   ; el guion 0x7857 del banco 7: 80 bytes de patrones (0x24F0-0x253F)
 	ld de,07891h		;51a2
-	call pinta_sin_color		;51a5
+	call pinta_sin_color		;51a5   ; el guion 0x7891 del banco 7: 176 bytes de colores (0x0440-0x04EF)
 	ld de,078c8h		;51a8
 	ld hl,004f0h		;51ab
 	ld c,000h		;51ae
-	call pinta		;51b0
-	di			;51b3
-	push hl			;51b4
-	ld hl,0f0f1h		;51b5
+	call pinta		;51b0   ; el guion 0x78C8 del banco 7: 80 bytes de colores (0x04F0-0x053F)
+	di			;51b3   ; sin interrupciones mientras cambia el mapa
+	push hl			;51b4   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;51b5   ; las tres copias, seguidas
 	ld a,001h		;51b8
-	ld (06000h),a		;51ba
-	ld (hl),a			;51bd
+	ld (06000h),a		;51ba   ; el banco 1 a 0x6000
+	ld (hl),a			;51bd   ; apuntado en 0xF0F1
 	inc a			;51be
-	ld (08000h),a		;51bf
-	inc hl			;51c2
-	ld (hl),a			;51c3
+	ld (08000h),a		;51bf   ; el banco 2 a 0x8000
+	inc hl			;51c2   ; la copia siguiente
+	ld (hl),a			;51c3   ; apuntado en 0xF0F2
 	inc a			;51c4
-	ld (0a000h),a		;51c5
-	inc hl			;51c8
-	ld (hl),a			;51c9
-	pop hl			;51ca
-	ei			;51cb
+	ld (0a000h),a		;51c5   ; el banco 3 a 0xA000
+	inc hl			;51c8   ; la copia siguiente
+	ld (hl),a			;51c9   ; apuntado en 0xF0F3
+	pop hl			;51ca   ; HL, como estaba
+	ei			;51cb   ; el mapa ya esta entero
 	ret			;51cc
 L_51CD:
-	di			;51cd
-	push hl			;51ce
-	ld hl,0f0f1h		;51cf
+	di			;51cd   ; sin interrupciones mientras cambia el mapa
+	push hl			;51ce   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;51cf   ; las tres copias, seguidas
 	ld a,004h		;51d2
-	ld (06000h),a		;51d4
-	ld (hl),a			;51d7
+	ld (06000h),a		;51d4   ; el banco 4 a 0x6000
+	ld (hl),a			;51d7   ; apuntado en 0xF0F1
 	inc a			;51d8
-	ld (08000h),a		;51d9
-	inc hl			;51dc
-	ld (hl),a			;51dd
+	ld (08000h),a		;51d9   ; el banco 5 a 0x8000
+	inc hl			;51dc   ; la copia siguiente
+	ld (hl),a			;51dd   ; apuntado en 0xF0F2
 	inc a			;51de
-	ld (0a000h),a		;51df
-	inc hl			;51e2
-	ld (hl),a			;51e3
-	pop hl			;51e4
-	ei			;51e5
+	ld (0a000h),a		;51df   ; el banco 6 a 0xA000
+	inc hl			;51e2   ; la copia siguiente
+	ld (hl),a			;51e3   ; apuntado en 0xF0F3
+	pop hl			;51e4   ; HL, como estaba
+	ei			;51e5   ; el mapa ya esta entero
 	ld de,0b71bh		;51e6
 	ld hl,02590h		;51e9
-	call pinta_en_los_tres		;51ec
+	call pinta_en_los_tres		;51ec   ; el guion 0xB71B del banco 6: 1824 bytes de patrones (0x2590-0x27EF 0x2D90-0x2FEF 0x3590-0x37EF)
 	ld de,0b96ah		;51ef
 	ld hl,00590h		;51f2
-	call pinta_en_los_tres		;51f5
-	di			;51f8
-	push hl			;51f9
-	ld hl,0f0f1h		;51fa
+	call pinta_en_los_tres		;51f5   ; el guion 0xB96A del banco 6: 1824 bytes de colores (0x0590-0x07EF 0x0D90-0x0FEF 0x1590-0x17EF)
+	di			;51f8   ; sin interrupciones mientras cambia el mapa
+	push hl			;51f9   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;51fa   ; las tres copias, seguidas
 	ld a,001h		;51fd
-	ld (06000h),a		;51ff
-	ld (hl),a			;5202
+	ld (06000h),a		;51ff   ; el banco 1 a 0x6000
+	ld (hl),a			;5202   ; apuntado en 0xF0F1
 	inc a			;5203
-	ld (08000h),a		;5204
-	inc hl			;5207
-	ld (hl),a			;5208
+	ld (08000h),a		;5204   ; el banco 2 a 0x8000
+	inc hl			;5207   ; la copia siguiente
+	ld (hl),a			;5208   ; apuntado en 0xF0F2
 	inc a			;5209
-	ld (0a000h),a		;520a
-	inc hl			;520d
-	ld (hl),a			;520e
-	pop hl			;520f
-	ei			;5210
+	ld (0a000h),a		;520a   ; el banco 3 a 0xA000
+	inc hl			;520d   ; la copia siguiente
+	ld (hl),a			;520e   ; apuntado en 0xF0F3
+	pop hl			;520f   ; HL, como estaba
+	ei			;5210   ; el mapa ya esta entero
 	ret			;5211
 L_5212:
-	di			;5212
-	push hl			;5213
-	ld hl,0f0f1h		;5214
+	di			;5212   ; sin interrupciones mientras cambia el mapa
+	push hl			;5213   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5214   ; las tres copias, seguidas
 	ld a,007h		;5217
-	ld (06000h),a		;5219
-	ld (hl),a			;521c
+	ld (06000h),a		;5219   ; el banco 7 a 0x6000
+	ld (hl),a			;521c   ; apuntado en 0xF0F1
 	inc a			;521d
-	ld (08000h),a		;521e
-	inc hl			;5221
-	ld (hl),a			;5222
+	ld (08000h),a		;521e   ; el banco 8 a 0x8000
+	inc hl			;5221   ; la copia siguiente
+	ld (hl),a			;5222   ; apuntado en 0xF0F2
 	inc a			;5223
-	ld (0a000h),a		;5224
-	inc hl			;5227
-	ld (hl),a			;5228
-	pop hl			;5229
-	ei			;522a
+	ld (0a000h),a		;5224   ; el banco 9 a 0xA000
+	inc hl			;5227   ; la copia siguiente
+	ld (hl),a			;5228   ; apuntado en 0xF0F3
+	pop hl			;5229   ; HL, como estaba
+	ei			;522a   ; el mapa ya esta entero
 	ld de,09229h		;522b
-	call pinta_sin_color		;522e
+	call pinta_sin_color		;522e   ; el guion 0x9229 del banco 8: 336 bytes de patrones (0x2D50-0x2E9F)
 	ld de,09234h		;5231
 	ld hl,02ea0h		;5234
 	ld c,001h		;5237
-	call pinta		;5239
-	di			;523c
-	push hl			;523d
-	ld hl,0f0f1h		;523e
+	call pinta		;5239   ; el guion 0x9234 del banco 8: 328 bytes de patrones (0x2EA0-0x2FE7)
+	di			;523c   ; sin interrupciones mientras cambia el mapa
+	push hl			;523d   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;523e   ; las tres copias, seguidas
 	ld a,001h		;5241
-	ld (06000h),a		;5243
-	ld (hl),a			;5246
+	ld (06000h),a		;5243   ; el banco 1 a 0x6000
+	ld (hl),a			;5246   ; apuntado en 0xF0F1
 	inc a			;5247
-	ld (08000h),a		;5248
-	inc hl			;524b
-	ld (hl),a			;524c
+	ld (08000h),a		;5248   ; el banco 2 a 0x8000
+	inc hl			;524b   ; la copia siguiente
+	ld (hl),a			;524c   ; apuntado en 0xF0F2
 	inc a			;524d
-	ld (0a000h),a		;524e
-	inc hl			;5251
-	ld (hl),a			;5252
-	pop hl			;5253
-	ei			;5254
+	ld (0a000h),a		;524e   ; el banco 3 a 0xA000
+	inc hl			;5251   ; la copia siguiente
+	ld (hl),a			;5252   ; apuntado en 0xF0F3
+	pop hl			;5253   ; HL, como estaba
+	ei			;5254   ; el mapa ya esta entero
 	ret			;5255
 L_5256:
-	di			;5256
-	push hl			;5257
-	ld hl,0f0f1h		;5258
+	di			;5256   ; sin interrupciones mientras cambia el mapa
+	push hl			;5257   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5258   ; las tres copias, seguidas
 	ld a,007h		;525b
-	ld (06000h),a		;525d
-	ld (hl),a			;5260
+	ld (06000h),a		;525d   ; el banco 7 a 0x6000
+	ld (hl),a			;5260   ; apuntado en 0xF0F1
 	inc a			;5261
-	ld (08000h),a		;5262
-	inc hl			;5265
-	ld (hl),a			;5266
+	ld (08000h),a		;5262   ; el banco 8 a 0x8000
+	inc hl			;5265   ; la copia siguiente
+	ld (hl),a			;5266   ; apuntado en 0xF0F2
 	inc a			;5267
-	ld (0a000h),a		;5268
-	inc hl			;526b
-	ld (hl),a			;526c
-	pop hl			;526d
-	ei			;526e
+	ld (0a000h),a		;5268   ; el banco 9 a 0xA000
+	inc hl			;526b   ; la copia siguiente
+	ld (hl),a			;526c   ; apuntado en 0xF0F3
+	pop hl			;526d   ; HL, como estaba
+	ei			;526e   ; el mapa ya esta entero
 	ld de,09457h		;526f
-	call pinta_sin_color		;5272
+	call pinta_sin_color		;5272   ; el guion 0x9457 del banco 8: 464 bytes de patrones (0x32B8-0x3487)
 	ld de,09473h		;5275
 	ld hl,03488h		;5278
 	ld c,001h		;527b
-	call pinta		;527d
-	di			;5280
-	push hl			;5281
-	ld hl,0f0f1h		;5282
+	call pinta		;527d   ; el guion 0x9473 del banco 8: 424 bytes de patrones (0x3488-0x362F)
+	di			;5280   ; sin interrupciones mientras cambia el mapa
+	push hl			;5281   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5282   ; las tres copias, seguidas
 	ld a,001h		;5285
-	ld (06000h),a		;5287
-	ld (hl),a			;528a
+	ld (06000h),a		;5287   ; el banco 1 a 0x6000
+	ld (hl),a			;528a   ; apuntado en 0xF0F1
 	inc a			;528b
-	ld (08000h),a		;528c
-	inc hl			;528f
-	ld (hl),a			;5290
+	ld (08000h),a		;528c   ; el banco 2 a 0x8000
+	inc hl			;528f   ; la copia siguiente
+	ld (hl),a			;5290   ; apuntado en 0xF0F2
 	inc a			;5291
-	ld (0a000h),a		;5292
-	inc hl			;5295
-	ld (hl),a			;5296
-	pop hl			;5297
-	ei			;5298
+	ld (0a000h),a		;5292   ; el banco 3 a 0xA000
+	inc hl			;5295   ; la copia siguiente
+	ld (hl),a			;5296   ; apuntado en 0xF0F3
+	pop hl			;5297   ; HL, como estaba
+	ei			;5298   ; el mapa ya esta entero
 	ret			;5299
 L_529A:
-	di			;529a
-	push hl			;529b
-	ld hl,0f0f1h		;529c
+	di			;529a   ; sin interrupciones mientras cambia el mapa
+	push hl			;529b   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;529c   ; las tres copias, seguidas
 	ld a,007h		;529f
-	ld (06000h),a		;52a1
-	ld (hl),a			;52a4
+	ld (06000h),a		;52a1   ; el banco 7 a 0x6000
+	ld (hl),a			;52a4   ; apuntado en 0xF0F1
 	inc a			;52a5
-	ld (08000h),a		;52a6
-	inc hl			;52a9
-	ld (hl),a			;52aa
+	ld (08000h),a		;52a6   ; el banco 8 a 0x8000
+	inc hl			;52a9   ; la copia siguiente
+	ld (hl),a			;52aa   ; apuntado en 0xF0F2
 	inc a			;52ab
-	ld (0a000h),a		;52ac
-	inc hl			;52af
-	ld (hl),a			;52b0
-	pop hl			;52b1
-	ei			;52b2
+	ld (0a000h),a		;52ac   ; el banco 9 a 0xA000
+	inc hl			;52af   ; la copia siguiente
+	ld (hl),a			;52b0   ; apuntado en 0xF0F3
+	pop hl			;52b1   ; HL, como estaba
+	ei			;52b2   ; el mapa ya esta entero
 	ld a,(0e0a1h)		;52b3
 	cp 002h		;52b6
 	ld hl,09816h		;52b8
@@ -2680,45 +2680,45 @@ L_52D2:
 	ld de,09373h		;52da
 	ld hl,00d50h		;52dd
 	ld c,080h		;52e0
-	call pinta		;52e2
+	call pinta		;52e2   ; el guion 0x9373 del banco 8: 336 bytes de colores (0x0D50-0x0E9F)
 	ld de,0937ah		;52e5
 	ld hl,00ea0h		;52e8
 	ld c,080h		;52eb
-	call pinta		;52ed
-	di			;52f0
-	push hl			;52f1
-	ld hl,0f0f1h		;52f2
+	call pinta		;52ed   ; el guion 0x937A del banco 8: 328 bytes de colores (0x0EA0-0x0FE7)
+	di			;52f0   ; sin interrupciones mientras cambia el mapa
+	push hl			;52f1   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;52f2   ; las tres copias, seguidas
 	ld a,001h		;52f5
-	ld (06000h),a		;52f7
-	ld (hl),a			;52fa
+	ld (06000h),a		;52f7   ; el banco 1 a 0x6000
+	ld (hl),a			;52fa   ; apuntado en 0xF0F1
 	inc a			;52fb
-	ld (08000h),a		;52fc
-	inc hl			;52ff
-	ld (hl),a			;5300
+	ld (08000h),a		;52fc   ; el banco 2 a 0x8000
+	inc hl			;52ff   ; la copia siguiente
+	ld (hl),a			;5300   ; apuntado en 0xF0F2
 	inc a			;5301
-	ld (0a000h),a		;5302
-	inc hl			;5305
-	ld (hl),a			;5306
-	pop hl			;5307
-	ei			;5308
+	ld (0a000h),a		;5302   ; el banco 3 a 0xA000
+	inc hl			;5305   ; la copia siguiente
+	ld (hl),a			;5306   ; apuntado en 0xF0F3
+	pop hl			;5307   ; HL, como estaba
+	ei			;5308   ; el mapa ya esta entero
 	ret			;5309
 L_530A:
-	di			;530a
-	push hl			;530b
-	ld hl,0f0f1h		;530c
+	di			;530a   ; sin interrupciones mientras cambia el mapa
+	push hl			;530b   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;530c   ; las tres copias, seguidas
 	ld a,007h		;530f
-	ld (06000h),a		;5311
-	ld (hl),a			;5314
+	ld (06000h),a		;5311   ; el banco 7 a 0x6000
+	ld (hl),a			;5314   ; apuntado en 0xF0F1
 	inc a			;5315
-	ld (08000h),a		;5316
-	inc hl			;5319
-	ld (hl),a			;531a
+	ld (08000h),a		;5316   ; el banco 8 a 0x8000
+	inc hl			;5319   ; la copia siguiente
+	ld (hl),a			;531a   ; apuntado en 0xF0F2
 	inc a			;531b
-	ld (0a000h),a		;531c
-	inc hl			;531f
-	ld (hl),a			;5320
-	pop hl			;5321
-	ei			;5322
+	ld (0a000h),a		;531c   ; el banco 9 a 0xA000
+	inc hl			;531f   ; la copia siguiente
+	ld (hl),a			;5320   ; apuntado en 0xF0F3
+	pop hl			;5321   ; HL, como estaba
+	ei			;5322   ; el mapa ya esta entero
 	ld a,(0e0a1h)		;5323
 	cp 002h		;5326
 	ld hl,09816h		;5328
@@ -2739,137 +2739,137 @@ L_5342:
 	ld de,095fbh		;534a
 	ld hl,012b8h		;534d
 	ld c,080h		;5350
-	call pinta		;5352
+	call pinta		;5352   ; el guion 0x95FB del banco 8: 464 bytes de colores (0x12B8-0x1487)
 	ld de,0960dh		;5355
 	ld hl,01488h		;5358
 	ld c,080h		;535b
-	call pinta		;535d
-	di			;5360
-	push hl			;5361
-	ld hl,0f0f1h		;5362
+	call pinta		;535d   ; el guion 0x960D del banco 8: 424 bytes de colores (0x1488-0x162F)
+	di			;5360   ; sin interrupciones mientras cambia el mapa
+	push hl			;5361   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5362   ; las tres copias, seguidas
 	ld a,001h		;5365
-	ld (06000h),a		;5367
-	ld (hl),a			;536a
+	ld (06000h),a		;5367   ; el banco 1 a 0x6000
+	ld (hl),a			;536a   ; apuntado en 0xF0F1
 	inc a			;536b
-	ld (08000h),a		;536c
-	inc hl			;536f
-	ld (hl),a			;5370
+	ld (08000h),a		;536c   ; el banco 2 a 0x8000
+	inc hl			;536f   ; la copia siguiente
+	ld (hl),a			;5370   ; apuntado en 0xF0F2
 	inc a			;5371
-	ld (0a000h),a		;5372
-	inc hl			;5375
-	ld (hl),a			;5376
-	pop hl			;5377
-	ei			;5378
+	ld (0a000h),a		;5372   ; el banco 3 a 0xA000
+	inc hl			;5375   ; la copia siguiente
+	ld (hl),a			;5376   ; apuntado en 0xF0F3
+	pop hl			;5377   ; HL, como estaba
+	ei			;5378   ; el mapa ya esta entero
 	ret			;5379
 L_537A:
-	di			;537a
-	push hl			;537b
-	ld hl,0f0f1h		;537c
+	di			;537a   ; sin interrupciones mientras cambia el mapa
+	push hl			;537b   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;537c   ; las tres copias, seguidas
 	ld a,007h		;537f
-	ld (06000h),a		;5381
-	ld (hl),a			;5384
+	ld (06000h),a		;5381   ; el banco 7 a 0x6000
+	ld (hl),a			;5384   ; apuntado en 0xF0F1
 	inc a			;5385
-	ld (08000h),a		;5386
-	inc hl			;5389
-	ld (hl),a			;538a
+	ld (08000h),a		;5386   ; el banco 8 a 0x8000
+	inc hl			;5389   ; la copia siguiente
+	ld (hl),a			;538a   ; apuntado en 0xF0F2
 	inc a			;538b
-	ld (0a000h),a		;538c
-	inc hl			;538f
-	ld (hl),a			;5390
-	pop hl			;5391
-	ei			;5392
+	ld (0a000h),a		;538c   ; el banco 9 a 0xA000
+	inc hl			;538f   ; la copia siguiente
+	ld (hl),a			;5390   ; apuntado en 0xF0F3
+	pop hl			;5391   ; HL, como estaba
+	ei			;5392   ; el mapa ya esta entero
 	ld de,08b7dh		;5393
-	call pinta_sin_color		;5396
+	call pinta_sin_color		;5396   ; el guion 0x8B7D del banco 8: 408 bytes de patrones (0x2C68-0x2DFF)
 	ld de,08c2ch		;5399
 	ld hl,02e00h		;539c
 	ld c,001h		;539f
-	call pinta		;53a1
+	call pinta		;53a1   ; el guion 0x8C2C del banco 8: 232 bytes de patrones (0x2E00-0x2EE7)
 	ld de,08d0eh		;53a4
-	call pinta_sin_color		;53a7
+	call pinta_sin_color		;53a7   ; el guion 0x8D0E del banco 8: 152 bytes de patrones (0x2EE8-0x2F7F)
 	ld de,08d31h		;53aa
 	ld hl,02f80h		;53ad
 	ld c,001h		;53b0
-	call pinta		;53b2
-	di			;53b5
-	push hl			;53b6
-	ld hl,0f0f1h		;53b7
+	call pinta		;53b2   ; el guion 0x8D31 del banco 8: 112 bytes de patrones (0x2F80-0x2FEF)
+	di			;53b5   ; sin interrupciones mientras cambia el mapa
+	push hl			;53b6   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;53b7   ; las tres copias, seguidas
 	ld a,001h		;53ba
-	ld (06000h),a		;53bc
-	ld (hl),a			;53bf
+	ld (06000h),a		;53bc   ; el banco 1 a 0x6000
+	ld (hl),a			;53bf   ; apuntado en 0xF0F1
 	inc a			;53c0
-	ld (08000h),a		;53c1
-	inc hl			;53c4
-	ld (hl),a			;53c5
+	ld (08000h),a		;53c1   ; el banco 2 a 0x8000
+	inc hl			;53c4   ; la copia siguiente
+	ld (hl),a			;53c5   ; apuntado en 0xF0F2
 	inc a			;53c6
-	ld (0a000h),a		;53c7
-	inc hl			;53ca
-	ld (hl),a			;53cb
-	pop hl			;53cc
-	ei			;53cd
+	ld (0a000h),a		;53c7   ; el banco 3 a 0xA000
+	inc hl			;53ca   ; la copia siguiente
+	ld (hl),a			;53cb   ; apuntado en 0xF0F3
+	pop hl			;53cc   ; HL, como estaba
+	ei			;53cd   ; el mapa ya esta entero
 	ret			;53ce
 L_53CF:
-	di			;53cf
-	push hl			;53d0
-	ld hl,0f0f1h		;53d1
+	di			;53cf   ; sin interrupciones mientras cambia el mapa
+	push hl			;53d0   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;53d1   ; las tres copias, seguidas
 	ld a,007h		;53d4
-	ld (06000h),a		;53d6
-	ld (hl),a			;53d9
+	ld (06000h),a		;53d6   ; el banco 7 a 0x6000
+	ld (hl),a			;53d9   ; apuntado en 0xF0F1
 	inc a			;53da
-	ld (08000h),a		;53db
-	inc hl			;53de
-	ld (hl),a			;53df
+	ld (08000h),a		;53db   ; el banco 8 a 0x8000
+	inc hl			;53de   ; la copia siguiente
+	ld (hl),a			;53df   ; apuntado en 0xF0F2
 	inc a			;53e0
-	ld (0a000h),a		;53e1
-	inc hl			;53e4
-	ld (hl),a			;53e5
-	pop hl			;53e6
-	ei			;53e7
+	ld (0a000h),a		;53e1   ; el banco 9 a 0xA000
+	inc hl			;53e4   ; la copia siguiente
+	ld (hl),a			;53e5   ; apuntado en 0xF0F3
+	pop hl			;53e6   ; HL, como estaba
+	ei			;53e7   ; el mapa ya esta entero
 	ld de,08e52h		;53e8
-	call pinta_sin_color		;53eb
+	call pinta_sin_color		;53eb   ; el guion 0x8E52 del banco 8: 296 bytes de patrones (0x32B8-0x33DF)
 	ld de,08ef1h		;53ee
 	ld hl,033e0h		;53f1
 	ld c,001h		;53f4
-	call pinta		;53f6
+	call pinta		;53f6   ; el guion 0x8EF1 del banco 8: 112 bytes de patrones (0x33E0-0x344F)
 	ld de,08f56h		;53f9
-	call pinta_sin_color		;53fc
+	call pinta_sin_color		;53fc   ; el guion 0x8F56 del banco 8: 432 bytes de patrones (0x3450-0x35FF)
 	ld de,08ffch		;53ff
 	ld hl,03600h		;5402
 	ld c,001h		;5405
-	call pinta		;5407
-	di			;540a
-	push hl			;540b
-	ld hl,0f0f1h		;540c
+	call pinta		;5407   ; el guion 0x8FFC del banco 8: 248 bytes de patrones (0x3600-0x36F7)
+	di			;540a   ; sin interrupciones mientras cambia el mapa
+	push hl			;540b   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;540c   ; las tres copias, seguidas
 	ld a,001h		;540f
-	ld (06000h),a		;5411
-	ld (hl),a			;5414
+	ld (06000h),a		;5411   ; el banco 1 a 0x6000
+	ld (hl),a			;5414   ; apuntado en 0xF0F1
 	inc a			;5415
-	ld (08000h),a		;5416
-	inc hl			;5419
-	ld (hl),a			;541a
+	ld (08000h),a		;5416   ; el banco 2 a 0x8000
+	inc hl			;5419   ; la copia siguiente
+	ld (hl),a			;541a   ; apuntado en 0xF0F2
 	inc a			;541b
-	ld (0a000h),a		;541c
-	inc hl			;541f
-	ld (hl),a			;5420
-	pop hl			;5421
-	ei			;5422
+	ld (0a000h),a		;541c   ; el banco 3 a 0xA000
+	inc hl			;541f   ; la copia siguiente
+	ld (hl),a			;5420   ; apuntado en 0xF0F3
+	pop hl			;5421   ; HL, como estaba
+	ei			;5422   ; el mapa ya esta entero
 	ret			;5423
 L_5424:
-	di			;5424
-	push hl			;5425
-	ld hl,0f0f1h		;5426
+	di			;5424   ; sin interrupciones mientras cambia el mapa
+	push hl			;5425   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5426   ; las tres copias, seguidas
 	ld a,007h		;5429
-	ld (06000h),a		;542b
-	ld (hl),a			;542e
+	ld (06000h),a		;542b   ; el banco 7 a 0x6000
+	ld (hl),a			;542e   ; apuntado en 0xF0F1
 	inc a			;542f
-	ld (08000h),a		;5430
-	inc hl			;5433
-	ld (hl),a			;5434
+	ld (08000h),a		;5430   ; el banco 8 a 0x8000
+	inc hl			;5433   ; la copia siguiente
+	ld (hl),a			;5434   ; apuntado en 0xF0F2
 	inc a			;5435
-	ld (0a000h),a		;5436
-	inc hl			;5439
-	ld (hl),a			;543a
-	pop hl			;543b
-	ei			;543c
+	ld (0a000h),a		;5436   ; el banco 9 a 0xA000
+	inc hl			;5439   ; la copia siguiente
+	ld (hl),a			;543a   ; apuntado en 0xF0F3
+	pop hl			;543b   ; HL, como estaba
+	ei			;543c   ; el mapa ya esta entero
 	ld a,(0e0a1h)		;543d
 	cp 002h		;5440
 	ld hl,0982eh		;5442
@@ -2882,53 +2882,53 @@ L_544A:
 	ld de,08da3h		;5452
 	ld hl,00c68h		;5455
 	ld c,080h		;5458
-	call pinta		;545a
+	call pinta		;545a   ; el guion 0x8DA3 del banco 8: 408 bytes de colores (0x0C68-0x0DFF)
 	ld de,08db5h		;545d
 	ld hl,00e00h		;5460
 	ld c,080h		;5463
-	call pinta		;5465
+	call pinta		;5465   ; el guion 0x8DB5 del banco 8: 232 bytes de colores (0x0E00-0x0EE7)
 	ld de,08e13h		;5468
 	ld hl,00ee8h		;546b
 	ld c,080h		;546e
-	call pinta		;5470
+	call pinta		;5470   ; el guion 0x8E13 del banco 8: 152 bytes de colores (0x0EE8-0x0F7F)
 	ld de,08e19h		;5473
 	ld hl,00f80h		;5476
 	ld c,080h		;5479
-	call pinta		;547b
-	di			;547e
-	push hl			;547f
-	ld hl,0f0f1h		;5480
+	call pinta		;547b   ; el guion 0x8E19 del banco 8: 112 bytes de colores (0x0F80-0x0FEF)
+	di			;547e   ; sin interrupciones mientras cambia el mapa
+	push hl			;547f   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5480   ; las tres copias, seguidas
 	ld a,001h		;5483
-	ld (06000h),a		;5485
-	ld (hl),a			;5488
+	ld (06000h),a		;5485   ; el banco 1 a 0x6000
+	ld (hl),a			;5488   ; apuntado en 0xF0F1
 	inc a			;5489
-	ld (08000h),a		;548a
-	inc hl			;548d
-	ld (hl),a			;548e
+	ld (08000h),a		;548a   ; el banco 2 a 0x8000
+	inc hl			;548d   ; la copia siguiente
+	ld (hl),a			;548e   ; apuntado en 0xF0F2
 	inc a			;548f
-	ld (0a000h),a		;5490
-	inc hl			;5493
-	ld (hl),a			;5494
-	pop hl			;5495
-	ei			;5496
+	ld (0a000h),a		;5490   ; el banco 3 a 0xA000
+	inc hl			;5493   ; la copia siguiente
+	ld (hl),a			;5494   ; apuntado en 0xF0F3
+	pop hl			;5495   ; HL, como estaba
+	ei			;5496   ; el mapa ya esta entero
 	ret			;5497
 L_5498:
-	di			;5498
-	push hl			;5499
-	ld hl,0f0f1h		;549a
+	di			;5498   ; sin interrupciones mientras cambia el mapa
+	push hl			;5499   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;549a   ; las tres copias, seguidas
 	ld a,007h		;549d
-	ld (06000h),a		;549f
-	ld (hl),a			;54a2
+	ld (06000h),a		;549f   ; el banco 7 a 0x6000
+	ld (hl),a			;54a2   ; apuntado en 0xF0F1
 	inc a			;54a3
-	ld (08000h),a		;54a4
-	inc hl			;54a7
-	ld (hl),a			;54a8
+	ld (08000h),a		;54a4   ; el banco 8 a 0x8000
+	inc hl			;54a7   ; la copia siguiente
+	ld (hl),a			;54a8   ; apuntado en 0xF0F2
 	inc a			;54a9
-	ld (0a000h),a		;54aa
-	inc hl			;54ad
-	ld (hl),a			;54ae
-	pop hl			;54af
-	ei			;54b0
+	ld (0a000h),a		;54aa   ; el banco 9 a 0xA000
+	inc hl			;54ad   ; la copia siguiente
+	ld (hl),a			;54ae   ; apuntado en 0xF0F3
+	pop hl			;54af   ; HL, como estaba
+	ei			;54b0   ; el mapa ya esta entero
 	ld a,(0e0a1h)		;54b1
 	cp 002h		;54b4
 	ld hl,0982eh		;54b6
@@ -2941,111 +2941,111 @@ L_54BE:
 	ld de,090e7h		;54c6
 	ld hl,012b8h		;54c9
 	ld c,080h		;54cc
-	call pinta		;54ce
+	call pinta		;54ce   ; el guion 0x90E7 del banco 8: 296 bytes de colores (0x12B8-0x13DF)
 	ld de,09105h		;54d1
 	ld hl,013e0h		;54d4
 	ld c,080h		;54d7
-	call pinta		;54d9
+	call pinta		;54d9   ; el guion 0x9105 del banco 8: 112 bytes de colores (0x13E0-0x144F)
 	ld de,09138h		;54dc
 	ld hl,01450h		;54df
 	ld c,080h		;54e2
-	call pinta		;54e4
+	call pinta		;54e4   ; el guion 0x9138 del banco 8: 432 bytes de colores (0x1450-0x15FF)
 	ld de,09150h		;54e7
 	ld hl,01600h		;54ea
 	ld c,080h		;54ed
-	call pinta		;54ef
-	di			;54f2
-	push hl			;54f3
-	ld hl,0f0f1h		;54f4
+	call pinta		;54ef   ; el guion 0x9150 del banco 8: 248 bytes de colores (0x1600-0x16F7)
+	di			;54f2   ; sin interrupciones mientras cambia el mapa
+	push hl			;54f3   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;54f4   ; las tres copias, seguidas
 	ld a,001h		;54f7
-	ld (06000h),a		;54f9
-	ld (hl),a			;54fc
+	ld (06000h),a		;54f9   ; el banco 1 a 0x6000
+	ld (hl),a			;54fc   ; apuntado en 0xF0F1
 	inc a			;54fd
-	ld (08000h),a		;54fe
-	inc hl			;5501
-	ld (hl),a			;5502
+	ld (08000h),a		;54fe   ; el banco 2 a 0x8000
+	inc hl			;5501   ; la copia siguiente
+	ld (hl),a			;5502   ; apuntado en 0xF0F2
 	inc a			;5503
-	ld (0a000h),a		;5504
-	inc hl			;5507
-	ld (hl),a			;5508
-	pop hl			;5509
-	ei			;550a
+	ld (0a000h),a		;5504   ; el banco 3 a 0xA000
+	inc hl			;5507   ; la copia siguiente
+	ld (hl),a			;5508   ; apuntado en 0xF0F3
+	pop hl			;5509   ; HL, como estaba
+	ei			;550a   ; el mapa ya esta entero
 	ret			;550b
 L_550C:
-	di			;550c
-	push hl			;550d
-	ld hl,0f0f1h		;550e
+	di			;550c   ; sin interrupciones mientras cambia el mapa
+	push hl			;550d   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;550e   ; las tres copias, seguidas
 	ld a,004h		;5511
-	ld (06000h),a		;5513
-	ld (hl),a			;5516
+	ld (06000h),a		;5513   ; el banco 4 a 0x6000
+	ld (hl),a			;5516   ; apuntado en 0xF0F1
 	inc a			;5517
-	ld (08000h),a		;5518
-	inc hl			;551b
-	ld (hl),a			;551c
+	ld (08000h),a		;5518   ; el banco 5 a 0x8000
+	inc hl			;551b   ; la copia siguiente
+	ld (hl),a			;551c   ; apuntado en 0xF0F2
 	inc a			;551d
-	ld (0a000h),a		;551e
-	inc hl			;5521
-	ld (hl),a			;5522
-	pop hl			;5523
-	ei			;5524
+	ld (0a000h),a		;551e   ; el banco 6 a 0xA000
+	inc hl			;5521   ; la copia siguiente
+	ld (hl),a			;5522   ; apuntado en 0xF0F3
+	pop hl			;5523   ; HL, como estaba
+	ei			;5524   ; el mapa ya esta entero
 	ld de,0bcbch		;5525
-	call pinta_sin_color		;5528
+	call pinta_sin_color		;5528   ; el guion 0xBCBC del banco 6: 144 bytes de patrones (0x3718-0x37A7)
 	ld de,0bcfdh		;552b
 	ld hl,037a8h		;552e
 	ld c,001h		;5531
-	call pinta		;5533
+	call pinta		;5533   ; el guion 0xBCFD del banco 6: 72 bytes de patrones (0x37A8-0x37EF)
 	ld de,0bd42h		;5536
-	call pinta_sin_color		;5539
+	call pinta_sin_color		;5539   ; el guion 0xBD42 del banco 6: 144 bytes de colores (0x1718-0x17A7)
 	ld de,0bd70h		;553c
 	ld hl,017a8h		;553f
 	ld c,000h		;5542
-	call pinta		;5544
-	di			;5547
-	push hl			;5548
-	ld hl,0f0f1h		;5549
+	call pinta		;5544   ; el guion 0xBD70 del banco 6: 72 bytes de colores (0x17A8-0x17EF)
+	di			;5547   ; sin interrupciones mientras cambia el mapa
+	push hl			;5548   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5549   ; las tres copias, seguidas
 	ld a,001h		;554c
-	ld (06000h),a		;554e
-	ld (hl),a			;5551
+	ld (06000h),a		;554e   ; el banco 1 a 0x6000
+	ld (hl),a			;5551   ; apuntado en 0xF0F1
 	inc a			;5552
-	ld (08000h),a		;5553
-	inc hl			;5556
-	ld (hl),a			;5557
+	ld (08000h),a		;5553   ; el banco 2 a 0x8000
+	inc hl			;5556   ; la copia siguiente
+	ld (hl),a			;5557   ; apuntado en 0xF0F2
 	inc a			;5558
-	ld (0a000h),a		;5559
-	inc hl			;555c
-	ld (hl),a			;555d
-	pop hl			;555e
-	ei			;555f
+	ld (0a000h),a		;5559   ; el banco 3 a 0xA000
+	inc hl			;555c   ; la copia siguiente
+	ld (hl),a			;555d   ; apuntado en 0xF0F3
+	pop hl			;555e   ; HL, como estaba
+	ei			;555f   ; el mapa ya esta entero
 	ret			;5560
 L_5561:
-	di			;5561
-	push hl			;5562
-	ld hl,0f0f1h		;5563
+	di			;5561   ; sin interrupciones mientras cambia el mapa
+	push hl			;5562   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5563   ; las tres copias, seguidas
 	ld a,007h		;5566
-	ld (06000h),a		;5568
-	ld (hl),a			;556b
+	ld (06000h),a		;5568   ; el banco 7 a 0x6000
+	ld (hl),a			;556b   ; apuntado en 0xF0F1
 	inc a			;556c
-	ld (08000h),a		;556d
-	inc hl			;5570
-	ld (hl),a			;5571
+	ld (08000h),a		;556d   ; el banco 8 a 0x8000
+	inc hl			;5570   ; la copia siguiente
+	ld (hl),a			;5571   ; apuntado en 0xF0F2
 	inc a			;5572
-	ld (0a000h),a		;5573
-	inc hl			;5576
-	ld (hl),a			;5577
-	pop hl			;5578
-	ei			;5579
+	ld (0a000h),a		;5573   ; el banco 9 a 0xA000
+	inc hl			;5576   ; la copia siguiente
+	ld (hl),a			;5577   ; apuntado en 0xF0F3
+	pop hl			;5578   ; HL, como estaba
+	ei			;5579   ; el mapa ya esta entero
 	ld de,091a3h		;557a
-	call pinta_sin_color		;557d
+	call pinta_sin_color		;557d   ; el guion 0x91A3 del banco 8: 88 bytes de patrones (0x2C68-0x2CBF)
 	ld de,091bah		;5580
 	ld hl,02cc0h		;5583
 	ld c,001h		;5586
-	call pinta		;5588
+	call pinta		;5588   ; el guion 0x91BA del banco 8: 56 bytes de patrones (0x2CC0-0x2CF7)
 	ld de,09209h		;558b
-	call pinta_sin_color		;558e
+	call pinta_sin_color		;558e   ; el guion 0x9209 del banco 8: 32 bytes de patrones (0x32B8-0x32D7)
 	ld de,0920bh		;5591
 	ld hl,032d8h		;5594
 	ld c,001h		;5597
-	call pinta		;5599
+	call pinta		;5599   ; el guion 0x920B del banco 8: 32 bytes de patrones (0x32D8-0x32F7)
 	ld a,(0e0a1h)		;559c
 	cp 002h		;559f
 	ld hl,0982eh		;55a1
@@ -3058,57 +3058,57 @@ L_55A9:
 	ld de,091eeh		;55b1
 	ld hl,00c68h		;55b4
 	ld c,080h		;55b7
-	call pinta		;55b9
+	call pinta		;55b9   ; el guion 0x91EE del banco 8: 88 bytes de colores (0x0C68-0x0CBF)
 	ld de,091fch		;55bc
 	ld hl,00cc0h		;55bf
 	ld c,080h		;55c2
-	call pinta		;55c4
+	call pinta		;55c4   ; el guion 0x91FC del banco 8: 56 bytes de colores (0x0CC0-0x0CF7)
 	ld de,09226h		;55c7
 	ld hl,012b8h		;55ca
 	ld c,080h		;55cd
-	call pinta		;55cf
+	call pinta		;55cf   ; el guion 0x9226 del banco 8: 32 bytes de colores (0x12B8-0x12D7)
 	ld de,09226h		;55d2
 	ld hl,012d8h		;55d5
 	ld c,080h		;55d8
-	call pinta		;55da
-	di			;55dd
-	push hl			;55de
-	ld hl,0f0f1h		;55df
+	call pinta		;55da   ; el guion 0x9226 del banco 8: 32 bytes de colores (0x12D8-0x12F7)
+	di			;55dd   ; sin interrupciones mientras cambia el mapa
+	push hl			;55de   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;55df   ; las tres copias, seguidas
 	ld a,001h		;55e2
-	ld (06000h),a		;55e4
-	ld (hl),a			;55e7
+	ld (06000h),a		;55e4   ; el banco 1 a 0x6000
+	ld (hl),a			;55e7   ; apuntado en 0xF0F1
 	inc a			;55e8
-	ld (08000h),a		;55e9
-	inc hl			;55ec
-	ld (hl),a			;55ed
+	ld (08000h),a		;55e9   ; el banco 2 a 0x8000
+	inc hl			;55ec   ; la copia siguiente
+	ld (hl),a			;55ed   ; apuntado en 0xF0F2
 	inc a			;55ee
-	ld (0a000h),a		;55ef
-	inc hl			;55f2
-	ld (hl),a			;55f3
-	pop hl			;55f4
-	ei			;55f5
+	ld (0a000h),a		;55ef   ; el banco 3 a 0xA000
+	inc hl			;55f2   ; la copia siguiente
+	ld (hl),a			;55f3   ; apuntado en 0xF0F3
+	pop hl			;55f4   ; HL, como estaba
+	ei			;55f5   ; el mapa ya esta entero
 	ret			;55f6
 L_55F7:
-	di			;55f7
-	push hl			;55f8
-	ld hl,0f0f1h		;55f9
+	di			;55f7   ; sin interrupciones mientras cambia el mapa
+	push hl			;55f8   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;55f9   ; las tres copias, seguidas
 	ld a,007h		;55fc
-	ld (06000h),a		;55fe
-	ld (hl),a			;5601
+	ld (06000h),a		;55fe   ; el banco 7 a 0x6000
+	ld (hl),a			;5601   ; apuntado en 0xF0F1
 	inc a			;5602
-	ld (08000h),a		;5603
-	inc hl			;5606
-	ld (hl),a			;5607
+	ld (08000h),a		;5603   ; el banco 8 a 0x8000
+	inc hl			;5606   ; la copia siguiente
+	ld (hl),a			;5607   ; apuntado en 0xF0F2
 	inc a			;5608
-	ld (0a000h),a		;5609
-	inc hl			;560c
-	ld (hl),a			;560d
-	pop hl			;560e
-	ei			;560f
+	ld (0a000h),a		;5609   ; el banco 9 a 0xA000
+	inc hl			;560c   ; la copia siguiente
+	ld (hl),a			;560d   ; apuntado en 0xF0F3
+	pop hl			;560e   ; HL, como estaba
+	ei			;560f   ; el mapa ya esta entero
 	ld de,07e3ah		;5610
-	call pinta_sin_color		;5613
+	call pinta_sin_color		;5613   ; el guion 0x7E3A del banco 7: 704 bytes de patrones de sprite (0x19A0-0x1C5F)
 	ld de,082ddh		;5616
-	call pinta_sin_color		;5619
+	call pinta_sin_color		;5619   ; el guion 0x82DD del banco 8: 544 bytes de patrones de sprite (0x1C60-0x1E7F)
 	ld a,(0e08bh)		;561c
 	and 00fh		;561f
 	cp 007h		;5621
@@ -3131,22 +3131,22 @@ L_5630:
 	ld d,(hl)			;5641
 L_5642:
 	call pinta_sin_color		;5642
-	di			;5645
-	push hl			;5646
-	ld hl,0f0f1h		;5647
+	di			;5645   ; sin interrupciones mientras cambia el mapa
+	push hl			;5646   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5647   ; las tres copias, seguidas
 	ld a,001h		;564a
-	ld (06000h),a		;564c
-	ld (hl),a			;564f
+	ld (06000h),a		;564c   ; el banco 1 a 0x6000
+	ld (hl),a			;564f   ; apuntado en 0xF0F1
 	inc a			;5650
-	ld (08000h),a		;5651
-	inc hl			;5654
-	ld (hl),a			;5655
+	ld (08000h),a		;5651   ; el banco 2 a 0x8000
+	inc hl			;5654   ; la copia siguiente
+	ld (hl),a			;5655   ; apuntado en 0xF0F2
 	inc a			;5656
-	ld (0a000h),a		;5657
-	inc hl			;565a
-	ld (hl),a			;565b
-	pop hl			;565c
-	ei			;565d
+	ld (0a000h),a		;5657   ; el banco 3 a 0xA000
+	inc hl			;565a   ; la copia siguiente
+	ld (hl),a			;565b   ; apuntado en 0xF0F3
+	pop hl			;565c   ; HL, como estaba
+	ei			;565d   ; el mapa ya esta entero
 	ret			;565e
 
 ; ----------------------------------------------------------------------
@@ -3160,276 +3160,276 @@ DATA_565F:
 
 
 L_5667:
-	di			;5667
-	push hl			;5668
-	ld hl,0f0f1h		;5669
+	di			;5667   ; sin interrupciones mientras cambia el mapa
+	push hl			;5668   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5669   ; las tres copias, seguidas
 	ld a,007h		;566c
-	ld (06000h),a		;566e
-	ld (hl),a			;5671
+	ld (06000h),a		;566e   ; el banco 7 a 0x6000
+	ld (hl),a			;5671   ; apuntado en 0xF0F1
 	inc a			;5672
-	ld (08000h),a		;5673
-	inc hl			;5676
-	ld (hl),a			;5677
+	ld (08000h),a		;5673   ; el banco 8 a 0x8000
+	inc hl			;5676   ; la copia siguiente
+	ld (hl),a			;5677   ; apuntado en 0xF0F2
 	inc a			;5678
-	ld (0a000h),a		;5679
-	inc hl			;567c
-	ld (hl),a			;567d
-	pop hl			;567e
-	ei			;567f
+	ld (0a000h),a		;5679   ; el banco 9 a 0xA000
+	inc hl			;567c   ; la copia siguiente
+	ld (hl),a			;567d   ; apuntado en 0xF0F3
+	pop hl			;567e   ; HL, como estaba
+	ei			;567f   ; el mapa ya esta entero
 	ld de,07fbch		;5680
-	call pinta_sin_color		;5683
-	di			;5686
-	push hl			;5687
-	ld hl,0f0f1h		;5688
+	call pinta_sin_color		;5683   ; el guion 0x7FBC del banco 7: 1056 bytes de patrones de sprite (0x19A0-0x1DBF)
+	di			;5686   ; sin interrupciones mientras cambia el mapa
+	push hl			;5687   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5688   ; las tres copias, seguidas
 	ld a,001h		;568b
-	ld (06000h),a		;568d
-	ld (hl),a			;5690
+	ld (06000h),a		;568d   ; el banco 1 a 0x6000
+	ld (hl),a			;5690   ; apuntado en 0xF0F1
 	inc a			;5691
-	ld (08000h),a		;5692
-	inc hl			;5695
-	ld (hl),a			;5696
+	ld (08000h),a		;5692   ; el banco 2 a 0x8000
+	inc hl			;5695   ; la copia siguiente
+	ld (hl),a			;5696   ; apuntado en 0xF0F2
 	inc a			;5697
-	ld (0a000h),a		;5698
-	inc hl			;569b
-	ld (hl),a			;569c
-	pop hl			;569d
-	ei			;569e
+	ld (0a000h),a		;5698   ; el banco 3 a 0xA000
+	inc hl			;569b   ; la copia siguiente
+	ld (hl),a			;569c   ; apuntado en 0xF0F3
+	pop hl			;569d   ; HL, como estaba
+	ei			;569e   ; el mapa ya esta entero
 	ret			;569f
 L_56A0:
-	di			;56a0
-	push hl			;56a1
-	ld hl,0f0f1h		;56a2
+	di			;56a0   ; sin interrupciones mientras cambia el mapa
+	push hl			;56a1   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;56a2   ; las tres copias, seguidas
 	ld a,007h		;56a5
-	ld (06000h),a		;56a7
-	ld (hl),a			;56aa
+	ld (06000h),a		;56a7   ; el banco 7 a 0x6000
+	ld (hl),a			;56aa   ; apuntado en 0xF0F1
 	inc a			;56ab
-	ld (08000h),a		;56ac
-	inc hl			;56af
-	ld (hl),a			;56b0
+	ld (08000h),a		;56ac   ; el banco 8 a 0x8000
+	inc hl			;56af   ; la copia siguiente
+	ld (hl),a			;56b0   ; apuntado en 0xF0F2
 	inc a			;56b1
-	ld (0a000h),a		;56b2
-	inc hl			;56b5
-	ld (hl),a			;56b6
-	pop hl			;56b7
-	ei			;56b8
+	ld (0a000h),a		;56b2   ; el banco 9 a 0xA000
+	inc hl			;56b5   ; la copia siguiente
+	ld (hl),a			;56b6   ; apuntado en 0xF0F3
+	pop hl			;56b7   ; HL, como estaba
+	ei			;56b8   ; el mapa ya esta entero
 	ld de,081cfh		;56b9
-	call pinta_sin_color		;56bc
-	di			;56bf
-	push hl			;56c0
-	ld hl,0f0f1h		;56c1
+	call pinta_sin_color		;56bc   ; el guion 0x81CF del banco 8: 160 bytes de patrones de sprite (0x19A0-0x1A3F)
+	di			;56bf   ; sin interrupciones mientras cambia el mapa
+	push hl			;56c0   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;56c1   ; las tres copias, seguidas
 	ld a,001h		;56c4
-	ld (06000h),a		;56c6
-	ld (hl),a			;56c9
+	ld (06000h),a		;56c6   ; el banco 1 a 0x6000
+	ld (hl),a			;56c9   ; apuntado en 0xF0F1
 	inc a			;56ca
-	ld (08000h),a		;56cb
-	inc hl			;56ce
-	ld (hl),a			;56cf
+	ld (08000h),a		;56cb   ; el banco 2 a 0x8000
+	inc hl			;56ce   ; la copia siguiente
+	ld (hl),a			;56cf   ; apuntado en 0xF0F2
 	inc a			;56d0
-	ld (0a000h),a		;56d1
-	inc hl			;56d4
-	ld (hl),a			;56d5
-	pop hl			;56d6
-	ei			;56d7
+	ld (0a000h),a		;56d1   ; el banco 3 a 0xA000
+	inc hl			;56d4   ; la copia siguiente
+	ld (hl),a			;56d5   ; apuntado en 0xF0F3
+	pop hl			;56d6   ; HL, como estaba
+	ei			;56d7   ; el mapa ya esta entero
 	ret			;56d8
 L_56D9:
-	di			;56d9
-	push hl			;56da
-	ld hl,0f0f1h		;56db
+	di			;56d9   ; sin interrupciones mientras cambia el mapa
+	push hl			;56da   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;56db   ; las tres copias, seguidas
 	ld a,007h		;56de
-	ld (06000h),a		;56e0
-	ld (hl),a			;56e3
+	ld (06000h),a		;56e0   ; el banco 7 a 0x6000
+	ld (hl),a			;56e3   ; apuntado en 0xF0F1
 	inc a			;56e4
-	ld (08000h),a		;56e5
-	inc hl			;56e8
-	ld (hl),a			;56e9
+	ld (08000h),a		;56e5   ; el banco 8 a 0x8000
+	inc hl			;56e8   ; la copia siguiente
+	ld (hl),a			;56e9   ; apuntado en 0xF0F2
 	inc a			;56ea
-	ld (0a000h),a		;56eb
-	inc hl			;56ee
-	ld (hl),a			;56ef
-	pop hl			;56f0
-	ei			;56f1
+	ld (0a000h),a		;56eb   ; el banco 9 a 0xA000
+	inc hl			;56ee   ; la copia siguiente
+	ld (hl),a			;56ef   ; apuntado en 0xF0F3
+	pop hl			;56f0   ; HL, como estaba
+	ei			;56f1   ; el mapa ya esta entero
 	ld de,07e3ch		;56f2
 	ld hl,01ca0h		;56f5
 	ld c,000h		;56f8
-	call pinta		;56fa
-	di			;56fd
-	push hl			;56fe
-	ld hl,0f0f1h		;56ff
+	call pinta		;56fa   ; el guion 0x7E3C del banco 7: 704 bytes de patrones de sprite (0x1CA0-0x1F5F)
+	di			;56fd   ; sin interrupciones mientras cambia el mapa
+	push hl			;56fe   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;56ff   ; las tres copias, seguidas
 	ld a,001h		;5702
-	ld (06000h),a		;5704
-	ld (hl),a			;5707
+	ld (06000h),a		;5704   ; el banco 1 a 0x6000
+	ld (hl),a			;5707   ; apuntado en 0xF0F1
 	inc a			;5708
-	ld (08000h),a		;5709
-	inc hl			;570c
-	ld (hl),a			;570d
+	ld (08000h),a		;5709   ; el banco 2 a 0x8000
+	inc hl			;570c   ; la copia siguiente
+	ld (hl),a			;570d   ; apuntado en 0xF0F2
 	inc a			;570e
-	ld (0a000h),a		;570f
-	inc hl			;5712
-	ld (hl),a			;5713
-	pop hl			;5714
-	ei			;5715
+	ld (0a000h),a		;570f   ; el banco 3 a 0xA000
+	inc hl			;5712   ; la copia siguiente
+	ld (hl),a			;5713   ; apuntado en 0xF0F3
+	pop hl			;5714   ; HL, como estaba
+	ei			;5715   ; el mapa ya esta entero
 	ret			;5716
 L_5717:
-	di			;5717
-	push hl			;5718
-	ld hl,0f0f1h		;5719
+	di			;5717   ; sin interrupciones mientras cambia el mapa
+	push hl			;5718   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5719   ; las tres copias, seguidas
 	ld a,007h		;571c
-	ld (06000h),a		;571e
-	ld (hl),a			;5721
+	ld (06000h),a		;571e   ; el banco 7 a 0x6000
+	ld (hl),a			;5721   ; apuntado en 0xF0F1
 	inc a			;5722
-	ld (08000h),a		;5723
-	inc hl			;5726
-	ld (hl),a			;5727
+	ld (08000h),a		;5723   ; el banco 8 a 0x8000
+	inc hl			;5726   ; la copia siguiente
+	ld (hl),a			;5727   ; apuntado en 0xF0F2
 	inc a			;5728
-	ld (0a000h),a		;5729
-	inc hl			;572c
-	ld (hl),a			;572d
-	pop hl			;572e
-	ei			;572f
+	ld (0a000h),a		;5729   ; el banco 9 a 0xA000
+	inc hl			;572c   ; la copia siguiente
+	ld (hl),a			;572d   ; apuntado en 0xF0F3
+	pop hl			;572e   ; HL, como estaba
+	ei			;572f   ; el mapa ya esta entero
 	ld de,0852ch		;5730
-	call pinta_sin_color		;5733
-	di			;5736
-	push hl			;5737
-	ld hl,0f0f1h		;5738
+	call pinta_sin_color		;5733   ; el guion 0x852C del banco 8: 384 bytes de patrones de sprite (0x1DC0-0x1F3F)
+	di			;5736   ; sin interrupciones mientras cambia el mapa
+	push hl			;5737   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5738   ; las tres copias, seguidas
 	ld a,001h		;573b
-	ld (06000h),a		;573d
-	ld (hl),a			;5740
+	ld (06000h),a		;573d   ; el banco 1 a 0x6000
+	ld (hl),a			;5740   ; apuntado en 0xF0F1
 	inc a			;5741
-	ld (08000h),a		;5742
-	inc hl			;5745
-	ld (hl),a			;5746
+	ld (08000h),a		;5742   ; el banco 2 a 0x8000
+	inc hl			;5745   ; la copia siguiente
+	ld (hl),a			;5746   ; apuntado en 0xF0F2
 	inc a			;5747
-	ld (0a000h),a		;5748
-	inc hl			;574b
-	ld (hl),a			;574c
-	pop hl			;574d
-	ei			;574e
+	ld (0a000h),a		;5748   ; el banco 3 a 0xA000
+	inc hl			;574b   ; la copia siguiente
+	ld (hl),a			;574c   ; apuntado en 0xF0F3
+	pop hl			;574d   ; HL, como estaba
+	ei			;574e   ; el mapa ya esta entero
 	ret			;574f
 L_5750:
-	di			;5750
-	push hl			;5751
-	ld hl,0f0f1h		;5752
+	di			;5750   ; sin interrupciones mientras cambia el mapa
+	push hl			;5751   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5752   ; las tres copias, seguidas
 	ld a,007h		;5755
-	ld (06000h),a		;5757
-	ld (hl),a			;575a
+	ld (06000h),a		;5757   ; el banco 7 a 0x6000
+	ld (hl),a			;575a   ; apuntado en 0xF0F1
 	inc a			;575b
-	ld (08000h),a		;575c
-	inc hl			;575f
-	ld (hl),a			;5760
+	ld (08000h),a		;575c   ; el banco 8 a 0x8000
+	inc hl			;575f   ; la copia siguiente
+	ld (hl),a			;5760   ; apuntado en 0xF0F2
 	inc a			;5761
-	ld (0a000h),a		;5762
-	inc hl			;5765
-	ld (hl),a			;5766
-	pop hl			;5767
-	ei			;5768
+	ld (0a000h),a		;5762   ; el banco 9 a 0xA000
+	inc hl			;5765   ; la copia siguiente
+	ld (hl),a			;5766   ; apuntado en 0xF0F3
+	pop hl			;5767   ; HL, como estaba
+	ei			;5768   ; el mapa ya esta entero
 	ld de,07d6fh		;5769
-	call pinta_sin_color		;576c
-	di			;576f
-	push hl			;5770
-	ld hl,0f0f1h		;5771
+	call pinta_sin_color		;576c   ; el guion 0x7D6F del banco 7: 320 bytes de patrones de sprite (0x1DC0-0x1EFF)
+	di			;576f   ; sin interrupciones mientras cambia el mapa
+	push hl			;5770   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5771   ; las tres copias, seguidas
 	ld a,001h		;5774
-	ld (06000h),a		;5776
-	ld (hl),a			;5779
+	ld (06000h),a		;5776   ; el banco 1 a 0x6000
+	ld (hl),a			;5779   ; apuntado en 0xF0F1
 	inc a			;577a
-	ld (08000h),a		;577b
-	inc hl			;577e
-	ld (hl),a			;577f
+	ld (08000h),a		;577b   ; el banco 2 a 0x8000
+	inc hl			;577e   ; la copia siguiente
+	ld (hl),a			;577f   ; apuntado en 0xF0F2
 	inc a			;5780
-	ld (0a000h),a		;5781
-	inc hl			;5784
-	ld (hl),a			;5785
-	pop hl			;5786
-	ei			;5787
+	ld (0a000h),a		;5781   ; el banco 3 a 0xA000
+	inc hl			;5784   ; la copia siguiente
+	ld (hl),a			;5785   ; apuntado en 0xF0F3
+	pop hl			;5786   ; HL, como estaba
+	ei			;5787   ; el mapa ya esta entero
 	ret			;5788
 L_5789:
-	di			;5789
-	push hl			;578a
-	ld hl,0f0f1h		;578b
+	di			;5789   ; sin interrupciones mientras cambia el mapa
+	push hl			;578a   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;578b   ; las tres copias, seguidas
 	ld a,007h		;578e
-	ld (06000h),a		;5790
-	ld (hl),a			;5793
+	ld (06000h),a		;5790   ; el banco 7 a 0x6000
+	ld (hl),a			;5793   ; apuntado en 0xF0F1
 	inc a			;5794
-	ld (08000h),a		;5795
-	inc hl			;5798
-	ld (hl),a			;5799
+	ld (08000h),a		;5795   ; el banco 8 a 0x8000
+	inc hl			;5798   ; la copia siguiente
+	ld (hl),a			;5799   ; apuntado en 0xF0F2
 	inc a			;579a
-	ld (0a000h),a		;579b
-	inc hl			;579e
-	ld (hl),a			;579f
-	pop hl			;57a0
-	ei			;57a1
+	ld (0a000h),a		;579b   ; el banco 9 a 0xA000
+	inc hl			;579e   ; la copia siguiente
+	ld (hl),a			;579f   ; apuntado en 0xF0F3
+	pop hl			;57a0   ; HL, como estaba
+	ei			;57a1   ; el mapa ya esta entero
 	ld de,082adh		;57a2
-	call pinta_sin_color		;57a5
-	di			;57a8
-	push hl			;57a9
-	ld hl,0f0f1h		;57aa
+	call pinta_sin_color		;57a5   ; el guion 0x82AD del banco 8: 121 bytes de patrones de sprite (0x1F80-0x1FF8)
+	di			;57a8   ; sin interrupciones mientras cambia el mapa
+	push hl			;57a9   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;57aa   ; las tres copias, seguidas
 	ld a,001h		;57ad
-	ld (06000h),a		;57af
-	ld (hl),a			;57b2
+	ld (06000h),a		;57af   ; el banco 1 a 0x6000
+	ld (hl),a			;57b2   ; apuntado en 0xF0F1
 	inc a			;57b3
-	ld (08000h),a		;57b4
-	inc hl			;57b7
-	ld (hl),a			;57b8
+	ld (08000h),a		;57b4   ; el banco 2 a 0x8000
+	inc hl			;57b7   ; la copia siguiente
+	ld (hl),a			;57b8   ; apuntado en 0xF0F2
 	inc a			;57b9
-	ld (0a000h),a		;57ba
-	inc hl			;57bd
-	ld (hl),a			;57be
-	pop hl			;57bf
-	ei			;57c0
+	ld (0a000h),a		;57ba   ; el banco 3 a 0xA000
+	inc hl			;57bd   ; la copia siguiente
+	ld (hl),a			;57be   ; apuntado en 0xF0F3
+	pop hl			;57bf   ; HL, como estaba
+	ei			;57c0   ; el mapa ya esta entero
 	ret			;57c1
 L_57C2:
-	di			;57c2
-	push hl			;57c3
-	ld hl,0f0f1h		;57c4
+	di			;57c2   ; sin interrupciones mientras cambia el mapa
+	push hl			;57c3   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;57c4   ; las tres copias, seguidas
 	ld a,007h		;57c7
-	ld (06000h),a		;57c9
-	ld (hl),a			;57cc
+	ld (06000h),a		;57c9   ; el banco 7 a 0x6000
+	ld (hl),a			;57cc   ; apuntado en 0xF0F1
 	inc a			;57cd
-	ld (08000h),a		;57ce
-	inc hl			;57d1
-	ld (hl),a			;57d2
+	ld (08000h),a		;57ce   ; el banco 8 a 0x8000
+	inc hl			;57d1   ; la copia siguiente
+	ld (hl),a			;57d2   ; apuntado en 0xF0F2
 	inc a			;57d3
-	ld (0a000h),a		;57d4
-	inc hl			;57d7
-	ld (hl),a			;57d8
-	pop hl			;57d9
-	ei			;57da
+	ld (0a000h),a		;57d4   ; el banco 9 a 0xA000
+	inc hl			;57d7   ; la copia siguiente
+	ld (hl),a			;57d8   ; apuntado en 0xF0F3
+	pop hl			;57d9   ; HL, como estaba
+	ei			;57da   ; el mapa ya esta entero
 	ld de,0823ah		;57db
-	call pinta_sin_color		;57de
-	di			;57e1
-	push hl			;57e2
-	ld hl,0f0f1h		;57e3
+	call pinta_sin_color		;57de   ; el guion 0x823A del banco 8: 192 bytes de patrones de sprite (0x1D00-0x1DBF)
+	di			;57e1   ; sin interrupciones mientras cambia el mapa
+	push hl			;57e2   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;57e3   ; las tres copias, seguidas
 	ld a,001h		;57e6
-	ld (06000h),a		;57e8
-	ld (hl),a			;57eb
+	ld (06000h),a		;57e8   ; el banco 1 a 0x6000
+	ld (hl),a			;57eb   ; apuntado en 0xF0F1
 	inc a			;57ec
-	ld (08000h),a		;57ed
-	inc hl			;57f0
-	ld (hl),a			;57f1
+	ld (08000h),a		;57ed   ; el banco 2 a 0x8000
+	inc hl			;57f0   ; la copia siguiente
+	ld (hl),a			;57f1   ; apuntado en 0xF0F2
 	inc a			;57f2
-	ld (0a000h),a		;57f3
-	inc hl			;57f6
-	ld (hl),a			;57f7
-	pop hl			;57f8
-	ei			;57f9
+	ld (0a000h),a		;57f3   ; el banco 3 a 0xA000
+	inc hl			;57f6   ; la copia siguiente
+	ld (hl),a			;57f7   ; apuntado en 0xF0F3
+	pop hl			;57f8   ; HL, como estaba
+	ei			;57f9   ; el mapa ya esta entero
 	ret			;57fa
 L_57FB:
-	di			;57fb
-	push hl			;57fc
-	ld hl,0f0f1h		;57fd
+	di			;57fb   ; sin interrupciones mientras cambia el mapa
+	push hl			;57fc   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;57fd   ; las tres copias, seguidas
 	ld a,007h		;5800
-	ld (06000h),a		;5802
-	ld (hl),a			;5805
+	ld (06000h),a		;5802   ; el banco 7 a 0x6000
+	ld (hl),a			;5805   ; apuntado en 0xF0F1
 	inc a			;5806
-	ld (08000h),a		;5807
-	inc hl			;580a
-	ld (hl),a			;580b
+	ld (08000h),a		;5807   ; el banco 8 a 0x8000
+	inc hl			;580a   ; la copia siguiente
+	ld (hl),a			;580b   ; apuntado en 0xF0F2
 	inc a			;580c
-	ld (0a000h),a		;580d
-	inc hl			;5810
-	ld (hl),a			;5811
-	pop hl			;5812
-	ei			;5813
+	ld (0a000h),a		;580d   ; el banco 9 a 0xA000
+	inc hl			;5810   ; la copia siguiente
+	ld (hl),a			;5811   ; apuntado en 0xF0F3
+	pop hl			;5812   ; HL, como estaba
+	ei			;5813   ; el mapa ya esta entero
 	ld a,(0e0a1h)		;5814
 	cp 007h		;5817
 	jr z,L_585B		;5819
@@ -3488,115 +3488,115 @@ L_588E:
 	ld bc,00101h		;5891
 	call pinta_bloque		;5894
 L_5897:
-	di			;5897
-	push hl			;5898
-	ld hl,0f0f1h		;5899
+	di			;5897   ; sin interrupciones mientras cambia el mapa
+	push hl			;5898   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5899   ; las tres copias, seguidas
 	ld a,001h		;589c
-	ld (06000h),a		;589e
-	ld (hl),a			;58a1
+	ld (06000h),a		;589e   ; el banco 1 a 0x6000
+	ld (hl),a			;58a1   ; apuntado en 0xF0F1
 	inc a			;58a2
-	ld (08000h),a		;58a3
-	inc hl			;58a6
-	ld (hl),a			;58a7
+	ld (08000h),a		;58a3   ; el banco 2 a 0x8000
+	inc hl			;58a6   ; la copia siguiente
+	ld (hl),a			;58a7   ; apuntado en 0xF0F2
 	inc a			;58a8
-	ld (0a000h),a		;58a9
-	inc hl			;58ac
-	ld (hl),a			;58ad
-	pop hl			;58ae
-	ei			;58af
+	ld (0a000h),a		;58a9   ; el banco 3 a 0xA000
+	inc hl			;58ac   ; la copia siguiente
+	ld (hl),a			;58ad   ; apuntado en 0xF0F3
+	pop hl			;58ae   ; HL, como estaba
+	ei			;58af   ; el mapa ya esta entero
 	ret			;58b0
 L_58B1:
-	di			;58b1
-	push hl			;58b2
-	ld hl,0f0f1h		;58b3
+	di			;58b1   ; sin interrupciones mientras cambia el mapa
+	push hl			;58b2   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;58b3   ; las tres copias, seguidas
 	ld a,007h		;58b6
-	ld (06000h),a		;58b8
-	ld (hl),a			;58bb
+	ld (06000h),a		;58b8   ; el banco 7 a 0x6000
+	ld (hl),a			;58bb   ; apuntado en 0xF0F1
 	inc a			;58bc
-	ld (08000h),a		;58bd
-	inc hl			;58c0
-	ld (hl),a			;58c1
+	ld (08000h),a		;58bd   ; el banco 8 a 0x8000
+	inc hl			;58c0   ; la copia siguiente
+	ld (hl),a			;58c1   ; apuntado en 0xF0F2
 	inc a			;58c2
-	ld (0a000h),a		;58c3
-	inc hl			;58c6
-	ld (hl),a			;58c7
-	pop hl			;58c8
-	ei			;58c9
+	ld (0a000h),a		;58c3   ; el banco 9 a 0xA000
+	inc hl			;58c6   ; la copia siguiente
+	ld (hl),a			;58c7   ; apuntado en 0xF0F3
+	pop hl			;58c8   ; HL, como estaba
+	ei			;58c9   ; el mapa ya esta entero
 	ld de,078f1h		;58ca
 	ld bc,00301h		;58cd
 	call pinta_bloque		;58d0
 	call pinta_sin_color		;58d3
-	di			;58d6
-	push hl			;58d7
-	ld hl,0f0f1h		;58d8
+	di			;58d6   ; sin interrupciones mientras cambia el mapa
+	push hl			;58d7   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;58d8   ; las tres copias, seguidas
 	ld a,001h		;58db
-	ld (06000h),a		;58dd
-	ld (hl),a			;58e0
+	ld (06000h),a		;58dd   ; el banco 1 a 0x6000
+	ld (hl),a			;58e0   ; apuntado en 0xF0F1
 	inc a			;58e1
-	ld (08000h),a		;58e2
-	inc hl			;58e5
-	ld (hl),a			;58e6
+	ld (08000h),a		;58e2   ; el banco 2 a 0x8000
+	inc hl			;58e5   ; la copia siguiente
+	ld (hl),a			;58e6   ; apuntado en 0xF0F2
 	inc a			;58e7
-	ld (0a000h),a		;58e8
-	inc hl			;58eb
-	ld (hl),a			;58ec
-	pop hl			;58ed
-	ei			;58ee
+	ld (0a000h),a		;58e8   ; el banco 3 a 0xA000
+	inc hl			;58eb   ; la copia siguiente
+	ld (hl),a			;58ec   ; apuntado en 0xF0F3
+	pop hl			;58ed   ; HL, como estaba
+	ei			;58ee   ; el mapa ya esta entero
 	ret			;58ef
 L_58F0:
-	di			;58f0
-	push hl			;58f1
-	ld hl,0f0f1h		;58f2
+	di			;58f0   ; sin interrupciones mientras cambia el mapa
+	push hl			;58f1   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;58f2   ; las tres copias, seguidas
 	ld a,007h		;58f5
-	ld (06000h),a		;58f7
-	ld (hl),a			;58fa
+	ld (06000h),a		;58f7   ; el banco 7 a 0x6000
+	ld (hl),a			;58fa   ; apuntado en 0xF0F1
 	inc a			;58fb
-	ld (08000h),a		;58fc
-	inc hl			;58ff
-	ld (hl),a			;5900
+	ld (08000h),a		;58fc   ; el banco 8 a 0x8000
+	inc hl			;58ff   ; la copia siguiente
+	ld (hl),a			;5900   ; apuntado en 0xF0F2
 	inc a			;5901
-	ld (0a000h),a		;5902
-	inc hl			;5905
-	ld (hl),a			;5906
-	pop hl			;5907
-	ei			;5908
+	ld (0a000h),a		;5902   ; el banco 9 a 0xA000
+	inc hl			;5905   ; la copia siguiente
+	ld (hl),a			;5906   ; apuntado en 0xF0F3
+	pop hl			;5907   ; HL, como estaba
+	ei			;5908   ; el mapa ya esta entero
 	ld de,07af2h		;5909
 	ld bc,00201h		;590c
 	call pinta_bloque		;590f
-	di			;5912
-	push hl			;5913
-	ld hl,0f0f1h		;5914
+	di			;5912   ; sin interrupciones mientras cambia el mapa
+	push hl			;5913   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5914   ; las tres copias, seguidas
 	ld a,001h		;5917
-	ld (06000h),a		;5919
-	ld (hl),a			;591c
+	ld (06000h),a		;5919   ; el banco 1 a 0x6000
+	ld (hl),a			;591c   ; apuntado en 0xF0F1
 	inc a			;591d
-	ld (08000h),a		;591e
-	inc hl			;5921
-	ld (hl),a			;5922
+	ld (08000h),a		;591e   ; el banco 2 a 0x8000
+	inc hl			;5921   ; la copia siguiente
+	ld (hl),a			;5922   ; apuntado en 0xF0F2
 	inc a			;5923
-	ld (0a000h),a		;5924
-	inc hl			;5927
-	ld (hl),a			;5928
-	pop hl			;5929
-	ei			;592a
+	ld (0a000h),a		;5924   ; el banco 3 a 0xA000
+	inc hl			;5927   ; la copia siguiente
+	ld (hl),a			;5928   ; apuntado en 0xF0F3
+	pop hl			;5929   ; HL, como estaba
+	ei			;592a   ; el mapa ya esta entero
 	ret			;592b
 L_592C:
-	di			;592c
-	push hl			;592d
-	ld hl,0f0f1h		;592e
+	di			;592c   ; sin interrupciones mientras cambia el mapa
+	push hl			;592d   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;592e   ; las tres copias, seguidas
 	ld a,007h		;5931
-	ld (06000h),a		;5933
-	ld (hl),a			;5936
+	ld (06000h),a		;5933   ; el banco 7 a 0x6000
+	ld (hl),a			;5936   ; apuntado en 0xF0F1
 	inc a			;5937
-	ld (08000h),a		;5938
-	inc hl			;593b
-	ld (hl),a			;593c
+	ld (08000h),a		;5938   ; el banco 8 a 0x8000
+	inc hl			;593b   ; la copia siguiente
+	ld (hl),a			;593c   ; apuntado en 0xF0F2
 	inc a			;593d
-	ld (0a000h),a		;593e
-	inc hl			;5941
-	ld (hl),a			;5942
-	pop hl			;5943
-	ei			;5944
+	ld (0a000h),a		;593e   ; el banco 9 a 0xA000
+	inc hl			;5941   ; la copia siguiente
+	ld (hl),a			;5942   ; apuntado en 0xF0F3
+	pop hl			;5943   ; HL, como estaba
+	ei			;5944   ; el mapa ya esta entero
 	ld de,08600h		;5945
 	ld bc,00301h		;5948
 	call pinta_bloque		;594b
@@ -3604,443 +3604,443 @@ L_592C:
 	ld de,086d3h		;5951
 	ld bc,00101h		;5954
 	call pinta_bloque		;5957
-	di			;595a
-	push hl			;595b
-	ld hl,0f0f1h		;595c
+	di			;595a   ; sin interrupciones mientras cambia el mapa
+	push hl			;595b   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;595c   ; las tres copias, seguidas
 	ld a,001h		;595f
-	ld (06000h),a		;5961
-	ld (hl),a			;5964
+	ld (06000h),a		;5961   ; el banco 1 a 0x6000
+	ld (hl),a			;5964   ; apuntado en 0xF0F1
 	inc a			;5965
-	ld (08000h),a		;5966
-	inc hl			;5969
-	ld (hl),a			;596a
+	ld (08000h),a		;5966   ; el banco 2 a 0x8000
+	inc hl			;5969   ; la copia siguiente
+	ld (hl),a			;596a   ; apuntado en 0xF0F2
 	inc a			;596b
-	ld (0a000h),a		;596c
-	inc hl			;596f
-	ld (hl),a			;5970
-	pop hl			;5971
-	ei			;5972
+	ld (0a000h),a		;596c   ; el banco 3 a 0xA000
+	inc hl			;596f   ; la copia siguiente
+	ld (hl),a			;5970   ; apuntado en 0xF0F3
+	pop hl			;5971   ; HL, como estaba
+	ei			;5972   ; el mapa ya esta entero
 	ret			;5973
 L_5974:
-	di			;5974
-	push hl			;5975
-	ld hl,0f0f1h		;5976
+	di			;5974   ; sin interrupciones mientras cambia el mapa
+	push hl			;5975   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5976   ; las tres copias, seguidas
 	ld a,007h		;5979
-	ld (06000h),a		;597b
-	ld (hl),a			;597e
+	ld (06000h),a		;597b   ; el banco 7 a 0x6000
+	ld (hl),a			;597e   ; apuntado en 0xF0F1
 	inc a			;597f
-	ld (08000h),a		;5980
-	inc hl			;5983
-	ld (hl),a			;5984
+	ld (08000h),a		;5980   ; el banco 8 a 0x8000
+	inc hl			;5983   ; la copia siguiente
+	ld (hl),a			;5984   ; apuntado en 0xF0F2
 	inc a			;5985
-	ld (0a000h),a		;5986
-	inc hl			;5989
-	ld (hl),a			;598a
-	pop hl			;598b
-	ei			;598c
+	ld (0a000h),a		;5986   ; el banco 9 a 0xA000
+	inc hl			;5989   ; la copia siguiente
+	ld (hl),a			;598a   ; apuntado en 0xF0F3
+	pop hl			;598b   ; HL, como estaba
+	ei			;598c   ; el mapa ya esta entero
 	jp L_586D		;598d
 L_5990:
-	di			;5990
-	push hl			;5991
-	ld hl,0f0f1h		;5992
+	di			;5990   ; sin interrupciones mientras cambia el mapa
+	push hl			;5991   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5992   ; las tres copias, seguidas
 	ld a,007h		;5995
-	ld (06000h),a		;5997
-	ld (hl),a			;599a
+	ld (06000h),a		;5997   ; el banco 7 a 0x6000
+	ld (hl),a			;599a   ; apuntado en 0xF0F1
 	inc a			;599b
-	ld (08000h),a		;599c
-	inc hl			;599f
-	ld (hl),a			;59a0
+	ld (08000h),a		;599c   ; el banco 8 a 0x8000
+	inc hl			;599f   ; la copia siguiente
+	ld (hl),a			;59a0   ; apuntado en 0xF0F2
 	inc a			;59a1
-	ld (0a000h),a		;59a2
-	inc hl			;59a5
-	ld (hl),a			;59a6
-	pop hl			;59a7
-	ei			;59a8
+	ld (0a000h),a		;59a2   ; el banco 9 a 0xA000
+	inc hl			;59a5   ; la copia siguiente
+	ld (hl),a			;59a6   ; apuntado en 0xF0F3
+	pop hl			;59a7   ; HL, como estaba
+	ei			;59a8   ; el mapa ya esta entero
 	ld de,086f5h		;59a9
-	call pinta_sin_color		;59ac
-	di			;59af
-	push hl			;59b0
-	ld hl,0f0f1h		;59b1
+	call pinta_sin_color		;59ac   ; el guion 0x86F5 del banco 8: 96 bytes de patrones de sprite (0x1D20-0x1D7F)
+	di			;59af   ; sin interrupciones mientras cambia el mapa
+	push hl			;59b0   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;59b1   ; las tres copias, seguidas
 	ld a,001h		;59b4
-	ld (06000h),a		;59b6
-	ld (hl),a			;59b9
+	ld (06000h),a		;59b6   ; el banco 1 a 0x6000
+	ld (hl),a			;59b9   ; apuntado en 0xF0F1
 	inc a			;59ba
-	ld (08000h),a		;59bb
-	inc hl			;59be
-	ld (hl),a			;59bf
+	ld (08000h),a		;59bb   ; el banco 2 a 0x8000
+	inc hl			;59be   ; la copia siguiente
+	ld (hl),a			;59bf   ; apuntado en 0xF0F2
 	inc a			;59c0
-	ld (0a000h),a		;59c1
-	inc hl			;59c4
-	ld (hl),a			;59c5
-	pop hl			;59c6
-	ei			;59c7
+	ld (0a000h),a		;59c1   ; el banco 3 a 0xA000
+	inc hl			;59c4   ; la copia siguiente
+	ld (hl),a			;59c5   ; apuntado en 0xF0F3
+	pop hl			;59c6   ; HL, como estaba
+	ei			;59c7   ; el mapa ya esta entero
 	ret			;59c8
 L_59C9:
-	di			;59c9
-	push hl			;59ca
-	ld hl,0f0f1h		;59cb
+	di			;59c9   ; sin interrupciones mientras cambia el mapa
+	push hl			;59ca   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;59cb   ; las tres copias, seguidas
 	ld a,007h		;59ce
-	ld (06000h),a		;59d0
-	ld (hl),a			;59d3
+	ld (06000h),a		;59d0   ; el banco 7 a 0x6000
+	ld (hl),a			;59d3   ; apuntado en 0xF0F1
 	inc a			;59d4
-	ld (08000h),a		;59d5
-	inc hl			;59d8
-	ld (hl),a			;59d9
+	ld (08000h),a		;59d5   ; el banco 8 a 0x8000
+	inc hl			;59d8   ; la copia siguiente
+	ld (hl),a			;59d9   ; apuntado en 0xF0F2
 	inc a			;59da
-	ld (0a000h),a		;59db
-	inc hl			;59de
-	ld (hl),a			;59df
-	pop hl			;59e0
-	ei			;59e1
+	ld (0a000h),a		;59db   ; el banco 9 a 0xA000
+	inc hl			;59de   ; la copia siguiente
+	ld (hl),a			;59df   ; apuntado en 0xF0F3
+	pop hl			;59e0   ; HL, como estaba
+	ei			;59e1   ; el mapa ya esta entero
 	ld de,08757h		;59e2
-	call pinta_sin_color		;59e5
-	di			;59e8
-	push hl			;59e9
-	ld hl,0f0f1h		;59ea
+	call pinta_sin_color		;59e5   ; el guion 0x8757 del banco 8: 96 bytes de patrones de sprite (0x1D20-0x1D7F)
+	di			;59e8   ; sin interrupciones mientras cambia el mapa
+	push hl			;59e9   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;59ea   ; las tres copias, seguidas
 	ld a,001h		;59ed
-	ld (06000h),a		;59ef
-	ld (hl),a			;59f2
+	ld (06000h),a		;59ef   ; el banco 1 a 0x6000
+	ld (hl),a			;59f2   ; apuntado en 0xF0F1
 	inc a			;59f3
-	ld (08000h),a		;59f4
-	inc hl			;59f7
-	ld (hl),a			;59f8
+	ld (08000h),a		;59f4   ; el banco 2 a 0x8000
+	inc hl			;59f7   ; la copia siguiente
+	ld (hl),a			;59f8   ; apuntado en 0xF0F2
 	inc a			;59f9
-	ld (0a000h),a		;59fa
-	inc hl			;59fd
-	ld (hl),a			;59fe
-	pop hl			;59ff
-	ei			;5a00
+	ld (0a000h),a		;59fa   ; el banco 3 a 0xA000
+	inc hl			;59fd   ; la copia siguiente
+	ld (hl),a			;59fe   ; apuntado en 0xF0F3
+	pop hl			;59ff   ; HL, como estaba
+	ei			;5a00   ; el mapa ya esta entero
 	ret			;5a01
 L_5A02:
-	di			;5a02
-	push hl			;5a03
-	ld hl,0f0f1h		;5a04
+	di			;5a02   ; sin interrupciones mientras cambia el mapa
+	push hl			;5a03   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5a04   ; las tres copias, seguidas
 	ld a,007h		;5a07
-	ld (06000h),a		;5a09
-	ld (hl),a			;5a0c
+	ld (06000h),a		;5a09   ; el banco 7 a 0x6000
+	ld (hl),a			;5a0c   ; apuntado en 0xF0F1
 	inc a			;5a0d
-	ld (08000h),a		;5a0e
-	inc hl			;5a11
-	ld (hl),a			;5a12
+	ld (08000h),a		;5a0e   ; el banco 8 a 0x8000
+	inc hl			;5a11   ; la copia siguiente
+	ld (hl),a			;5a12   ; apuntado en 0xF0F2
 	inc a			;5a13
-	ld (0a000h),a		;5a14
-	inc hl			;5a17
-	ld (hl),a			;5a18
-	pop hl			;5a19
-	ei			;5a1a
+	ld (0a000h),a		;5a14   ; el banco 9 a 0xA000
+	inc hl			;5a17   ; la copia siguiente
+	ld (hl),a			;5a18   ; apuntado en 0xF0F3
+	pop hl			;5a19   ; HL, como estaba
+	ei			;5a1a   ; el mapa ya esta entero
 	ld de,087b8h		;5a1b
-	call pinta_sin_color		;5a1e
-	di			;5a21
-	push hl			;5a22
-	ld hl,0f0f1h		;5a23
+	call pinta_sin_color		;5a1e   ; el guion 0x87B8 del banco 8: 128 bytes de patrones de sprite (0x1D80-0x1DFF)
+	di			;5a21   ; sin interrupciones mientras cambia el mapa
+	push hl			;5a22   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5a23   ; las tres copias, seguidas
 	ld a,001h		;5a26
-	ld (06000h),a		;5a28
-	ld (hl),a			;5a2b
+	ld (06000h),a		;5a28   ; el banco 1 a 0x6000
+	ld (hl),a			;5a2b   ; apuntado en 0xF0F1
 	inc a			;5a2c
-	ld (08000h),a		;5a2d
-	inc hl			;5a30
-	ld (hl),a			;5a31
+	ld (08000h),a		;5a2d   ; el banco 2 a 0x8000
+	inc hl			;5a30   ; la copia siguiente
+	ld (hl),a			;5a31   ; apuntado en 0xF0F2
 	inc a			;5a32
-	ld (0a000h),a		;5a33
-	inc hl			;5a36
-	ld (hl),a			;5a37
-	pop hl			;5a38
-	ei			;5a39
+	ld (0a000h),a		;5a33   ; el banco 3 a 0xA000
+	inc hl			;5a36   ; la copia siguiente
+	ld (hl),a			;5a37   ; apuntado en 0xF0F3
+	pop hl			;5a38   ; HL, como estaba
+	ei			;5a39   ; el mapa ya esta entero
 	ret			;5a3a
 L_5A3B:
-	di			;5a3b
-	push hl			;5a3c
-	ld hl,0f0f1h		;5a3d
+	di			;5a3b   ; sin interrupciones mientras cambia el mapa
+	push hl			;5a3c   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5a3d   ; las tres copias, seguidas
 	ld a,007h		;5a40
-	ld (06000h),a		;5a42
-	ld (hl),a			;5a45
+	ld (06000h),a		;5a42   ; el banco 7 a 0x6000
+	ld (hl),a			;5a45   ; apuntado en 0xF0F1
 	inc a			;5a46
-	ld (08000h),a		;5a47
-	inc hl			;5a4a
-	ld (hl),a			;5a4b
+	ld (08000h),a		;5a47   ; el banco 8 a 0x8000
+	inc hl			;5a4a   ; la copia siguiente
+	ld (hl),a			;5a4b   ; apuntado en 0xF0F2
 	inc a			;5a4c
-	ld (0a000h),a		;5a4d
-	inc hl			;5a50
-	ld (hl),a			;5a51
-	pop hl			;5a52
-	ei			;5a53
+	ld (0a000h),a		;5a4d   ; el banco 9 a 0xA000
+	inc hl			;5a50   ; la copia siguiente
+	ld (hl),a			;5a51   ; apuntado en 0xF0F3
+	pop hl			;5a52   ; HL, como estaba
+	ei			;5a53   ; el mapa ya esta entero
 	ld de,0882eh		;5a54
-	call pinta_sin_color		;5a57
-	di			;5a5a
-	push hl			;5a5b
-	ld hl,0f0f1h		;5a5c
+	call pinta_sin_color		;5a57   ; el guion 0x882E del banco 8: 128 bytes de patrones de sprite (0x1D80-0x1DFF)
+	di			;5a5a   ; sin interrupciones mientras cambia el mapa
+	push hl			;5a5b   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5a5c   ; las tres copias, seguidas
 	ld a,001h		;5a5f
-	ld (06000h),a		;5a61
-	ld (hl),a			;5a64
+	ld (06000h),a		;5a61   ; el banco 1 a 0x6000
+	ld (hl),a			;5a64   ; apuntado en 0xF0F1
 	inc a			;5a65
-	ld (08000h),a		;5a66
-	inc hl			;5a69
-	ld (hl),a			;5a6a
+	ld (08000h),a		;5a66   ; el banco 2 a 0x8000
+	inc hl			;5a69   ; la copia siguiente
+	ld (hl),a			;5a6a   ; apuntado en 0xF0F2
 	inc a			;5a6b
-	ld (0a000h),a		;5a6c
-	inc hl			;5a6f
-	ld (hl),a			;5a70
-	pop hl			;5a71
-	ei			;5a72
+	ld (0a000h),a		;5a6c   ; el banco 3 a 0xA000
+	inc hl			;5a6f   ; la copia siguiente
+	ld (hl),a			;5a70   ; apuntado en 0xF0F3
+	pop hl			;5a71   ; HL, como estaba
+	ei			;5a72   ; el mapa ya esta entero
 	ret			;5a73
 L_5A74:
-	di			;5a74
-	push hl			;5a75
-	ld hl,0f0f1h		;5a76
+	di			;5a74   ; sin interrupciones mientras cambia el mapa
+	push hl			;5a75   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5a76   ; las tres copias, seguidas
 	ld a,007h		;5a79
-	ld (06000h),a		;5a7b
-	ld (hl),a			;5a7e
+	ld (06000h),a		;5a7b   ; el banco 7 a 0x6000
+	ld (hl),a			;5a7e   ; apuntado en 0xF0F1
 	inc a			;5a7f
-	ld (08000h),a		;5a80
-	inc hl			;5a83
-	ld (hl),a			;5a84
+	ld (08000h),a		;5a80   ; el banco 8 a 0x8000
+	inc hl			;5a83   ; la copia siguiente
+	ld (hl),a			;5a84   ; apuntado en 0xF0F2
 	inc a			;5a85
-	ld (0a000h),a		;5a86
-	inc hl			;5a89
-	ld (hl),a			;5a8a
-	pop hl			;5a8b
-	ei			;5a8c
+	ld (0a000h),a		;5a86   ; el banco 9 a 0xA000
+	inc hl			;5a89   ; la copia siguiente
+	ld (hl),a			;5a8a   ; apuntado en 0xF0F3
+	pop hl			;5a8b   ; HL, como estaba
+	ei			;5a8c   ; el mapa ya esta entero
 	ld de,0888dh		;5a8d
-	call pinta_sin_color		;5a90
-	di			;5a93
-	push hl			;5a94
-	ld hl,0f0f1h		;5a95
+	call pinta_sin_color		;5a90   ; el guion 0x888D del banco 8: 128 bytes de patrones de sprite (0x1D80-0x1DFF)
+	di			;5a93   ; sin interrupciones mientras cambia el mapa
+	push hl			;5a94   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5a95   ; las tres copias, seguidas
 	ld a,001h		;5a98
-	ld (06000h),a		;5a9a
-	ld (hl),a			;5a9d
+	ld (06000h),a		;5a9a   ; el banco 1 a 0x6000
+	ld (hl),a			;5a9d   ; apuntado en 0xF0F1
 	inc a			;5a9e
-	ld (08000h),a		;5a9f
-	inc hl			;5aa2
-	ld (hl),a			;5aa3
+	ld (08000h),a		;5a9f   ; el banco 2 a 0x8000
+	inc hl			;5aa2   ; la copia siguiente
+	ld (hl),a			;5aa3   ; apuntado en 0xF0F2
 	inc a			;5aa4
-	ld (0a000h),a		;5aa5
-	inc hl			;5aa8
-	ld (hl),a			;5aa9
-	pop hl			;5aaa
-	ei			;5aab
+	ld (0a000h),a		;5aa5   ; el banco 3 a 0xA000
+	inc hl			;5aa8   ; la copia siguiente
+	ld (hl),a			;5aa9   ; apuntado en 0xF0F3
+	pop hl			;5aaa   ; HL, como estaba
+	ei			;5aab   ; el mapa ya esta entero
 	ret			;5aac
 L_5AAD:
-	di			;5aad
-	push hl			;5aae
-	ld hl,0f0f1h		;5aaf
+	di			;5aad   ; sin interrupciones mientras cambia el mapa
+	push hl			;5aae   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5aaf   ; las tres copias, seguidas
 	ld a,007h		;5ab2
-	ld (06000h),a		;5ab4
-	ld (hl),a			;5ab7
+	ld (06000h),a		;5ab4   ; el banco 7 a 0x6000
+	ld (hl),a			;5ab7   ; apuntado en 0xF0F1
 	inc a			;5ab8
-	ld (08000h),a		;5ab9
-	inc hl			;5abc
-	ld (hl),a			;5abd
+	ld (08000h),a		;5ab9   ; el banco 8 a 0x8000
+	inc hl			;5abc   ; la copia siguiente
+	ld (hl),a			;5abd   ; apuntado en 0xF0F2
 	inc a			;5abe
-	ld (0a000h),a		;5abf
-	inc hl			;5ac2
-	ld (hl),a			;5ac3
-	pop hl			;5ac4
-	ei			;5ac5
+	ld (0a000h),a		;5abf   ; el banco 9 a 0xA000
+	inc hl			;5ac2   ; la copia siguiente
+	ld (hl),a			;5ac3   ; apuntado en 0xF0F3
+	pop hl			;5ac4   ; HL, como estaba
+	ei			;5ac5   ; el mapa ya esta entero
 	ld de,088e8h		;5ac6
-	call pinta_sin_color		;5ac9
-	di			;5acc
-	push hl			;5acd
-	ld hl,0f0f1h		;5ace
+	call pinta_sin_color		;5ac9   ; el guion 0x88E8 del banco 8: 256 bytes de patrones de sprite (0x1E00-0x1EFF)
+	di			;5acc   ; sin interrupciones mientras cambia el mapa
+	push hl			;5acd   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5ace   ; las tres copias, seguidas
 	ld a,001h		;5ad1
-	ld (06000h),a		;5ad3
-	ld (hl),a			;5ad6
+	ld (06000h),a		;5ad3   ; el banco 1 a 0x6000
+	ld (hl),a			;5ad6   ; apuntado en 0xF0F1
 	inc a			;5ad7
-	ld (08000h),a		;5ad8
-	inc hl			;5adb
-	ld (hl),a			;5adc
+	ld (08000h),a		;5ad8   ; el banco 2 a 0x8000
+	inc hl			;5adb   ; la copia siguiente
+	ld (hl),a			;5adc   ; apuntado en 0xF0F2
 	inc a			;5add
-	ld (0a000h),a		;5ade
-	inc hl			;5ae1
-	ld (hl),a			;5ae2
-	pop hl			;5ae3
-	ei			;5ae4
+	ld (0a000h),a		;5ade   ; el banco 3 a 0xA000
+	inc hl			;5ae1   ; la copia siguiente
+	ld (hl),a			;5ae2   ; apuntado en 0xF0F3
+	pop hl			;5ae3   ; HL, como estaba
+	ei			;5ae4   ; el mapa ya esta entero
 	ret			;5ae5
 L_5AE6:
-	di			;5ae6
-	push hl			;5ae7
-	ld hl,0f0f1h		;5ae8
+	di			;5ae6   ; sin interrupciones mientras cambia el mapa
+	push hl			;5ae7   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5ae8   ; las tres copias, seguidas
 	ld a,007h		;5aeb
-	ld (06000h),a		;5aed
-	ld (hl),a			;5af0
+	ld (06000h),a		;5aed   ; el banco 7 a 0x6000
+	ld (hl),a			;5af0   ; apuntado en 0xF0F1
 	inc a			;5af1
-	ld (08000h),a		;5af2
-	inc hl			;5af5
-	ld (hl),a			;5af6
+	ld (08000h),a		;5af2   ; el banco 8 a 0x8000
+	inc hl			;5af5   ; la copia siguiente
+	ld (hl),a			;5af6   ; apuntado en 0xF0F2
 	inc a			;5af7
-	ld (0a000h),a		;5af8
-	inc hl			;5afb
-	ld (hl),a			;5afc
-	pop hl			;5afd
-	ei			;5afe
+	ld (0a000h),a		;5af8   ; el banco 9 a 0xA000
+	inc hl			;5afb   ; la copia siguiente
+	ld (hl),a			;5afc   ; apuntado en 0xF0F3
+	pop hl			;5afd   ; HL, como estaba
+	ei			;5afe   ; el mapa ya esta entero
 	ld de,089b8h		;5aff
-	call pinta_sin_color		;5b02
-	di			;5b05
-	push hl			;5b06
-	ld hl,0f0f1h		;5b07
+	call pinta_sin_color		;5b02   ; el guion 0x89B8 del banco 8: 256 bytes de patrones de sprite (0x1E00-0x1EFF)
+	di			;5b05   ; sin interrupciones mientras cambia el mapa
+	push hl			;5b06   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5b07   ; las tres copias, seguidas
 	ld a,001h		;5b0a
-	ld (06000h),a		;5b0c
-	ld (hl),a			;5b0f
+	ld (06000h),a		;5b0c   ; el banco 1 a 0x6000
+	ld (hl),a			;5b0f   ; apuntado en 0xF0F1
 	inc a			;5b10
-	ld (08000h),a		;5b11
-	inc hl			;5b14
-	ld (hl),a			;5b15
+	ld (08000h),a		;5b11   ; el banco 2 a 0x8000
+	inc hl			;5b14   ; la copia siguiente
+	ld (hl),a			;5b15   ; apuntado en 0xF0F2
 	inc a			;5b16
-	ld (0a000h),a		;5b17
-	inc hl			;5b1a
-	ld (hl),a			;5b1b
-	pop hl			;5b1c
-	ei			;5b1d
+	ld (0a000h),a		;5b17   ; el banco 3 a 0xA000
+	inc hl			;5b1a   ; la copia siguiente
+	ld (hl),a			;5b1b   ; apuntado en 0xF0F3
+	pop hl			;5b1c   ; HL, como estaba
+	ei			;5b1d   ; el mapa ya esta entero
 	ret			;5b1e
 L_5B1F:
-	di			;5b1f
-	push hl			;5b20
-	ld hl,0f0f1h		;5b21
+	di			;5b1f   ; sin interrupciones mientras cambia el mapa
+	push hl			;5b20   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5b21   ; las tres copias, seguidas
 	ld a,007h		;5b24
-	ld (06000h),a		;5b26
-	ld (hl),a			;5b29
+	ld (06000h),a		;5b26   ; el banco 7 a 0x6000
+	ld (hl),a			;5b29   ; apuntado en 0xF0F1
 	inc a			;5b2a
-	ld (08000h),a		;5b2b
-	inc hl			;5b2e
-	ld (hl),a			;5b2f
+	ld (08000h),a		;5b2b   ; el banco 8 a 0x8000
+	inc hl			;5b2e   ; la copia siguiente
+	ld (hl),a			;5b2f   ; apuntado en 0xF0F2
 	inc a			;5b30
-	ld (0a000h),a		;5b31
-	inc hl			;5b34
-	ld (hl),a			;5b35
-	pop hl			;5b36
-	ei			;5b37
+	ld (0a000h),a		;5b31   ; el banco 9 a 0xA000
+	inc hl			;5b34   ; la copia siguiente
+	ld (hl),a			;5b35   ; apuntado en 0xF0F3
+	pop hl			;5b36   ; HL, como estaba
+	ei			;5b37   ; el mapa ya esta entero
 	ld de,08a7eh		;5b38
-	call pinta_sin_color		;5b3b
-	di			;5b3e
-	push hl			;5b3f
-	ld hl,0f0f1h		;5b40
+	call pinta_sin_color		;5b3b   ; el guion 0x8A7E del banco 8: 256 bytes de patrones de sprite (0x1F00-0x1FFF)
+	di			;5b3e   ; sin interrupciones mientras cambia el mapa
+	push hl			;5b3f   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5b40   ; las tres copias, seguidas
 	ld a,001h		;5b43
-	ld (06000h),a		;5b45
-	ld (hl),a			;5b48
+	ld (06000h),a		;5b45   ; el banco 1 a 0x6000
+	ld (hl),a			;5b48   ; apuntado en 0xF0F1
 	inc a			;5b49
-	ld (08000h),a		;5b4a
-	inc hl			;5b4d
-	ld (hl),a			;5b4e
+	ld (08000h),a		;5b4a   ; el banco 2 a 0x8000
+	inc hl			;5b4d   ; la copia siguiente
+	ld (hl),a			;5b4e   ; apuntado en 0xF0F2
 	inc a			;5b4f
-	ld (0a000h),a		;5b50
-	inc hl			;5b53
-	ld (hl),a			;5b54
-	pop hl			;5b55
-	ei			;5b56
+	ld (0a000h),a		;5b50   ; el banco 3 a 0xA000
+	inc hl			;5b53   ; la copia siguiente
+	ld (hl),a			;5b54   ; apuntado en 0xF0F3
+	pop hl			;5b55   ; HL, como estaba
+	ei			;5b56   ; el mapa ya esta entero
 	ret			;5b57
 L_5B58:
-	di			;5b58
-	push hl			;5b59
-	ld hl,0f0f1h		;5b5a
+	di			;5b58   ; sin interrupciones mientras cambia el mapa
+	push hl			;5b59   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5b5a   ; las tres copias, seguidas
 	ld a,007h		;5b5d
-	ld (06000h),a		;5b5f
-	ld (hl),a			;5b62
+	ld (06000h),a		;5b5f   ; el banco 7 a 0x6000
+	ld (hl),a			;5b62   ; apuntado en 0xF0F1
 	inc a			;5b63
-	ld (08000h),a		;5b64
-	inc hl			;5b67
-	ld (hl),a			;5b68
+	ld (08000h),a		;5b64   ; el banco 8 a 0x8000
+	inc hl			;5b67   ; la copia siguiente
+	ld (hl),a			;5b68   ; apuntado en 0xF0F2
 	inc a			;5b69
-	ld (0a000h),a		;5b6a
-	inc hl			;5b6d
-	ld (hl),a			;5b6e
-	pop hl			;5b6f
-	ei			;5b70
+	ld (0a000h),a		;5b6a   ; el banco 9 a 0xA000
+	inc hl			;5b6d   ; la copia siguiente
+	ld (hl),a			;5b6e   ; apuntado en 0xF0F3
+	pop hl			;5b6f   ; HL, como estaba
+	ei			;5b70   ; el mapa ya esta entero
 	ld de,08b3ah		;5b71
-	call pinta_sin_color		;5b74
-	di			;5b77
-	push hl			;5b78
-	ld hl,0f0f1h		;5b79
+	call pinta_sin_color		;5b74   ; el guion 0x8B3A del banco 8: 64 bytes de patrones de sprite (0x1D20-0x1D5F)
+	di			;5b77   ; sin interrupciones mientras cambia el mapa
+	push hl			;5b78   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5b79   ; las tres copias, seguidas
 	ld a,001h		;5b7c
-	ld (06000h),a		;5b7e
-	ld (hl),a			;5b81
+	ld (06000h),a		;5b7e   ; el banco 1 a 0x6000
+	ld (hl),a			;5b81   ; apuntado en 0xF0F1
 	inc a			;5b82
-	ld (08000h),a		;5b83
-	inc hl			;5b86
-	ld (hl),a			;5b87
+	ld (08000h),a		;5b83   ; el banco 2 a 0x8000
+	inc hl			;5b86   ; la copia siguiente
+	ld (hl),a			;5b87   ; apuntado en 0xF0F2
 	inc a			;5b88
-	ld (0a000h),a		;5b89
-	inc hl			;5b8c
-	ld (hl),a			;5b8d
-	pop hl			;5b8e
-	ei			;5b8f
+	ld (0a000h),a		;5b89   ; el banco 3 a 0xA000
+	inc hl			;5b8c   ; la copia siguiente
+	ld (hl),a			;5b8d   ; apuntado en 0xF0F3
+	pop hl			;5b8e   ; HL, como estaba
+	ei			;5b8f   ; el mapa ya esta entero
 	ret			;5b90
 L_5B91:
 	call 09325h		;5b91
-	di			;5b94
-	push hl			;5b95
-	ld hl,0f0f1h		;5b96
+	di			;5b94   ; sin interrupciones mientras cambia el mapa
+	push hl			;5b95   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5b96   ; las tres copias, seguidas
 	ld a,004h		;5b99
-	ld (06000h),a		;5b9b
-	ld (hl),a			;5b9e
+	ld (06000h),a		;5b9b   ; el banco 4 a 0x6000
+	ld (hl),a			;5b9e   ; apuntado en 0xF0F1
 	inc a			;5b9f
-	ld (08000h),a		;5ba0
-	inc hl			;5ba3
-	ld (hl),a			;5ba4
+	ld (08000h),a		;5ba0   ; el banco 5 a 0x8000
+	inc hl			;5ba3   ; la copia siguiente
+	ld (hl),a			;5ba4   ; apuntado en 0xF0F2
 	inc a			;5ba5
-	ld (0a000h),a		;5ba6
-	inc hl			;5ba9
-	ld (hl),a			;5baa
-	pop hl			;5bab
-	ei			;5bac
+	ld (0a000h),a		;5ba6   ; el banco 6 a 0xA000
+	inc hl			;5ba9   ; la copia siguiente
+	ld (hl),a			;5baa   ; apuntado en 0xF0F3
+	pop hl			;5bab   ; HL, como estaba
+	ei			;5bac   ; el mapa ya esta entero
 	ld de,0b423h		;5bad
 	ld hl,02058h		;5bb0
 	call L_5BF3		;5bb3
 L_5BB6:
-	di			;5bb6
-	push hl			;5bb7
-	ld hl,0f0f1h		;5bb8
+	di			;5bb6   ; sin interrupciones mientras cambia el mapa
+	push hl			;5bb7   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5bb8   ; las tres copias, seguidas
 	ld a,004h		;5bbb
-	ld (06000h),a		;5bbd
-	ld (hl),a			;5bc0
+	ld (06000h),a		;5bbd   ; el banco 4 a 0x6000
+	ld (hl),a			;5bc0   ; apuntado en 0xF0F1
 	inc a			;5bc1
-	ld (08000h),a		;5bc2
-	inc hl			;5bc5
-	ld (hl),a			;5bc6
+	ld (08000h),a		;5bc2   ; el banco 5 a 0x8000
+	inc hl			;5bc5   ; la copia siguiente
+	ld (hl),a			;5bc6   ; apuntado en 0xF0F2
 	inc a			;5bc7
-	ld (0a000h),a		;5bc8
-	inc hl			;5bcb
-	ld (hl),a			;5bcc
-	pop hl			;5bcd
-	ei			;5bce
+	ld (0a000h),a		;5bc8   ; el banco 6 a 0xA000
+	inc hl			;5bcb   ; la copia siguiente
+	ld (hl),a			;5bcc   ; apuntado en 0xF0F3
+	pop hl			;5bcd   ; HL, como estaba
+	ei			;5bce   ; el mapa ya esta entero
 	ld de,0b597h		;5bcf
 	jr L_5BF0		;5bd2
 L_5BD4:
-	di			;5bd4
-	push hl			;5bd5
-	ld hl,0f0f1h		;5bd6
+	di			;5bd4   ; sin interrupciones mientras cambia el mapa
+	push hl			;5bd5   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5bd6   ; las tres copias, seguidas
 	ld a,004h		;5bd9
-	ld (06000h),a		;5bdb
-	ld (hl),a			;5bde
+	ld (06000h),a		;5bdb   ; el banco 4 a 0x6000
+	ld (hl),a			;5bde   ; apuntado en 0xF0F1
 	inc a			;5bdf
-	ld (08000h),a		;5be0
-	inc hl			;5be3
-	ld (hl),a			;5be4
+	ld (08000h),a		;5be0   ; el banco 5 a 0x8000
+	inc hl			;5be3   ; la copia siguiente
+	ld (hl),a			;5be4   ; apuntado en 0xF0F2
 	inc a			;5be5
-	ld (0a000h),a		;5be6
-	inc hl			;5be9
-	ld (hl),a			;5bea
-	pop hl			;5beb
-	ei			;5bec
+	ld (0a000h),a		;5be6   ; el banco 6 a 0xA000
+	inc hl			;5be9   ; la copia siguiente
+	ld (hl),a			;5bea   ; apuntado en 0xF0F3
+	pop hl			;5beb   ; HL, como estaba
+	ei			;5bec   ; el mapa ya esta entero
 	ld de,0b5a8h		;5bed
 L_5BF0:
 	ld hl,00058h		;5bf0
 L_5BF3:
-	call pinta_en_los_tres		;5bf3
-	di			;5bf6
-	push hl			;5bf7
-	ld hl,0f0f1h		;5bf8
+	call pinta_en_los_tres		;5bf3   ; el guion 0xB5A8 del banco 6: 1272 bytes de colores (0x0058-0x01FF 0x0858-0x09FF 0x1058-0x11FF)
+	di			;5bf6   ; sin interrupciones mientras cambia el mapa
+	push hl			;5bf7   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5bf8   ; las tres copias, seguidas
 	ld a,001h		;5bfb
-	ld (06000h),a		;5bfd
-	ld (hl),a			;5c00
+	ld (06000h),a		;5bfd   ; el banco 1 a 0x6000
+	ld (hl),a			;5c00   ; apuntado en 0xF0F1
 	inc a			;5c01
-	ld (08000h),a		;5c02
-	inc hl			;5c05
-	ld (hl),a			;5c06
+	ld (08000h),a		;5c02   ; el banco 2 a 0x8000
+	inc hl			;5c05   ; la copia siguiente
+	ld (hl),a			;5c06   ; apuntado en 0xF0F2
 	inc a			;5c07
-	ld (0a000h),a		;5c08
-	inc hl			;5c0b
-	ld (hl),a			;5c0c
-	pop hl			;5c0d
-	ei			;5c0e
+	ld (0a000h),a		;5c08   ; el banco 3 a 0xA000
+	inc hl			;5c0b   ; la copia siguiente
+	ld (hl),a			;5c0c   ; apuntado en 0xF0F3
+	pop hl			;5c0d   ; HL, como estaba
+	ei			;5c0e   ; el mapa ya esta entero
 	ret			;5c0f
 L_5C10:
 	ld b,0e0h		;5c10
@@ -4051,179 +4051,183 @@ L_5C10:
 	xor a			;5c1e
 	ld (0e14eh),a		;5c1f
 	ld (0e150h),a		;5c22
-	di			;5c25
-	push hl			;5c26
-	ld hl,0f0f1h		;5c27
+	di			;5c25   ; sin interrupciones mientras cambia el mapa
+	push hl			;5c26   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5c27   ; las tres copias, seguidas
 	ld a,007h		;5c2a
-	ld (06000h),a		;5c2c
-	ld (hl),a			;5c2f
+	ld (06000h),a		;5c2c   ; el banco 7 a 0x6000
+	ld (hl),a			;5c2f   ; apuntado en 0xF0F1
 	inc a			;5c30
-	ld (08000h),a		;5c31
-	inc hl			;5c34
-	ld (hl),a			;5c35
+	ld (08000h),a		;5c31   ; el banco 8 a 0x8000
+	inc hl			;5c34   ; la copia siguiente
+	ld (hl),a			;5c35   ; apuntado en 0xF0F2
 	inc a			;5c36
-	ld (0a000h),a		;5c37
-	inc hl			;5c3a
-	ld (hl),a			;5c3b
-	pop hl			;5c3c
-	ei			;5c3d
+	ld (0a000h),a		;5c37   ; el banco 9 a 0xA000
+	inc hl			;5c3a   ; la copia siguiente
+	ld (hl),a			;5c3b   ; apuntado en 0xF0F3
+	pop hl			;5c3c   ; HL, como estaba
+	ei			;5c3d   ; el mapa ya esta entero
 	ld de,09846h		;5c3e
-	call pinta_sin_color		;5c41
+	call pinta_sin_color		;5c41   ; el guion 0x9846 del banco 8: 5824 bytes de colores y patrones y patrones de sprite (0x0208-0x0607 0x0A08-0x0E7F 0x1208-0x141F)
 	ld a,(0002bh)		;5c44
 	and 00fh		;5c47
 	jr z,L_5C51		;5c49
 	ld de,0a463h		;5c4b
-	call pinta_sin_color		;5c4e
+	call pinta_sin_color		;5c4e   ; el guion 0xA463 del banco 9: 2240 bytes de colores y patrones y patrones de sprite (0x0208-0x020F 0x02A0-0x02A7 0x02E8-0x046F)
 L_5C51:
-	di			;5c51
-	push hl			;5c52
-	ld hl,0f0f1h		;5c53
+	di			;5c51   ; sin interrupciones mientras cambia el mapa
+	push hl			;5c52   ; HL va a apuntar a las copias
+	ld hl,0f0f1h		;5c53   ; las tres copias, seguidas
 	ld a,001h		;5c56
-	ld (06000h),a		;5c58
-	ld (hl),a			;5c5b
+	ld (06000h),a		;5c58   ; el banco 1 a 0x6000
+	ld (hl),a			;5c5b   ; apuntado en 0xF0F1
 	inc a			;5c5c
-	ld (08000h),a		;5c5d
-	inc hl			;5c60
-	ld (hl),a			;5c61
+	ld (08000h),a		;5c5d   ; el banco 2 a 0x8000
+	inc hl			;5c60   ; la copia siguiente
+	ld (hl),a			;5c61   ; apuntado en 0xF0F2
 	inc a			;5c62
-	ld (0a000h),a		;5c63
-	inc hl			;5c66
-	ld (hl),a			;5c67
-	pop hl			;5c68
-	ei			;5c69
+	ld (0a000h),a		;5c63   ; el banco 3 a 0xA000
+	inc hl			;5c66   ; la copia siguiente
+	ld (hl),a			;5c67   ; apuntado en 0xF0F3
+	pop hl			;5c68   ; HL, como estaba
+	ei			;5c69   ; el mapa ya esta entero
 	ret			;5c6a
 L_5C6B:
-	di			;5c6b
+	di			;5c6b   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;5c6c
-	ld (08000h),a		;5c6e
-	ld (0f0f2h),a		;5c71
-	ei			;5c74
-	di			;5c75
+	ld (08000h),a		;5c6e   ; el banco 12 a 0x8000
+	ld (0f0f2h),a		;5c71   ; y en su copia de RAM
+	ei			;5c74   ; el mapa ya esta entero
+	di			;5c75   ; sin interrupciones mientras cambia el mapa
 	ld a,00dh		;5c76
-	ld (0a000h),a		;5c78
-	ld (0f0f3h),a		;5c7b
-	ei			;5c7e
+	ld (0a000h),a		;5c78   ; el banco 13 a 0xA000
+	ld (0f0f3h),a		;5c7b   ; y en su copia de RAM
+	ei			;5c7e   ; el mapa ya esta entero
 	ld de,0bab2h		;5c7f
-	call pinta_sin_color		;5c82
+	call pinta_sin_color		;5c82   ; el guion 0xBAB2 del banco 13: 768 bytes de la tabla de nombres (0x3800-0x3AFF)
 	ld de,0ee80h		;5c85
 	ld hl,0ba9eh		;5c88
 	ld bc,00014h		;5c8b
 	ldir		;5c8e
 	call sube_los_sprites		;5c90
 	jr L_5C51		;5c93
-L_5C95:
-	call L_5C10		;5c95
-	call L_5C6B		;5c98
-	ld a,0a7h		;5c9b
+
+; ----------------------------------------------------------------------
+; MONTAR LA PRESENTACION. Pinta las dos pantallas -la de fondo y la del rotulo-, arranca la musica y coloca a mano los dos sprites que se mueven por ella, que son los huecos 7 y 8 de la tabla de atributos (0xEE9C y 0xEEA0). Todo lo que sigue hasta el final del banco es la maquina de estados de esta pantalla.
+; ----------------------------------------------------------------------
+monta_la_presentacion:
+	call L_5C10		;5c95   ; el fondo, con los caracteres del banco 7-8-9
+	call L_5C6B		;5c98   ; y el rotulo, con la tabla de nombres del banco 13
+	ld a,0a7h		;5c9b   ; la melodia de la presentacion
 	call pide_sonido		;5c9d
-	ld hl,05000h		;5ca0
+	ld hl,05000h		;5ca0   ; los dos contadores que llevan la cuenta de por donde va
 	ld (0e00ch),hl		;5ca3
-	ld h,001h		;5ca6
+	ld h,001h		;5ca6   ; y el segundo, a 1
 	ld (0e00eh),hl		;5ca8
-	ld a,017h		;5cab
+	ld a,017h		;5cab   ; el paso de la animacion
 	ld (0e155h),a		;5cad
-	ld hl,048e0h		;5cb0
+	ld hl,048e0h		;5cb0   ; la Y y la X del sprite 7
 	ld (0ee9ch),hl		;5cb3
-	ld h,058h		;5cb6
+	ld h,058h		;5cb6   ; y la del 8
 	ld (0eea0h),hl		;5cb8
-	ld hl,00a2ch		;5cbb
+	ld hl,00a2ch		;5cbb   ; el patron y el color del 7
 	ld (0ee9eh),hl		;5cbe
-	ld l,028h		;5cc1
+	ld l,028h		;5cc1   ; y los del 8
 	ld (0eea2h),hl		;5cc3
-	ld hl,00607h		;5cc6
+	ld hl,00607h		;5cc6   ; dos contadores mas, de un tiron
 	ld (0e14ah),hl		;5cc9
-	ld a,004h		;5ccc
+	ld a,004h		;5ccc   ; y dos banderas sueltas
 	ld (0e14fh),a		;5cce
 	ld a,020h		;5cd1
 	ld (0e14ch),a		;5cd3
-L_5CD6:
-	call L_5DCF		;5cd6
-	ld a,(0e00ch)		;5cd9
-	dec a			;5cdc
-	jp nz,L_5D50		;5cdd
-	ld a,(0e00dh)		;5ce0
+presentacion_cuadro:
+	call centellean_las_estrellas		;5cd6   ; lo que hay que hacer en cada cuadro pase lo que pase
+	ld a,(0e00ch)		;5cd9   ; el estado
+	dec a			;5cdc   ; el 1 es el unico que sigue por aqui
+	jp nz,presentacion_estado_2		;5cdd
+	ld a,(0e00dh)		;5ce0   ; y dentro de el, el subestado
 	dec a			;5ce3
-	jr nz,L_5D03		;5ce4
-	ld a,(0e003h)		;5ce6
-	and 007h		;5ce9
+	jr nz,presentacion_subestado_2		;5ce4
+	ld a,(0e003h)		;5ce6   ; el contador de cuadros
+	and 007h		;5ce9   ; uno de cada ocho
 	ret nz			;5ceb
-	ld hl,03f73h		;5cec
+	ld hl,03f73h		;5cec   ; patron nuevo para el sprite 7
 	ld (0ee9ch),hl		;5cef
-	call L_5E1E		;5cf2
+	call posicion_del_sprite		;5cf2   ; y su posicion, que sale de la tabla
 	ld (0ee9eh),hl		;5cf5
-	call L_5E2B		;5cf8
+	call avanza_el_recorrido		;5cf8   ; ¿se acabo el recorrido?
 	ret nz			;5cfb
-	ld a,008h		;5cfc
+	ld a,008h		;5cfc   ; si se acabo, el paso siguiente
 	ld (0e15ah),a		;5cfe
-	jr L_5D46		;5d01
-L_5D03:
-	dec a			;5d03
-	jr nz,L_5D0C		;5d04
-	call L_5E35		;5d06
+	jr presentacion_siguiente_subestado		;5d01
+presentacion_subestado_2:
+	dec a			;5d03   ; el subestado 2
+	jr nz,presentacion_subestado_3		;5d04
+	call baja_el_contador		;5d06   ; avanza y mira si ha llegado
 	ret nz			;5d09
-	jr L_5D46		;5d0a
-L_5D0C:
-	dec a			;5d0c
-	jr nz,L_5D27		;5d0d
-	ld a,(0e003h)		;5d0f
+	jr presentacion_siguiente_subestado		;5d0a
+presentacion_subestado_3:
+	dec a			;5d0c   ; el 3
+	jr nz,presentacion_subestado_4		;5d0d
+	ld a,(0e003h)		;5d0f   ; otra vez uno de cada ocho
 	and 007h		;5d12
 	ret nz			;5d14
-	ld hl,03b73h		;5d15
+	ld hl,03b73h		;5d15   ; ahora el que cambia es el sprite 8
 	ld (0eea0h),hl		;5d18
-	call L_5E1E		;5d1b
+	call posicion_del_sprite		;5d1b   ; su posicion
 	ld (0eea2h),hl		;5d1e
-	call L_5E2B		;5d21
+	call avanza_el_recorrido		;5d21   ; ¿ha llegado?
 	ret nz			;5d24
-	jr L_5D46		;5d25
-L_5D27:
-	dec a			;5d27
-	jr nz,L_5D39		;5d28
-	ld a,0e0h		;5d2a
+	jr presentacion_siguiente_subestado		;5d25
+presentacion_subestado_4:
+	dec a			;5d27   ; el 4
+	jr nz,presentacion_subestado_5		;5d28
+	ld a,0e0h		;5d2a   ; 0xE0 en la Y: el sprite 8 se va de la pantalla
 	ld (0eea0h),a		;5d2c
-	ld hl,0e004h		;5d2f
+	ld hl,0e004h		;5d2f   ; un contador que baja
 	dec (hl)			;5d32
-	ret nz			;5d33
-	ld hl,0e00fh		;5d34
+	ret nz			;5d33   ; y hasta que no llegue a cero no se toca nada mas
+	ld hl,0e00fh		;5d34   ; y cuando llega, baja el otro
 	dec (hl)			;5d37
 	ret			;5d38
-L_5D39:
-	call L_5E35		;5d39
+presentacion_subestado_5:
+	call baja_el_contador		;5d39   ; avanza y mira si ha llegado
 	ret nz			;5d3c
 	xor a			;5d3d
-	ld (0e14ah),a		;5d3e
+	ld (0e14ah),a		;5d3e   ; y a cero el contador de la animacion
 	ld a,003h		;5d41
 	ld (0e15ah),a		;5d43
-L_5D46:
-	ld a,020h		;5d46
+presentacion_siguiente_subestado:
+	ld a,020h		;5d46   ; se rearma el contador de la animacion
 	ld (0e14ch),a		;5d48
-	ld hl,0e00dh		;5d4b
+	ld hl,0e00dh		;5d4b   ; y se pasa al subestado siguiente
 	inc (hl)			;5d4e
 	ret			;5d4f
-L_5D50:
-	ld a,(0e00eh)		;5d50
+presentacion_estado_2:
+	ld a,(0e00eh)		;5d50   ; el tercer contador
 	and a			;5d53
-	jr nz,L_5D63		;5d54
-	call L_5E35		;5d56
+	jr nz,presentacion_se_van_volando		;5d54
+	call baja_el_contador		;5d56   ; avanza y mira si ha llegado
 	ret nz			;5d59
-	xor a			;5d5a
+	xor a			;5d5a   ; los dos sprites, a la esquina de arriba
 	ld (0ee9ch),a		;5d5b
 	ld (0eea0h),a		;5d5e
-	jr L_5DA5		;5d61
-L_5D63:
-	dec a			;5d63
-	jr nz,L_5DAA		;5d64
-	ld a,(0e003h)		;5d66
+	jr presentacion_estado_siguiente		;5d61
+presentacion_se_van_volando:
+	dec a			;5d63   ; el subestado 1
+	jr nz,presentacion_escribe_los_rotulos		;5d64
+	ld a,(0e003h)		;5d66   ; uno de cada dos cuadros
 	and 001h		;5d69
 	ret nz			;5d6b
-	ld de,(0ee9ch)		;5d6c
+	ld de,(0ee9ch)		;5d6c   ; la Y y la X del sprite 7, de una vez
 	ld a,d			;5d70
-	add a,005h		;5d71
+	add a,005h		;5d71   ; cinco a la derecha
 	ld d,a			;5d73
 	ld a,e			;5d74
-	add a,002h		;5d75
+	add a,002h		;5d75   ; y dos hacia abajo
 	ld e,a			;5d77
 	ld (0ee9ch),de		;5d78
-	ld de,(0eea0h)		;5d7c
+	ld de,(0eea0h)		;5d7c   ; lo mismo con el 8
 	ld a,d			;5d80
 	add a,005h		;5d81
 	ld d,a			;5d83
@@ -4231,178 +4235,240 @@ L_5D63:
 	add a,002h		;5d85
 	ld e,a			;5d87
 	ld (0eea0h),de		;5d88
-	ld hl,0e155h		;5d8c
+	ld hl,0e155h		;5d8c   ; y un contador que dice cuanto dura el vuelo
 	dec (hl)			;5d8f
-	ret nz			;5d90
-	ld a,0e0h		;5d91
-	ld hl,0ee9ch		;5d93
+	ret nz			;5d90   ; mientras no llegue a cero, siguen andando
+	ld a,0e0h		;5d91   ; 0xE0 en la Y
+	ld hl,0ee9ch		;5d93   ; al sprite 7
 	ld (hl),a			;5d96
-	inc l			;5d97
+	inc l			;5d97   ; y de cuatro en cuatro se llega al 8
 	inc l			;5d98
 	inc l			;5d99
 	inc l			;5d9a
 	ld (hl),a			;5d9b
-	xor a			;5d9c
+	xor a			;5d9c   ; el contador a cero
 	ld (0e155h),a		;5d9d
 	ld a,020h		;5da0
 	ld (0e14ch),a		;5da2
-L_5DA5:
-	ld hl,0e00eh		;5da5
+presentacion_estado_siguiente:
+	ld hl,0e00eh		;5da5   ; al estado siguiente
 	inc (hl)			;5da8
 	ret			;5da9
-L_5DAA:
-	ld a,(0e003h)		;5daa
-	and 007h		;5dad
+
+; ----------------------------------------------------------------------
+; LOS ROTULOS DE LA PRESENTACION. Uno cada ocho cuadros, sacando el puntero de la tabla de 0x5E3C con el contador de 0xE155 y pasandoselo al escritor de texto del banco 1. Son DIEZ: cuando el contador llega a diez se acaba y se pasa al estado siguiente.
+; ----------------------------------------------------------------------
+presentacion_escribe_los_rotulos:
+	ld a,(0e003h)		;5daa   ; el contador de cuadros
+	and 007h		;5dad   ; uno de cada ocho
 	ret nz			;5daf
-	ld a,(0e155h)		;5db0
-	ld hl,05e3ch		;5db3
-	call dos_por_a_mas_hl		;5db6
+	ld a,(0e155h)		;5db0   ; por que rotulo va
+	ld hl,05e3ch		;5db3   ; la tabla de punteros
+	call dos_por_a_mas_hl		;5db6   ; dos bytes por entrada
 	ld e,(hl)			;5db9
 	inc hl			;5dba
 	ld d,(hl)			;5dbb
-	call 07df7h		;5dbc
-	ld hl,0e155h		;5dbf
+	call 07df7h		;5dbc   ; el escritor de texto, en el banco 1
+	ld hl,0e155h		;5dbf   ; y el siguiente
 	inc (hl)			;5dc2
 	ld a,(hl)			;5dc3
-	sub 00ah		;5dc4
+	sub 00ah		;5dc4   ; diez son todos
 	ret nz			;5dc6
-	ld (0e00dh),a		;5dc7
-	ld hl,0e00ch		;5dca
+	ld (0e00dh),a		;5dc7   ; se reinicia el subestado
+	ld hl,0e00ch		;5dca   ; y se pasa de estado
 	inc (hl)			;5dcd
 	ret			;5dce
-L_5DCF:
-	ld a,(0e003h)		;5dcf
-	and 003h		;5dd2
+
+; ----------------------------------------------------------------------
+; EL CENTELLEO DE LAS ESTRELLAS, Y DE DONDE SALE EL AZAR. Uno de cada cuatro cuadros se enciende o se apaga alguna de las estrellas del cielo, y para elegir cual no hay generador de numeros aleatorios: se lee el REGISTRO R del Z80. R es el contador de refresco de la memoria, que va subiendo solo con cada instruccion que se ejecuta, asi que su valor en un instante cualquiera no hay quien lo prevea. Se le dan cuatro vueltas para mezclar los bits de arriba con los de abajo y se cruza con el contador de cuadros.
+; ----------------------------------------------------------------------
+centellean_las_estrellas:
+	ld a,(0e003h)		;5dcf   ; el contador de cuadros
+	and 003h		;5dd2   ; uno de cada cuatro
 	ret nz			;5dd4
-	ld a,(0e14eh)		;5dd5
+	ld a,(0e14eh)		;5dd5   ; la bandera de si toca encender o apagar
 	and a			;5dd8
-	jr nz,L_5E03		;5dd9
-	ld a,r		;5ddb
-	rrca			;5ddd
+	jr nz,estrella_paso_a_paso		;5dd9
+	ld a,r		;5ddb   ; EL AZAR: el registro de refresco del Z80, que nadie puede predecir
+	rrca			;5ddd   ; cuatro vueltas para que los bits de arriba cuenten
 	rrca			;5dde
 	rrca			;5ddf
 	rrca			;5de0
-	ld hl,0e003h		;5de1
+	ld hl,0e003h		;5de1   ; y se cruza con el contador de cuadros
 	xor (hl)			;5de4
-	and 003h		;5de5
-	ld (0e14fh),a		;5de7
-	ld hl,05e50h		;5dea
-	add a,a			;5ded
+	and 003h		;5de5   ; que quedan dos bits: una estrella de cuatro
+	ld (0e14fh),a		;5de7   ; y esa es la estrella que toca
+	ld hl,05e50h		;5dea   ; la tabla de las cuatro estrellas
+	add a,a			;5ded   ; cuatro bytes por entrada
 	call dos_por_a_mas_hl		;5dee
-	ld de,0e151h		;5df1
+	ld de,0e151h		;5df1   ; que se copian a la RAM de trabajo
 	ld bc,00004h		;5df4
 	ldir		;5df7
-	ld a,0ffh		;5df9
+	ld a,0ffh		;5df9   ; 0xFF: el contador empieza dado la vuelta
 	ld (0e150h),a		;5dfb
-	ld hl,0e14eh		;5dfe
+	ld hl,0e14eh		;5dfe   ; y se pasa a la fase de encender
 	inc (hl)			;5e01
 	ret			;5e02
-L_5E03:
-	ld hl,0e150h		;5e03
+estrella_paso_a_paso:
+	ld hl,0e150h		;5e03   ; el paso del centelleo
 	inc (hl)			;5e06
 	ld a,(hl)			;5e07
-	cp 003h		;5e08
-	jr z,L_5E19		;5e0a
-	ld hl,(0e151h)		;5e0c
-	call a_mas_hl		;5e0f
+	cp 003h		;5e08   ; son tres, y al tercero se acaba
+	jr z,estrella_acabada		;5e0a
+	ld hl,(0e151h)		;5e0c   ; el puntero a los tres caracteres de la estrella
+	call a_mas_hl		;5e0f   ; el que toca ahora
 	ld a,(hl)			;5e12
-	ld hl,(0e153h)		;5e13
-	jp 0004dh		;5e16   ; BIOS WRTVRM - Writes data in VRAM
-L_5E19:
-	xor a			;5e19
+	ld hl,(0e153h)		;5e13   ; y donde va en la VRAM, que tambien venia en la entrada
+	jp 0004dh		;5e16   ; BIOS WRTVRM - Writes data in VRAM | BIOS WRTVRM
+estrella_acabada:
+	xor a			;5e19   ; vuelta a elegir estrella
 	ld (0e14eh),a		;5e1a
 	ret			;5e1d
-L_5E1E:
-	ld a,(0e14ah)		;5e1e
-	ld hl,05e66h		;5e21
+posicion_del_sprite:
+	ld a,(0e14ah)		;5e1e   ; por donde va el recorrido
+	ld hl,05e66h		;5e21   ; la tabla de ocho posiciones
 	call a_mas_hl		;5e24
-	ld l,(hl)			;5e27
-	ld h,007h		;5e28
+	ld l,(hl)			;5e27   ; el byte bajo sale de la tabla
+	ld h,007h		;5e28   ; y el alto es siempre 7
 	ret			;5e2a
-L_5E2B:
-	ld hl,0e14ah		;5e2b
+avanza_el_recorrido:
+	ld hl,0e14ah		;5e2b   ; el paso del recorrido
 	inc (hl)			;5e2e
 	ld a,(hl)			;5e2f
-	ld hl,0e15ah		;5e30
-	cp (hl)			;5e33
+	ld hl,0e15ah		;5e30   ; contra el tope, que cambia segun el tramo
+	cp (hl)			;5e33   ; y se vuelve con el cero puesto si ha llegado
 	ret			;5e34
-L_5E35:
-	ld hl,0e14ch		;5e35
+baja_el_contador:
+	ld hl,0e14ch		;5e35   ; el contador de la presentacion, un cuadro menos
 	dec (hl)			;5e38
 	ret			;5e39
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x5e3a..0x5e6e  (52 bytes)
-DATA_5E3A:
-	defb 004h,00bh,0b7h,0b3h,0c1h,0b3h,0cbh,0b3h,0d6h,0b3h,0eah,0b3h,0d6h,0b3h,0cbh,0b3h	; 5e3a  ................
-	defb 0c1h,0b3h,0b7h,0b3h,0feh,0b3h,060h,05eh,0a3h,038h,063h,05eh,047h,038h,060h,05eh	; 5e4a  ......`^.8c^G8`^
-	defb 03ah,038h,063h,05eh,033h,038h,09eh,09fh,051h,0a1h,050h,0a0h,010h,014h,018h,01ch	; 5e5a  :8c^38..Q.P.....
-	defb 020h,024h,020h,01ch	; 5e6a
+; DATOS tope_de_los_recorridos: Los dos topes que 0x5E2B compara: 4 y 11.
+;   0x5e3a..0x5e3c  (2 bytes)
+DATA_tope_de_los_recorridos:
+	defb 004h,00bh	; 5e3a
+
+; ----------------------------------------------------------------------
+; DATOS rotulos_de_la_presentacion: Diez punteros a los textos del banco 3,
+;   que 0x5DB3 recorre con el contador de 0xE155. El orden es simetrico
+;   -0xB3B7, 0xB3C1, 0xB3CB, 0xB3D6, 0xB3EA y luego los mismos al reves-
+;   porque el rotulo sale y vuelve a entrar; el decimo, 0xB3FE, es el que
+;   cierra.
+;   0x5e3c..0x5e50  (20 bytes)
+DATA_rotulos_de_la_presentacion:
+	defw 0b3b7h	; 5e3c
+	defw 0b3c1h	; 5e3e
+	defw 0b3cbh	; 5e40
+	defw 0b3d6h	; 5e42
+	defw 0b3eah	; 5e44
+	defw 0b3d6h	; 5e46
+	defw 0b3cbh	; 5e48
+	defw 0b3c1h	; 5e4a
+	defw 0b3b7h	; 5e4c
+	defw 0b3feh	; 5e4e
+
+; ----------------------------------------------------------------------
+; DATOS las_cuatro_estrellas: Cuatro entradas de cuatro bytes, que 0x5DEA
+;   copia enteras a 0xE151: los dos primeros son el puntero a los tres
+;   caracteres del centelleo y los dos ultimos la direccion de VRAM donde va.
+;   Las dos parejas de punteros se repiten -0x5E60 y 0x5E63- porque lo que
+;   cambia entre unas estrellas y otras es DONDE estan, no como parpadean.
+;   0x5e50..0x5e60  (16 bytes)
+DATA_las_cuatro_estrellas:
+	defw 05e60h	; 5e50  -> DATA_caracteres_del_centelleo
+	defw 038a3h	; 5e52
+	defw 05e63h	; 5e54
+	defw 03847h	; 5e56
+	defw 05e60h	; 5e58  -> DATA_caracteres_del_centelleo
+	defw 0383ah	; 5e5a
+	defw 05e63h	; 5e5c
+	defw 03833h	; 5e5e
+
+; ----------------------------------------------------------------------
+; DATOS caracteres_del_centelleo: Dos tiras de tres caracteres: 0x9E 0x9F 0x51
+;   y 0xA1 0x50 0xA0. Son los tres pasos del parpadeo de una estrella.
+;   0x5e60..0x5e66  (6 bytes)
+DATA_caracteres_del_centelleo:
+	defb 09eh,09fh,051h	; 5e60
+	defb 0a1h,050h,0a0h	; 5e63
+
+; ----------------------------------------------------------------------
+; DATOS recorrido_del_sprite: Ocho posiciones, que son el byte bajo de la
+;   direccion de VRAM; el alto lo pone a mano 0x5E28. Van 0x10, 0x14, 0x18,
+;   0x1C, 0x20, 0x24, 0x20, 0x1C: sube y baja.
+;   0x5e66..0x5e6e  (8 bytes)
+DATA_recorrido_del_sprite:
+	defb 010h,014h,018h,01ch,020h,024h,020h,01ch	; 5e66  .... $ .
 
 ; ======================================================================
 ; CODIGO 0x5e6e..0x5f35  (199 bytes)
 ; ======================================================================
 
 
-L_5E6E:
-	ld a,001h		;5e6e
+
+; ----------------------------------------------------------------------
+; EL TEXTO QUE SUBE. Es el final de la presentacion, y la forma de hacerlo es la mas directa que hay: el espejo de pantalla que vive en la RAM se copia sobre si mismo 32 bytes mas abajo, que es UNA FILA, y en la fila que queda libre abajo se escribe la siguiente linea de texto. Como el espejo se sube entero a la VRAM en cada cuadro, el resultado es un desplazamiento suave sin tocar el VDP para nada.
+; ----------------------------------------------------------------------
+rotulos_que_suben:
+	ld a,001h		;5e6e   ; la bandera que corta la segunda mitad del cuadro
 	ld (0e096h),a		;5e70
-	ld a,(0e003h)		;5e73
-	and 01fh		;5e76
+	ld a,(0e003h)		;5e73   ; el contador de cuadros
+	and 01fh		;5e76   ; uno de cada treinta y dos
 	ret nz			;5e78
-	ld a,(0e13dh)		;5e79
+	ld a,(0e13dh)		;5e79   ; en que tramo va
 	ld b,a			;5e7c
-	djnz L_5EC4		;5e7d
-L_5E7F:
-	ld bc,00300h		;5e7f
-	ld hl,0eba0h		;5e82
-	ld de,0eb80h		;5e85
+	djnz rotulos_otro_tramo		;5e7d
+sube_una_fila:
+	ld bc,00300h		;5e7f   ; 768 bytes: la pantalla entera
+	ld hl,0eba0h		;5e82   ; desde 0xEBA0...
+	ld de,0eb80h		;5e85   ; ...a 0xEB80, o sea 32 bytes mas abajo: una fila justa
 	ldir		;5e88
-	ld hl,0bcf8h		;5e8a
-	call 07e2dh		;5e8d
-	ld hl,0e13eh		;5e90
+	ld hl,0bcf8h		;5e8a   ; el texto que toca
+	call 07e2dh		;5e8d   ; el escritor, en el banco 1
+	ld hl,0e13eh		;5e90   ; cuantos cuadros dura esta linea
 	dec (hl)			;5e93
-	ret nz			;5e94
-	ld hl,0e140h		;5e95
+	ret nz			;5e94   ; y mientras dure, no hay linea nueva
+	ld hl,0e140h		;5e95   ; cuantas lineas quedan
 	dec (hl)			;5e98
-	jp z,L_5F2F		;5e99
+	jp z,L_5F2F		;5e99   ; cuando no queda ninguna, se acabo
 	ld a,(hl)			;5e9c
 	dec a			;5e9d
-	ld hl,(0e147h)		;5e9e
-	call dos_por_a_mas_hl		;5ea1
+	ld hl,(0e147h)		;5e9e   ; la lista de lineas
+	call dos_por_a_mas_hl		;5ea1   ; dos bytes por entrada
 	ld e,(hl)			;5ea4
 	inc hl			;5ea5
 	ld d,(hl)			;5ea6
-	di			;5ea7
+	di			;5ea7   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;5ea8
-	ld (08000h),a		;5eaa
-	ld (0f0f2h),a		;5ead
-	ei			;5eb0
-	di			;5eb1
+	ld (08000h),a		;5eaa   ; el banco 10 a 0x8000
+	ld (0f0f2h),a		;5ead   ; y en su copia de RAM
+	ei			;5eb0   ; el mapa ya esta entero
+	di			;5eb1   ; sin interrupciones mientras cambia el mapa
 	ld a,00bh		;5eb2
-	ld (0a000h),a		;5eb4
-	ld (0f0f3h),a		;5eb7
-	ei			;5eba
-	ld a,(de)			;5ebb
+	ld (0a000h),a		;5eb4   ; el banco 11 a 0xA000
+	ld (0f0f3h),a		;5eb7   ; y en su copia de RAM
+	ei			;5eba   ; el mapa ya esta entero
+	ld a,(de)			;5ebb   ; el primer byte de la linea dice cuanto dura
 	ld (0e13eh),a		;5ebc
 	inc de			;5ebf
 	ex de,hl			;5ec0
-	jp 07e2dh		;5ec1
-L_5EC4:
+	jp 07e2dh		;5ec1   ; y el resto, al escritor
+rotulos_otro_tramo:
 	djnz L_5EDD		;5ec4
-	ld hl,0e13fh		;5ec6
+	ld hl,0e13fh		;5ec6   ; un contador de espera
 	dec (hl)			;5ec9
 	ret nz			;5eca
-	ld a,018h		;5ecb
+	ld a,018h		;5ecb   ; veinticuatro lineas
 	ld (0e140h),a		;5ecd
-	ld a,001h		;5ed0
+	ld a,001h		;5ed0   ; y una de duracion, para que la primera salga ya
 	ld (0e13eh),a		;5ed2
-	ld hl,(0e149h)		;5ed5
+	ld hl,(0e149h)		;5ed5   ; la lista de lineas de este tramo
 	ld (0e147h),hl		;5ed8
 	jr L_5F2F		;5edb
 L_5EDD:
 	djnz L_5EE1		;5edd
-	jr L_5E7F		;5edf
+	jr sube_una_fila		;5edf
 L_5EE1:
 	djnz L_5F01		;5ee1
 	ld a,(0e012h)		;5ee3
@@ -4411,16 +4477,16 @@ L_5EE1:
 	xor a			;5ee8
 	ld (0e096h),a		;5ee9
 L_5EEC:
-	di			;5eec
+	di			;5eec   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;5eed
-	ld (08000h),a		;5eef
-	ld (0f0f2h),a		;5ef2
-	ei			;5ef5
-	di			;5ef6
+	ld (08000h),a		;5eef   ; el banco 2 a 0x8000
+	ld (0f0f2h),a		;5ef2   ; y en su copia de RAM
+	ei			;5ef5   ; el mapa ya esta entero
+	di			;5ef6   ; sin interrupciones mientras cambia el mapa
 	ld a,003h		;5ef7
-	ld (0a000h),a		;5ef9
-	ld (0f0f3h),a		;5efc
-	ei			;5eff
+	ld (0a000h),a		;5ef9   ; el banco 3 a 0xA000
+	ld (0f0f3h),a		;5efc   ; y en su copia de RAM
+	ei			;5eff   ; el mapa ya esta entero1098 comentarios
 	ret			;5f00
 L_5F01:
 	ld a,006h		;5f01

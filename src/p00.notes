@@ -706,3 +706,1767 @@ C 0x47E7 el trio 4-5-6
 C 0x47FB un guion del banco 6
 C 0x47FE al pintor
 C 0x4806 y el 1-2-3 de vuelta
+
+# ======================================================================
+# LOS PUENTES DE BANCO
+# ======================================================================
+# De aqui al final del banco hay mas de sesenta rutinas con la misma forma:
+# `di`, meter uno o mas bancos, `ei`, hacer UNA cosa con ellos, y otro
+# `di ... ei` devolviendo el trio 1-2-3. Estan en el banco fijo porque es el
+# unico sitio desde el que se puede cambiar de banco sin quedarse sin suelo.
+#
+# Lo que cada una pinta esta MEDIDO, no supuesto: tools/graficos.py ejecuta
+# el guion con el descompresor del propio cartucho y dice a que trozo de la
+# VRAM va a parar cada byte.
+
+C 0x47E9 el banco 4 a 0x6000
+C 0x47EE el banco 5 a 0x8000
+C 0x47F4 el banco 6 a 0xA000
+C 0x4808 el banco 1 a 0x6000
+C 0x480D el banco 2 a 0x8000
+C 0x4813 el banco 3 a 0xA000
+C 0x4822 el banco 4 a 0x6000
+C 0x4827 el banco 5 a 0x8000
+C 0x482D el banco 6 a 0xA000
+C 0x4837 el guion 0xA77A del banco 6: 1136 bytes de patrones (0x2A00-0x2E6F)
+C 0x4842 el guion 0xAABB del banco 6: 40 bytes de patrones (0x2E70-0x2E97)
+C 0x4848 el guion 0xABA5 del banco 6: 1152 bytes de patrones (0x3200-0x367F)
+C 0x4853 el guion 0xAF15 del banco 6: 32 bytes de patrones (0x3680-0x369F)
+C 0x4859 el guion 0xAADB del banco 6: 1136 bytes de colores (0x0A00-0x0E6F)
+C 0x4864 el guion 0xAB93 del banco 6: 40 bytes de colores (0x0E70-0x0E97)
+C 0x486A el guion 0xAF34 del banco 6: 1152 bytes de colores (0x1200-0x167F)
+C 0x4875 el guion 0xB003 del banco 6: 32 bytes de colores (0x1680-0x169F)
+C 0x4888 el banco 1 a 0x6000
+C 0x488D el banco 2 a 0x8000
+C 0x4893 el banco 3 a 0xA000
+C 0x48A6 el banco 4 a 0x6000
+C 0x48AB el banco 5 a 0x8000
+C 0x48B1 el banco 6 a 0xA000
+C 0x48CA el banco 4 a 0x6000
+C 0x48CF el banco 5 a 0x8000
+C 0x48D5 el banco 6 a 0xA000
+C 0x48DF el guion 0x8AFB del banco 5: 6784 bytes de colores y patrones (0x0200-0x0407 0x0808-0x0C67 0x1008-0x16DF)
+C 0x48E9 el banco 1 a 0x6000
+C 0x48EE el banco 2 a 0x8000
+C 0x48F4 el banco 3 a 0xA000
+C 0x4903 el banco 4 a 0x6000
+C 0x4908 el banco 5 a 0x8000
+C 0x490E el banco 6 a 0xA000
+C 0x4918 el guion 0x9BB6 del banco 5: 632 bytes de patrones (0x2200-0x2477)
+C 0x4923 el guion 0x9D25 del banco 5: 224 bytes de patrones (0x2478-0x2557)
+C 0x4929 el guion 0x9DFA del banco 5: 1592 bytes de patrones (0x2808-0x2E3F)
+C 0x4934 el guion 0xA1E1 del banco 6: 448 bytes de patrones (0x2E40-0x2FFF)
+C 0x493A el guion 0xA52C del banco 6: 456 bytes de patrones (0x3008-0x31CF)
+C 0x4945 el guion 0xA575 del banco 6: 368 bytes de patrones (0x31D0-0x333F)
+C 0x494B el guion 0x9DE5 del banco 5: 632 bytes de colores (0x0200-0x0477)
+C 0x4956 el guion 0x9DF1 del banco 5: 224 bytes de colores (0x0478-0x0557)
+C 0x495C el guion 0xA387 del banco 6: 1592 bytes de colores (0x0808-0x0E3F)
+C 0x4967 el guion 0xA4F6 del banco 6: 448 bytes de colores (0x0E40-0x0FFF)
+C 0x496D el guion 0xA6B7 del banco 6: 456 bytes de colores (0x1008-0x11CF)
+C 0x4978 el guion 0xA6ED del banco 6: 368 bytes de colores (0x11D0-0x133F)
+C 0x4982 el banco 1 a 0x6000
+C 0x4987 el banco 2 a 0x8000
+C 0x498D el banco 3 a 0xA000
+C 0x499C el banco 4 a 0x6000
+C 0x49A1 el banco 5 a 0x8000
+C 0x49A7 el banco 6 a 0xA000
+C 0x49D9 el banco 4 a 0x6000
+C 0x49DE el banco 5 a 0x8000
+C 0x49E4 el banco 6 a 0xA000
+C 0x4A03 el banco 4 a 0x6000
+C 0x4A08 el banco 5 a 0x8000
+C 0x4A0E el banco 6 a 0xA000
+C 0x4A76 el banco 1 a 0x6000
+C 0x4A7B el banco 2 a 0x8000
+C 0x4A81 el banco 3 a 0xA000
+C 0x4BC6 el banco 4 a 0x6000
+C 0x4BCB el banco 5 a 0x8000
+C 0x4BD1 el banco 6 a 0xA000
+C 0x4BDE el guion 0x88CA del banco 5: 1080 bytes de patrones (0x2200-0x2367 0x2A00-0x2B67 0x3200-0x3367)
+C 0x4BE7 el guion 0x898A del banco 5: 360 bytes de patrones (0x2368-0x23DF 0x2B68-0x2BDF 0x3368-0x33DF)
+C 0x4BF0 el guion 0x89FD del banco 5: 1080 bytes de colores (0x0200-0x0367 0x0A00-0x0B67 0x1200-0x1367)
+C 0x4BF9 el guion 0x8A6C del banco 5: 360 bytes de colores (0x0368-0x03DF 0x0B68-0x0BDF 0x1368-0x13DF)
+C 0x4C09 el guion 0x8ABB del banco 5: 240 bytes de colores (0x0248-0x0297 0x0A48-0x0A97 0x1248-0x1297)
+C 0x4C12 el guion 0x8AF0 del banco 5: 48 bytes de colores (0x0318-0x0327 0x0B18-0x0B27 0x1318-0x1327)
+C 0x4C1B el guion 0x8AF0 del banco 5: 48 bytes de colores (0x0390-0x039F 0x0B90-0x0B9F 0x1390-0x139F)
+C 0x4C25 el banco 1 a 0x6000
+C 0x4C2A el banco 2 a 0x8000
+C 0x4C30 el banco 3 a 0xA000
+C 0x4C3F el banco 4 a 0x6000
+C 0x4C44 el banco 5 a 0x8000
+C 0x4C4A el banco 6 a 0xA000
+C 0x4C54 el guion 0xB0C8 del banco 6: 96 bytes de patrones (0x23E0-0x243F)
+C 0x4C5F el guion 0xB0FE del banco 6: 32 bytes de patrones (0x2440-0x245F)
+C 0x4C65 el guion 0xB13C del banco 6: 248 bytes de patrones (0x2BE0-0x2CD7)
+C 0x4C70 el guion 0xB1DC del banco 6: 56 bytes de patrones (0x2CD8-0x2D0F)
+C 0x4C76 el guion 0xB260 del banco 6: 376 bytes de patrones (0x33E0-0x3557)
+C 0x4C81 el guion 0xB36E del banco 6: 48 bytes de patrones (0x3558-0x3587)
+C 0x4C87 el guion 0xB110 del banco 6: 96 bytes de colores (0x03E0-0x043F)
+C 0x4C92 el guion 0xB129 del banco 6: 32 bytes de colores (0x0440-0x045F)
+C 0x4C98 el guion 0xB200 del banco 6: 248 bytes de colores (0x0BE0-0x0CD7)
+C 0x4CA3 el guion 0xB24D del banco 6: 56 bytes de colores (0x0CD8-0x0D0F)
+C 0x4CA9 el guion 0xB38F del banco 6: 376 bytes de colores (0x13E0-0x1557)
+C 0x4CB4 el guion 0xB407 del banco 6: 48 bytes de colores (0x1558-0x1587)
+C 0x4CBE el banco 1 a 0x6000
+C 0x4CC3 el banco 2 a 0x8000
+C 0x4CC9 el banco 3 a 0xA000
+C 0x4CDE el banco 7 a 0x6000
+C 0x4CE3 el banco 8 a 0x8000
+C 0x4CE9 el banco 9 a 0xA000
+C 0x4CF3 el guion 0x6000 del banco 7: 216 bytes de patrones (0x2F00-0x2FD7)
+C 0x4CFE el guion 0x6089 del banco 7: 24 bytes de patrones (0x2FD8-0x2FEF)
+C 0x4D04 el guion 0x60E8 del banco 7: 384 bytes de patrones (0x3570-0x36EF)
+C 0x4D0F el guion 0x6230 del banco 7: 8 bytes de patrones (0x36F0-0x36F7)
+C 0x4D41 el guion 0x6095 del banco 7: 216 bytes de colores (0x0F00-0x0FD7)
+C 0x4D4C el guion 0x60E3 del banco 7: 24 bytes de colores (0x0FD8-0x0FEF)
+C 0x4D57 el guion 0x6237 del banco 7: 384 bytes de colores (0x1570-0x16EF)
+C 0x4D62 el guion 0x62FE del banco 7: 8 bytes de colores (0x16F0-0x16F7)
+C 0x4D6C el banco 1 a 0x6000
+C 0x4D71 el banco 2 a 0x8000
+C 0x4D77 el banco 3 a 0xA000
+C 0x4D8C el banco 7 a 0x6000
+C 0x4D91 el banco 8 a 0x8000
+C 0x4D97 el banco 9 a 0xA000
+C 0x4DA1 el guion 0x6304 del banco 7: 152 bytes de patrones (0x2E38-0x2ECF)
+C 0x4DAC el guion 0x6360 del banco 7: 48 bytes de patrones (0x2ED0-0x2EFF)
+C 0x4DB2 el guion 0x63B9 del banco 7: 216 bytes de patrones (0x3718-0x37EF)
+C 0x4DE7 el guion 0x6386 del banco 7: 152 bytes de colores (0x0E38-0x0ECF)
+C 0x4DF2 el guion 0x63A0 del banco 7: 48 bytes de colores (0x0ED0-0x0EFF)
+C 0x4DFD el guion 0x6473 del banco 7: 216 bytes de colores (0x1718-0x17EF)
+C 0x4E07 el banco 1 a 0x6000
+C 0x4E0C el banco 2 a 0x8000
+C 0x4E12 el banco 3 a 0xA000
+C 0x4E27 el banco 7 a 0x6000
+C 0x4E2C el banco 8 a 0x8000
+C 0x4E32 el banco 9 a 0xA000
+C 0x4E3C el guion 0x6496 del banco 7: 120 bytes de patrones (0x2C68-0x2CDF)
+C 0x4E47 el guion 0x649C del banco 7: 104 bytes de patrones (0x2CE0-0x2D47)
+C 0x4E4D el guion 0x64E4 del banco 7: 192 bytes de patrones (0x32B8-0x3377)
+C 0x4E58 el guion 0x6538 del banco 7: 56 bytes de patrones (0x3378-0x33AF)
+C 0x4E78 el guion 0x64D9 del banco 7: 120 bytes de colores (0x0C68-0x0CDF)
+C 0x4E83 el guion 0x64DE del banco 7: 104 bytes de colores (0x0CE0-0x0D47)
+C 0x4E8E el guion 0x6562 del banco 7: 192 bytes de colores (0x12B8-0x1377)
+C 0x4E99 el guion 0x6586 del banco 7: 56 bytes de colores (0x1378-0x13AF)
+C 0x4EA3 el banco 1 a 0x6000
+C 0x4EA8 el banco 2 a 0x8000
+C 0x4EAE el banco 3 a 0xA000
+C 0x4ECC el banco 7 a 0x6000
+C 0x4ED1 el banco 8 a 0x8000
+C 0x4ED7 el banco 9 a 0xA000
+C 0x4EE1 el guion 0x6591 del banco 7: 136 bytes de patrones (0x2D58-0x2DDF)
+C 0x4EEC el guion 0x65B1 del banco 7: 88 bytes de patrones (0x2DE0-0x2E37)
+C 0x4EF2 el guion 0x6630 del banco 7: 192 bytes de patrones (0x33B0-0x346F)
+C 0x4EFD el guion 0x665A del banco 7: 152 bytes de patrones (0x3470-0x3507)
+C 0x4F1D el guion 0x65F2 del banco 7: 136 bytes de colores (0x0D58-0x0DDF)
+C 0x4F28 el guion 0x6606 del banco 7: 88 bytes de colores (0x0DE0-0x0E37)
+C 0x4F33 el guion 0x66DA del banco 7: 192 bytes de colores (0x13B0-0x146F)
+C 0x4F3E el guion 0x66F5 del banco 7: 152 bytes de colores (0x1470-0x1507)
+C 0x4F48 el banco 1 a 0x6000
+C 0x4F4D el banco 2 a 0x8000
+C 0x4F53 el banco 3 a 0xA000
+C 0x4F68 el banco 7 a 0x6000
+C 0x4F6D el banco 8 a 0x8000
+C 0x4F73 el banco 9 a 0xA000
+C 0x4F7D el guion 0x6714 del banco 7: 240 bytes de patrones (0x2C68-0x2D57)
+C 0x4F83 el guion 0x682F del banco 7: 232 bytes de patrones (0x32B8-0x339F)
+C 0x4F89 el guion 0x67CB del banco 7: 240 bytes de colores (0x0C68-0x0D57)
+C 0x4F8F el guion 0x68EA del banco 7: 232 bytes de colores (0x12B8-0x139F)
+C 0x4F99 el banco 1 a 0x6000
+C 0x4F9E el banco 2 a 0x8000
+C 0x4FA4 el banco 3 a 0xA000
+C 0x4FBD el banco 7 a 0x6000
+C 0x4FC2 el banco 8 a 0x8000
+C 0x4FC8 el banco 9 a 0xA000
+C 0x4FD2 el guion 0x6932 del banco 7: 144 bytes de patrones (0x2D58-0x2DE7)
+C 0x4FDD el guion 0x6965 del banco 7: 80 bytes de patrones (0x2DE8-0x2E37)
+C 0x4FE3 el guion 0x69F5 del banco 7: 256 bytes de patrones (0x3360-0x345F)
+C 0x4FEE el guion 0x6AAF del banco 7: 48 bytes de patrones (0x3460-0x348F)
+C 0x4FF4 el guion 0x69A0 del banco 7: 144 bytes de colores (0x0D58-0x0DE7)
+C 0x4FFF el guion 0x69CF del banco 7: 80 bytes de colores (0x0DE8-0x0E37)
+C 0x5005 el guion 0x6AD6 del banco 7: 256 bytes de colores (0x1360-0x145F)
+C 0x5010 el guion 0x6B48 del banco 7: 48 bytes de colores (0x1460-0x148F)
+C 0x501A el banco 1 a 0x6000
+C 0x501F el banco 2 a 0x8000
+C 0x5025 el banco 3 a 0xA000
+C 0x503A el banco 7 a 0x6000
+C 0x503F el banco 8 a 0x8000
+C 0x5045 el banco 9 a 0xA000
+C 0x504F el guion 0x6B64 del banco 7: 128 bytes de patrones (0x2D58-0x2DD7)
+C 0x505A el guion 0x6B82 del banco 7: 96 bytes de patrones (0x2DD8-0x2E37)
+C 0x5060 el guion 0x6C11 del banco 7: 112 bytes de patrones (0x33B0-0x341F)
+C 0x506B el guion 0x6C13 del banco 7: 112 bytes de patrones (0x3420-0x348F)
+C 0x5071 el guion 0x6BDB del banco 7: 128 bytes de colores (0x0D58-0x0DD7)
+C 0x507C el guion 0x6BE9 del banco 7: 96 bytes de colores (0x0DD8-0x0E37)
+C 0x5082 el guion 0x6C7A del banco 7: 112 bytes de colores (0x13B0-0x141F)
+C 0x508D el guion 0x6C7C del banco 7: 112 bytes de colores (0x1420-0x148F)
+C 0x5097 el banco 1 a 0x6000
+C 0x509C el banco 2 a 0x8000
+C 0x50A2 el banco 3 a 0xA000
+C 0x50B7 el banco 7 a 0x6000
+C 0x50BC el banco 8 a 0x8000
+C 0x50C2 el banco 9 a 0xA000
+C 0x50CC el guion 0x6C9C del banco 7: 904 bytes de patrones (0x2010-0x2027 0x2200-0x256F)
+C 0x50D7 el guion 0x6FB9 del banco 7: 16 bytes de patrones (0x2570-0x257F)
+C 0x50DD el guion 0x6FDB del banco 7: 1976 bytes de patrones (0x2810-0x2FC7)
+C 0x50E8 el guion 0x7640 del banco 7: 40 bytes de patrones (0x2FC8-0x2FEF)
+C 0x50EE el guion 0x6FC3 del banco 7: 904 bytes de colores (0x0010-0x0027 0x0200-0x056F)
+C 0x50F9 el guion 0x6FD8 del banco 7: 16 bytes de colores (0x0570-0x057F)
+C 0x50FF el guion 0x7655 del banco 7: 1976 bytes de colores (0x0810-0x0FC7)
+C 0x510A el guion 0x7683 del banco 7: 40 bytes de colores (0x0FC8-0x0FEF)
+C 0x5114 el banco 1 a 0x6000
+C 0x5119 el banco 2 a 0x8000
+C 0x511F el banco 3 a 0xA000
+C 0x5134 el banco 7 a 0x6000
+C 0x5139 el banco 8 a 0x8000
+C 0x513F el banco 9 a 0xA000
+C 0x5149 el guion 0x7686 del banco 7: 608 bytes de patrones de sprite (0x1C20-0x1E7F)
+C 0x5153 el banco 1 a 0x6000
+C 0x5158 el banco 2 a 0x8000
+C 0x515E el banco 3 a 0xA000
+C 0x517F el banco 7 a 0x6000
+C 0x5184 el banco 8 a 0x8000
+C 0x518A el banco 9 a 0xA000
+C 0x5194 el guion 0x7806 del banco 7: 176 bytes de patrones (0x2440-0x24EF)
+C 0x519F el guion 0x7857 del banco 7: 80 bytes de patrones (0x24F0-0x253F)
+C 0x51A5 el guion 0x7891 del banco 7: 176 bytes de colores (0x0440-0x04EF)
+C 0x51B0 el guion 0x78C8 del banco 7: 80 bytes de colores (0x04F0-0x053F)
+C 0x51BA el banco 1 a 0x6000
+C 0x51BF el banco 2 a 0x8000
+C 0x51C5 el banco 3 a 0xA000
+C 0x51D4 el banco 4 a 0x6000
+C 0x51D9 el banco 5 a 0x8000
+C 0x51DF el banco 6 a 0xA000
+C 0x51EC el guion 0xB71B del banco 6: 1824 bytes de patrones (0x2590-0x27EF 0x2D90-0x2FEF 0x3590-0x37EF)
+C 0x51F5 el guion 0xB96A del banco 6: 1824 bytes de colores (0x0590-0x07EF 0x0D90-0x0FEF 0x1590-0x17EF)
+C 0x51FF el banco 1 a 0x6000
+C 0x5204 el banco 2 a 0x8000
+C 0x520A el banco 3 a 0xA000
+C 0x5219 el banco 7 a 0x6000
+C 0x521E el banco 8 a 0x8000
+C 0x5224 el banco 9 a 0xA000
+C 0x522E el guion 0x9229 del banco 8: 336 bytes de patrones (0x2D50-0x2E9F)
+C 0x5239 el guion 0x9234 del banco 8: 328 bytes de patrones (0x2EA0-0x2FE7)
+C 0x5243 el banco 1 a 0x6000
+C 0x5248 el banco 2 a 0x8000
+C 0x524E el banco 3 a 0xA000
+C 0x525D el banco 7 a 0x6000
+C 0x5262 el banco 8 a 0x8000
+C 0x5268 el banco 9 a 0xA000
+C 0x5272 el guion 0x9457 del banco 8: 464 bytes de patrones (0x32B8-0x3487)
+C 0x527D el guion 0x9473 del banco 8: 424 bytes de patrones (0x3488-0x362F)
+C 0x5287 el banco 1 a 0x6000
+C 0x528C el banco 2 a 0x8000
+C 0x5292 el banco 3 a 0xA000
+C 0x52A1 el banco 7 a 0x6000
+C 0x52A6 el banco 8 a 0x8000
+C 0x52AC el banco 9 a 0xA000
+C 0x52E2 el guion 0x9373 del banco 8: 336 bytes de colores (0x0D50-0x0E9F)
+C 0x52ED el guion 0x937A del banco 8: 328 bytes de colores (0x0EA0-0x0FE7)
+C 0x52F7 el banco 1 a 0x6000
+C 0x52FC el banco 2 a 0x8000
+C 0x5302 el banco 3 a 0xA000
+C 0x5311 el banco 7 a 0x6000
+C 0x5316 el banco 8 a 0x8000
+C 0x531C el banco 9 a 0xA000
+C 0x5352 el guion 0x95FB del banco 8: 464 bytes de colores (0x12B8-0x1487)
+C 0x535D el guion 0x960D del banco 8: 424 bytes de colores (0x1488-0x162F)
+C 0x5367 el banco 1 a 0x6000
+C 0x536C el banco 2 a 0x8000
+C 0x5372 el banco 3 a 0xA000
+C 0x5381 el banco 7 a 0x6000
+C 0x5386 el banco 8 a 0x8000
+C 0x538C el banco 9 a 0xA000
+C 0x5396 el guion 0x8B7D del banco 8: 408 bytes de patrones (0x2C68-0x2DFF)
+C 0x53A1 el guion 0x8C2C del banco 8: 232 bytes de patrones (0x2E00-0x2EE7)
+C 0x53A7 el guion 0x8D0E del banco 8: 152 bytes de patrones (0x2EE8-0x2F7F)
+C 0x53B2 el guion 0x8D31 del banco 8: 112 bytes de patrones (0x2F80-0x2FEF)
+C 0x53BC el banco 1 a 0x6000
+C 0x53C1 el banco 2 a 0x8000
+C 0x53C7 el banco 3 a 0xA000
+C 0x53D6 el banco 7 a 0x6000
+C 0x53DB el banco 8 a 0x8000
+C 0x53E1 el banco 9 a 0xA000
+C 0x53EB el guion 0x8E52 del banco 8: 296 bytes de patrones (0x32B8-0x33DF)
+C 0x53F6 el guion 0x8EF1 del banco 8: 112 bytes de patrones (0x33E0-0x344F)
+C 0x53FC el guion 0x8F56 del banco 8: 432 bytes de patrones (0x3450-0x35FF)
+C 0x5407 el guion 0x8FFC del banco 8: 248 bytes de patrones (0x3600-0x36F7)
+C 0x5411 el banco 1 a 0x6000
+C 0x5416 el banco 2 a 0x8000
+C 0x541C el banco 3 a 0xA000
+C 0x542B el banco 7 a 0x6000
+C 0x5430 el banco 8 a 0x8000
+C 0x5436 el banco 9 a 0xA000
+C 0x545A el guion 0x8DA3 del banco 8: 408 bytes de colores (0x0C68-0x0DFF)
+C 0x5465 el guion 0x8DB5 del banco 8: 232 bytes de colores (0x0E00-0x0EE7)
+C 0x5470 el guion 0x8E13 del banco 8: 152 bytes de colores (0x0EE8-0x0F7F)
+C 0x547B el guion 0x8E19 del banco 8: 112 bytes de colores (0x0F80-0x0FEF)
+C 0x5485 el banco 1 a 0x6000
+C 0x548A el banco 2 a 0x8000
+C 0x5490 el banco 3 a 0xA000
+C 0x549F el banco 7 a 0x6000
+C 0x54A4 el banco 8 a 0x8000
+C 0x54AA el banco 9 a 0xA000
+C 0x54CE el guion 0x90E7 del banco 8: 296 bytes de colores (0x12B8-0x13DF)
+C 0x54D9 el guion 0x9105 del banco 8: 112 bytes de colores (0x13E0-0x144F)
+C 0x54E4 el guion 0x9138 del banco 8: 432 bytes de colores (0x1450-0x15FF)
+C 0x54EF el guion 0x9150 del banco 8: 248 bytes de colores (0x1600-0x16F7)
+C 0x54F9 el banco 1 a 0x6000
+C 0x54FE el banco 2 a 0x8000
+C 0x5504 el banco 3 a 0xA000
+C 0x5513 el banco 4 a 0x6000
+C 0x5518 el banco 5 a 0x8000
+C 0x551E el banco 6 a 0xA000
+C 0x5528 el guion 0xBCBC del banco 6: 144 bytes de patrones (0x3718-0x37A7)
+C 0x5533 el guion 0xBCFD del banco 6: 72 bytes de patrones (0x37A8-0x37EF)
+C 0x5539 el guion 0xBD42 del banco 6: 144 bytes de colores (0x1718-0x17A7)
+C 0x5544 el guion 0xBD70 del banco 6: 72 bytes de colores (0x17A8-0x17EF)
+C 0x554E el banco 1 a 0x6000
+C 0x5553 el banco 2 a 0x8000
+C 0x5559 el banco 3 a 0xA000
+C 0x5568 el banco 7 a 0x6000
+C 0x556D el banco 8 a 0x8000
+C 0x5573 el banco 9 a 0xA000
+C 0x557D el guion 0x91A3 del banco 8: 88 bytes de patrones (0x2C68-0x2CBF)
+C 0x5588 el guion 0x91BA del banco 8: 56 bytes de patrones (0x2CC0-0x2CF7)
+C 0x558E el guion 0x9209 del banco 8: 32 bytes de patrones (0x32B8-0x32D7)
+C 0x5599 el guion 0x920B del banco 8: 32 bytes de patrones (0x32D8-0x32F7)
+C 0x55B9 el guion 0x91EE del banco 8: 88 bytes de colores (0x0C68-0x0CBF)
+C 0x55C4 el guion 0x91FC del banco 8: 56 bytes de colores (0x0CC0-0x0CF7)
+C 0x55CF el guion 0x9226 del banco 8: 32 bytes de colores (0x12B8-0x12D7)
+C 0x55DA el guion 0x9226 del banco 8: 32 bytes de colores (0x12D8-0x12F7)
+C 0x55E4 el banco 1 a 0x6000
+C 0x55E9 el banco 2 a 0x8000
+C 0x55EF el banco 3 a 0xA000
+C 0x55FE el banco 7 a 0x6000
+C 0x5603 el banco 8 a 0x8000
+C 0x5609 el banco 9 a 0xA000
+C 0x5613 el guion 0x7E3A del banco 7: 704 bytes de patrones de sprite (0x19A0-0x1C5F)
+C 0x5619 el guion 0x82DD del banco 8: 544 bytes de patrones de sprite (0x1C60-0x1E7F)
+C 0x564C el banco 1 a 0x6000
+C 0x5651 el banco 2 a 0x8000
+C 0x5657 el banco 3 a 0xA000
+C 0x566E el banco 7 a 0x6000
+C 0x5673 el banco 8 a 0x8000
+C 0x5679 el banco 9 a 0xA000
+C 0x5683 el guion 0x7FBC del banco 7: 1056 bytes de patrones de sprite (0x19A0-0x1DBF)
+C 0x568D el banco 1 a 0x6000
+C 0x5692 el banco 2 a 0x8000
+C 0x5698 el banco 3 a 0xA000
+C 0x56A7 el banco 7 a 0x6000
+C 0x56AC el banco 8 a 0x8000
+C 0x56B2 el banco 9 a 0xA000
+C 0x56BC el guion 0x81CF del banco 8: 160 bytes de patrones de sprite (0x19A0-0x1A3F)
+C 0x56C6 el banco 1 a 0x6000
+C 0x56CB el banco 2 a 0x8000
+C 0x56D1 el banco 3 a 0xA000
+C 0x56E0 el banco 7 a 0x6000
+C 0x56E5 el banco 8 a 0x8000
+C 0x56EB el banco 9 a 0xA000
+C 0x56FA el guion 0x7E3C del banco 7: 704 bytes de patrones de sprite (0x1CA0-0x1F5F)
+C 0x5704 el banco 1 a 0x6000
+C 0x5709 el banco 2 a 0x8000
+C 0x570F el banco 3 a 0xA000
+C 0x571E el banco 7 a 0x6000
+C 0x5723 el banco 8 a 0x8000
+C 0x5729 el banco 9 a 0xA000
+C 0x5733 el guion 0x852C del banco 8: 384 bytes de patrones de sprite (0x1DC0-0x1F3F)
+C 0x573D el banco 1 a 0x6000
+C 0x5742 el banco 2 a 0x8000
+C 0x5748 el banco 3 a 0xA000
+C 0x5757 el banco 7 a 0x6000
+C 0x575C el banco 8 a 0x8000
+C 0x5762 el banco 9 a 0xA000
+C 0x576C el guion 0x7D6F del banco 7: 320 bytes de patrones de sprite (0x1DC0-0x1EFF)
+C 0x5776 el banco 1 a 0x6000
+C 0x577B el banco 2 a 0x8000
+C 0x5781 el banco 3 a 0xA000
+C 0x5790 el banco 7 a 0x6000
+C 0x5795 el banco 8 a 0x8000
+C 0x579B el banco 9 a 0xA000
+C 0x57A5 el guion 0x82AD del banco 8: 121 bytes de patrones de sprite (0x1F80-0x1FF8)
+C 0x57AF el banco 1 a 0x6000
+C 0x57B4 el banco 2 a 0x8000
+C 0x57BA el banco 3 a 0xA000
+C 0x57C9 el banco 7 a 0x6000
+C 0x57CE el banco 8 a 0x8000
+C 0x57D4 el banco 9 a 0xA000
+C 0x57DE el guion 0x823A del banco 8: 192 bytes de patrones de sprite (0x1D00-0x1DBF)
+C 0x57E8 el banco 1 a 0x6000
+C 0x57ED el banco 2 a 0x8000
+C 0x57F3 el banco 3 a 0xA000
+C 0x5802 el banco 7 a 0x6000
+C 0x5807 el banco 8 a 0x8000
+C 0x580D el banco 9 a 0xA000
+C 0x589E el banco 1 a 0x6000
+C 0x58A3 el banco 2 a 0x8000
+C 0x58A9 el banco 3 a 0xA000
+C 0x58B8 el banco 7 a 0x6000
+C 0x58BD el banco 8 a 0x8000
+C 0x58C3 el banco 9 a 0xA000
+C 0x58DD el banco 1 a 0x6000
+C 0x58E2 el banco 2 a 0x8000
+C 0x58E8 el banco 3 a 0xA000
+C 0x58F7 el banco 7 a 0x6000
+C 0x58FC el banco 8 a 0x8000
+C 0x5902 el banco 9 a 0xA000
+C 0x5919 el banco 1 a 0x6000
+C 0x591E el banco 2 a 0x8000
+C 0x5924 el banco 3 a 0xA000
+C 0x5933 el banco 7 a 0x6000
+C 0x5938 el banco 8 a 0x8000
+C 0x593E el banco 9 a 0xA000
+C 0x5961 el banco 1 a 0x6000
+C 0x5966 el banco 2 a 0x8000
+C 0x596C el banco 3 a 0xA000
+C 0x597B el banco 7 a 0x6000
+C 0x5980 el banco 8 a 0x8000
+C 0x5986 el banco 9 a 0xA000
+C 0x5997 el banco 7 a 0x6000
+C 0x599C el banco 8 a 0x8000
+C 0x59A2 el banco 9 a 0xA000
+C 0x59AC el guion 0x86F5 del banco 8: 96 bytes de patrones de sprite (0x1D20-0x1D7F)
+C 0x59B6 el banco 1 a 0x6000
+C 0x59BB el banco 2 a 0x8000
+C 0x59C1 el banco 3 a 0xA000
+C 0x59D0 el banco 7 a 0x6000
+C 0x59D5 el banco 8 a 0x8000
+C 0x59DB el banco 9 a 0xA000
+C 0x59E5 el guion 0x8757 del banco 8: 96 bytes de patrones de sprite (0x1D20-0x1D7F)
+C 0x59EF el banco 1 a 0x6000
+C 0x59F4 el banco 2 a 0x8000
+C 0x59FA el banco 3 a 0xA000
+C 0x5A09 el banco 7 a 0x6000
+C 0x5A0E el banco 8 a 0x8000
+C 0x5A14 el banco 9 a 0xA000
+C 0x5A1E el guion 0x87B8 del banco 8: 128 bytes de patrones de sprite (0x1D80-0x1DFF)
+C 0x5A28 el banco 1 a 0x6000
+C 0x5A2D el banco 2 a 0x8000
+C 0x5A33 el banco 3 a 0xA000
+C 0x5A42 el banco 7 a 0x6000
+C 0x5A47 el banco 8 a 0x8000
+C 0x5A4D el banco 9 a 0xA000
+C 0x5A57 el guion 0x882E del banco 8: 128 bytes de patrones de sprite (0x1D80-0x1DFF)
+C 0x5A61 el banco 1 a 0x6000
+C 0x5A66 el banco 2 a 0x8000
+C 0x5A6C el banco 3 a 0xA000
+C 0x5A7B el banco 7 a 0x6000
+C 0x5A80 el banco 8 a 0x8000
+C 0x5A86 el banco 9 a 0xA000
+C 0x5A90 el guion 0x888D del banco 8: 128 bytes de patrones de sprite (0x1D80-0x1DFF)
+C 0x5A9A el banco 1 a 0x6000
+C 0x5A9F el banco 2 a 0x8000
+C 0x5AA5 el banco 3 a 0xA000
+C 0x5AB4 el banco 7 a 0x6000
+C 0x5AB9 el banco 8 a 0x8000
+C 0x5ABF el banco 9 a 0xA000
+C 0x5AC9 el guion 0x88E8 del banco 8: 256 bytes de patrones de sprite (0x1E00-0x1EFF)
+C 0x5AD3 el banco 1 a 0x6000
+C 0x5AD8 el banco 2 a 0x8000
+C 0x5ADE el banco 3 a 0xA000
+C 0x5AED el banco 7 a 0x6000
+C 0x5AF2 el banco 8 a 0x8000
+C 0x5AF8 el banco 9 a 0xA000
+C 0x5B02 el guion 0x89B8 del banco 8: 256 bytes de patrones de sprite (0x1E00-0x1EFF)
+C 0x5B0C el banco 1 a 0x6000
+C 0x5B11 el banco 2 a 0x8000
+C 0x5B17 el banco 3 a 0xA000
+C 0x5B26 el banco 7 a 0x6000
+C 0x5B2B el banco 8 a 0x8000
+C 0x5B31 el banco 9 a 0xA000
+C 0x5B3B el guion 0x8A7E del banco 8: 256 bytes de patrones de sprite (0x1F00-0x1FFF)
+C 0x5B45 el banco 1 a 0x6000
+C 0x5B4A el banco 2 a 0x8000
+C 0x5B50 el banco 3 a 0xA000
+C 0x5B5F el banco 7 a 0x6000
+C 0x5B64 el banco 8 a 0x8000
+C 0x5B6A el banco 9 a 0xA000
+C 0x5B74 el guion 0x8B3A del banco 8: 64 bytes de patrones de sprite (0x1D20-0x1D5F)
+C 0x5B7E el banco 1 a 0x6000
+C 0x5B83 el banco 2 a 0x8000
+C 0x5B89 el banco 3 a 0xA000
+C 0x5B9B el banco 4 a 0x6000
+C 0x5BA0 el banco 5 a 0x8000
+C 0x5BA6 el banco 6 a 0xA000
+C 0x5BBD el banco 4 a 0x6000
+C 0x5BC2 el banco 5 a 0x8000
+C 0x5BC8 el banco 6 a 0xA000
+C 0x5BDB el banco 4 a 0x6000
+C 0x5BE0 el banco 5 a 0x8000
+C 0x5BE6 el banco 6 a 0xA000
+C 0x5BF3 el guion 0xB5A8 del banco 6: 1272 bytes de colores (0x0058-0x01FF 0x0858-0x09FF 0x1058-0x11FF)
+C 0x5BFD el banco 1 a 0x6000
+C 0x5C02 el banco 2 a 0x8000
+C 0x5C08 el banco 3 a 0xA000
+C 0x5C2C el banco 7 a 0x6000
+C 0x5C31 el banco 8 a 0x8000
+C 0x5C37 el banco 9 a 0xA000
+C 0x5C41 el guion 0x9846 del banco 8: 5824 bytes de colores y patrones y patrones de sprite (0x0208-0x0607 0x0A08-0x0E7F 0x1208-0x141F)
+C 0x5C4E el guion 0xA463 del banco 9: 2240 bytes de colores y patrones y patrones de sprite (0x0208-0x020F 0x02A0-0x02A7 0x02E8-0x046F)
+C 0x5C58 el banco 1 a 0x6000
+C 0x5C5D el banco 2 a 0x8000
+C 0x5C63 el banco 3 a 0xA000
+C 0x5C6E el banco 12 a 0x8000
+C 0x5C78 el banco 13 a 0xA000
+C 0x5C82 el guion 0xBAB2 del banco 13: 768 bytes de la tabla de nombres (0x3800-0x3AFF)
+C 0x5EAA el banco 10 a 0x8000
+C 0x5EB4 el banco 11 a 0xA000
+C 0x5EEF el banco 2 a 0x8000
+C 0x5EF9 el banco 3 a 0xA000
+
+# ======================================================================
+# LA PRESENTACION
+# ======================================================================
+B 0x5C95 MONTAR LA PRESENTACION. Pinta las dos pantallas -la de fondo y la del rotulo-, arranca la musica y coloca a mano los dos sprites que se mueven por ella, que son los huecos 7 y 8 de la tabla de atributos (0xEE9C y 0xEEA0). Todo lo que sigue hasta el final del banco es la maquina de estados de esta pantalla.
+L 0x5C95 monta_la_presentacion
+C 0x5C95 el fondo, con los caracteres del banco 7-8-9
+C 0x5C98 y el rotulo, con la tabla de nombres del banco 13
+C 0x5C9B la melodia de la presentacion
+C 0x5CA0 los dos contadores que llevan la cuenta de por donde va
+C 0x5CA6 y el segundo, a 1
+C 0x5CAB el paso de la animacion
+C 0x5CB0 la Y y la X del sprite 7
+C 0x5CB6 y la del 8
+C 0x5CBB el patron y el color del 7
+C 0x5CC1 y los del 8
+C 0x5CC6 dos contadores mas, de un tiron
+C 0x5CCC y dos banderas sueltas
+L 0x5CD6 presentacion_cuadro
+C 0x5CD6 lo que hay que hacer en cada cuadro pase lo que pase
+C 0x5CD9 el estado
+C 0x5CDC el 1 es el unico que sigue por aqui
+C 0x5CE0 y dentro de el, el subestado
+C 0x5CE6 el contador de cuadros
+C 0x5CE9 uno de cada ocho
+C 0x5CEC patron nuevo para el sprite 7
+C 0x5CF2 y su posicion, que sale de la tabla
+C 0x5CF8 ¿se acabo el recorrido?
+C 0x5CFC si se acabo, el paso siguiente
+L 0x5D03 presentacion_subestado_2
+C 0x5D03 el subestado 2
+C 0x5D06 avanza y mira si ha llegado
+L 0x5D0C presentacion_subestado_3
+C 0x5D0C el 3
+C 0x5D0F otra vez uno de cada ocho
+C 0x5D15 ahora el que cambia es el sprite 8
+C 0x5D1B su posicion
+C 0x5D21 ¿ha llegado?
+L 0x5D27 presentacion_subestado_4
+C 0x5D27 el 4
+C 0x5D2A 0xE0 en la Y: el sprite 8 se va de la pantalla
+C 0x5D2F un contador que baja
+C 0x5D33 y hasta que no llegue a cero no se toca nada mas
+C 0x5D34 y cuando llega, baja el otro
+L 0x5D39 presentacion_subestado_5
+C 0x5D39 avanza y mira si ha llegado
+C 0x5D3E y a cero el contador de la animacion
+
+L 0x5D46 presentacion_siguiente_subestado
+C 0x5D46 se rearma el contador de la animacion
+C 0x5D4B y se pasa al subestado siguiente
+L 0x5D50 presentacion_estado_2
+C 0x5D50 el tercer contador
+C 0x5D56 avanza y mira si ha llegado
+C 0x5D5A los dos sprites, a la esquina de arriba
+L 0x5D63 presentacion_se_van_volando
+C 0x5D63 el subestado 1
+C 0x5D66 uno de cada dos cuadros
+C 0x5D6C la Y y la X del sprite 7, de una vez
+C 0x5D71 cinco a la derecha
+C 0x5D75 y dos hacia abajo
+C 0x5D7C lo mismo con el 8
+C 0x5D8C y un contador que dice cuanto dura el vuelo
+C 0x5D90 mientras no llegue a cero, siguen andando
+C 0x5D91 0xE0 en la Y
+C 0x5D93 al sprite 7
+C 0x5D97 y de cuatro en cuatro se llega al 8
+C 0x5D9C el contador a cero
+L 0x5DA5 presentacion_estado_siguiente
+C 0x5DA5 al estado siguiente
+L 0x5DAA presentacion_escribe_los_rotulos
+B 0x5DAA LOS ROTULOS DE LA PRESENTACION. Uno cada ocho cuadros, sacando el puntero de la tabla de 0x5E3C con el contador de 0xE155 y pasandoselo al escritor de texto del banco 1. Son DIEZ: cuando el contador llega a diez se acaba y se pasa al estado siguiente.
+C 0x5DAA el contador de cuadros
+C 0x5DAD uno de cada ocho
+C 0x5DB0 por que rotulo va
+C 0x5DB3 la tabla de punteros
+C 0x5DB6 dos bytes por entrada
+C 0x5DBC el escritor de texto, en el banco 1
+C 0x5DBF y el siguiente
+C 0x5DC4 diez son todos
+C 0x5DC7 se reinicia el subestado
+C 0x5DCA y se pasa de estado
+B 0x5DCF EL CENTELLEO DE LAS ESTRELLAS, Y DE DONDE SALE EL AZAR. Uno de cada cuatro cuadros se enciende o se apaga alguna de las estrellas del cielo, y para elegir cual no hay generador de numeros aleatorios: se lee el REGISTRO R del Z80. R es el contador de refresco de la memoria, que va subiendo solo con cada instruccion que se ejecuta, asi que su valor en un instante cualquiera no hay quien lo prevea. Se le dan cuatro vueltas para mezclar los bits de arriba con los de abajo y se cruza con el contador de cuadros.
+L 0x5DCF centellean_las_estrellas
+C 0x5DCF el contador de cuadros
+C 0x5DD2 uno de cada cuatro
+C 0x5DD5 la bandera de si toca encender o apagar
+C 0x5DDB EL AZAR: el registro de refresco del Z80, que nadie puede predecir
+C 0x5DDD cuatro vueltas para que los bits de arriba cuenten
+C 0x5DE1 y se cruza con el contador de cuadros
+C 0x5DE5 que quedan dos bits: una estrella de cuatro
+
+C 0x5DE7 y esa es la estrella que toca
+C 0x5DEA la tabla de las cuatro estrellas
+C 0x5DED cuatro bytes por entrada
+C 0x5DF1 que se copian a la RAM de trabajo
+C 0x5DF9 0xFF: el contador empieza dado la vuelta
+C 0x5DFE y se pasa a la fase de encender
+L 0x5E03 estrella_paso_a_paso
+C 0x5E03 el paso del centelleo
+C 0x5E08 son tres, y al tercero se acaba
+C 0x5E0C el puntero a los tres caracteres de la estrella
+C 0x5E0F el que toca ahora
+C 0x5E13 y donde va en la VRAM, que tambien venia en la entrada
+C 0x5E16 BIOS WRTVRM
+L 0x5E19 estrella_acabada
+C 0x5E19 vuelta a elegir estrella
+L 0x5E1E posicion_del_sprite
+C 0x5E1E por donde va el recorrido
+C 0x5E21 la tabla de ocho posiciones
+C 0x5E27 el byte bajo sale de la tabla
+C 0x5E28 y el alto es siempre 7
+L 0x5E2B avanza_el_recorrido
+C 0x5E2B el paso del recorrido
+C 0x5E30 contra el tope, que cambia segun el tramo
+C 0x5E33 y se vuelve con el cero puesto si ha llegado
+L 0x5E35 baja_el_contador
+C 0x5E35 el contador de la presentacion, un cuadro menos
+D 0x5E3A 0x5E3C tope_de_los_recorridos  Los dos topes que 0x5E2B compara: 4 y 11.
+F 0x5E3A 2
+D 0x5E3C 0x5E50 rotulos_de_la_presentacion  Diez punteros a los textos del banco 3, que 0x5DB3 recorre con el contador de 0xE155. El orden es simetrico -0xB3B7, 0xB3C1, 0xB3CB, 0xB3D6, 0xB3EA y luego los mismos al reves- porque el rotulo sale y vuelve a entrar; el decimo, 0xB3FE, es el que cierra.
+F 0x5E3C w1
+D 0x5E50 0x5E60 las_cuatro_estrellas  Cuatro entradas de cuatro bytes, que 0x5DEA copia enteras a 0xE151: los dos primeros son el puntero a los tres caracteres del centelleo y los dos ultimos la direccion de VRAM donde va. Las dos parejas de punteros se repiten -0x5E60 y 0x5E63- porque lo que cambia entre unas estrellas y otras es DONDE estan, no como parpadean.
+F 0x5E50 w1,w1
+D 0x5E60 0x5E66 caracteres_del_centelleo  Dos tiras de tres caracteres: 0x9E 0x9F 0x51 y 0xA1 0x50 0xA0. Son los tres pasos del parpadeo de una estrella.
+F 0x5E60 3
+D 0x5E66 0x5E6E recorrido_del_sprite  Ocho posiciones, que son el byte bajo de la direccion de VRAM; el alto lo pone a mano 0x5E28. Van 0x10, 0x14, 0x18, 0x1C, 0x20, 0x24, 0x20, 0x1C: sube y baja.
+F 0x5E66 8
+
+# ======================================================================
+# LOS ROTULOS QUE SUBEN
+# ======================================================================
+B 0x5E6E EL TEXTO QUE SUBE. Es el final de la presentacion, y la forma de hacerlo es la mas directa que hay: el espejo de pantalla que vive en la RAM se copia sobre si mismo 32 bytes mas abajo, que es UNA FILA, y en la fila que queda libre abajo se escribe la siguiente linea de texto. Como el espejo se sube entero a la VRAM en cada cuadro, el resultado es un desplazamiento suave sin tocar el VDP para nada.
+L 0x5E6E rotulos_que_suben
+C 0x5E6E la bandera que corta la segunda mitad del cuadro
+C 0x5E73 el contador de cuadros
+C 0x5E76 uno de cada treinta y dos
+C 0x5E79 en que tramo va
+L 0x5E7F sube_una_fila
+C 0x5E7F 768 bytes: la pantalla entera
+C 0x5E82 desde 0xEBA0...
+C 0x5E85 ...a 0xEB80, o sea 32 bytes mas abajo: una fila justa
+C 0x5E8A el texto que toca
+C 0x5E8D el escritor, en el banco 1
+C 0x5E90 cuantos cuadros dura esta linea
+C 0x5E94 y mientras dure, no hay linea nueva
+C 0x5E95 cuantas lineas quedan
+C 0x5E99 cuando no queda ninguna, se acabo
+C 0x5E9E la lista de lineas
+C 0x5EA1 dos bytes por entrada
+C 0x5EBB el primer byte de la linea dice cuanto dura
+C 0x5EC1 y el resto, al escritor
+L 0x5EC4 rotulos_otro_tramo
+C 0x5EC6 un contador de espera
+C 0x5ECB veinticuatro lineas
+C 0x5ED0 y una de duracion, para que la primera salga ya
+C 0x5ED5 la lista de lineas de este tramo
+
+# --- El protocolo del mapper, paso a paso. La explicacion larga esta en la
+# cabecera de 0x47E2; aqui van solo las anotaciones.
+C 0x47E2 sin interrupciones mientras cambia el mapa
+C 0x47E3 HL va a apuntar a las copias
+C 0x47E4 las tres copias, seguidas
+C 0x47EC apuntado en 0xF0F1
+C 0x47F1 la copia siguiente
+C 0x47F2 apuntado en 0xF0F2
+C 0x47F7 la copia siguiente
+C 0x47F8 apuntado en 0xF0F3
+C 0x47F9 HL, como estaba
+C 0x47FA el mapa ya esta entero
+C 0x4801 sin interrupciones mientras cambia el mapa
+C 0x4802 HL va a apuntar a las copias
+C 0x4803 las tres copias, seguidas
+C 0x480B apuntado en 0xF0F1
+C 0x4810 la copia siguiente
+C 0x4811 apuntado en 0xF0F2
+C 0x4816 la copia siguiente
+C 0x4817 apuntado en 0xF0F3
+C 0x4818 HL, como estaba
+C 0x4819 el mapa ya esta entero
+C 0x481B sin interrupciones mientras cambia el mapa
+C 0x481C HL va a apuntar a las copias
+C 0x481D las tres copias, seguidas
+C 0x4825 apuntado en 0xF0F1
+C 0x482A la copia siguiente
+C 0x482B apuntado en 0xF0F2
+C 0x4830 la copia siguiente
+C 0x4831 apuntado en 0xF0F3
+C 0x4832 HL, como estaba
+C 0x4833 el mapa ya esta entero
+C 0x4881 sin interrupciones mientras cambia el mapa
+C 0x4882 HL va a apuntar a las copias
+C 0x4883 las tres copias, seguidas
+C 0x488B apuntado en 0xF0F1
+C 0x4890 la copia siguiente
+C 0x4891 apuntado en 0xF0F2
+C 0x4896 la copia siguiente
+C 0x4897 apuntado en 0xF0F3
+C 0x4898 HL, como estaba
+C 0x4899 el mapa ya esta entero
+C 0x489F sin interrupciones mientras cambia el mapa
+C 0x48A0 HL va a apuntar a las copias
+C 0x48A1 las tres copias, seguidas
+C 0x48A9 apuntado en 0xF0F1
+C 0x48AE la copia siguiente
+C 0x48AF apuntado en 0xF0F2
+C 0x48B4 la copia siguiente
+C 0x48B5 apuntado en 0xF0F3
+C 0x48B6 HL, como estaba
+C 0x48B7 el mapa ya esta entero
+C 0x48C3 sin interrupciones mientras cambia el mapa
+C 0x48C4 HL va a apuntar a las copias
+C 0x48C5 las tres copias, seguidas
+C 0x48CD apuntado en 0xF0F1
+C 0x48D2 la copia siguiente
+C 0x48D3 apuntado en 0xF0F2
+C 0x48D8 la copia siguiente
+C 0x48D9 apuntado en 0xF0F3
+C 0x48DA HL, como estaba
+C 0x48DB el mapa ya esta entero
+C 0x48E2 sin interrupciones mientras cambia el mapa
+C 0x48E3 HL va a apuntar a las copias
+C 0x48E4 las tres copias, seguidas
+C 0x48EC apuntado en 0xF0F1
+C 0x48F1 la copia siguiente
+C 0x48F2 apuntado en 0xF0F2
+C 0x48F7 la copia siguiente
+C 0x48F8 apuntado en 0xF0F3
+C 0x48F9 HL, como estaba
+C 0x48FA el mapa ya esta entero
+C 0x48FC sin interrupciones mientras cambia el mapa
+C 0x48FD HL va a apuntar a las copias
+C 0x48FE las tres copias, seguidas
+C 0x4906 apuntado en 0xF0F1
+C 0x490B la copia siguiente
+C 0x490C apuntado en 0xF0F2
+C 0x4911 la copia siguiente
+C 0x4912 apuntado en 0xF0F3
+C 0x4913 HL, como estaba
+C 0x4914 el mapa ya esta entero
+C 0x497B sin interrupciones mientras cambia el mapa
+C 0x497C HL va a apuntar a las copias
+C 0x497D las tres copias, seguidas
+C 0x4985 apuntado en 0xF0F1
+C 0x498A la copia siguiente
+C 0x498B apuntado en 0xF0F2
+C 0x4990 la copia siguiente
+C 0x4991 apuntado en 0xF0F3
+C 0x4992 HL, como estaba
+C 0x4993 el mapa ya esta entero
+C 0x4995 sin interrupciones mientras cambia el mapa
+C 0x4996 HL va a apuntar a las copias
+C 0x4997 las tres copias, seguidas
+C 0x499F apuntado en 0xF0F1
+C 0x49A4 la copia siguiente
+C 0x49A5 apuntado en 0xF0F2
+C 0x49AA la copia siguiente
+C 0x49AB apuntado en 0xF0F3
+C 0x49AC HL, como estaba
+C 0x49AD el mapa ya esta entero
+C 0x49D2 sin interrupciones mientras cambia el mapa
+C 0x49D3 HL va a apuntar a las copias
+C 0x49D4 las tres copias, seguidas
+C 0x49DC apuntado en 0xF0F1
+C 0x49E1 la copia siguiente
+C 0x49E2 apuntado en 0xF0F2
+C 0x49E7 la copia siguiente
+C 0x49E8 apuntado en 0xF0F3
+C 0x49E9 HL, como estaba
+C 0x49EA el mapa ya esta entero
+C 0x49FC sin interrupciones mientras cambia el mapa
+C 0x49FD HL va a apuntar a las copias
+C 0x49FE las tres copias, seguidas
+C 0x4A06 apuntado en 0xF0F1
+C 0x4A0B la copia siguiente
+C 0x4A0C apuntado en 0xF0F2
+C 0x4A11 la copia siguiente
+C 0x4A12 apuntado en 0xF0F3
+C 0x4A13 HL, como estaba
+C 0x4A14 el mapa ya esta entero
+C 0x4A6F sin interrupciones mientras cambia el mapa
+C 0x4A70 HL va a apuntar a las copias
+C 0x4A71 las tres copias, seguidas
+C 0x4A79 apuntado en 0xF0F1
+C 0x4A7E la copia siguiente
+C 0x4A7F apuntado en 0xF0F2
+C 0x4A84 la copia siguiente
+C 0x4A85 apuntado en 0xF0F3
+C 0x4A86 HL, como estaba
+C 0x4A87 el mapa ya esta entero
+C 0x4BBF sin interrupciones mientras cambia el mapa
+C 0x4BC0 HL va a apuntar a las copias
+C 0x4BC1 las tres copias, seguidas
+C 0x4BC9 apuntado en 0xF0F1
+C 0x4BCE la copia siguiente
+C 0x4BCF apuntado en 0xF0F2
+C 0x4BD4 la copia siguiente
+C 0x4BD5 apuntado en 0xF0F3
+C 0x4BD6 HL, como estaba
+C 0x4BD7 el mapa ya esta entero
+C 0x4C1E sin interrupciones mientras cambia el mapa
+C 0x4C1F HL va a apuntar a las copias
+C 0x4C20 las tres copias, seguidas
+C 0x4C28 apuntado en 0xF0F1
+C 0x4C2D la copia siguiente
+C 0x4C2E apuntado en 0xF0F2
+C 0x4C33 la copia siguiente
+C 0x4C34 apuntado en 0xF0F3
+C 0x4C35 HL, como estaba
+C 0x4C36 el mapa ya esta entero
+C 0x4C38 sin interrupciones mientras cambia el mapa
+C 0x4C39 HL va a apuntar a las copias
+C 0x4C3A las tres copias, seguidas
+C 0x4C42 apuntado en 0xF0F1
+C 0x4C47 la copia siguiente
+C 0x4C48 apuntado en 0xF0F2
+C 0x4C4D la copia siguiente
+C 0x4C4E apuntado en 0xF0F3
+C 0x4C4F HL, como estaba
+C 0x4C50 el mapa ya esta entero
+C 0x4CB7 sin interrupciones mientras cambia el mapa
+C 0x4CB8 HL va a apuntar a las copias
+C 0x4CB9 las tres copias, seguidas
+C 0x4CC1 apuntado en 0xF0F1
+C 0x4CC6 la copia siguiente
+C 0x4CC7 apuntado en 0xF0F2
+C 0x4CCC la copia siguiente
+C 0x4CCD apuntado en 0xF0F3
+C 0x4CCE HL, como estaba
+C 0x4CCF el mapa ya esta entero
+C 0x4CD7 sin interrupciones mientras cambia el mapa
+C 0x4CD8 HL va a apuntar a las copias
+C 0x4CD9 las tres copias, seguidas
+C 0x4CE1 apuntado en 0xF0F1
+C 0x4CE6 la copia siguiente
+C 0x4CE7 apuntado en 0xF0F2
+C 0x4CEC la copia siguiente
+C 0x4CED apuntado en 0xF0F3
+C 0x4CEE HL, como estaba
+C 0x4CEF el mapa ya esta entero
+C 0x4D65 sin interrupciones mientras cambia el mapa
+C 0x4D66 HL va a apuntar a las copias
+C 0x4D67 las tres copias, seguidas
+C 0x4D6F apuntado en 0xF0F1
+C 0x4D74 la copia siguiente
+C 0x4D75 apuntado en 0xF0F2
+C 0x4D7A la copia siguiente
+C 0x4D7B apuntado en 0xF0F3
+C 0x4D7C HL, como estaba
+C 0x4D7D el mapa ya esta entero
+C 0x4D85 sin interrupciones mientras cambia el mapa
+C 0x4D86 HL va a apuntar a las copias
+C 0x4D87 las tres copias, seguidas
+C 0x4D8F apuntado en 0xF0F1
+C 0x4D94 la copia siguiente
+C 0x4D95 apuntado en 0xF0F2
+C 0x4D9A la copia siguiente
+C 0x4D9B apuntado en 0xF0F3
+C 0x4D9C HL, como estaba
+C 0x4D9D el mapa ya esta entero
+C 0x4E00 sin interrupciones mientras cambia el mapa
+C 0x4E01 HL va a apuntar a las copias
+C 0x4E02 las tres copias, seguidas
+C 0x4E0A apuntado en 0xF0F1
+C 0x4E0F la copia siguiente
+C 0x4E10 apuntado en 0xF0F2
+C 0x4E15 la copia siguiente
+C 0x4E16 apuntado en 0xF0F3
+C 0x4E17 HL, como estaba
+C 0x4E18 el mapa ya esta entero
+C 0x4E20 sin interrupciones mientras cambia el mapa
+C 0x4E21 HL va a apuntar a las copias
+C 0x4E22 las tres copias, seguidas
+C 0x4E2A apuntado en 0xF0F1
+C 0x4E2F la copia siguiente
+C 0x4E30 apuntado en 0xF0F2
+C 0x4E35 la copia siguiente
+C 0x4E36 apuntado en 0xF0F3
+C 0x4E37 HL, como estaba
+C 0x4E38 el mapa ya esta entero
+C 0x4E9C sin interrupciones mientras cambia el mapa
+C 0x4E9D HL va a apuntar a las copias
+C 0x4E9E las tres copias, seguidas
+C 0x4EA6 apuntado en 0xF0F1
+C 0x4EAB la copia siguiente
+C 0x4EAC apuntado en 0xF0F2
+C 0x4EB1 la copia siguiente
+C 0x4EB2 apuntado en 0xF0F3
+C 0x4EB3 HL, como estaba
+C 0x4EB4 el mapa ya esta entero
+C 0x4EC5 sin interrupciones mientras cambia el mapa
+C 0x4EC6 HL va a apuntar a las copias
+C 0x4EC7 las tres copias, seguidas
+C 0x4ECF apuntado en 0xF0F1
+C 0x4ED4 la copia siguiente
+C 0x4ED5 apuntado en 0xF0F2
+C 0x4EDA la copia siguiente
+C 0x4EDB apuntado en 0xF0F3
+C 0x4EDC HL, como estaba
+C 0x4EDD el mapa ya esta entero
+C 0x4F41 sin interrupciones mientras cambia el mapa
+C 0x4F42 HL va a apuntar a las copias
+C 0x4F43 las tres copias, seguidas
+C 0x4F4B apuntado en 0xF0F1
+C 0x4F50 la copia siguiente
+C 0x4F51 apuntado en 0xF0F2
+C 0x4F56 la copia siguiente
+C 0x4F57 apuntado en 0xF0F3
+C 0x4F58 HL, como estaba
+C 0x4F59 el mapa ya esta entero
+C 0x4F61 sin interrupciones mientras cambia el mapa
+C 0x4F62 HL va a apuntar a las copias
+C 0x4F63 las tres copias, seguidas
+C 0x4F6B apuntado en 0xF0F1
+C 0x4F70 la copia siguiente
+C 0x4F71 apuntado en 0xF0F2
+C 0x4F76 la copia siguiente
+C 0x4F77 apuntado en 0xF0F3
+C 0x4F78 HL, como estaba
+C 0x4F79 el mapa ya esta entero
+C 0x4F92 sin interrupciones mientras cambia el mapa
+C 0x4F93 HL va a apuntar a las copias
+C 0x4F94 las tres copias, seguidas
+C 0x4F9C apuntado en 0xF0F1
+C 0x4FA1 la copia siguiente
+C 0x4FA2 apuntado en 0xF0F2
+C 0x4FA7 la copia siguiente
+C 0x4FA8 apuntado en 0xF0F3
+C 0x4FA9 HL, como estaba
+C 0x4FAA el mapa ya esta entero
+C 0x4FB6 sin interrupciones mientras cambia el mapa
+C 0x4FB7 HL va a apuntar a las copias
+C 0x4FB8 las tres copias, seguidas
+C 0x4FC0 apuntado en 0xF0F1
+C 0x4FC5 la copia siguiente
+C 0x4FC6 apuntado en 0xF0F2
+C 0x4FCB la copia siguiente
+C 0x4FCC apuntado en 0xF0F3
+C 0x4FCD HL, como estaba
+C 0x4FCE el mapa ya esta entero
+C 0x5013 sin interrupciones mientras cambia el mapa
+C 0x5014 HL va a apuntar a las copias
+C 0x5015 las tres copias, seguidas
+C 0x501D apuntado en 0xF0F1
+C 0x5022 la copia siguiente
+C 0x5023 apuntado en 0xF0F2
+C 0x5028 la copia siguiente
+C 0x5029 apuntado en 0xF0F3
+C 0x502A HL, como estaba
+C 0x502B el mapa ya esta entero
+C 0x5033 sin interrupciones mientras cambia el mapa
+C 0x5034 HL va a apuntar a las copias
+C 0x5035 las tres copias, seguidas
+C 0x503D apuntado en 0xF0F1
+C 0x5042 la copia siguiente
+C 0x5043 apuntado en 0xF0F2
+C 0x5048 la copia siguiente
+C 0x5049 apuntado en 0xF0F3
+C 0x504A HL, como estaba
+C 0x504B el mapa ya esta entero
+C 0x5090 sin interrupciones mientras cambia el mapa
+C 0x5091 HL va a apuntar a las copias
+C 0x5092 las tres copias, seguidas
+C 0x509A apuntado en 0xF0F1
+C 0x509F la copia siguiente
+C 0x50A0 apuntado en 0xF0F2
+C 0x50A5 la copia siguiente
+C 0x50A6 apuntado en 0xF0F3
+C 0x50A7 HL, como estaba
+C 0x50A8 el mapa ya esta entero
+C 0x50B0 sin interrupciones mientras cambia el mapa
+C 0x50B1 HL va a apuntar a las copias
+C 0x50B2 las tres copias, seguidas
+C 0x50BA apuntado en 0xF0F1
+C 0x50BF la copia siguiente
+C 0x50C0 apuntado en 0xF0F2
+C 0x50C5 la copia siguiente
+C 0x50C6 apuntado en 0xF0F3
+C 0x50C7 HL, como estaba
+C 0x50C8 el mapa ya esta entero
+C 0x510D sin interrupciones mientras cambia el mapa
+C 0x510E HL va a apuntar a las copias
+C 0x510F las tres copias, seguidas
+C 0x5117 apuntado en 0xF0F1
+C 0x511C la copia siguiente
+C 0x511D apuntado en 0xF0F2
+C 0x5122 la copia siguiente
+C 0x5123 apuntado en 0xF0F3
+C 0x5124 HL, como estaba
+C 0x5125 el mapa ya esta entero
+C 0x512D sin interrupciones mientras cambia el mapa
+C 0x512E HL va a apuntar a las copias
+C 0x512F las tres copias, seguidas
+C 0x5137 apuntado en 0xF0F1
+C 0x513C la copia siguiente
+C 0x513D apuntado en 0xF0F2
+C 0x5142 la copia siguiente
+C 0x5143 apuntado en 0xF0F3
+C 0x5144 HL, como estaba
+C 0x5145 el mapa ya esta entero
+C 0x514C sin interrupciones mientras cambia el mapa
+C 0x514D HL va a apuntar a las copias
+C 0x514E las tres copias, seguidas
+C 0x5156 apuntado en 0xF0F1
+C 0x515B la copia siguiente
+C 0x515C apuntado en 0xF0F2
+C 0x5161 la copia siguiente
+C 0x5162 apuntado en 0xF0F3
+C 0x5163 HL, como estaba
+C 0x5164 el mapa ya esta entero
+C 0x5178 sin interrupciones mientras cambia el mapa
+C 0x5179 HL va a apuntar a las copias
+C 0x517A las tres copias, seguidas
+C 0x5182 apuntado en 0xF0F1
+C 0x5187 la copia siguiente
+C 0x5188 apuntado en 0xF0F2
+C 0x518D la copia siguiente
+C 0x518E apuntado en 0xF0F3
+C 0x518F HL, como estaba
+C 0x5190 el mapa ya esta entero
+C 0x51B3 sin interrupciones mientras cambia el mapa
+C 0x51B4 HL va a apuntar a las copias
+C 0x51B5 las tres copias, seguidas
+C 0x51BD apuntado en 0xF0F1
+C 0x51C2 la copia siguiente
+C 0x51C3 apuntado en 0xF0F2
+C 0x51C8 la copia siguiente
+C 0x51C9 apuntado en 0xF0F3
+C 0x51CA HL, como estaba
+C 0x51CB el mapa ya esta entero
+C 0x51CD sin interrupciones mientras cambia el mapa
+C 0x51CE HL va a apuntar a las copias
+C 0x51CF las tres copias, seguidas
+C 0x51D7 apuntado en 0xF0F1
+C 0x51DC la copia siguiente
+C 0x51DD apuntado en 0xF0F2
+C 0x51E2 la copia siguiente
+C 0x51E3 apuntado en 0xF0F3
+C 0x51E4 HL, como estaba
+C 0x51E5 el mapa ya esta entero
+C 0x51F8 sin interrupciones mientras cambia el mapa
+C 0x51F9 HL va a apuntar a las copias
+C 0x51FA las tres copias, seguidas
+C 0x5202 apuntado en 0xF0F1
+C 0x5207 la copia siguiente
+C 0x5208 apuntado en 0xF0F2
+C 0x520D la copia siguiente
+C 0x520E apuntado en 0xF0F3
+C 0x520F HL, como estaba
+C 0x5210 el mapa ya esta entero
+C 0x5212 sin interrupciones mientras cambia el mapa
+C 0x5213 HL va a apuntar a las copias
+C 0x5214 las tres copias, seguidas
+C 0x521C apuntado en 0xF0F1
+C 0x5221 la copia siguiente
+C 0x5222 apuntado en 0xF0F2
+C 0x5227 la copia siguiente
+C 0x5228 apuntado en 0xF0F3
+C 0x5229 HL, como estaba
+C 0x522A el mapa ya esta entero
+C 0x523C sin interrupciones mientras cambia el mapa
+C 0x523D HL va a apuntar a las copias
+C 0x523E las tres copias, seguidas
+C 0x5246 apuntado en 0xF0F1
+C 0x524B la copia siguiente
+C 0x524C apuntado en 0xF0F2
+C 0x5251 la copia siguiente
+C 0x5252 apuntado en 0xF0F3
+C 0x5253 HL, como estaba
+C 0x5254 el mapa ya esta entero
+C 0x5256 sin interrupciones mientras cambia el mapa
+C 0x5257 HL va a apuntar a las copias
+C 0x5258 las tres copias, seguidas
+C 0x5260 apuntado en 0xF0F1
+C 0x5265 la copia siguiente
+C 0x5266 apuntado en 0xF0F2
+C 0x526B la copia siguiente
+C 0x526C apuntado en 0xF0F3
+C 0x526D HL, como estaba
+C 0x526E el mapa ya esta entero
+C 0x5280 sin interrupciones mientras cambia el mapa
+C 0x5281 HL va a apuntar a las copias
+C 0x5282 las tres copias, seguidas
+C 0x528A apuntado en 0xF0F1
+C 0x528F la copia siguiente
+C 0x5290 apuntado en 0xF0F2
+C 0x5295 la copia siguiente
+C 0x5296 apuntado en 0xF0F3
+C 0x5297 HL, como estaba
+C 0x5298 el mapa ya esta entero
+C 0x529A sin interrupciones mientras cambia el mapa
+C 0x529B HL va a apuntar a las copias
+C 0x529C las tres copias, seguidas
+C 0x52A4 apuntado en 0xF0F1
+C 0x52A9 la copia siguiente
+C 0x52AA apuntado en 0xF0F2
+C 0x52AF la copia siguiente
+C 0x52B0 apuntado en 0xF0F3
+C 0x52B1 HL, como estaba
+C 0x52B2 el mapa ya esta entero
+C 0x52F0 sin interrupciones mientras cambia el mapa
+C 0x52F1 HL va a apuntar a las copias
+C 0x52F2 las tres copias, seguidas
+C 0x52FA apuntado en 0xF0F1
+C 0x52FF la copia siguiente
+C 0x5300 apuntado en 0xF0F2
+C 0x5305 la copia siguiente
+C 0x5306 apuntado en 0xF0F3
+C 0x5307 HL, como estaba
+C 0x5308 el mapa ya esta entero
+C 0x530A sin interrupciones mientras cambia el mapa
+C 0x530B HL va a apuntar a las copias
+C 0x530C las tres copias, seguidas
+C 0x5314 apuntado en 0xF0F1
+C 0x5319 la copia siguiente
+C 0x531A apuntado en 0xF0F2
+C 0x531F la copia siguiente
+C 0x5320 apuntado en 0xF0F3
+C 0x5321 HL, como estaba
+C 0x5322 el mapa ya esta entero
+C 0x5360 sin interrupciones mientras cambia el mapa
+C 0x5361 HL va a apuntar a las copias
+C 0x5362 las tres copias, seguidas
+C 0x536A apuntado en 0xF0F1
+C 0x536F la copia siguiente
+C 0x5370 apuntado en 0xF0F2
+C 0x5375 la copia siguiente
+C 0x5376 apuntado en 0xF0F3
+C 0x5377 HL, como estaba
+C 0x5378 el mapa ya esta entero
+C 0x537A sin interrupciones mientras cambia el mapa
+C 0x537B HL va a apuntar a las copias
+C 0x537C las tres copias, seguidas
+C 0x5384 apuntado en 0xF0F1
+C 0x5389 la copia siguiente
+C 0x538A apuntado en 0xF0F2
+C 0x538F la copia siguiente
+C 0x5390 apuntado en 0xF0F3
+C 0x5391 HL, como estaba
+C 0x5392 el mapa ya esta entero
+C 0x53B5 sin interrupciones mientras cambia el mapa
+C 0x53B6 HL va a apuntar a las copias
+C 0x53B7 las tres copias, seguidas
+C 0x53BF apuntado en 0xF0F1
+C 0x53C4 la copia siguiente
+C 0x53C5 apuntado en 0xF0F2
+C 0x53CA la copia siguiente
+C 0x53CB apuntado en 0xF0F3
+C 0x53CC HL, como estaba
+C 0x53CD el mapa ya esta entero
+C 0x53CF sin interrupciones mientras cambia el mapa
+C 0x53D0 HL va a apuntar a las copias
+C 0x53D1 las tres copias, seguidas
+C 0x53D9 apuntado en 0xF0F1
+C 0x53DE la copia siguiente
+C 0x53DF apuntado en 0xF0F2
+C 0x53E4 la copia siguiente
+C 0x53E5 apuntado en 0xF0F3
+C 0x53E6 HL, como estaba
+C 0x53E7 el mapa ya esta entero
+C 0x540A sin interrupciones mientras cambia el mapa
+C 0x540B HL va a apuntar a las copias
+C 0x540C las tres copias, seguidas
+C 0x5414 apuntado en 0xF0F1
+C 0x5419 la copia siguiente
+C 0x541A apuntado en 0xF0F2
+C 0x541F la copia siguiente
+C 0x5420 apuntado en 0xF0F3
+C 0x5421 HL, como estaba
+C 0x5422 el mapa ya esta entero
+C 0x5424 sin interrupciones mientras cambia el mapa
+C 0x5425 HL va a apuntar a las copias
+C 0x5426 las tres copias, seguidas
+C 0x542E apuntado en 0xF0F1
+C 0x5433 la copia siguiente
+C 0x5434 apuntado en 0xF0F2
+C 0x5439 la copia siguiente
+C 0x543A apuntado en 0xF0F3
+C 0x543B HL, como estaba
+C 0x543C el mapa ya esta entero
+C 0x547E sin interrupciones mientras cambia el mapa
+C 0x547F HL va a apuntar a las copias
+C 0x5480 las tres copias, seguidas
+C 0x5488 apuntado en 0xF0F1
+C 0x548D la copia siguiente
+C 0x548E apuntado en 0xF0F2
+C 0x5493 la copia siguiente
+C 0x5494 apuntado en 0xF0F3
+C 0x5495 HL, como estaba
+C 0x5496 el mapa ya esta entero
+C 0x5498 sin interrupciones mientras cambia el mapa
+C 0x5499 HL va a apuntar a las copias
+C 0x549A las tres copias, seguidas
+C 0x54A2 apuntado en 0xF0F1
+C 0x54A7 la copia siguiente
+C 0x54A8 apuntado en 0xF0F2
+C 0x54AD la copia siguiente
+C 0x54AE apuntado en 0xF0F3
+C 0x54AF HL, como estaba
+C 0x54B0 el mapa ya esta entero
+C 0x54F2 sin interrupciones mientras cambia el mapa
+C 0x54F3 HL va a apuntar a las copias
+C 0x54F4 las tres copias, seguidas
+C 0x54FC apuntado en 0xF0F1
+C 0x5501 la copia siguiente
+C 0x5502 apuntado en 0xF0F2
+C 0x5507 la copia siguiente
+C 0x5508 apuntado en 0xF0F3
+C 0x5509 HL, como estaba
+C 0x550A el mapa ya esta entero
+C 0x550C sin interrupciones mientras cambia el mapa
+C 0x550D HL va a apuntar a las copias
+C 0x550E las tres copias, seguidas
+C 0x5516 apuntado en 0xF0F1
+C 0x551B la copia siguiente
+C 0x551C apuntado en 0xF0F2
+C 0x5521 la copia siguiente
+C 0x5522 apuntado en 0xF0F3
+C 0x5523 HL, como estaba
+C 0x5524 el mapa ya esta entero
+C 0x5547 sin interrupciones mientras cambia el mapa
+C 0x5548 HL va a apuntar a las copias
+C 0x5549 las tres copias, seguidas
+C 0x5551 apuntado en 0xF0F1
+C 0x5556 la copia siguiente
+C 0x5557 apuntado en 0xF0F2
+C 0x555C la copia siguiente
+C 0x555D apuntado en 0xF0F3
+C 0x555E HL, como estaba
+C 0x555F el mapa ya esta entero
+C 0x5561 sin interrupciones mientras cambia el mapa
+C 0x5562 HL va a apuntar a las copias
+C 0x5563 las tres copias, seguidas
+C 0x556B apuntado en 0xF0F1
+C 0x5570 la copia siguiente
+C 0x5571 apuntado en 0xF0F2
+C 0x5576 la copia siguiente
+C 0x5577 apuntado en 0xF0F3
+C 0x5578 HL, como estaba
+C 0x5579 el mapa ya esta entero
+C 0x55DD sin interrupciones mientras cambia el mapa
+C 0x55DE HL va a apuntar a las copias
+C 0x55DF las tres copias, seguidas
+C 0x55E7 apuntado en 0xF0F1
+C 0x55EC la copia siguiente
+C 0x55ED apuntado en 0xF0F2
+C 0x55F2 la copia siguiente
+C 0x55F3 apuntado en 0xF0F3
+C 0x55F4 HL, como estaba
+C 0x55F5 el mapa ya esta entero
+C 0x55F7 sin interrupciones mientras cambia el mapa
+C 0x55F8 HL va a apuntar a las copias
+C 0x55F9 las tres copias, seguidas
+C 0x5601 apuntado en 0xF0F1
+C 0x5606 la copia siguiente
+C 0x5607 apuntado en 0xF0F2
+C 0x560C la copia siguiente
+C 0x560D apuntado en 0xF0F3
+C 0x560E HL, como estaba
+C 0x560F el mapa ya esta entero
+C 0x5645 sin interrupciones mientras cambia el mapa
+C 0x5646 HL va a apuntar a las copias
+C 0x5647 las tres copias, seguidas
+C 0x564F apuntado en 0xF0F1
+C 0x5654 la copia siguiente
+C 0x5655 apuntado en 0xF0F2
+C 0x565A la copia siguiente
+C 0x565B apuntado en 0xF0F3
+C 0x565C HL, como estaba
+C 0x565D el mapa ya esta entero
+C 0x5667 sin interrupciones mientras cambia el mapa
+C 0x5668 HL va a apuntar a las copias
+C 0x5669 las tres copias, seguidas
+C 0x5671 apuntado en 0xF0F1
+C 0x5676 la copia siguiente
+C 0x5677 apuntado en 0xF0F2
+C 0x567C la copia siguiente
+C 0x567D apuntado en 0xF0F3
+C 0x567E HL, como estaba
+C 0x567F el mapa ya esta entero
+C 0x5686 sin interrupciones mientras cambia el mapa
+C 0x5687 HL va a apuntar a las copias
+C 0x5688 las tres copias, seguidas
+C 0x5690 apuntado en 0xF0F1
+C 0x5695 la copia siguiente
+C 0x5696 apuntado en 0xF0F2
+C 0x569B la copia siguiente
+C 0x569C apuntado en 0xF0F3
+C 0x569D HL, como estaba
+C 0x569E el mapa ya esta entero
+C 0x56A0 sin interrupciones mientras cambia el mapa
+C 0x56A1 HL va a apuntar a las copias
+C 0x56A2 las tres copias, seguidas
+C 0x56AA apuntado en 0xF0F1
+C 0x56AF la copia siguiente
+C 0x56B0 apuntado en 0xF0F2
+C 0x56B5 la copia siguiente
+C 0x56B6 apuntado en 0xF0F3
+C 0x56B7 HL, como estaba
+C 0x56B8 el mapa ya esta entero
+C 0x56BF sin interrupciones mientras cambia el mapa
+C 0x56C0 HL va a apuntar a las copias
+C 0x56C1 las tres copias, seguidas
+C 0x56C9 apuntado en 0xF0F1
+C 0x56CE la copia siguiente
+C 0x56CF apuntado en 0xF0F2
+C 0x56D4 la copia siguiente
+C 0x56D5 apuntado en 0xF0F3
+C 0x56D6 HL, como estaba
+C 0x56D7 el mapa ya esta entero
+C 0x56D9 sin interrupciones mientras cambia el mapa
+C 0x56DA HL va a apuntar a las copias
+C 0x56DB las tres copias, seguidas
+C 0x56E3 apuntado en 0xF0F1
+C 0x56E8 la copia siguiente
+C 0x56E9 apuntado en 0xF0F2
+C 0x56EE la copia siguiente
+C 0x56EF apuntado en 0xF0F3
+C 0x56F0 HL, como estaba
+C 0x56F1 el mapa ya esta entero
+C 0x56FD sin interrupciones mientras cambia el mapa
+C 0x56FE HL va a apuntar a las copias
+C 0x56FF las tres copias, seguidas
+C 0x5707 apuntado en 0xF0F1
+C 0x570C la copia siguiente
+C 0x570D apuntado en 0xF0F2
+C 0x5712 la copia siguiente
+C 0x5713 apuntado en 0xF0F3
+C 0x5714 HL, como estaba
+C 0x5715 el mapa ya esta entero
+C 0x5717 sin interrupciones mientras cambia el mapa
+C 0x5718 HL va a apuntar a las copias
+C 0x5719 las tres copias, seguidas
+C 0x5721 apuntado en 0xF0F1
+C 0x5726 la copia siguiente
+C 0x5727 apuntado en 0xF0F2
+C 0x572C la copia siguiente
+C 0x572D apuntado en 0xF0F3
+C 0x572E HL, como estaba
+C 0x572F el mapa ya esta entero
+C 0x5736 sin interrupciones mientras cambia el mapa
+C 0x5737 HL va a apuntar a las copias
+C 0x5738 las tres copias, seguidas
+C 0x5740 apuntado en 0xF0F1
+C 0x5745 la copia siguiente
+C 0x5746 apuntado en 0xF0F2
+C 0x574B la copia siguiente
+C 0x574C apuntado en 0xF0F3
+C 0x574D HL, como estaba
+C 0x574E el mapa ya esta entero
+C 0x5750 sin interrupciones mientras cambia el mapa
+C 0x5751 HL va a apuntar a las copias
+C 0x5752 las tres copias, seguidas
+C 0x575A apuntado en 0xF0F1
+C 0x575F la copia siguiente
+C 0x5760 apuntado en 0xF0F2
+C 0x5765 la copia siguiente
+C 0x5766 apuntado en 0xF0F3
+C 0x5767 HL, como estaba
+C 0x5768 el mapa ya esta entero
+C 0x576F sin interrupciones mientras cambia el mapa
+C 0x5770 HL va a apuntar a las copias
+C 0x5771 las tres copias, seguidas
+C 0x5779 apuntado en 0xF0F1
+C 0x577E la copia siguiente
+C 0x577F apuntado en 0xF0F2
+C 0x5784 la copia siguiente
+C 0x5785 apuntado en 0xF0F3
+C 0x5786 HL, como estaba
+C 0x5787 el mapa ya esta entero
+C 0x5789 sin interrupciones mientras cambia el mapa
+C 0x578A HL va a apuntar a las copias
+C 0x578B las tres copias, seguidas
+C 0x5793 apuntado en 0xF0F1
+C 0x5798 la copia siguiente
+C 0x5799 apuntado en 0xF0F2
+C 0x579E la copia siguiente
+C 0x579F apuntado en 0xF0F3
+C 0x57A0 HL, como estaba
+C 0x57A1 el mapa ya esta entero
+C 0x57A8 sin interrupciones mientras cambia el mapa
+C 0x57A9 HL va a apuntar a las copias
+C 0x57AA las tres copias, seguidas
+C 0x57B2 apuntado en 0xF0F1
+C 0x57B7 la copia siguiente
+C 0x57B8 apuntado en 0xF0F2
+C 0x57BD la copia siguiente
+C 0x57BE apuntado en 0xF0F3
+C 0x57BF HL, como estaba
+C 0x57C0 el mapa ya esta entero
+C 0x57C2 sin interrupciones mientras cambia el mapa
+C 0x57C3 HL va a apuntar a las copias
+C 0x57C4 las tres copias, seguidas
+C 0x57CC apuntado en 0xF0F1
+C 0x57D1 la copia siguiente
+C 0x57D2 apuntado en 0xF0F2
+C 0x57D7 la copia siguiente
+C 0x57D8 apuntado en 0xF0F3
+C 0x57D9 HL, como estaba
+C 0x57DA el mapa ya esta entero
+C 0x57E1 sin interrupciones mientras cambia el mapa
+C 0x57E2 HL va a apuntar a las copias
+C 0x57E3 las tres copias, seguidas
+C 0x57EB apuntado en 0xF0F1
+C 0x57F0 la copia siguiente
+C 0x57F1 apuntado en 0xF0F2
+C 0x57F6 la copia siguiente
+C 0x57F7 apuntado en 0xF0F3
+C 0x57F8 HL, como estaba
+C 0x57F9 el mapa ya esta entero
+C 0x57FB sin interrupciones mientras cambia el mapa
+C 0x57FC HL va a apuntar a las copias
+C 0x57FD las tres copias, seguidas
+C 0x5805 apuntado en 0xF0F1
+C 0x580A la copia siguiente
+C 0x580B apuntado en 0xF0F2
+C 0x5810 la copia siguiente
+C 0x5811 apuntado en 0xF0F3
+C 0x5812 HL, como estaba
+C 0x5813 el mapa ya esta entero
+C 0x5897 sin interrupciones mientras cambia el mapa
+C 0x5898 HL va a apuntar a las copias
+C 0x5899 las tres copias, seguidas
+C 0x58A1 apuntado en 0xF0F1
+C 0x58A6 la copia siguiente
+C 0x58A7 apuntado en 0xF0F2
+C 0x58AC la copia siguiente
+C 0x58AD apuntado en 0xF0F3
+C 0x58AE HL, como estaba
+C 0x58AF el mapa ya esta entero
+C 0x58B1 sin interrupciones mientras cambia el mapa
+C 0x58B2 HL va a apuntar a las copias
+C 0x58B3 las tres copias, seguidas
+C 0x58BB apuntado en 0xF0F1
+C 0x58C0 la copia siguiente
+C 0x58C1 apuntado en 0xF0F2
+C 0x58C6 la copia siguiente
+C 0x58C7 apuntado en 0xF0F3
+C 0x58C8 HL, como estaba
+C 0x58C9 el mapa ya esta entero
+C 0x58D6 sin interrupciones mientras cambia el mapa
+C 0x58D7 HL va a apuntar a las copias
+C 0x58D8 las tres copias, seguidas
+C 0x58E0 apuntado en 0xF0F1
+C 0x58E5 la copia siguiente
+C 0x58E6 apuntado en 0xF0F2
+C 0x58EB la copia siguiente
+C 0x58EC apuntado en 0xF0F3
+C 0x58ED HL, como estaba
+C 0x58EE el mapa ya esta entero
+C 0x58F0 sin interrupciones mientras cambia el mapa
+C 0x58F1 HL va a apuntar a las copias
+C 0x58F2 las tres copias, seguidas
+C 0x58FA apuntado en 0xF0F1
+C 0x58FF la copia siguiente
+C 0x5900 apuntado en 0xF0F2
+C 0x5905 la copia siguiente
+C 0x5906 apuntado en 0xF0F3
+C 0x5907 HL, como estaba
+C 0x5908 el mapa ya esta entero
+C 0x5912 sin interrupciones mientras cambia el mapa
+C 0x5913 HL va a apuntar a las copias
+C 0x5914 las tres copias, seguidas
+C 0x591C apuntado en 0xF0F1
+C 0x5921 la copia siguiente
+C 0x5922 apuntado en 0xF0F2
+C 0x5927 la copia siguiente
+C 0x5928 apuntado en 0xF0F3
+C 0x5929 HL, como estaba
+C 0x592A el mapa ya esta entero
+C 0x592C sin interrupciones mientras cambia el mapa
+C 0x592D HL va a apuntar a las copias
+C 0x592E las tres copias, seguidas
+C 0x5936 apuntado en 0xF0F1
+C 0x593B la copia siguiente
+C 0x593C apuntado en 0xF0F2
+C 0x5941 la copia siguiente
+C 0x5942 apuntado en 0xF0F3
+C 0x5943 HL, como estaba
+C 0x5944 el mapa ya esta entero
+C 0x595A sin interrupciones mientras cambia el mapa
+C 0x595B HL va a apuntar a las copias
+C 0x595C las tres copias, seguidas
+C 0x5964 apuntado en 0xF0F1
+C 0x5969 la copia siguiente
+C 0x596A apuntado en 0xF0F2
+C 0x596F la copia siguiente
+C 0x5970 apuntado en 0xF0F3
+C 0x5971 HL, como estaba
+C 0x5972 el mapa ya esta entero
+C 0x5974 sin interrupciones mientras cambia el mapa
+C 0x5975 HL va a apuntar a las copias
+C 0x5976 las tres copias, seguidas
+C 0x597E apuntado en 0xF0F1
+C 0x5983 la copia siguiente
+C 0x5984 apuntado en 0xF0F2
+C 0x5989 la copia siguiente
+C 0x598A apuntado en 0xF0F3
+C 0x598B HL, como estaba
+C 0x598C el mapa ya esta entero
+C 0x5990 sin interrupciones mientras cambia el mapa
+C 0x5991 HL va a apuntar a las copias
+C 0x5992 las tres copias, seguidas
+C 0x599A apuntado en 0xF0F1
+C 0x599F la copia siguiente
+C 0x59A0 apuntado en 0xF0F2
+C 0x59A5 la copia siguiente
+C 0x59A6 apuntado en 0xF0F3
+C 0x59A7 HL, como estaba
+C 0x59A8 el mapa ya esta entero
+C 0x59AF sin interrupciones mientras cambia el mapa
+C 0x59B0 HL va a apuntar a las copias
+C 0x59B1 las tres copias, seguidas
+C 0x59B9 apuntado en 0xF0F1
+C 0x59BE la copia siguiente
+C 0x59BF apuntado en 0xF0F2
+C 0x59C4 la copia siguiente
+C 0x59C5 apuntado en 0xF0F3
+C 0x59C6 HL, como estaba
+C 0x59C7 el mapa ya esta entero
+C 0x59C9 sin interrupciones mientras cambia el mapa
+C 0x59CA HL va a apuntar a las copias
+C 0x59CB las tres copias, seguidas
+C 0x59D3 apuntado en 0xF0F1
+C 0x59D8 la copia siguiente
+C 0x59D9 apuntado en 0xF0F2
+C 0x59DE la copia siguiente
+C 0x59DF apuntado en 0xF0F3
+C 0x59E0 HL, como estaba
+C 0x59E1 el mapa ya esta entero
+C 0x59E8 sin interrupciones mientras cambia el mapa
+C 0x59E9 HL va a apuntar a las copias
+C 0x59EA las tres copias, seguidas
+C 0x59F2 apuntado en 0xF0F1
+C 0x59F7 la copia siguiente
+C 0x59F8 apuntado en 0xF0F2
+C 0x59FD la copia siguiente
+C 0x59FE apuntado en 0xF0F3
+C 0x59FF HL, como estaba
+C 0x5A00 el mapa ya esta entero
+C 0x5A02 sin interrupciones mientras cambia el mapa
+C 0x5A03 HL va a apuntar a las copias
+C 0x5A04 las tres copias, seguidas
+C 0x5A0C apuntado en 0xF0F1
+C 0x5A11 la copia siguiente
+C 0x5A12 apuntado en 0xF0F2
+C 0x5A17 la copia siguiente
+C 0x5A18 apuntado en 0xF0F3
+C 0x5A19 HL, como estaba
+C 0x5A1A el mapa ya esta entero
+C 0x5A21 sin interrupciones mientras cambia el mapa
+C 0x5A22 HL va a apuntar a las copias
+C 0x5A23 las tres copias, seguidas
+C 0x5A2B apuntado en 0xF0F1
+C 0x5A30 la copia siguiente
+C 0x5A31 apuntado en 0xF0F2
+C 0x5A36 la copia siguiente
+C 0x5A37 apuntado en 0xF0F3
+C 0x5A38 HL, como estaba
+C 0x5A39 el mapa ya esta entero
+C 0x5A3B sin interrupciones mientras cambia el mapa
+C 0x5A3C HL va a apuntar a las copias
+C 0x5A3D las tres copias, seguidas
+C 0x5A45 apuntado en 0xF0F1
+C 0x5A4A la copia siguiente
+C 0x5A4B apuntado en 0xF0F2
+C 0x5A50 la copia siguiente
+C 0x5A51 apuntado en 0xF0F3
+C 0x5A52 HL, como estaba
+C 0x5A53 el mapa ya esta entero
+C 0x5A5A sin interrupciones mientras cambia el mapa
+C 0x5A5B HL va a apuntar a las copias
+C 0x5A5C las tres copias, seguidas
+C 0x5A64 apuntado en 0xF0F1
+C 0x5A69 la copia siguiente
+C 0x5A6A apuntado en 0xF0F2
+C 0x5A6F la copia siguiente
+C 0x5A70 apuntado en 0xF0F3
+C 0x5A71 HL, como estaba
+C 0x5A72 el mapa ya esta entero
+C 0x5A74 sin interrupciones mientras cambia el mapa
+C 0x5A75 HL va a apuntar a las copias
+C 0x5A76 las tres copias, seguidas
+C 0x5A7E apuntado en 0xF0F1
+C 0x5A83 la copia siguiente
+C 0x5A84 apuntado en 0xF0F2
+C 0x5A89 la copia siguiente
+C 0x5A8A apuntado en 0xF0F3
+C 0x5A8B HL, como estaba
+C 0x5A8C el mapa ya esta entero
+C 0x5A93 sin interrupciones mientras cambia el mapa
+C 0x5A94 HL va a apuntar a las copias
+C 0x5A95 las tres copias, seguidas
+C 0x5A9D apuntado en 0xF0F1
+C 0x5AA2 la copia siguiente
+C 0x5AA3 apuntado en 0xF0F2
+C 0x5AA8 la copia siguiente
+C 0x5AA9 apuntado en 0xF0F3
+C 0x5AAA HL, como estaba
+C 0x5AAB el mapa ya esta entero
+C 0x5AAD sin interrupciones mientras cambia el mapa
+C 0x5AAE HL va a apuntar a las copias
+C 0x5AAF las tres copias, seguidas
+C 0x5AB7 apuntado en 0xF0F1
+C 0x5ABC la copia siguiente
+C 0x5ABD apuntado en 0xF0F2
+C 0x5AC2 la copia siguiente
+C 0x5AC3 apuntado en 0xF0F3
+C 0x5AC4 HL, como estaba
+C 0x5AC5 el mapa ya esta entero
+C 0x5ACC sin interrupciones mientras cambia el mapa
+C 0x5ACD HL va a apuntar a las copias
+C 0x5ACE las tres copias, seguidas
+C 0x5AD6 apuntado en 0xF0F1
+C 0x5ADB la copia siguiente
+C 0x5ADC apuntado en 0xF0F2
+C 0x5AE1 la copia siguiente
+C 0x5AE2 apuntado en 0xF0F3
+C 0x5AE3 HL, como estaba
+C 0x5AE4 el mapa ya esta entero
+C 0x5AE6 sin interrupciones mientras cambia el mapa
+C 0x5AE7 HL va a apuntar a las copias
+C 0x5AE8 las tres copias, seguidas
+C 0x5AF0 apuntado en 0xF0F1
+C 0x5AF5 la copia siguiente
+C 0x5AF6 apuntado en 0xF0F2
+C 0x5AFB la copia siguiente
+C 0x5AFC apuntado en 0xF0F3
+C 0x5AFD HL, como estaba
+C 0x5AFE el mapa ya esta entero
+C 0x5B05 sin interrupciones mientras cambia el mapa
+C 0x5B06 HL va a apuntar a las copias
+C 0x5B07 las tres copias, seguidas
+C 0x5B0F apuntado en 0xF0F1
+C 0x5B14 la copia siguiente
+C 0x5B15 apuntado en 0xF0F2
+C 0x5B1A la copia siguiente
+C 0x5B1B apuntado en 0xF0F3
+C 0x5B1C HL, como estaba
+C 0x5B1D el mapa ya esta entero
+C 0x5B1F sin interrupciones mientras cambia el mapa
+C 0x5B20 HL va a apuntar a las copias
+C 0x5B21 las tres copias, seguidas
+C 0x5B29 apuntado en 0xF0F1
+C 0x5B2E la copia siguiente
+C 0x5B2F apuntado en 0xF0F2
+C 0x5B34 la copia siguiente
+C 0x5B35 apuntado en 0xF0F3
+C 0x5B36 HL, como estaba
+C 0x5B37 el mapa ya esta entero
+C 0x5B3E sin interrupciones mientras cambia el mapa
+C 0x5B3F HL va a apuntar a las copias
+C 0x5B40 las tres copias, seguidas
+C 0x5B48 apuntado en 0xF0F1
+C 0x5B4D la copia siguiente
+C 0x5B4E apuntado en 0xF0F2
+C 0x5B53 la copia siguiente
+C 0x5B54 apuntado en 0xF0F3
+C 0x5B55 HL, como estaba
+C 0x5B56 el mapa ya esta entero
+C 0x5B58 sin interrupciones mientras cambia el mapa
+C 0x5B59 HL va a apuntar a las copias
+C 0x5B5A las tres copias, seguidas
+C 0x5B62 apuntado en 0xF0F1
+C 0x5B67 la copia siguiente
+C 0x5B68 apuntado en 0xF0F2
+C 0x5B6D la copia siguiente
+C 0x5B6E apuntado en 0xF0F3
+C 0x5B6F HL, como estaba
+C 0x5B70 el mapa ya esta entero
+C 0x5B77 sin interrupciones mientras cambia el mapa
+C 0x5B78 HL va a apuntar a las copias
+C 0x5B79 las tres copias, seguidas
+C 0x5B81 apuntado en 0xF0F1
+C 0x5B86 la copia siguiente
+C 0x5B87 apuntado en 0xF0F2
+C 0x5B8C la copia siguiente
+C 0x5B8D apuntado en 0xF0F3
+C 0x5B8E HL, como estaba
+C 0x5B8F el mapa ya esta entero
+C 0x5B94 sin interrupciones mientras cambia el mapa
+C 0x5B95 HL va a apuntar a las copias
+C 0x5B96 las tres copias, seguidas
+C 0x5B9E apuntado en 0xF0F1
+C 0x5BA3 la copia siguiente
+C 0x5BA4 apuntado en 0xF0F2
+C 0x5BA9 la copia siguiente
+C 0x5BAA apuntado en 0xF0F3
+C 0x5BAB HL, como estaba
+C 0x5BAC el mapa ya esta entero
+C 0x5BB6 sin interrupciones mientras cambia el mapa
+C 0x5BB7 HL va a apuntar a las copias
+C 0x5BB8 las tres copias, seguidas
+C 0x5BC0 apuntado en 0xF0F1
+C 0x5BC5 la copia siguiente
+C 0x5BC6 apuntado en 0xF0F2
+C 0x5BCB la copia siguiente
+C 0x5BCC apuntado en 0xF0F3
+C 0x5BCD HL, como estaba
+C 0x5BCE el mapa ya esta entero
+C 0x5BD4 sin interrupciones mientras cambia el mapa
+C 0x5BD5 HL va a apuntar a las copias
+C 0x5BD6 las tres copias, seguidas
+C 0x5BDE apuntado en 0xF0F1
+C 0x5BE3 la copia siguiente
+C 0x5BE4 apuntado en 0xF0F2
+C 0x5BE9 la copia siguiente
+C 0x5BEA apuntado en 0xF0F3
+C 0x5BEB HL, como estaba
+C 0x5BEC el mapa ya esta entero
+C 0x5BF6 sin interrupciones mientras cambia el mapa
+C 0x5BF7 HL va a apuntar a las copias
+C 0x5BF8 las tres copias, seguidas
+C 0x5C00 apuntado en 0xF0F1
+C 0x5C05 la copia siguiente
+C 0x5C06 apuntado en 0xF0F2
+C 0x5C0B la copia siguiente
+C 0x5C0C apuntado en 0xF0F3
+C 0x5C0D HL, como estaba
+C 0x5C0E el mapa ya esta entero
+C 0x5C25 sin interrupciones mientras cambia el mapa
+C 0x5C26 HL va a apuntar a las copias
+C 0x5C27 las tres copias, seguidas
+C 0x5C2F apuntado en 0xF0F1
+C 0x5C34 la copia siguiente
+C 0x5C35 apuntado en 0xF0F2
+C 0x5C3A la copia siguiente
+C 0x5C3B apuntado en 0xF0F3
+C 0x5C3C HL, como estaba
+C 0x5C3D el mapa ya esta entero
+C 0x5C51 sin interrupciones mientras cambia el mapa
+C 0x5C52 HL va a apuntar a las copias
+C 0x5C53 las tres copias, seguidas
+C 0x5C5B apuntado en 0xF0F1
+C 0x5C60 la copia siguiente
+C 0x5C61 apuntado en 0xF0F2
+C 0x5C66 la copia siguiente
+C 0x5C67 apuntado en 0xF0F3
+C 0x5C68 HL, como estaba
+C 0x5C69 el mapa ya esta entero
+C 0x5C6B sin interrupciones mientras cambia el mapa
+C 0x5C71 y en su copia de RAM
+C 0x5C74 el mapa ya esta entero
+C 0x5C75 sin interrupciones mientras cambia el mapa
+C 0x5C7B y en su copia de RAM
+C 0x5C7E el mapa ya esta entero
+C 0x5EA7 sin interrupciones mientras cambia el mapa
+C 0x5EAD y en su copia de RAM
+C 0x5EB0 el mapa ya esta entero
+C 0x5EB1 sin interrupciones mientras cambia el mapa
+C 0x5EB7 y en su copia de RAM
+C 0x5EBA el mapa ya esta entero
+C 0x5EEC sin interrupciones mientras cambia el mapa
+C 0x5EF2 y en su copia de RAM
+C 0x5EF5 el mapa ya esta entero
+C 0x5EF6 sin interrupciones mientras cambia el mapa
+C 0x5EFC y en su copia de RAM
+C 0x5EFF el mapa ya esta entero1098 comentarios

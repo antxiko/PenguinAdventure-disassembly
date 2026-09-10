@@ -19,13 +19,13 @@ que además el listado no *mienta* sobre lo que reensambla.
 |---|---|
 | ROM | 131.072 bytes, sha256 `525608aa990e1a19285edc98dec3f0aa11339d8a17641c89df3966845d10cc6a` |
 | reensambla byte a byte | sí, los 16 bancos y la imagen entera |
-| código trazado | 30.599 bytes |
-| datos identificados | 100.473 bytes |
-| listado | 24.344 líneas |
-| puntos de entrada, cada uno con su justificación | 346 |
-| etiquetas con nombre | 0 |
-| comentarios anclados | 0 |
-| rangos de datos con explicación | 0 |
+| código trazado | 30.640 bytes |
+| datos identificados | 100.432 bytes |
+| listado | 24.637 líneas |
+| puntos de entrada, cada uno con su justificación | 345 |
+| etiquetas con nombre | 110 |
+| comentarios anclados | 2.172 |
+| rangos de datos con explicación | 13 |
 
 ## El cartucho
 
