@@ -234,7 +234,7 @@ arranca_en_la_fase_pedida:
 	and a			;40fa   ; si es cero es que no ha pedido ninguna
 	jr nz,L_4101		;40fb
 	inc a			;40fd   ; y entonces se empieza por la primera
-	ld (0e092h),a		;40fe   ; la FASE, de 1 a 13
+	ld (0e092h),a		;40fe   ; la FASE, de 1 a 24
 L_4101:
 	ld a,(0e092h)		;4101   ; y con la fase en la mano se sacan las dos cosas que dependen de ella (OJO: estas dos tablas solo cubren las trece primeras de las veinticuatro)
 	dec a			;4104   ; las tablas van desde 1, no desde 0
@@ -1338,7 +1338,7 @@ lee_los_datos_de_la_fase:
 	ld (0a000h),a		;47aa
 	ld (0f0f3h),a		;47ad   ; la copia en RAM del banco de 0xA000
 	ei			;47b0
-	ld a,(0e092h)		;47b1   ; la FASE, que va de 1 a 13
+	ld a,(0e092h)		;47b1   ; la FASE, que va de 1 a 24
 	dec a			;47b4   ; las tablas empiezan en la 1
 	ld l,a			;47b5
 	ld h,000h		;47b6

@@ -16,7 +16,7 @@ C 0xA844 la distancia a la que toca el objeto siguiente
 C 0xA848 y lo andado
 C 0xA84B DCOMPR: ¿hemos llegado?
 C 0xA84C si no, a esperar
-C 0xA84D la fase, de 1 a 13
+C 0xA84D la fase, de 1 a 24
 C 0xA850 las tablas van desde 1
 C 0xA854 la tabla de guiones, un puntero por fase
 C 0xA857 dos bytes por entrada

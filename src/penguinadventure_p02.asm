@@ -1661,7 +1661,7 @@ L_8CB0:
 	ld (0e141h),hl		;8cb7
 	xor a			;8cba
 	ld (0e143h),a		;8cbb
-	ld a,(0e092h)		;8cbe   ; la FASE, de 1 a 13
+	ld a,(0e092h)		;8cbe   ; la FASE, de 1 a 24
 	dec a			;8cc1
 	ld b,a			;8cc2
 	cp 00eh		;8cc3
@@ -2542,7 +2542,7 @@ L_966B:
 	jp 05166h		;9686
 L_9689:
 	call 05b1fh		;9689
-	ld a,(0e092h)		;968c   ; la FASE, de 1 a 13
+	ld a,(0e092h)		;968c   ; la FASE, de 1 a 24
 	dec a			;968f
 	call 04060h		;9690   ; banco 0: despacha
 

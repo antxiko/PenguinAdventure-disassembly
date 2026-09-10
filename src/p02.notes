@@ -92,7 +92,7 @@ C 0x81CC el modo en el que esta el juego
 C 0x81D2 las teclas recien pulsadas
 C 0x81DA la marca de silencio general
 C 0x82C3 el valor 1-2-3 de la fase
-C 0x82CA la FASE, de 1 a 13
+C 0x82CA la FASE, de 1 a 24
 C 0x836B el valor 1-2-3 de la fase
 C 0x8378 el DECORADO, de 0 a 9
 C 0x839B por donde va la rotacion de los sprites
@@ -117,11 +117,11 @@ C 0x8825 el modo en el que esta el juego
 C 0x88BC el valor 1-2-3 de la fase
 C 0x88F7 la variable de fase
 C 0x8966 el numero de fase tal como se pinta
-C 0x896A la FASE, de 1 a 13
+C 0x896A la FASE, de 1 a 24
 C 0x896E el valor 1-2-3 de la fase
 C 0x8A42 las teclas recien pulsadas
 C 0x8C46 el contador de cuadros
-C 0x8CBE la FASE, de 1 a 13
+C 0x8CBE la FASE, de 1 a 24
 C 0x91AD el DECORADO, de 0 a 9
 C 0x91B4 el estado de los mandos del cuadro anterior
 C 0x921B el modo en el que esta el juego
@@ -143,7 +143,7 @@ C 0x94D1 el largo de la fase
 C 0x94D8 el contador de cuadros
 C 0x94F4 el largo de la fase
 C 0x9508 las teclas recien pulsadas
-C 0x968C la FASE, de 1 a 13
+C 0x968C la FASE, de 1 a 24
 C 0x96F9 por donde va la rotacion de los sprites
 C 0x9741 el DECORADO, de 0 a 9
 C 0x9748 las teclas recien pulsadas

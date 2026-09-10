@@ -682,7 +682,7 @@ DATA_64C6:
 
 
 L_64E7:
-	ld a,(0e092h)		;64e7   ; la FASE, de 1 a 13
+	ld a,(0e092h)		;64e7   ; la FASE, de 1 a 24
 	dec a			;64ea
 	ld l,a			;64eb
 	ld h,000h		;64ec
@@ -801,7 +801,7 @@ L_6592:
 	ei			;65a5   ; el mapa ya esta entero
 	ret			;65a6
 L_65A7:
-	ld a,(0e092h)		;65a7   ; la FASE, de 1 a 13
+	ld a,(0e092h)		;65a7   ; la FASE, de 1 a 24
 	cp 00ch		;65aa
 	ld c,000h		;65ac
 	jr z,L_65C2		;65ae
@@ -977,7 +977,7 @@ lee_la_entrada_del_segundo_guion:
 	ld (0f0f3h),a		;66fe   ; y en su copia de RAM
 	ei			;6701   ; el mapa ya esta entero
 	ld hl,0ade8h		;6702   ; la tabla, un puntero por fase
-	ld a,(0e092h)		;6705   ; la FASE, de 1 a 13
+	ld a,(0e092h)		;6705   ; la FASE, de 1 a 24
 	dec a			;6708
 	call 04055h		;6709   ; banco 0: dos_por_a_mas_hl
 	ld e,(hl)			;670c   ; y ahi esta el guion de esta fase
@@ -1036,7 +1036,7 @@ L_675B:
 	jr z,el_terreno_de_esta_fase		;6762
 	ld de,080f9h		;6764   ; ...o la segunda
 el_terreno_de_esta_fase:
-	ld a,(0e092h)		;6767   ; la FASE, de 1 a 13
+	ld a,(0e092h)		;6767   ; la FASE, de 1 a 24
 	dec a			;676a
 	ld l,a			;676b
 	ld h,000h		;676c
@@ -1889,7 +1889,7 @@ L_6CC3:
 	jr z,L_6CDF		;6cd9
 	ld ix,06ff5h		;6cdb
 L_6CDF:
-	ld a,(0e092h)		;6cdf   ; la FASE, de 1 a 13
+	ld a,(0e092h)		;6cdf   ; la FASE, de 1 a 24
 	dec a			;6ce2
 	ld c,a			;6ce3
 	add a,a			;6ce4
@@ -4443,7 +4443,7 @@ L_7E7F:
 	ld hl,07ef6h		;7e93
 	call 04056h		;7e96   ; banco 0: a_mas_hl
 	ld a,(hl)			;7e99
-	ld (0e092h),a		;7e9a   ; la FASE, de 1 a 13
+	ld (0e092h),a		;7e9a   ; la FASE, de 1 a 24
 	inc hl			;7e9d
 	ld e,(hl)			;7e9e
 	inc hl			;7e9f

@@ -689,7 +689,7 @@ B 0x479D DE QUE TAMANO ES LA FASE. Mete los bancos 12 y 13 solo para leer cuatro
 L 0x479D lee_los_datos_de_la_fase
 C 0x479E el banco 12
 C 0x47A8 y el 13
-C 0x47B1 la FASE, que va de 1 a 13
+C 0x47B1 la FASE, que va de 1 a 24
 C 0x47B4 las tablas empiezan en la 1
 C 0x47B8 por cuatro, que es lo que mide cada entrada
 C 0x47BA la tabla, en el banco 13
@@ -2475,7 +2475,7 @@ C 0x5EFF el mapa ya esta entero1098 comentarios
 # tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
 # se sabe lo que dice.
 C 0x4050 el semaforo de reentrada de la interrupcion
-C 0x40FE la FASE, de 1 a 13
+C 0x40FE la FASE, de 1 a 24
 C 0x410C el numero de fase tal como se pinta
 C 0x4151 la segunda copia del banco de 0x8000, la del sonido
 C 0x4157 la segunda copia del banco de 0xA000, la del sonido

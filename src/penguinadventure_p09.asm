@@ -171,7 +171,7 @@ saca_lo_que_toque:
 	ld hl,(0e301h)		;a848   ; y lo andado
 	rst 20h			;a84b   ; DCOMPR: ¿hemos llegado?
 	ret nz			;a84c   ; si no, a esperar
-	ld a,(0e092h)		;a84d   ; la fase, de 1 a 13
+	ld a,(0e092h)		;a84d   ; la fase, de 1 a 24
 	dec a			;a850   ; las tablas van desde 1
 	ld l,a			;a851
 	ld h,000h		;a852

@@ -147,5 +147,29 @@ class Coherencia(unittest.TestCase):
         self.assertGreater(n, 0, "src/semillas.txt no tiene ninguna semilla")
 
 
+    def test_ningun_comentario_dice_trece_fases(self):
+        """El juego tiene VEINTICUATRO, y esto ya se escribio mal una vez.
+
+        La cifra de trece salia de fiarse de lo que el cartucho le declara al
+        Konami Game Master en la cabecera de 0x4010. Lo que dice el juego es
+        p02:8328, que sube (0xE092) y la compara con 0x19.
+        """
+        # Se mira SOLO el texto del comentario, no la linea entera: la propia
+        # direccion puede llevar un 13 dentro y no querer decir nada.
+        malos = []
+        for base, dirs, ficheros in os.walk(SRC):
+            for fn in ficheros:
+                if not fn.endswith((".notes", ".asm")):
+                    continue
+                ruta = os.path.join(base, fn)
+                for n, ln in enumerate(open(ruta, encoding="utf-8"), 1):
+                    if "fase" not in ln.lower():
+                        continue
+                    texto = ln.split(";")[-1] if ";" in ln else ln
+                    if re.search(r"(de )?1 a 13|trece fases", texto, re.I):
+                        malos.append("%s:%d %s" % (fn, n, ln.strip()[:90]))
+        self.assertEqual(malos, [], chr(10).join(malos))
+
+
 if __name__ == "__main__":
     unittest.main()

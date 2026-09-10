@@ -1773,7 +1773,7 @@ L_AED2:
 	and a			;aee5
 	jr z,L_AF28		;aee6
 	ld c,a			;aee8
-	ld a,(0e092h)		;aee9   ; la FASE, de 1 a 13
+	ld a,(0e092h)		;aee9   ; la FASE, de 1 a 24
 	ld de,0af50h		;aeec
 	call 0405bh		;aeef   ; banco 0: a_mas_de
 	ld a,(de)			;aef2
@@ -1794,7 +1794,7 @@ L_AF03:
 	cp 004h		;af09
 	jr z,L_AF28		;af0b
 	ld c,a			;af0d
-	ld a,(0e092h)		;af0e   ; la FASE, de 1 a 13
+	ld a,(0e092h)		;af0e   ; la FASE, de 1 a 24
 	ld de,0af50h		;af11
 	call 0405bh		;af14   ; banco 0: a_mas_de
 	ld a,(de)			;af17
@@ -1808,7 +1808,7 @@ L_AF03:
 	ld (0e536h),a		;af24
 	ret			;af27
 L_AF28:
-	ld a,(0e092h)		;af28   ; la FASE, de 1 a 13
+	ld a,(0e092h)		;af28   ; la FASE, de 1 a 24
 	ld de,0af69h		;af2b
 	call 0405bh		;af2e   ; banco 0: a_mas_de
 	ld a,(de)			;af31
@@ -3171,9 +3171,9 @@ L_B94A:
 	add a,c			;b995
 	daa			;b996
 	ld (0e091h),a		;b997   ; el numero de fase tal como se pinta
-	ld a,(0e092h)		;b99a   ; la FASE, de 1 a 13
+	ld a,(0e092h)		;b99a   ; la FASE, de 1 a 24
 	add a,c			;b99d
-	ld (0e092h),a		;b99e   ; la FASE, de 1 a 13
+	ld (0e092h),a		;b99e   ; la FASE, de 1 a 24
 	xor a			;b9a1
 	ld (0e0a6h),a		;b9a2
 	inc hl			;b9a5
@@ -3245,7 +3245,7 @@ L_B9E0:
 	call 06370h		;ba20   ; banco 1
 	call 063fdh		;ba23   ; banco 1
 	call 063bch		;ba26   ; banco 1
-	call L_BE00		;ba29
+	call prepara_lo_propio_de_la_fase		;ba29
 	jp 07db3h		;ba2c   ; banco 1
 L_BA2F:
 	ld a,024h		;ba2f
@@ -3782,12 +3782,16 @@ L_BD7C:
 	inc e			;bd86
 	djnz L_BD7C		;bd87
 	ret			;bd89
-L_BD8A:
-	ld a,(0e162h)		;bd8a
+
+; ----------------------------------------------------------------------
+; EL SEGUNDO BOTON. El bit 5 de las teclas recien pulsadas -que es el otro disparo del joystick, o su tecla- suelta algo desde la posicion del jugador: diez a la izquierda y ocho mas abajo, con el dibujo 0x34 y el color 8, y suena el efecto 0x0A. Solo uno a la vez: 0xE500 es la marca de que ya hay uno suelto.
+; ----------------------------------------------------------------------
+el_segundo_boton:
+	ld a,(0e162h)		;bd8a   ; ¿esta permitido?
 	and a			;bd8d
 	ret z			;bd8e
-	ld a,(0e203h)		;bd8f   ; por donde va la rotacion de los sprites
-	cp 003h		;bd92
+	ld a,(0e203h)		;bd8f   ; el paso de la transicion
+	cp 003h		;bd92   ; el 3, el 4, el 8 y el 10 no valen
 	ret z			;bd94
 	cp 004h		;bd95
 	ret z			;bd97
@@ -3796,228 +3800,279 @@ L_BD8A:
 	cp 00ah		;bd9b
 	ret z			;bd9d
 	ld a,(0e006h)		;bd9e   ; las teclas recien pulsadas
-	and 020h		;bda1
-	ret z			;bda3
-	ld hl,0e500h		;bda4
+	and 020h		;bda1   ; el bit 5: el segundo boton
+	ret z			;bda3   ; si no se ha pulsado, nada
+	ld hl,0e500h		;bda4   ; la marca de que ya hay uno
 	ld a,(hl)			;bda7
 	and a			;bda8
-	ret nz			;bda9
-	ld (hl),001h		;bdaa
+	ret nz			;bda9   ; y si lo hay, no sale otro
+	ld (hl),001h		;bdaa   ; queda marcado
 	inc l			;bdac
-	ld (hl),000h		;bdad
+	ld (hl),000h		;bdad   ; el contador de vida, a cero
 	inc l			;bdaf
-	ld de,(0e204h)		;bdb0   ; la X en la pantalla de lo que se maneja
+	ld de,(0e204h)		;bdb0   ; la posicion del jugador
 	ld a,e			;bdb4
-	sub 00ah		;bdb5
+	sub 00ah		;bdb5   ; diez a la izquierda
 	ld e,a			;bdb7
-	ld a,008h		;bdb8
+	ld a,008h		;bdb8   ; y ocho mas abajo
 	add a,d			;bdba
 	ld d,a			;bdbb
 	ld (hl),e			;bdbc
 	inc l			;bdbd
 	ld (hl),d			;bdbe
 	inc l			;bdbf
-	ld (hl),034h		;bdc0
+	ld (hl),034h		;bdc0   ; el dibujo
 	inc l			;bdc2
-	ld (hl),008h		;bdc3
-	ld a,00ah		;bdc5
+	ld (hl),008h		;bdc3   ; y el color
+	ld a,00ah		;bdc5   ; el efecto 0x0A
 	jp 04145h		;bdc7   ; banco 0: pide_sonido
-L_BDCA:
-	ld hl,0e500h		;bdca
+
+; ----------------------------------------------------------------------
+; MOVERLO. Va a la izquierda un pixel por cuadro y cambia de dibujo dos veces por el camino -0x34, 0x38 y 0x3C-. A los 0x18 cuadros se acaba y se borra el hueco entero.
+; ----------------------------------------------------------------------
+mueve_lo_del_segundo_boton:
+	ld hl,0e500h		;bdca   ; la marca
 	ld a,(hl)			;bdcd
 	and a			;bdce
-	ret z			;bdcf
+	ret z			;bdcf   ; si no hay ninguno, nada
 	inc l			;bdd0
-	inc (hl)			;bdd1
+	inc (hl)			;bdd1   ; un cuadro mas de vida
 	ld a,(hl)			;bdd2
 	ld c,a			;bdd3
-	cp 018h		;bdd4
-	jr z,L_BDF0		;bdd6
-	ld a,0ffh		;bdd8
+	cp 018h		;bdd4   ; a los 0x18 se acaba
+	jr z,se_acabo_lo_del_segundo_boton		;bdd6
+	ld a,0ffh		;bdd8   ; 0xFF, o sea menos uno...
 	inc l			;bdda
-	add a,(hl)			;bddb
+	add a,(hl)			;bddb   ; ...a la columna: va a la izquierda
 	ld (hl),a			;bddc
 	ld a,c			;bddd
-	cp 008h		;bdde
+	cp 008h		;bdde   ; los ocho primeros cuadros, un dibujo...
 	ld c,034h		;bde0
-	jr c,L_BDEC		;bde2
-	cp 010h		;bde4
+	jr c,guarda_el_dibujo_del_segundo_boton		;bde2
+	cp 010h		;bde4   ; ...hasta el dieciseis, otro...
 	ld c,038h		;bde6
-	jr c,L_BDEC		;bde8
-	ld c,03ch		;bdea
-L_BDEC:
+	jr c,guarda_el_dibujo_del_segundo_boton		;bde8
+	ld c,03ch		;bdea   ; ...y el resto, el tercero
+guarda_el_dibujo_del_segundo_boton:
 	inc l			;bdec
 	inc l			;bded
 	ld (hl),c			;bdee
 	ret			;bdef
-L_BDF0:
+se_acabo_lo_del_segundo_boton:
 	dec l			;bdf0
-	ld b,010h		;bdf1
+	ld b,010h		;bdf1   ; los dieciseis bytes del hueco
 	xor a			;bdf3
 	push hl			;bdf4
 	pop ix		;bdf5
-L_BDF7:
+borra_el_hueco_del_segundo_boton:
 	ld (hl),a			;bdf7
 	inc l			;bdf8
-	djnz L_BDF7		;bdf9
-	ld (ix+002h),0e0h		;bdfb
+	djnz borra_el_hueco_del_segundo_boton		;bdf9
+	ld (ix+002h),0e0h		;bdfb   ; y la Y a 0xE0: fuera de la pantalla
 	ret			;bdff
-L_BE00:
+
+; ----------------------------------------------------------------------
+; LAS TRES FASES CON ALGO PROPIO. Borra los seis bytes de 0xE110 y, solo si la fase es la 3, la 6 o la 13, les pone un valor distinto a cada una. Las otras veintiuna se quedan a cero, o sea sin esa cosa.
+; ----------------------------------------------------------------------
+prepara_lo_propio_de_la_fase:
 	xor a			;be00
-	ld hl,0e110h		;be01
+	ld hl,0e110h		;be01   ; los seis bytes de 0xE110
 	ld de,0e111h		;be04
-	ld bc,00005h		;be07
+	ld bc,00005h		;be07   ; cinco mas el primero
 	ld (hl),a			;be0a
 	ldir		;be0b
 	ld (0e0c5h),a		;be0d
 	ld (0e221h),a		;be10
-	ld a,(0e092h)		;be13   ; la FASE, de 1 a 13
+	ld a,(0e092h)		;be13   ; la fase
 	ld hl,0e112h		;be16
-	ld bc,00708h		;be19
-	cp 003h		;be1c
-	jr z,L_BE32		;be1e
-	ld hl,0e111h		;be20
+	ld bc,00708h		;be19   ; los valores de la 3
+	cp 003h		;be1c   ; la fase 3...
+	jr z,guarda_lo_propio_de_la_fase		;be1e
+	ld hl,0e111h		;be20   ; ...los de la 6...
 	ld bc,00005h		;be23
-	cp 006h		;be26
-	jr z,L_BE32		;be28
-	ld hl,0e112h		;be2a
+	cp 006h		;be26   ; ...la fase 6...
+	jr z,guarda_lo_propio_de_la_fase		;be28
+	ld hl,0e112h		;be2a   ; ...y los de la 13
 	ld c,0b4h		;be2d
-	cp 00dh		;be2f
+	cp 00dh		;be2f   ; si no es ninguna de las tres, nada
 	ret nz			;be31
-L_BE32:
+guarda_lo_propio_de_la_fase:
 	ld (hl),c			;be32
 	inc hl			;be33
 	ld (hl),b			;be34
-	ld (0e116h),bc		;be35
+	ld (0e116h),bc		;be35   ; y una copia aparte
 	ret			;be39
 L_BE3A:
 	ld hl,(0e116h)		;be3a
 	ld (0e112h),hl		;be3d
 	ret			;be40
-L_BE41:
-	ld a,(0e115h)		;be41
-	or a			;be44
-	ret nz			;be45
-	ld a,(0e092h)		;be46   ; la FASE, de 1 a 13
-	dec a			;be49
-	call 04060h		;be4a   ; banco 0: despacha
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xbe4d..0xbe7d  (48 bytes)
-DATA_BE4D:
-	defb 02bh,0bfh,02bh,0bfh,02bh,0bfh,02bh,0bfh,02bh,0bfh,07dh,0beh,02bh,0bfh,02bh,0bfh	; be4d  +.+.+.+.+.}.+.+.
-	defb 0a6h,0beh,02bh,0bfh,02bh,0bfh,02bh,0bfh,0c0h,0beh,0ech,0beh,02bh,0bfh,018h,0bfh	; be5d  ..+.+.+.....+...
-	defb 02bh,0bfh,02bh,0bfh,02bh,0bfh,02bh,0bfh,02bh,0bfh,02bh,0bfh,02bh,0bfh,02bh,0bfh	; be6d  +.+.+.+.+.+.+.+.
+; EL PORTERO DE LOS SECRETOS. Se despacha por la fase, y diecinueve de las veinticuatro entradas van a un `ret`. Ademas, si 0xE115 ya esta encendido -o sea, si el premio de esta fase ya se ha conseguido- no se vuelve a mirar.
+; ----------------------------------------------------------------------
+mira_el_secreto_de_la_fase:
+	ld a,(0e115h)		;be41   ; ¿ya se ha conseguido el premio?
+	or a			;be44
+	ret nz			;be45   ; entonces no hay nada que mirar
+	ld a,(0e092h)		;be46   ; la fase
+	dec a			;be49   ; la tabla va desde 1
+	call 04060h		;be4a   ; el despachador, con la tabla pegada detras
+
+; ----------------------------------------------------------------------
+; DATOS secretos_por_fase: Una entrada por cada una de las veinticuatro fases.
+;   Diecinueve apuntan a 0xBF2B, que es un `ret`: en esas fases no hay
+;   secreto. Las cinco que si lo tienen son la 6 (0xBE7D), la 9 (0xBEA6), la
+;   13 (0xBEC0), la 14 (0xBEEC) y la 16 (0xBF18).
+;   0xbe4d..0xbe7d  (48 bytes)
+DATA_secretos_por_fase:
+	defw 0bf2bh	; be4d  -> no_hay_secreto_en_esta_fase
+	defw 0bf2bh	; be4f  -> no_hay_secreto_en_esta_fase
+	defw 0bf2bh	; be51  -> no_hay_secreto_en_esta_fase
+	defw 0bf2bh	; be53  -> no_hay_secreto_en_esta_fase
+	defw 0bf2bh	; be55  -> no_hay_secreto_en_esta_fase
+	defw 0be7dh	; be57  -> secreto_de_la_fase_6
+	defw 0bf2bh	; be59  -> no_hay_secreto_en_esta_fase
+	defw 0bf2bh	; be5b  -> no_hay_secreto_en_esta_fase
+	defw 0bea6h	; be5d  -> secreto_de_la_fase_9
+	defw 0bf2bh	; be5f  -> no_hay_secreto_en_esta_fase
+	defw 0bf2bh	; be61  -> no_hay_secreto_en_esta_fase
+	defw 0bf2bh	; be63  -> no_hay_secreto_en_esta_fase
+	defw 0bec0h	; be65  -> secreto_de_la_fase_13
+	defw 0beech	; be67  -> secreto_de_la_fase_14
+	defw 0bf2bh	; be69  -> no_hay_secreto_en_esta_fase
+	defw 0bf18h	; be6b  -> secreto_de_la_fase_16
+	defw 0bf2bh	; be6d  -> no_hay_secreto_en_esta_fase
+	defw 0bf2bh	; be6f  -> no_hay_secreto_en_esta_fase
+	defw 0bf2bh	; be71  -> no_hay_secreto_en_esta_fase
+	defw 0bf2bh	; be73  -> no_hay_secreto_en_esta_fase
+	defw 0bf2bh	; be75  -> no_hay_secreto_en_esta_fase
+	defw 0bf2bh	; be77  -> no_hay_secreto_en_esta_fase
+	defw 0bf2bh	; be79  -> no_hay_secreto_en_esta_fase
+	defw 0bf2bh	; be7b  -> no_hay_secreto_en_esta_fase
 
 ; ======================================================================
 ; CODIGO 0xbe7d..0xbf2c  (175 bytes)
 ; ======================================================================
 
 
-L_BE7D:
-	ld a,(0e167h)		;be7d
+secreto_de_la_fase_6:
+	ld a,(0e167h)		;be7d   ; una bandera
 	and a			;be80
-	jr nz,L_BE8A		;be81
-	ld hl,(0e116h)		;be83
+	jr nz,secreto_de_la_fase_6_activo		;be81
+	ld hl,(0e116h)		;be83   ; y si no esta, se devuelve el valor guardado
 	ld (0e111h),hl		;be86
 	ret			;be89
-L_BE8A:
+secreto_de_la_fase_6_activo:
 	ld de,0e111h		;be8a
-	ld c,00dh		;be8d
-	ld a,(de)			;be8f
+	ld c,00dh		;be8d   ; el premio 0x0D
+	ld a,(de)			;be8f   ; y hasta que 0xE111 no llegue a cero, nada
 	or a			;be90
 	ret nz			;be91
-L_BE92:
-	ld hl,0e160h		;be92
+consigue_el_premio:
+	ld hl,0e160h		;be92   ; la lista de premios ya conseguidos
 	ld a,c			;be95
-	call 04056h		;be96   ; banco 0: a_mas_hl
+	call 04056h		;be96   ; el que toca
 	ld a,(hl)			;be99
-	and a			;be9a
+	and a			;be9a   ; si ya lo tiene, no se repite
 	ret nz			;be9b
 	ld hl,0e110h		;be9c
-	ld (hl),c			;be9f
+	ld (hl),c			;be9f   ; apuntado
 	ld hl,0e115h		;bea0
-	ld (hl),001h		;bea3
+	ld (hl),001h		;bea3   ; y encendido el aviso
 	ret			;bea5
-L_BEA6:
-	ld c,011h		;bea6
-	ld a,(0e203h)		;bea8   ; por donde va la rotacion de los sprites
-	cp 010h		;beab
-	jp nz,L_BF27		;bead
-	ld a,(0e114h)		;beb0
-	cp 00ah		;beb3
-	jp z,L_BE92		;beb5
+secreto_de_la_fase_9:
+	ld c,011h		;bea6   ; el premio 0x11
+	ld a,(0e203h)		;bea8   ; el paso de la transicion
+	cp 010h		;beab   ; solo en el 0x10
+	jp nz,falla_la_secuencia		;bead
+	ld a,(0e114h)		;beb0   ; un contador
+	cp 00ah		;beb3   ; a los diez, premio
+	jp z,consigue_el_premio		;beb5
 	ld a,(0e006h)		;beb8   ; las teclas recien pulsadas
-	and 010h		;bebb
-	ret z			;bebd
-	jr L_BF13		;bebe
-L_BEC0:
-	ld a,(0e167h)		;bec0
+	and 010h		;bebb   ; el bit 4: la barra o el disparo
+	ret z			;bebd   ; si no, a esperar
+	jr avanza_la_secuencia		;bebe
+secreto_de_la_fase_13:
+	ld a,(0e167h)		;bec0   ; una bandera
 	and a			;bec3
 	ret z			;bec4
-	ld hl,0e112h		;bec5
-	ld c,00eh		;bec8
-	ld a,(0e0a6h)		;beca
+	ld hl,0e112h		;bec5   ; el contador de este
+	ld c,00eh		;bec8   ; el premio 0x0E
+	ld a,(0e0a6h)		;beca   ; en que va
 	cp 001h		;becd
-	ld d,01ch		;becf
-	jr z,L_BEE2		;bed1
+	ld d,01ch		;becf   ; con un 1, el tope es 0x1C...
+	jr z,secreto_de_la_fase_13_por_arriba		;bed1
 	cp 002h		;bed3
 	jp nz,L_BE3A		;bed5
-	ld d,0c4h		;bed8
-	ld a,(0e205h)		;beda   ; la Y en la pantalla de lo que se maneja
-	cp d			;bedd
+	ld d,0c4h		;bed8   ; ...y con un 2, 0xC4
+	ld a,(0e205h)		;beda   ; la Y de lo que se maneja
+	cp d			;bedd   ; contra el tope
 	ret c			;bede
-	jp L_BEE7		;bedf
-L_BEE2:
-	ld a,(0e205h)		;bee2   ; la Y en la pantalla de lo que se maneja
+	jp secreto_de_la_fase_13_cuenta		;bedf
+secreto_de_la_fase_13_por_arriba:
+	ld a,(0e205h)		;bee2   ; la Y
 	cp d			;bee5
 	ret nc			;bee6
-L_BEE7:
-	dec (hl)			;bee7
-	jp z,L_BE92		;bee8
+secreto_de_la_fase_13_cuenta:
+	dec (hl)			;bee7   ; un paso menos
+	jp z,consigue_el_premio		;bee8   ; y a cero, premio
 	ret			;beeb
-L_BEEC:
-	ld a,(0e167h)		;beec
+
+; ----------------------------------------------------------------------
+; SECRETO DE LA FASE 14: DOS DIRECCIONES SEGUIDAS. Izquierda y derecha, en ese orden y sin equivocarse, mientras el paso de la transicion sea 4.
+; ----------------------------------------------------------------------
+secreto_de_la_fase_14:
+	ld a,(0e167h)		;beec   ; una bandera
 	and a			;beef
 	ret z			;bef0
-	ld a,(0e203h)		;bef1   ; por donde va la rotacion de los sprites
-	cp 004h		;bef4
-	jp nz,L_BF27		;bef6
-	ld hl,0bf2ch		;bef9
-	ld b,002h		;befc
-	ld c,010h		;befe
-L_BF00:
-	ld a,(0e114h)		;bf00
-	cp b			;bf03
-	jp z,L_BE92		;bf04
-	call 04056h		;bf07   ; banco 0: a_mas_hl
-	ld d,(hl)			;bf0a
-	ld a,(0e006h)		;bf0b   ; las teclas recien pulsadas
+	ld a,(0e203h)		;bef1   ; el paso de la transicion
+	cp 004h		;bef4   ; solo en el 4
+	jp nz,falla_la_secuencia		;bef6
+	ld hl,0bf2ch		;bef9   ; la secuencia: dos pasos
+	ld b,002h		;befc   ; dos
+	ld c,010h		;befe   ; y el premio 0x10
+comprueba_la_secuencia:
+	ld a,(0e114h)		;bf00   ; por que paso va
+	cp b			;bf03   ; si ya estan todos, premio
+	jp z,consigue_el_premio		;bf04
+	call 04056h		;bf07   ; el paso que toca
+	ld d,(hl)			;bf0a   ; la direccion que hay que pulsar
+	ld a,(0e006h)		;bf0b   ; lo recien pulsado
 	and a			;bf0e
-	ret z			;bf0f
-	and d			;bf10
-	jr z,L_BF27		;bf11
-L_BF13:
-	ld hl,0e114h		;bf13
-	inc (hl)			;bf16
+	ret z			;bf0f   ; si no se ha pulsado nada, se espera
+	and d			;bf10   ; y si no es la que toca...
+	jr z,falla_la_secuencia		;bf11   ; ...vuelta a empezar
+avanza_la_secuencia:
+	ld hl,0e114h		;bf13   ; el paso
+	inc (hl)			;bf16   ; uno mas
 	ret			;bf17
-L_BF18:
+
+; ----------------------------------------------------------------------
+; SECRETO DE LA FASE 16: CUATRO DIRECCIONES, Y EN PAUSA. La condicion de la primera instruccion es lo que lo esconde: (0xE0A0) es la bandera de PAUSA, y si esta a cero la rutina se va sin mirar nada. O sea que la secuencia -arriba, derecha, abajo, izquierda- solo cuenta con el juego PARADO.
+; ----------------------------------------------------------------------
+secreto_de_la_fase_16:
 	ld a,(0e0a0h)		;bf18   ; la bandera de PAUSA
 	and a			;bf1b
-	jr z,L_BF27		;bf1c
-	ld hl,0bf2eh		;bf1e
-	ld b,004h		;bf21
-	ld c,012h		;bf23
-	jr L_BF00		;bf25
-L_BF27:
+	jr z,falla_la_secuencia		;bf1c   ; sin pausa, ni se mira
+	ld hl,0bf2eh		;bf1e   ; la secuencia: cuatro pasos
+	ld b,004h		;bf21   ; cuatro
+	ld c,012h		;bf23   ; y el premio 0x12
+	jr comprueba_la_secuencia		;bf25
+falla_la_secuencia:
 	xor a			;bf27
-	ld (0e114h),a		;bf28
-L_BF2B:
+	ld (0e114h),a		;bf28   ; el paso, a cero: hay que empezar de nuevo
+no_hay_secreto_en_esta_fase:
 	ret			;bf2b
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xbf2c..0xbf32  (6 bytes)
-DATA_BF2C:
+; DATOS secuencias_de_los_secretos: Las dos secuencias, en mascaras de los
+;   mandos tal como los deja p00:44C8 (bit 0 arriba, bit 1 abajo, bit 2
+;   izquierda, bit 3 derecha). La de la fase 14 son dos pasos desde 0xBF2C
+;   -0x04 y 0x08, o sea izquierda y derecha- y la de la fase 16 cuatro desde
+;   0xBF2E -0x01, 0x08, 0x02 y 0x04: arriba, derecha, abajo e izquierda-. Se
+;   solapan a proposito: la de dos empieza dos bytes antes que la de cuatro.
+;   0xbf2c..0xbf32  (6 bytes)
+DATA_secuencias_de_los_secretos:
 	defb 004h,008h,001h,008h,002h,004h	; bf2c
 
 ; ======================================================================

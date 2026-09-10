@@ -673,11 +673,11 @@ C 0x645D lo andado en la fase
 C 0x6488 la distancia a la que sale el objeto siguiente
 C 0x64AB lo andado en la fase
 C 0x64B1 por que pareja del guion de la fase va
-C 0x64E7 la FASE, de 1 a 13
+C 0x64E7 la FASE, de 1 a 24
 C 0x64F0 por donde va la rotacion de los sprites
 C 0x6525 el modo en el que esta el juego
 C 0x6555 el DECORADO, de 0 a 9
-C 0x65A7 la FASE, de 1 a 13
+C 0x65A7 la FASE, de 1 a 24
 C 0x662B el valor 1-2-3 de la fase
 C 0x663E el valor 1-2-3 de la fase
 C 0x6659 el valor 1-2-3 de la fase
@@ -685,10 +685,10 @@ C 0x6674 el valor 1-2-3 de la fase
 C 0x66AB el valor 1-2-3 de la fase
 C 0x66DA el modo en el que esta el juego
 C 0x66DF la distancia a la que sale el objeto siguiente
-C 0x6705 la FASE, de 1 a 13
+C 0x6705 la FASE, de 1 a 24
 C 0x6737 el modo en el que esta el juego
 C 0x6750 el modo en el que esta el juego
-C 0x6767 la FASE, de 1 a 13
+C 0x6767 la FASE, de 1 a 24
 C 0x67C1 el modo en el que esta el juego
 C 0x68CA por donde va la rotacion de los sprites
 C 0x69D2 la tabla de cambio de color, nibble alto
@@ -706,7 +706,7 @@ C 0x6B92 el modo en el que esta el juego
 C 0x6C0B por donde va la rotacion de los sprites
 C 0x6C51 el modo en el que esta el juego
 C 0x6CCD el modo en el que esta el juego
-C 0x6CDF la FASE, de 1 a 13
+C 0x6CDF la FASE, de 1 a 24
 C 0x6E2C el modo en el que esta el juego
 C 0x6E68 las teclas recien pulsadas
 C 0x6F09 el modo en el que esta el juego
@@ -764,7 +764,7 @@ C 0x79C2 las teclas recien pulsadas
 C 0x7AA0 la prioridad del efecto que suena
 C 0x7E47 el DECORADO, de 0 a 9
 C 0x7E4D el contador de cuadros
-C 0x7E9A la FASE, de 1 a 13
+C 0x7E9A la FASE, de 1 a 24
 C 0x7EA8 la distancia a la que sale el objeto siguiente
 C 0x7EB2 la distancia a la que sale el objeto siguiente
 C 0x7EB5 el largo de la fase

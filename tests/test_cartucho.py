@@ -171,5 +171,49 @@ class Cartucho(unittest.TestCase):
         self.assertEqual(self.rom[0x0060:0x0060 + len(esperado)], esperado)
 
 
+    def test_los_secretos_de_cinco_fases(self):
+        """Solo cinco de las veinticuatro tienen algo, y dos son secuencias.
+
+        La tabla de p03:BE4D lleva una entrada por fase y diecinueve apuntan a
+        0xBF2B, que es un `ret` pelado. Las cinco con rutina propia son la 6, la
+        9, la 13, la 14 y la 16.
+
+        Y las dos secuencias estan en p03:BF2C, en mascaras de los mandos tal
+        como los deja p00:44C8: bit 0 arriba, bit 1 abajo, bit 2 izquierda y bit
+        3 derecha. La de la fase 14 son dos pasos y la de la 16, cuatro.
+        """
+        banco3 = 3 * TAM_PAGINA
+        def pal(a):
+            o = banco3 + (a - 0xA000)
+            return self.rom[o] | (self.rom[o + 1] << 8)
+        tabla = [pal(0xBE4D + 2 * i) for i in range(24)]
+        self.assertEqual(len(tabla), 24)
+        con_secreto = {i + 1 for i, d in enumerate(tabla) if d != 0xBF2B}
+        self.assertEqual(con_secreto, {6, 9, 13, 14, 16})
+        self.assertEqual(tabla[13], 0xBEEC)      # fase 14
+        self.assertEqual(tabla[15], 0xBF18)      # fase 16
+        o = banco3 + (0xBF2C - 0xA000)
+        self.assertEqual(list(self.rom[o:o + 6]), [0x04, 0x08, 0x01, 0x08,
+                                                   0x02, 0x04])
+
+    def test_el_secreto_de_la_fase_16_exige_la_pausa(self):
+        """0xBF18 mira (0xE0A0) y se va si esta a cero.
+
+        (0xE0A0) es la bandera de pausa: p02:81DD le da la vuelta con la tecla
+        de parar. Sin ella, la secuencia de cuatro no cuenta.
+        """
+        banco3 = 3 * TAM_PAGINA
+        o = banco3 + (0xBF18 - 0xA000)
+        # ld a,(0xE0A0) / and a / jr z,...
+        self.assertEqual(list(self.rom[o:o + 5]),
+                         [0x3A, 0xA0, 0xE0, 0xA7, 0x28])
+        # y la tecla de pausa que enciende esa bandera esta en el banco 2
+        banco2 = 2 * TAM_PAGINA
+        p = banco2 + (0x81D2 - 0x8000)
+        # ld a,(0xE006) / and 0x80
+        self.assertEqual(list(self.rom[p:p + 5]),
+                         [0x3A, 0x06, 0xE0, 0xE6, 0x80])
+
+
 if __name__ == "__main__":
     unittest.main()
