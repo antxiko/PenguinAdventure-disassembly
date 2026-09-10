@@ -302,7 +302,7 @@ L_61FF:
 	rra			;6229
 	rra			;622a
 	rra			;622b
-	ld (0e0a1h),a		;622c   ; el DECORADO, de 0 a 9
+	ld (0e0a1h),a		;622c   ; el DECORADO. Aqui solo salen del 0 al 7: los decorados 8 y 9 no los usa ninguna de las veinticuatro fases, los ponen a mano p03:B602 y p03:B932 para dos escenas de por medio
 	inc hl			;622f
 	ld e,(hl)			;6230
 	inc hl			;6231

@@ -249,5 +249,43 @@ class Imagenes(unittest.TestCase):
         self.assertEqual(vacias, {1, 2, 4})
 
 
+    def test_el_espacio_no_es_una_de_las_24_fases(self):
+        """Las veinticuatro usan los decorados 0 a 7, y ninguna el 8 ni el 9.
+
+        El decorado de cada fase sale del nibble ALTO del segundo byte de su
+        entrada en la tabla de 0xACBA (p01:6226 lo baja cuatro bits y lo guarda
+        en 0xE0A1). Recorriendo las veinticuatro entradas no aparece ni una vez
+        el 8 -la Tierra vista desde el espacio- ni el 9.
+
+        Los dos existen, pero se ponen a mano y desde otro sitio: el 8 lo pone
+        p03:B602, dentro de la rutina que monta la fase de BONUS -que ademas
+        guarda el largo de la fase de verdad en 0xE0CC antes de cambiarlo, o sea
+        que es un prestamo-, y el 9 lo pone p03:B932 en otra escena aparte. Son
+        interludios, no fases.
+        """
+        b = (1, 12, 13)
+        decorados = []
+        for f in range(24):
+            a = 0xACBA + 4 * f
+            decorados.append(self.cart.leer(a + 1, b) >> 4)
+        self.assertEqual(len(decorados), 24)
+        self.assertEqual(set(decorados), {0, 1, 2, 3, 4, 5, 6, 7},
+                         "las 24 fases tendrian que usar los decorados 0 a 7")
+        self.assertNotIn(8, decorados, "el espacio no es una fase")
+        self.assertNotIn(9, decorados)
+
+    def test_el_bonus_devuelve_el_largo_de_la_fase(self):
+        """p03:B5E1 guarda (0xE08B) en 0xE0CC antes de cambiarlo.
+
+        Es lo que dice que el bonus es un prestamo y no una fase: el largo de
+        la fase de verdad se aparta para poder devolverlo.
+        """
+        banco3 = 3 * 0x2000
+        o = banco3 + (0xB605 - 0xA000)
+        # ld hl,(0xE08B) / ld (0xE0CC),hl
+        self.assertEqual(list(self.cart.rom[o:o + 6]),
+                         [0x2A, 0x8B, 0xE0, 0x22, 0xCC, 0xE0])
+
+
 if __name__ == "__main__":
     unittest.main()

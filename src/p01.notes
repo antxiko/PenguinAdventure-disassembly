@@ -663,7 +663,7 @@ C 0x7F5B el mapa ya esta entero
 C 0x6000 el DECORADO, de 0 a 9
 C 0x61DD el DECORADO, de 0 a 9
 C 0x6221 el largo de la fase
-C 0x622C el DECORADO, de 0 a 9
+C 0x622C el DECORADO. Aqui solo salen del 0 al 7: los decorados 8 y 9 no los usa ninguna de las veinticuatro fases, los ponen a mano p03:B602 y p03:B932 para dos escenas de por medio
 C 0x6233 la distancia a la que sale el objeto siguiente
 C 0x6267 el valor 1-2-3 de la fase
 C 0x6277 el DECORADO, de 0 a 9

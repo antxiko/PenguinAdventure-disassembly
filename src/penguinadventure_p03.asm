@@ -2772,7 +2772,7 @@ DATA_vaiven_del_que_vuela:
 
 
 ; ----------------------------------------------------------------------
-; MONTAR LA FASE DE BONUS. Se reconoce por el decorado que pone: el 8, que es la Tierra vista desde el espacio. Borra 2.335 bytes de variables y los 672 de la zona de juego, se guarda el largo de la fase de verdad en 0xE0CC y lo cambia por uno de los diez de la tabla de 0xB635, que van de 0x85 a 0x40: cuanto mas veces se ha llegado aqui, mas corta es.
+; MONTAR LA FASE DE BONUS, QUE NO ES UNA FASE. Se reconoce por el decorado que pone: el 8, que es la Tierra vista desde el espacio. Y NO es una de las veinticuatro: recorriendo las veinticuatro entradas de la tabla de 0xACBA -de donde p01:6226 saca el decorado de cada fase- salen los decorados 0 a 7 y ni una sola vez el 8. Lo que lo remata es que aqui se guarda el largo de la fase de verdad en 0xE0CC antes de cambiarlo: es un prestamo, y hay que devolverlo. El decorado 9 esta en el mismo caso, y lo pone 0xB932 en otra escena aparte. Borra 2.335 bytes de variables y los 672 de la zona de juego, se guarda el largo de la fase de verdad en 0xE0CC y lo cambia por uno de los diez de la tabla de 0xB635, que van de 0x85 a 0x40: cuanto mas veces se ha llegado aqui, mas corta es.
 ; ----------------------------------------------------------------------
 monta_el_bonus:
 	xor a			;b5e1
