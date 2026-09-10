@@ -62,6 +62,14 @@ RAM = {
              "p00:4265 lo sube a 0x3860"),
     0xEC80: ("el espejo de pantalla: la fila 8", "p00:4258 lo sube a 0x3900"),
     0xEE80: ("la tabla de atributos de los 32 sprites", "p00:42ED la sube a 0x3B00"),
+    0xE090: ("las VIDAS, en BCD",
+             "p02:8833 las descuenta con `sub 1` + `daa` y manda a la pantalla "
+             "de fin de partida cuando llegan a cero"),
+    0xE089: ("el marcador, cifras bajas (BCD)",
+             "p03:B426 y p03:B6A0 le suman con `daa`, y el tope es 0x0999"),
+    0xE08A: ("el marcador, cifra alta (BCD)", "p03:B431 y p03:B6AB"),
+    0xE0CE: ("el paso de la cuenta del bonus", "p03:B63F despacha por el"),
+    0xE0D0: ("lo que queda de bonus por pasar al marcador", "p03:B694"),
     0xE204: ("la X en la pantalla de lo que se maneja",
              "p01:6286 y p01:6C10 la cargan junto a la Y de tablas de tres "
              "bytes; p02:97EB le suma deltas y p02:98CA la devuelve a 0x90"),

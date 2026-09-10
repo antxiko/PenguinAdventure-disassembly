@@ -80,3 +80,25 @@ p09 0xBCFB 7 8 9   # tabla de 0xA98A, entrada 11
 p09 0xBD33 7 8 9   # tabla de 0xA98A, entrada 12
 p09 0xBE51 7 8 9   # tabla de 0xA98A, entrada 13
 p09 0xBE7E 7 8 9   # tabla de 0xA98A, entrada 14
+
+# ----------------------------------------------------------------------------
+# LO QUE LA MAQUINA DE ESTADOS METE EN LA PILA (p02:8A55)
+#
+# p02:800B hace `ld hl,0x8A55` y `push hl` antes de despachar, de modo que
+# cuando el estado haga `ret` no vuelva a quien le llamo sino ahi. Es un `call`
+# escrito del reves, y el trazador no lo sigue porque no hay ninguna
+# instruccion de salto que apunte a esa direccion.
+#
+# Que es codigo lo dice el primer byte: 0xCD 0xC8 0x44, o sea `call 0x44C8`,
+# que es la rutina del banco 0 que lee el estado de los mandos.
+p02 0x8A55 1 2 3   # la maquina de estados lo mete en la PILA (0x800B) para que el estado vuelva ahi en vez de a quien le llamo
+
+# ----------------------------------------------------------------------------
+# LA DECIMOSEXTA CLASE DE OBJETO (p09:AAC9)
+#
+# La tabla de ATENDER de 0xA98A tiene dieciseis entradas y la de MONTAR de
+# 0xA8D1 quince. La decimosexta de atender apunta a 0xAAC9, y ahi hay codigo de
+# verdad: el primer byte es 0xDD 0x7E 0x1F, o sea `ld a,(ix+0x1F)`, que es
+# leer un campo del hueco de objeto. Nadie salta ahi con una instruccion, asi
+# que el trazador no puede llegar solo.
+p09 0xAAC9 7 8 9   # entrada 16 de la tabla de atender de 0xA98A, que tiene una mas que la de montar

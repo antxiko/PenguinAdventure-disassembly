@@ -1083,3 +1083,15 @@ C 0x6879 que quedan gastadas
 L 0x687F otra_cosa_del_mismo_tramo
 C 0x687F ¿habia una segunda?
 C 0x6881 pues se mete tambien
+
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0x6E13 el marcador, cifras bajas (BCD)
+C 0x74DC las VIDAS, en BCD
+C 0x74E2 las VIDAS, en BCD
+C 0x74E9 las VIDAS, en BCD
+C 0x74F3 lo que queda de bonus por pasar al marcador
+C 0x74F9 lo que queda de bonus por pasar al marcador
+C 0x7AC2 el marcador, cifras bajas (BCD)
+C 0x7EAF el marcador, cifras bajas (BCD)

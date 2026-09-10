@@ -2082,7 +2082,7 @@ L_6E06:
 	jp z,L_7E11		;6e0d
 	jp L_7DF7		;6e10
 L_6E13:
-	ld hl,(0e089h)		;6e13
+	ld hl,(0e089h)		;6e13   ; el marcador, cifras bajas (BCD)
 	ld a,l			;6e16
 	or h			;6e17
 	ret nz			;6e18
@@ -3017,22 +3017,22 @@ L_74C4:
 	ld a,(ix+001h)		;74d5
 	cp 01dh		;74d8
 	jr c,L_74F3		;74da
-	ld a,(0e090h)		;74dc
+	ld a,(0e090h)		;74dc   ; las VIDAS, en BCD
 	add a,001h		;74df
 	daa			;74e1
-	ld (0e090h),a		;74e2
+	ld (0e090h),a		;74e2   ; las VIDAS, en BCD
 	jr nc,L_74EC		;74e5
 	ld a,099h		;74e7
-	ld (0e090h),a		;74e9
+	ld (0e090h),a		;74e9   ; las VIDAS, en BCD
 L_74EC:
 	ld a,038h		;74ec
 	call 0413ah		;74ee   ; banco 0: pide_sonido_si_esta_activo
 	jr L_7501		;74f1
 L_74F3:
-	ld a,(0e0d0h)		;74f3
+	ld a,(0e0d0h)		;74f3   ; lo que queda de bonus por pasar al marcador
 	add a,001h		;74f6
 	daa			;74f8
-	ld (0e0d0h),a		;74f9
+	ld (0e0d0h),a		;74f9   ; lo que queda de bonus por pasar al marcador
 	ld a,00eh		;74fc
 	call 0413ah		;74fe   ; banco 0: pide_sonido_si_esta_activo
 L_7501:
@@ -3848,7 +3848,7 @@ L_7ABD:
 	ld hl,0e130h		;7abd
 	dec (hl)			;7ac0
 	ret nz			;7ac1
-	ld hl,(0e089h)		;7ac2
+	ld hl,(0e089h)		;7ac2   ; el marcador, cifras bajas (BCD)
 	ld a,l			;7ac5
 	or h			;7ac6
 	ld a,001h		;7ac7
@@ -4453,7 +4453,7 @@ L_7E7F:
 	ld hl,(0e08dh)		;7ea8   ; la distancia a la que sale el objeto siguiente
 	push hl			;7eab
 	ld hl,00000h		;7eac
-	ld (0e089h),hl		;7eaf
+	ld (0e089h),hl		;7eaf   ; el marcador, cifras bajas (BCD)
 	ld (0e08dh),hl		;7eb2   ; la distancia a la que sale el objeto siguiente
 	ld (0e08bh),hl		;7eb5   ; el largo de la fase
 	call 0463fh		;7eb8   ; banco 0: empieza_una_vida

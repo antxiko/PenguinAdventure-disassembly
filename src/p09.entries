@@ -15,6 +15,7 @@
 0xA92B   # p00:45F1 call
 0xA9E9   # p00:45F7 call
 0xAA18   # p00:45F4 call
+0xAAC9   # entrada 16 de la tabla de atender de 0xA98A, que tiene una mas que la de montar
 0xABC3   # p00:45FA call
 0xAC52   # p00:45FD call
 0xB581   # tabla de 0xA8D1, entrada 0

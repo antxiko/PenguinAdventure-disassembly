@@ -19,13 +19,13 @@ listing does not *lie* about what it reassembles.
 |---|---|
 | ROM | 131,072 bytes, sha256 `525608aa990e1a19285edc98dec3f0aa11339d8a17641c89df3966845d10cc6a` |
 | reassembles byte for byte | yes, all 16 banks and the whole image |
-| traced code | 32,185 bytes |
-| identified data | 98,887 bytes |
-| listing | 25,857 lines |
-| entry points, each with its justification | 360 |
-| named labels | 330 |
-| anchored comments | 5,000 |
-| explained data ranges | 29 |
+| traced code | 32,317 bytes |
+| identified data | 98,755 bytes |
+| listing | 26,121 lines |
+| entry points, each with its justification | 359 |
+| named labels | 429 |
+| anchored comments | 5,485 |
+| explained data ranges | 37 |
 
 ## The cartridge
 

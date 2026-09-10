@@ -118,7 +118,7 @@ C 0xA982 la tabla va desde 1
 C 0xA983 dos bytes por entrada
 C 0xA984 la SEGUNDA tabla de quince, la de atender
 C 0xA987 y se salta a la que toque
-D 0xA98A 0xA9A8 tabla_de_atender  La segunda tabla de quince, hermana de la de 0xA8D1: alli esta la rutina que MONTA cada clase de objeto y aqui la que la atiende en cada cuadro. Los quince destinos son 0xB5AD, 0xB60B, 0xB60D, 0xB60F, 0xB6C8, 0xB71B, 0xB8AE, 0xB90A, 0xB9C0, 0xBB1E, 0xBC3C, 0xBCFB, 0xBD33, 0xBE51 y 0xBE7E.
+D 0xA98A 0xA9AA tabla_de_atender  La hermana de la de 0xA8D1: alli esta la rutina que MONTA cada clase de objeto y aqui la que la atiende en cada cuadro. Y tiene DIECISEIS entradas, una mas que la de montar: 0xB5AD, 0xB60B, 0xB60D, 0xB60F, 0xB6C8, 0xB71B, 0xB8AE, 0xB90A, 0xB9C0, 0xBB1E, 0xBC3C, 0xBCFB, 0xBD33, 0xBE51, 0xBE7E y 0xAAC9. La decimosexta clase existe -su rutina de atender es codigo de verdad- pero el guion de la fase no puede sacarla, porque en el mismo hueco de la tabla de montar hay un 0x0F21 que no es ni una direccion del cartucho: a esa clase la crea otra rutina, escribiendo el numero directamente en el hueco.
 F 0xA98A w1
 B 0xA9AA MOVER. Le suma a cada coordenada su velocidad, las tres de 16 bits. Es todo lo que hay: no hay gravedad ni rozamiento aqui, lo que cambie las velocidades lo hace la rutina propia de cada clase.
 L 0xA9AA mueve_el_objeto
@@ -385,3 +385,292 @@ L 0xB873 monta_clase_7
 C 0xB876 cuatro bytes mas alla del hueco
 C 0xB87A su plantilla
 C 0xB87D quince bytes
+
+D 0xB89F 0xB8AE plantilla_de_la_clase_7  Los quince bytes de salida: X = 0x4E00, Y = 0x7800, Z = 0x0030, las tres velocidades a cero y la marca de que se mueve. Sale quieto: lo que lo pone en marcha es la rutina de atender.
+F 0xB89F 2,w1,w1,w1,w1,w1,w1,1
+B 0xB8AE ATENDER A LA CLASE 7. Sale quieto y en el primer cuadro se decide hacia donde va: 0xB8CF mira (ix+0x13) y de ahi salen tres velocidades distintas -recto, a un lado o al otro-. Ademas cambia de instrumento segun 0xE16A, que es una de las cosas que se llevan de una fase a otra.
+L 0xB8AE atiende_clase_7
+C 0xB8AE su dibujo
+C 0xB8B3 lo que se lleva
+C 0xB8B7 con ello, un dibujo...
+C 0xB8BB ...y sin ello, otro
+L 0xB8BC clase_7_guarda_el_dibujo
+C 0xB8BF en que tiempo va
+C 0xB8C2 el 1 solo acelera
+C 0xB8C5 la profundidad
+C 0xB8C8 hasta 0x0B no arranca
+C 0xB8CB y ahi se le clava
+C 0xB8CF hacia donde va
+C 0xB8D2 recto...
+C 0xB8DB ...a un lado...
+C 0xB8E4 ...o al otro
+L 0xB8EA clase_7_arranca
+C 0xB8EA la velocidad de la Y
+C 0xB8EE y la de la profundidad
+C 0xB8F1 y un empujon en X
+C 0xB8F7 al tiempo siguiente
+L 0xB8FB clase_7_acelera
+C 0xB8FB la velocidad X
+C 0xB901 uno mas en cada cuadro
+L 0xB909 monta_clase_8   Un `ret`: esta clase no monta nada.
+L 0xB90A atiende_clase_8
+B 0xB90B MONTAR LA CLASE 9: SALEN DE DOS EN DOS. Esta es la unica que necesita OTRO hueco ademas del suyo: busca uno libre entre los tres, y si no lo hay se borra a si misma. Con los dos en la mano copia la misma plantilla de veinticinco bytes en los dos y les da direcciones distintas, sacadas de un contador que va girando en 0xE280.
+L 0xB90B monta_clase_9
+C 0xB90B los tres huecos
+C 0xB90E tres
+C 0xB911 0x20 de uno al siguiente
+L 0xB914 clase_9_busca_el_segundo_hueco
+C 0xB914 ¿esta libre?
+C 0xB91A y si no hay ninguno, esta se borra
+L 0xB91F clase_9_monta_los_dos
+C 0xB91F IY apunta al segundo
+C 0xB922 que pasa a ser de la clase 9
+C 0xB925 y se le borran los otros 31 bytes
+L 0xB928 clase_9_borra_el_segundo
+C 0xB92C el primero
+C 0xB92F cuatro bytes mas alla
+C 0xB933 la plantilla
+C 0xB936 veinticinco bytes
+C 0xB93B cuatro atras
+C 0xB941 el contador que gira
+C 0xB944 uno mas
+C 0xB946 y de ahi salen tres direcciones
+L 0xB950 clase_9_direccion_del_primero
+C 0xB950 apuntada
+C 0xB954 recto...
+C 0xB95A ...a un lado...
+C 0xB960 ...o al otro
+L 0xB963 clase_9_velocidad_del_primero
+C 0xB969 y ahora el segundo
+C 0xB970 la misma plantilla
+C 0xB973 veinticinco bytes
+C 0xB97C con otro dibujo
+C 0xB97F y el mismo contador
+
+B 0xB9C0 ATENDER A LA CLASE 9: DAN VUELTAS. La tabla de 0xBA80 son VEINTICUATRO entradas de cuatro bytes -dos desplazamientos de 16 bits cada una- y recorrerlas en orden es dar una vuelta entera: los valores empiezan en (0xFE00, 0x0000) y van girando. El radio no es fijo: cada veinticuatro pasos sube (ix+0x1C), y el desplazamiento se multiplica por el, asi que la vuelta se va abriendo como una espiral. A las ocho vueltas se llama a 0xAB1E.
+L 0xB9C0 atiende_clase_9
+C 0xB9C0 su dibujo
+C 0xB9C5 la velocidad X
+C 0xB9CE uno mas: va acelerando
+C 0xB9D5 hacia donde gira
+C 0xB9D8 recto...
+C 0xB9DE ...a un lado...
+C 0xB9E4 ...o al otro
+L 0xB9E7 clase_9_gira
+C 0xB9E7 el angulo
+C 0xB9ED mas el paso
+C 0xB9F4 el centro de la vuelta
+C 0xB9FA que tambien se mueve
+C 0xBA01 y la profundidad del centro
+C 0xBA07 que baja de 0x40 en 0x40
+C 0xBA11 el contador fino
+C 0xBA17 veinticuatro pasos: una vuelta entera
+C 0xBA1B una vuelta mas
+C 0xBA22 y a las ocho vueltas...
+C 0xBA29 ...pasa algo
+L 0xBA2C clase_9_paso_de_la_vuelta
+C 0xBA2C el paso
+C 0xBA32 veinticuatro y vuelta a empezar
+L 0xBA3A clase_9_saca_el_desplazamiento
+C 0xBA3D cuatro bytes por entrada
+C 0xBA3F la tabla de la vuelta
+C 0xBA47 el desplazamiento de la Y...
+C 0xBA4B ...y el de la profundidad
+C 0xBA4E el radio, que sube cada vuelta
+L 0xBA54 clase_9_multiplica_uno
+C 0xBA54 sumando tantas veces como diga el radio
+L 0xBA60 clase_9_multiplica_el_otro
+C 0xBA65 el centro
+C 0xBA6B mas el desplazamiento
+C 0xBA6C y esa es la Y
+C 0xBA72 lo mismo con la profundidad
+D 0xBA80 0xBAE0 la_vuelta_de_la_clase_9  Veinticuatro entradas de cuatro bytes, dos desplazamientos de 16 bits cada una, y recorrerlas en orden es UNA VUELTA. Es la forma de dar vueltas sin senos ni cosenos: la vuelta esta dibujada de antemano y lo unico que se calcula en marcha es el radio, multiplicando cada desplazamiento por un contador que sube (0xBA54 y 0xBA60).
+F 0xBA80 w1,w1
+L 0xBAE0 monta_clase_10
+C 0xBAE3 cuatro bytes mas alla del hueco
+C 0xBAE7 su plantilla
+C 0xBAEA diecisiete bytes
+C 0xBAEF un contador que gira
+C 0xBAF3 uno mas
+C 0xBAF4 de cuatro en cuatro
+C 0xBAF6 la tabla de cuatro empujones
+C 0xBAF9 dos bytes por entrada
+C 0xBAFF el que toca
+C 0xBB02 y se le da
+
+B 0xBB1E ATENDER A LA CLASE 10: LA CAIDA. La tabla de 0xBB5B son treinta y dos pasos que van de 0x0100 bajando hasta cero y de ahi a negativo, o sea una parabola: sube frenando y baja acelerando. El paso se multiplica por (ix+0x14), que sube cada treinta y dos cuadros, asi que cada rebote es mas grande que el anterior.
+L 0xBB1E atiende_clase_10
+C 0xBB1E su dibujo
+C 0xBB23 la velocidad X
+C 0xBB29 mas dos
+C 0xBB2E y a la X
+C 0xBB31 el paso de la parabola
+C 0xBB37 treinta y dos pasos
+C 0xBB3B y a la vuelta siguiente
+L 0xBB42 clase_10_saca_el_paso
+C 0xBB42 la tabla de la parabola
+C 0xBB45 dos bytes por entrada
+C 0xBB4B el paso
+C 0xBB4E el multiplicador
+L 0xBB54 clase_10_multiplica
+C 0xBB54 sumando tantas veces como diga
+C 0xBB58 y a la profundidad
+D 0xBB5B 0xBB9B la_parabola  Treinta y dos pasos de 16 bits: 0x0000, 0x0100, 0x00C0, 0x0080, 0x0070, 0x0060... hasta cero y luego 0xFFF8, 0xFFF0... o sea de positivo grande a negativo grande pasando por cero. Es una parabola dibujada de antemano, igual que la vuelta de la clase 9 es una circunferencia dibujada de antemano: en este cartucho no se calcula ninguna curva, se leen.
+F 0xBB5B w1
+L 0xBB9B monta_clase_11
+C 0xBB9B la bandera de que hay uno pedido
+B 0xBBA1 LO OTRO QUE SE DISPARA. Igual que 0xB616 pero para los tres objetos 0x0E, 0x0F y 0x10 de las cinco ranuras, y saca un objeto de la clase 11. Los saltos entre ranuras vuelven a ser 0x10, 0x0E y 0x0F.
+L 0xBBA1 dispara_lo_otro
+C 0xBBA1 ¿hay disparo pedido?
+C 0xBBA6 las cinco ranuras
+C 0xBBA9 cinco
+L 0xBBAB dispara_lo_otro_recorre
+C 0xBBAB lo que hay
+C 0xBBAD vacia: salto de 0x10
+C 0xBBB4 con un 0x0E ahi, salto de 0x0E
+C 0xBBBC el 0x0E...
+C 0xBBC0 ...el 0x0F...
+C 0xBBC4 ...y el 0x10 se disparan
+C 0xBBC8 y lo demas, salto de 0x0F
+L 0xBBCA dispara_lo_otro_siguiente
+L 0xBBD3 dispara_lo_otro_busca_hueco
+C 0xBBD3 C se queda con lo que se dispara
+C 0xBBD4 los tres huecos
+L 0xBBD9 dispara_lo_otro_mira_el_hueco
+C 0xBBD9 ¿esta libre?
+C 0xBBDD 0x20 al siguiente
+C 0xBBE3 y si estan los tres ocupados, nada
+L 0xBBE4 dispara_lo_otro_monta
+C 0xBBE5 los 32 bytes del hueco
+L 0xBBE7 dispara_lo_otro_borra
+C 0xBBEE la clase 11
+C 0xBBF2 y se mueve solo
+C 0xBBF7 la peticion, atendida
+C 0xBBFA sale de la columna 0xA4
+C 0xBC07 con profundidad 0x300
+C 0xBC19 y de cual de los tres era...
+
+B 0xBC3C ATENDER A LA CLASE 11. Dos tiempos: primero se acerca hasta que la profundidad pasa de 0x80 y ahi arranca; despues rebota. El rebote es un `neg` sobre la velocidad de la Y cuando se sale por arriba o por abajo (0xBC8B), y el dibujo alterna cada ocho cuadros con el bit 3 del contador. La tabla de 0xBCAF -1, 2, 1, 0, -1, -2, -1...- es la que le da el meneo.
+L 0xBC3C atiende_clase_11
+C 0xBC3C un contador
+C 0xBC42 a los 0x80 cuadros...
+C 0xBC4A ...pasa algo
+L 0xBC4D clase_11_tiempo
+C 0xBC4D en que tiempo va
+C 0xBC53 la profundidad
+C 0xBC56 hasta 0x80 no arranca
+C 0xBC59 y ahi se le da velocidad en Y
+C 0xBC63 al tiempo siguiente
+L 0xBC67 clase_11_rebota
+C 0xBC67 el bit 3 del contador
+C 0xBC6B un dibujo...
+C 0xBC6F ...o el otro
+L 0xBC71 clase_11_guarda_el_dibujo
+C 0xBC74 la Y
+C 0xBC77 por encima de 0x20...
+C 0xBC7B ...y por debajo de 0xD0 no rebota
+L 0xBC7F clase_11_da_la_vuelta
+C 0xBC7F cuantos rebotes le quedan
+C 0xBC85 uno menos
+C 0xBC88 la velocidad de la Y
+C 0xBC8B del reves: eso es el rebote
+L 0xBC90 clase_11_menea
+C 0xBC90 el paso del meneo
+C 0xBC99 dieciseis pasos
+L 0xBCA1 clase_11_saca_el_meneo
+C 0xBCA1 la tabla del meneo
+C 0xBCAA el paso
+C 0xBCAB y a la velocidad de la profundidad
+D 0xBCAF 0xBCBF el_meneo_de_la_clase_11  Dieciseis pasos: 1, 2, 1, 0, -1, -2, -1, -1, -1, -2, -1, 0, 1, 2, 1, 1. Suben y bajan, y por eso el bicho no viene recto sino temblando.
+F 0xBCAF 16
+B 0xBCBF MONTAR LA CLASE 12: SALE HACIA DONDE ESTES. La unica que mira donde esta el jugador para colocarse: 0xBCCE resta la X de lo que se maneja a 0xA0 y con el bit 0 de esa cuenta elige entre subir o bajar. O sea que sale por el lado contrario a donde estas.
+L 0xBCBF monta_clase_12
+C 0xBCC2 cuatro bytes mas alla del hueco
+C 0xBCC6 su plantilla
+C 0xBCC9 quince bytes
+C 0xBCCE la X de lo que se maneja
+C 0xBCD2 0xA0 menos ella
+C 0xBCD5 y eso es la profundidad de salida
+C 0xBCDD el bit 0 de esa cuenta
+C 0xBCD8 sale de abajo...
+C 0xBCE1 ...o de arriba
+L 0xBCE6 clase_12_colocada
+D 0xBCEC 0xBCFB plantilla_de_la_clase_12  Quince bytes: X = 0xA800, y todo lo demas a cero menos la marca de que se mueve. La Y y la profundidad las pone la propia rutina de montar, que es lo que la hace distinta.
+F 0xBCEC 2,w1,w1,w1,w1,w1,w1,1
+L 0xBCFB atiende_clase_12
+C 0xBCFB su dibujo
+C 0xBD00 la Y
+C 0xBD03 por debajo de 2...
+C 0xBD07 ...o por encima de 0xF8 se ha ido
+L 0xBD0A clase_12_se_ha_ido
+C 0xBD0A hueco libre
+L 0xBD0F monta_clase_13
+C 0xBD12 cuatro bytes mas alla del hueco
+C 0xBD16 su plantilla
+C 0xBD19 dieciseis bytes
+C 0xBD1E el efecto 0x12
+D 0xBD24 0xBD33 plantilla_de_la_clase_13  Quince bytes: X = 0xA800, Y = 0x7800, Z = 0x9800, velocidad X = 0xFE00 -o sea que viene hacia ti- y la marca de que se mueve.
+F 0xBD24 2,w1,w1,w1,w1,w1,w1,1
+B 0xBD33 ATENDER A LA CLASE 13. Cuatro tiempos y el mismo parpadeo de dibujo cada ocho cuadros que la clase 11.
+L 0xBD33 atiende_clase_13
+C 0xBD33 el contador del parpadeo
+C 0xBD36 el bit 3
+C 0xBD3A un dibujo...
+C 0xBD3E ...o el otro
+L 0xBD40 clase_13_guarda_el_dibujo
+C 0xBD43 en que tiempo va
+C 0xBD46 el 1...
+C 0xBD49 ...el 2...
+C 0xBD4C ...y el 3
+
+B 0xBD50 LOS CUATRO TIEMPOS DE LA CLASE 13: UN CUADRADO. Los cuatro trozos son el mismo codigo con los signos cambiados, y leidos juntos se ve la figura: en el tiempo 0 la profundidad baja de ocho en ocho y la Y sube, en el 1 los dos suben, en el 2 la Y baja y la profundidad sube, y en el 3 los dos bajan. O sea que el bicho recorre un cuadrado. Cada tramo acaba cuando el `rl d` saca el bit de signo, que es la forma corta de preguntar "¿ya ha cambiado de sentido?".
+C 0xBD50 la velocidad de la profundidad
+C 0xBD56 menos ocho
+C 0xBD5E y la de la Y
+C 0xBD64 mas ocho
+C 0xBD6C el bit de signo al acarreo
+C 0xBD6E mientras no cambie, se sigue en este tramo
+C 0xBD6F y al cambiar, se fijan las dos velocidades del tramo siguiente
+C 0xBD7B al tiempo 1
+L 0xBD7F clase_13_tramo_1
+C 0xBD7F la velocidad de la Y
+C 0xBD85 mas ocho
+C 0xBD8D y la de la profundidad
+C 0xBD93 tambien mas ocho
+C 0xBD9B el signo
+C 0xBDAA al tiempo 2
+L 0xBDAE clase_13_tramo_2
+C 0xBDAE la profundidad
+C 0xBDB4 mas ocho
+C 0xBDBC y la Y
+C 0xBDC2 menos ocho
+C 0xBDCA el signo, ahora al reves
+C 0xBDD9 al tiempo 3
+L 0xBDDD clase_13_tramo_3
+C 0xBDDD la Y
+C 0xBDE3 menos ocho
+C 0xBDEB y la profundidad
+C 0xBDF1 tambien menos ocho
+C 0xBDF9 y al cerrar el cuadrado...
+C 0xBDFC ...el hueco queda libre
+B 0xBE01 MONTAR LA CLASE 14: TE BUSCA. Sale a una de ocho alturas -la tabla de 0xBE49, recorrida en circulo por 0xE284- y despues compara esa altura con la del jugador para decidir si sube o baja. Es la unica de las quince que se orienta hacia ti al nacer.
+L 0xBE01 monta_clase_14
+C 0xBE04 cuatro bytes mas alla del hueco
+C 0xBE08 su plantilla
+C 0xBE0B quince bytes
+C 0xBE10 el contador que gira
+C 0xBE14 uno mas
+C 0xBE15 la tabla de ocho alturas
+C 0xBE18 de ocho en ocho
+C 0xBE1F la altura que toca
+C 0xBE23 la Y de lo que se maneja
+C 0xBE26 contra la suya
+C 0xBE29 si esta por encima, hacia arriba...
+C 0xBE2E ...y si no, hacia abajo
+L 0xBE31 clase_14_orientada
+C 0xBE34 el efecto 0x15
+
+# --- El protocolo del mapper, paso a paso. Lo genera tools/anota_mapper.py
+# siguiendo el estado real de HL y de A; la explicacion de por que se hace asi
+# esta en el banco 0.
+

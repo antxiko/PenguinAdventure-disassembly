@@ -12,31 +12,28 @@
 #
 # Este fichero lo regenera `make semillas` (tools/bancos.py escribe).
 0x4023   # gancho de interrupcion H.KEYI: INIT escribe 0xC3 en 0xFD9A y esta direccion en 0xFD9B (p00:40A5-p00:40AF)
-0x4055   # p01:6393 call
 0x4060   # p02:8014 call
 0x406A   # cabecera AB: INIT
 0x40F7   # callback de la cabecera CD: el Game Master salta aqui por CALSLT con la direccion que le da 0x4021
 0x413A   # p09:AB8A call
-0x4145   # p02:9C95 call
+0x4145   # p02:8A87 call
 0x418C   # p01:6164 call
 0x41AD   # p01:692D call
 0x41BF   # p01:699A call
 0x41CD   # p03:A6C8 jp
-0x4224   # p02:8A0F call
 0x4232   # p02:89F9 call
 0x424B   # p02:81AF call
 0x4258   # p02:83E6 call
 0x4265   # p02:85C2 call
 0x4293   # p02:932C call
-0x42BC   # p02:8A1D call
-0x42BE   # p02:8A52 jp
+0x42BC   # p01:7E0B call
 0x42DF   # p02:8919 call
 0x42E8   # p02:868F call
-0x42FB   # p02:872B call
 0x4332   # p02:8808 call
 0x449E   # p02:8052 call
-0x44B6   # p02:8458 call
 0x44BE   # p01:7F45 call
+0x44C1   # p02:8A5B call
+0x44C8   # p02:8A55 call
 0x451C   # p02:8247 call
 0x463F   # p02:8842 call
 0x4660   # p02:832D call
@@ -93,9 +90,8 @@
 0x5AE6   # p02:96CF jp
 0x5B1F   # p02:9689 call
 0x5B58   # p02:96D7 call
-0x5B91   # p02:8A17 call
 0x5BB6   # p02:80BA call
-0x5C95   # p02:804C call
+0x5C95   # p02:8A8A jp
 0x5CD6   # p02:8063 call
 0x5E6E   # p02:8354 call
 0x5F77   # p03:A087 jp

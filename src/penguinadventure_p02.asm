@@ -50,11 +50,11 @@ DATA_estados_del_juego:
 	defw 084e1h	; 8027  -> estado_8
 	defw 08538h	; 8029  -> estado_9
 	defw 085d2h	; 802b  -> estado_10
-	defw 08648h	; 802d  -> estado_11
-	defw 086c6h	; 802f  -> L_86C6
-	defw 08800h	; 8031  -> L_8800
-	defw 08806h	; 8033  -> L_8806
-	defw 08933h	; 8035  -> L_8933
+	defw 08648h	; 802d  -> estado_11_espera
+	defw 086c6h	; 802f  -> estado_12
+	defw 08800h	; 8031  -> estado_13_la_pausa
+	defw 08806h	; 8033  -> estado_14
+	defw 08933h	; 8035  -> estado_15
 
 ; ======================================================================
 ; CODIGO 0x8037..0x86c2  (1675 bytes)
@@ -66,7 +66,7 @@ estado_0:
 	ld a,(0e003h)		;8039   ; el contador de cuadros
 	rra			;803c   ; uno de cada dos
 	ret nc			;803d
-	call L_8AB8		;803e
+	call destapa_una_columna		;803e
 	ret nz			;8041
 	xor a			;8042   ; a cero
 	jr pon_la_espera_y_avanza		;8043
@@ -81,7 +81,7 @@ estado_0_subestado_2:
 	call 0449eh		;8052   ; los ocho registros del VDP
 	call 04224h		;8055   ; borrar la pantalla
 	call 05b91h		;8058
-	call L_8A8D		;805b
+	call monta_la_rejilla		;805b
 	jr avanza_el_subestado		;805e
 estado_1:
 	call 042fbh		;8060   ; subir los sprites
@@ -297,7 +297,7 @@ estado_5_mira_la_pausa:
 	ld a,(0e0a0h)		;820b   ; la bandera de pausa
 	and a			;820e
 	jr z,estado_5_el_cuadro		;820f   ; sin pausa, se juega
-	jp L_8800		;8211   ; y con pausa, al estado de parado
+	jp estado_13_la_pausa		;8211   ; y con pausa, al estado de parado
 estado_5_sale_de_la_pausa:
 	ld hl,03b00h		;8214   ; el sprite 0, abajo
 	ld a,0d0h		;8217
@@ -805,22 +805,22 @@ estado_10_ultimo:
 	ld a,092h		;8640   ; el efecto 0x92
 	call 0413ah		;8642   ; banco 0: pide_sonido_si_esta_activo
 	jp avanza_el_subestado		;8645
-estado_11:
-	djnz L_865B		;8648
+estado_11_espera:
+	djnz estado_11_monta_otra_vez		;8648
 	call 04332h		;864a   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;864d
 	call 0a985h		;8650   ; banco 3
-	ld a,(0e203h)		;8653   ; por donde va la rotacion de los sprites
-	and a			;8656
+	ld a,(0e203h)		;8653   ; el paso de la transicion
+	and a			;8656   ; hasta cero no se sigue
 	ret nz			;8657
 	jp avanza_el_subestado		;8658
-L_865B:
-	djnz L_868F		;865b
-	call 042edh		;865d   ; banco 0: esconde_los_sprites
-	call 04232h		;8660   ; banco 0: borra_el_area_de_juego
+estado_11_monta_otra_vez:
+	djnz estado_11_ultimo		;865b
+	call 042edh		;865d   ; esconder los sprites
+	call 04232h		;8660   ; borrar la zona de juego
 	call 0b94ah		;8663   ; banco 3
-	call 0463fh		;8666   ; banco 0: empieza_una_vida
-	call 04995h		;8669
+	call 0463fh		;8666   ; empezar una vida
+	call 04995h		;8669   ; los tres tercios de caracteres
 	call 049fch		;866c
 	call 049d2h		;866f
 	call 057fbh		;8672
@@ -829,141 +829,149 @@ L_865B:
 	call L_9431		;867b
 	call 06000h		;867e   ; banco 1
 	call 06539h		;8681   ; banco 1
-	call 04265h		;8684   ; banco 0: sube_el_area_de_juego
+	call 04265h		;8684   ; subir la zona de juego
 	call L_9493		;8687
-	ld a,004h		;868a
+	ld a,004h		;868a   ; y al estado 4
 	jp pon_el_estado		;868c
-L_868F:
+estado_11_ultimo:
 	call 042e8h		;868f
-	ld a,001h		;8692
+	ld a,001h		;8692   ; la clase de paso de fase
 	ld (0e21eh),a		;8694
 	ld a,01bh		;8697
-	ld (0e203h),a		;8699   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;8699   ; el paso de la transicion, a 0x1B
 	call 07db3h		;869c   ; banco 1
-	ld a,0f8h		;869f
+	ld a,0f8h		;869f   ; un valor de trabajo
 	ld (0e21fh),a		;86a1
-	ld c,00eh		;86a4
-	ld hl,0ee90h		;86a6
-L_86A9:
-	ld b,004h		;86a9
-	ld de,086c2h		;86ab
-L_86AE:
+	ld c,00eh		;86a4   ; catorce sprites
+	ld hl,0ee90h		;86a6   ; desde el hueco 4
+estado_11_llena_los_sprites:
+	ld b,004h		;86a9   ; cuatro bytes por sprite
+	ld de,086c2h		;86ab   ; la plantilla de sprite
+estado_11_copia_el_sprite:
 	ld a,(de)			;86ae
 	ld (hl),a			;86af
 	inc de			;86b0
 	inc l			;86b1
-	djnz L_86AE		;86b2
-	dec c			;86b4
-	jr nz,L_86A9		;86b5
+	djnz estado_11_copia_el_sprite		;86b2
+	dec c			;86b4   ; un sprite menos
+	jr nz,estado_11_llena_los_sprites		;86b5
 	call 056a0h		;86b7
-	ld a,089h		;86ba
+	ld a,089h		;86ba   ; el efecto 0x89
 	call 0413ah		;86bc   ; banco 0: pide_sonido_si_esta_activo
 	jp avanza_el_subestado		;86bf
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x86c2..0x86c6  (4 bytes)
-DATA_86C2:
+; DATOS sprite_de_relleno: Los cuatro bytes -Y 0xE0, X 0x78, patron 0x34 y
+;   color 0x0A- que 0x86A9 repite en los catorce sprites de arriba. La Y a
+;   0xE0 los deja fuera de la pantalla: se preparan escondidos y luego se van
+;   bajando.
+;   0x86c2..0x86c6  (4 bytes)
+DATA_sprite_de_relleno:
 	defb 0e0h,078h,034h,00ah	; 86c2
 
 ; ======================================================================
-; CODIGO 0x86c6..0x8a55  (911 bytes)
+; CODIGO 0x86c6..0x8d09  (1603 bytes)
 ; ======================================================================
 
 
-L_86C6:
-	djnz L_86D7		;86c6
+
+; ----------------------------------------------------------------------
+; ESTADO 12: LA ESCENA LARGA. El estado con mas subestados de todos -nueve-, y el unico que se salta subestados a proposito: 0x8748 sube 0xE001 tres veces de golpe y 0x877C una, segun lo que devuelva la rutina del banco 1 en 0xE096. O sea que la escena tiene ramas.
+; ----------------------------------------------------------------------
+estado_12:
+	djnz estado_12_subestado_1		;86c6
 	call 04332h		;86c8   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;86cb
-	ld a,(0e203h)		;86ce   ; por donde va la rotacion de los sprites
-	cp 011h		;86d1
+	ld a,(0e203h)		;86ce   ; el paso de la transicion
+	cp 011h		;86d1   ; en el 0x11 se sigue
 	ret nz			;86d3
 	jp avanza_el_subestado		;86d4
-L_86D7:
-	djnz L_86ED		;86d7
-	call 042edh		;86d9   ; banco 0: esconde_los_sprites
-	call 04232h		;86dc   ; banco 0: borra_el_area_de_juego
+estado_12_subestado_1:
+	djnz estado_12_subestado_2		;86d7
+	call 042edh		;86d9   ; esconder los sprites
+	call 04232h		;86dc   ; borrar la zona de juego
 	call L_9431		;86df
 	call 06befh		;86e2   ; banco 1
-	ld a,01fh		;86e5
+	ld a,01fh		;86e5   ; el efecto 0x1F
 	call 0413ah		;86e7   ; banco 0: pide_sonido_si_esta_activo
 	jp avanza_el_subestado		;86ea
-L_86ED:
-	djnz L_8735		;86ed
+estado_12_subestado_2:
+	djnz estado_12_la_rama		;86ed
 	call 04332h		;86ef   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;86f2
 	call 0a985h		;86f5   ; banco 3
-	ld a,(0e203h)		;86f8   ; por donde va la rotacion de los sprites
-	and a			;86fb
+	ld a,(0e203h)		;86f8   ; el paso de la transicion
+	and a			;86fb   ; hasta cero no se sigue
 	ret nz			;86fc
-	ld a,020h		;86fd
+	ld a,020h		;86fd   ; el efecto 0x20
 	call 0413ah		;86ff   ; banco 0: pide_sonido_si_esta_activo
-	ld a,(0e0a2h)		;8702   ; el modo en el que esta el juego
-	sub 003h		;8705
+	ld a,(0e0a2h)		;8702   ; el modo
+	sub 003h		;8705   ; el 3 lleva un efecto...
 	ld c,06bh		;8707
-	jr z,L_8712		;8709
-	dec a			;870b
+	jr z,estado_12_suena		;8709
+	dec a			;870b   ; ...el 4 otro...
 	ld c,06eh		;870c
-	jr z,L_8712		;870e
-	ld c,068h		;8710
-L_8712:
+	jr z,estado_12_suena		;870e
+	ld c,068h		;8710   ; ...y los demas el de siempre
+estado_12_suena:
 	ld a,c			;8712
 	call 0413ah		;8713   ; banco 0: pide_sonido_si_esta_activo
 	call 0a8dbh		;8716   ; banco 3
 	xor a			;8719
 	call 0a8f5h		;871a   ; banco 3
 	ld a,004h		;871d
-	ld (0ee83h),a		;871f
+	ld (0ee83h),a		;871f   ; color 4 en los cuatro primeros sprites
 	ld (0ee87h),a		;8722
 	ld (0ee8bh),a		;8725
 	ld (0ee8fh),a		;8728
-	call 042fbh		;872b   ; banco 0: sube_los_sprites
+	call 042fbh		;872b   ; subir los sprites
 	xor a			;872e
-	ld (0e096h),a		;872f   ; los avisos que deja el cuadro
+	ld (0e096h),a		;872f   ; y los avisos, a cero
 	jp avanza_el_subestado		;8732
-L_8735:
-	djnz L_8751		;8735
-	call 06e1eh		;8737   ; banco 1
-	ld a,(0e096h)		;873a   ; los avisos que deja el cuadro
+estado_12_la_rama:
+	djnz estado_12_subestado_4		;8735
+	call 06e1eh		;8737   ; la escena, en el banco 1
+	ld a,(0e096h)		;873a   ; lo que ha devuelto
 	and a			;873d
-	ret z			;873e
-	dec a			;873f
+	ret z			;873e   ; sin aviso, se sigue esperando
+	dec a			;873f   ; con un 1 se avanza uno...
 	ld a,000h		;8740
 	ld (0e096h),a		;8742   ; los avisos que deja el cuadro
 	jp nz,avanza_el_subestado		;8745
-	ld hl,0e001h		;8748
+	ld hl,0e001h		;8748   ; ...y con otra cosa se saltan TRES subestados de golpe
 	inc (hl)			;874b
 	inc (hl)			;874c
 	inc (hl)			;874d
 	jp avanza_el_subestado		;874e
-L_8751:
-	djnz L_8769		;8751
-	ld hl,03b00h		;8753
-	ld a,0d0h		;8756
+estado_12_subestado_4:
+	djnz estado_12_subestado_5		;8751
+	ld hl,03b00h		;8753   ; el sprite 0
+	ld a,0d0h		;8756   ; a la fila 0xD0
 	call 0004dh		;8758   ; BIOS WRTVRM - Writes data in VRAM
-	call 04232h		;875b   ; banco 0: borra_el_area_de_juego
+	call 04232h		;875b   ; borrar la zona de juego
 	call 07809h		;875e   ; banco 1
-	ld a,074h		;8761
+	ld a,074h		;8761   ; el efecto 0x74
 	call 0413ah		;8763   ; banco 0: pide_sonido_si_esta_activo
 	jp avanza_el_subestado		;8766
-L_8769:
-	djnz L_8783		;8769
+estado_12_subestado_5:
+	djnz estado_12_subestado_6		;8769
 	call 0781eh		;876b   ; banco 1
-	ld a,(0e096h)		;876e   ; los avisos que deja el cuadro
+	ld a,(0e096h)		;876e   ; los avisos
 	and a			;8771
-	ret z			;8772
+	ret z			;8772   ; sin aviso, se espera
 	dec a			;8773
 	ld a,000h		;8774
 	ld (0e096h),a		;8776   ; los avisos que deja el cuadro
 	jp nz,avanza_el_subestado		;8779
-	ld hl,0e001h		;877c
+	ld hl,0e001h		;877c   ; y aqui se salta UN subestado
 	inc (hl)			;877f
 	jp avanza_el_subestado		;8780
-L_8783:
-	djnz L_87AE		;8783
-	call 04232h		;8785   ; banco 0: borra_el_area_de_juego
+estado_12_subestado_6:
+	djnz estado_12_subestado_7		;8783
+	call 04232h		;8785   ; borrar la zona de juego
 	call 06c7fh		;8788   ; banco 1
-	call 042fbh		;878b   ; banco 0: sube_los_sprites
-	ld a,(0e0a2h)		;878e   ; el modo en el que esta el juego
+	call 042fbh		;878b   ; subir los sprites
+	ld a,(0e0a2h)		;878e   ; el modo, otra vez con sus tres efectos
 	sub 003h		;8791
 	ld c,06bh		;8793
 	jr z,L_879E		;8795
@@ -976,16 +984,16 @@ L_879E:
 	call 0413ah		;879f   ; banco 0: pide_sonido_si_esta_activo
 	xor a			;87a2
 	ld (0e096h),a		;87a3   ; los avisos que deja el cuadro
-	ld a,003h		;87a6
+	ld a,003h		;87a6   ; y el subestado vuelve al 3: la escena da la vuelta
 	ld (0e001h),a		;87a8   ; el SUBESTADO
 	jp avanza_el_subestado		;87ab
-L_87AE:
-	djnz L_87DC		;87ae
-	call 042edh		;87b0   ; banco 0: esconde_los_sprites
-	call 04232h		;87b3   ; banco 0: borra_el_area_de_juego
+estado_12_subestado_7:
+	djnz estado_12_subestado_8		;87ae
+	call 042edh		;87b0   ; esconder los sprites
+	call 04232h		;87b3   ; borrar la zona de juego
 	call 07015h		;87b6   ; banco 1
-	call 0463fh		;87b9   ; banco 0: empieza_una_vida
-	call 04995h		;87bc
+	call 0463fh		;87b9   ; empezar una vida
+	call 04995h		;87bc   ; los tres tercios de caracteres
 	call 049fch		;87bf
 	call 049d2h		;87c2
 	call 057fbh		;87c5
@@ -996,56 +1004,64 @@ L_87AE:
 	ld a,095h		;87d4
 	call 0413ah		;87d6   ; banco 0: pide_sonido_si_esta_activo
 	jp avanza_el_subestado		;87d9
-L_87DC:
-	djnz L_87F2		;87dc
+estado_12_subestado_8:
+	djnz estado_12_ultimo		;87dc
 	call 04332h		;87de   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;87e1
-	ld a,(0e203h)		;87e4   ; por donde va la rotacion de los sprites
-	cp 004h		;87e7
+	ld a,(0e203h)		;87e4   ; el paso de la transicion
+	cp 004h		;87e7   ; en el 4 se acaba
 	ret nz			;87e9
 	call L_9493		;87ea
-	ld a,004h		;87ed
+	ld a,004h		;87ed   ; y al estado 4
 	jp pon_el_estado		;87ef
-L_87F2:
+estado_12_ultimo:
 	call 042dfh		;87f2
-	call 04265h		;87f5   ; banco 0: sube_el_area_de_juego
-	ld a,092h		;87f8
+	call 04265h		;87f5   ; subir la zona de juego
+	ld a,092h		;87f8   ; el efecto 0x92
 	call 0413ah		;87fa   ; banco 0: pide_sonido_si_esta_activo
 	jp avanza_el_subestado		;87fd
-L_8800:
-	call L_8AEC		;8800
-	jp 0be41h		;8803   ; banco 3
-L_8806:
-	djnz L_881D		;8806
+
+; ----------------------------------------------------------------------
+; ESTADO 13: PARADO. Dos llamadas y ya esta. Es donde se queda el juego mientras la pausa este puesta, y de aqui solo se sale por el estado 5, que es quien mira la tecla.
+; ----------------------------------------------------------------------
+estado_13_la_pausa:
+	call L_8AEC		;8800   ; lo que hay que hacer aunque este parado
+	jp 0be41h		;8803   ; y lo del banco 3
+
+; ----------------------------------------------------------------------
+; ESTADO 14: PERDER UNA VIDA. Aqui esta la cuenta: 0x8833 baja 0xE090 EN BCD y, si ya estaba a cero, se pasa al estado siguiente -que es el de fin de partida-. Si quedaba alguna, se rehace la escena y se vuelve al 4.
+; ----------------------------------------------------------------------
+estado_14:
+	djnz estado_14_quita_una_vida		;8806
 	call 04332h		;8808   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;880b
 	call 0a985h		;880e   ; banco 3
-	ld a,(0e096h)		;8811   ; los avisos que deja el cuadro
+	ld a,(0e096h)		;8811   ; los avisos
 	and a			;8814
-	ret nz			;8815
+	ret nz			;8815   ; mientras haya alguno, se espera
 	xor a			;8816
 	ld (0e0e0h),a		;8817
 	jp avanza_el_subestado		;881a
-L_881D:
-	djnz L_8869		;881d
-	call 042edh		;881f   ; banco 0: esconde_los_sprites
-	call 04232h		;8822   ; banco 0: borra_el_area_de_juego
-	ld a,(0e0a2h)		;8825   ; el modo en el que esta el juego
-	dec a			;8828
+estado_14_quita_una_vida:
+	djnz estado_14_espera_y_rehace		;881d
+	call 042edh		;881f   ; esconder los sprites
+	call 04232h		;8822   ; borrar la zona de juego
+	ld a,(0e0a2h)		;8825   ; el modo
+	dec a			;8828   ; en el modo 1 se va al estado 8
 	jr nz,L_8833		;8829
 	ld a,008h		;882b
 	call pon_el_estado		;882d
 	jp avisa_y_avanza_con_paso		;8830
 L_8833:
-	ld hl,0e090h		;8833
+	ld hl,0e090h		;8833   ; LAS VIDAS
 	ld a,(hl)			;8836
-	or a			;8837
+	or a			;8837   ; si no queda ninguna, se acabo la partida
 	jp z,pasa_al_estado_siguiente		;8838
-	sub 001h		;883b
-	daa			;883d
+	sub 001h		;883b   ; una menos...
+	daa			;883d   ; ...EN BCD
 	ld (hl),a			;883e
-	call 04708h		;883f   ; banco 0: reempieza
-	call 0463fh		;8842   ; banco 0: empieza_una_vida
+	call 04708h		;883f   ; rehacer sin perder la cuenta
+	call 0463fh		;8842   ; empezar una vida
 	call 05b91h		;8845
 	call 0481bh		;8848
 	call L_9431		;884b
@@ -1059,18 +1075,18 @@ L_8833:
 	ld (0e10eh),a		;885f
 	call L_8AEC		;8862
 	xor a			;8865
-	jp pon_la_espera_y_avanza		;8866
-L_8869:
-	dec b			;8869
+	jp pon_la_espera_y_avanza		;8866   ; y sin espera
+estado_14_espera_y_rehace:
+	dec b			;8869   ; este subestado se mira con `dec b`, no con `djnz`
 	jp nz,L_8919		;886a
 	call L_8AEC		;886d
-	ld hl,0e004h		;8870
+	ld hl,0e004h		;8870   ; la espera
 	dec (hl)			;8873
-	ret nz			;8874
+	ret nz			;8874   ; mientras dure, nada
 	xor a			;8875
 	ld (0e10eh),a		;8876
-	ld hl,03b00h		;8879
-	ld a,0e0h		;887c
+	ld hl,03b00h		;8879   ; los tres sprites de arriba...
+	ld a,0e0h		;887c   ; ...fuera de la pantalla
 	call 0004dh		;887e   ; BIOS WRTVRM - Writes data in VRAM
 	ld hl,03b04h		;8881
 	ld a,0e0h		;8884
@@ -1078,56 +1094,56 @@ L_8869:
 	ld hl,03b08h		;8889
 	ld a,0e0h		;888c
 	call 0004dh		;888e   ; BIOS WRTVRM - Writes data in VRAM
-	call 04232h		;8891   ; banco 0: borra_el_area_de_juego
-	call 04995h		;8894
+	call 04232h		;8891   ; borrar la zona de juego
+	call 04995h		;8894   ; los tres tercios de caracteres
 	call 049fch		;8897
 	call 049d2h		;889a
 	call 057fbh		;889d
-	ld a,(0e0a5h)		;88a0   ; por que vuelta de la fase va
-	cp 002h		;88a3
-	jr z,L_88BC		;88a5
+	ld a,(0e0a5h)		;88a0   ; por que vuelta va
+	cp 002h		;88a3   ; la 2 y la 3 tienen su propia carga
+	jr z,estado_14_vuelta_2		;88a5
 	cp 003h		;88a7
-	jr z,L_88DA		;88a9
+	jr z,estado_14_vuelta_3		;88a9
 	call L_966B		;88ab
 	call L_9689		;88ae
-	call 04265h		;88b1   ; banco 0: sube_el_area_de_juego
+	call 04265h		;88b1   ; subir la zona de juego
 	call L_9493		;88b4
-	ld a,004h		;88b7
+	ld a,004h		;88b7   ; y al estado 4
 	jp pon_el_estado		;88b9
-L_88BC:
-	ld a,(0e093h)		;88bc   ; el valor 1-2-3 de la fase
-	cp 003h		;88bf
-	jr nz,L_8902		;88c1
+estado_14_vuelta_2:
+	ld a,(0e093h)		;88bc   ; el 1-2-3 de la fase
+	cp 003h		;88bf   ; solo el 3 lleva la carga especial
+	jr nz,estado_14_vuelta_2_normal		;88c1
 	call 0537ah		;88c3
 	call 053cfh		;88c6
 	call 05424h		;88c9
 	call 05498h		;88cc
-	call 04265h		;88cf   ; banco 0: sube_el_area_de_juego
+	call 04265h		;88cf   ; subir la zona de juego
 	call L_9493		;88d2
-	ld a,004h		;88d5
+	ld a,004h		;88d5   ; y al estado 4
 	jp pon_el_estado		;88d7
-L_88DA:
+estado_14_vuelta_3:
 	call 0537ah		;88da
 	call 053cfh		;88dd
 	call 05424h		;88e0
 	call 05498h		;88e3
 	call 057c2h		;88e6
 	xor a			;88e9
-	ld (0e540h),a		;88ea
+	ld (0e540h),a		;88ea   ; una bandera a cero
 	call 0b165h		;88ed   ; banco 3
-	ld a,065h		;88f0
+	ld a,065h		;88f0   ; el efecto 0x65
 	call 0413ah		;88f2   ; banco 0: pide_sonido_si_esta_activo
 	ld a,007h		;88f5
-	ld (0e000h),a		;88f7   ; la variable de fase
+	ld (0e000h),a		;88f7   ; al estado 7...
 	ld a,003h		;88fa
-	ld (0e001h),a		;88fc   ; el SUBESTADO
-	jp 04265h		;88ff   ; banco 0: sube_el_area_de_juego
-L_8902:
+	ld (0e001h),a		;88fc   ; ...y al subestado 3
+	jp 04265h		;88ff   ; subir la zona de juego
+estado_14_vuelta_2_normal:
 	call 05212h		;8902
 	call 05256h		;8905
 	call 0529ah		;8908
 	call 0530ah		;890b
-	call 04265h		;890e   ; banco 0: sube_el_area_de_juego
+	call 04265h		;890e   ; subir la zona de juego
 	call L_9493		;8911
 	ld a,004h		;8914
 	jp pon_el_estado		;8916
@@ -1142,19 +1158,23 @@ L_8919:
 	ld (0e096h),a		;892a   ; los avisos que deja el cuadro
 	ld (0e097h),a		;892d   ; la bandera de que la fase se ha acabado
 	jp avanza_el_subestado		;8930
-L_8933:
-	dec b			;8933
-	jp nz,L_8A0F		;8934
-	ld a,(0f0f7h)		;8937
-	cp 0feh		;893a
-	call nc,L_8A42		;893c
-	ld a,(0e012h)		;893f
+
+; ----------------------------------------------------------------------
+; ESTADO 15: FIN DE PARTIDA, Y EL CONTINUE. Lo interesante esta en como se hace el continue: no hay ninguna rutina que "guarde la partida". Lo que hay es un borrado de RAM con las seis cosas que importan a salvo en la PILA -0xE0C6 a 0xE0CB, y por otro lado el numero de fase, la fase, el 1-2-3 y lo de uno o dos jugadores-, y despues de borrar se vuelven a poner. Y las vidas se dejan en DOS, no en las que hubiera al empezar.
+; ----------------------------------------------------------------------
+estado_15:
+	dec b			;8933   ; este se mira con `dec b`, no con `djnz`
+	jp nz,estado_15_pinta_el_fin		;8934
+	ld a,(0f0f7h)		;8937   ; una bandera que INIT deja a cero
+	cp 0feh		;893a   ; y que aqui vale 0xFE
+	call nc,mira_si_quiere_continuar		;893c
+	ld a,(0e012h)		;893f   ; otra
 	or a			;8942
 	ret nz			;8943
-	ld a,(0e0dfh)		;8944
+	ld a,(0e0dfh)		;8944   ; ¿se puede continuar?
 	and a			;8947
-	jp z,L_8A01		;8948
-	ld a,(0e0c6h)		;894b
+	jp z,estado_15_se_acabo_del_todo		;8948   ; si no, se acabo del todo
+	ld a,(0e0c6h)		;894b   ; las seis cosas de 0xE0C6...
 	ld c,a			;894e
 	ld a,(0e0c7h)		;894f
 	ld b,a			;8952
@@ -1166,68 +1186,68 @@ L_8933:
 	ld l,a			;895e
 	ld a,(0e0cbh)		;895f
 	ld h,a			;8962
-	push bc			;8963
+	push bc			;8963   ; ...a la pila
 	push de			;8964
 	push hl			;8965
-	ld a,(0e091h)		;8966   ; el numero de fase tal como se pinta
+	ld a,(0e091h)		;8966   ; el numero de fase que se pinta
 	ld c,a			;8969
-	ld a,(0e092h)		;896a   ; la FASE, de 1 a 13
+	ld a,(0e092h)		;896a   ; la fase
 	ld b,a			;896d
-	ld a,(0e093h)		;896e   ; el valor 1-2-3 de la fase
+	ld a,(0e093h)		;896e   ; el 1-2-3
 	ld e,a			;8971
-	ld a,(0e08fh)		;8972
+	ld a,(0e08fh)		;8972   ; uno o dos jugadores
 	ld d,a			;8975
-	push de			;8976
+	push de			;8976   ; y tambien a la pila
 	push bc			;8977
-	ld hl,0e086h		;8978
+	ld hl,0e086h		;8978   ; y ahora se borra la RAM
 	ld de,0e087h		;897b
-	ld bc,000d9h		;897e
+	ld bc,000d9h		;897e   ; 217 bytes desde 0xE086
 	ld (hl),000h		;8981
 	ldir		;8983
-	ld a,(0f0f7h)		;8985
+	ld a,(0f0f7h)		;8985   ; la bandera de antes
 	cp 0feh		;8988
-	jr z,L_89A6		;898a
-	ld hl,0e160h		;898c
+	jr z,estado_15_borra_lo_demas		;898a
+	ld hl,0e160h		;898c   ; otros 143 bytes
 	ld de,0e161h		;898f
 	ld bc,0008fh		;8992
 	ld (hl),000h		;8995
 	ldir		;8997
-	ld hl,0eba0h		;8999
+	ld hl,0eba0h		;8999   ; y 64 mas del espejo de pantalla
 	ld de,0eba1h		;899c
 	ld bc,00040h		;899f
 	ld (hl),000h		;89a2
 	ldir		;89a4
-L_89A6:
-	ld hl,0e1f0h		;89a6
+estado_15_borra_lo_demas:
+	ld hl,0e1f0h		;89a6   ; 2.447 bytes de variables de fase
 	ld de,0e1f1h		;89a9
 	ld bc,0098fh		;89ac
 	ld (hl),000h		;89af
 	ldir		;89b1
-	ld hl,0ebe0h		;89b3
+	ld hl,0ebe0h		;89b3   ; y 800 del espejo de la zona de juego
 	ld de,0ebe1h		;89b6
 	ld bc,0031fh		;89b9
 	ld (hl),000h		;89bc
 	ldir		;89be
-	pop bc			;89c0
+	pop bc			;89c0   ; lo que se salvo
 	pop de			;89c1
-	ld hl,0e090h		;89c2
-	ld (hl),002h		;89c5
+	ld hl,0e090h		;89c2   ; las vidas...
+	ld (hl),002h		;89c5   ; ...que quedan en DOS
 	inc l			;89c7
-	ld (hl),c			;89c8
+	ld (hl),c			;89c8   ; el numero de fase
 	inc l			;89c9
-	ld (hl),b			;89ca
+	ld (hl),b			;89ca   ; la fase
 	inc l			;89cb
-	ld (hl),e			;89cc
+	ld (hl),e			;89cc   ; el 1-2-3
 	inc l			;89cd
 	inc l			;89ce
-	ld (hl),005h		;89cf
+	ld (hl),005h		;89cf   ; y un cinco cuatro bytes mas alla
 	inc l			;89d1
 	ld (hl),000h		;89d2
 	inc l			;89d4
 	ld (hl),001h		;89d5
 	ld a,d			;89d7
-	ld (0e08fh),a		;89d8
-	pop hl			;89db
+	ld (0e08fh),a		;89d8   ; uno o dos jugadores
+	pop hl			;89db   ; y las seis de 0xE0C6, de vuelta
 	pop de			;89dc
 	pop bc			;89dd
 	ld a,c			;89de
@@ -1242,117 +1262,150 @@ L_89A6:
 	ld (0e0cah),a		;89ef
 	ld a,h			;89f2
 	ld (0e0cbh),a		;89f3
-	call 046e3h		;89f6   ; banco 0: monta_la_fase_desde_el_decorado
-	call 04232h		;89f9   ; banco 0: borra_el_area_de_juego
-	ld a,003h		;89fc
+	call 046e3h		;89f6   ; montar la fase desde el decorado
+	call 04232h		;89f9   ; borrar la zona de juego
+	ld a,003h		;89fc   ; y al estado 3
 	jp pon_el_estado		;89fe
-L_8A01:
-	ld hl,0e002h		;8a01
+estado_15_se_acabo_del_todo:
+	ld hl,0e002h		;8a01   ; las banderas de la partida
 	ld a,(hl)			;8a04
-	and 0bfh		;8a05
+	and 0bfh		;8a05   ; se le quita el bit 6
 	ld (hl),a			;8a07
 	xor a			;8a08
-	ld (0e082h),a		;8a09   ; uno o dos jugadores
-	jp estado_a_0xFF		;8a0c
-L_8A0F:
-	call 04224h		;8a0f   ; banco 0: borra_la_pantalla_entera
-	ld a,0c8h		;8a12
+	ld (0e082h),a		;8a09   ; y uno o dos jugadores, a cero
+	jp estado_a_0xFF		;8a0c   ; y vuelta a la presentacion
+estado_15_pinta_el_fin:
+	call 04224h		;8a0f   ; borrar la pantalla entera
+	ld a,0c8h		;8a12   ; el efecto 0xC8
 	call 0413ah		;8a14   ; banco 0: pide_sonido_si_esta_activo
 	call 05b91h		;8a17
-	ld de,08e30h		;8a1a
-	call 042bch		;8a1d   ; banco 0: pinta_guion_con_mascara
-	ld de,0e085h		;8a20
-	ld hl,03971h		;8a23
+	ld de,08e30h		;8a1a   ; el rotulo del final
+	call 042bch		;8a1d   ; pintado
+	ld de,0e085h		;8a20   ; el marcador
+	ld hl,03971h		;8a23   ; donde va en la pantalla
 	call L_93E3		;8a26
-	ld hl,03991h		;8a29
+	ld hl,03991h		;8a29   ; y la otra cifra
 	ld de,0e088h		;8a2c
 	call L_93E3		;8a2f
-	ld a,(0f0f7h)		;8a32
-	cp 0feh		;8a35
-	jr c,L_8A3F		;8a37
-	ld de,08e1eh		;8a39
+	ld a,(0f0f7h)		;8a32   ; la bandera de continue
+	cp 0feh		;8a35   ; con 0xFE o mas...
+	jr c,estado_15_avanza		;8a37
+	ld de,08e1eh		;8a39   ; ...se pinta el rotulo de continuar
 	call 042bch		;8a3c   ; banco 0: pinta_guion_con_mascara
-L_8A3F:
+estado_15_avanza:
 	jp avanza_el_subestado		;8a3f
-L_8A42:
+
+; ----------------------------------------------------------------------
+; ¿QUIERE CONTINUAR? Mira el bit 6 de las teclas recien pulsadas y, si esta, enciende 0xE0DF y repinta el rotulo con la mascara a cero -o sea, lo borra-. Lo llama el propio estado 15 desde 0x893C, y solo mientras la bandera de 0xF0F7 lo permita.
+; ----------------------------------------------------------------------
+mira_si_quiere_continuar:
 	ld a,(0e006h)		;8a42   ; las teclas recien pulsadas
-	and 040h		;8a45
-	ret z			;8a47
+	and 040h		;8a45   ; el bit 6
+	ret z			;8a47   ; si no se ha pulsado, nada
 	ld a,001h		;8a48
-	ld (0e0dfh),a		;8a4a
-	ld de,08e1eh		;8a4d
-	ld c,000h		;8a50
+	ld (0e0dfh),a		;8a4a   ; se apunta que si
+	ld de,08e1eh		;8a4d   ; el rotulo de continuar
+	ld c,000h		;8a50   ; con la mascara a cero: se borra
 	jp 042beh		;8a52   ; banco 0: pinta_guion_lee_destino
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8a55..0x8a8d  (56 bytes)
-DATA_8A55:
-	defb 0cdh,0c8h,044h,021h,081h,0e0h,0cdh,0c1h,044h,0b7h,0c8h,021h,004h,0e0h,036h,000h	; 8a55  ..D!....D..!..6.
-	defb 021h,000h,0e0h,046h,010h,00eh,0e6h,030h,0c8h,03eh,040h,032h,002h,0e0h,036h,003h	; 8a65  !..F...0.>@2..6.
-	defb 023h,036h,000h,0c9h,07eh,0a7h,020h,006h,03ah,001h,0e0h,0feh,003h,0c8h,036h,001h	; 8a75  #6..~. .:.....6.
-	defb 03eh,0cbh,0cdh,045h,041h,0c3h,095h,05ch	; 8a85  >..EA..\
+; LO QUE LA MAQUINA DE ESTADOS METE EN LA PILA. No la llama ningun `call`: p02:800B hace `ld hl,0x8A55` y `push hl` antes de despachar, asi que el `ret` del estado cae aqui. Es un `call` escrito del reves, y sirve para que los tres estados de la presentacion compartan la salida sin gastar una llamada. Lo que hace es mirar si se ha pulsado algo para arrancar la partida.
+; ----------------------------------------------------------------------
+salida_de_la_presentacion:
+	call 044c8h		;8a55   ; leer los mandos
+	ld hl,0e081h		;8a58   ; y quedarse con lo recien pulsado
+	call 044c1h		;8a5b
+	or a			;8a5e   ; si no se ha tocado nada, se sigue en la presentacion
+	ret z			;8a5f
+	ld hl,0e004h		;8a60   ; la espera, a cero
+	ld (hl),000h		;8a63
+	ld hl,0e000h		;8a65   ; el estado
+	ld b,(hl)			;8a68
+	djnz salida_desde_el_estado_0		;8a69   ; el 0 va por otro lado
+	and 030h		;8a6b   ; en los demas, los bits 4 y 5: la barra o el disparo
+	ret z			;8a6d   ; y si no son esos, nada
+	ld a,040h		;8a6e   ; el bit 6 de las banderas: se enciende el sonido
+	ld (0e002h),a		;8a70
+	ld (hl),003h		;8a73   ; al estado 3, que es el menu
+	inc hl			;8a75
+	ld (hl),000h		;8a76   ; y al subestado 0
+	ret			;8a78
+salida_desde_el_estado_0:
+	ld a,(hl)			;8a79   ; el estado
+	and a			;8a7a
+	jr nz,salida_arranca_la_presentacion		;8a7b
+	ld a,(0e001h)		;8a7d   ; el subestado
+	cp 003h		;8a80   ; en el 3 no se hace nada
+	ret z			;8a82
+salida_arranca_la_presentacion:
+	ld (hl),001h		;8a83   ; al estado 1
+	ld a,0cbh		;8a85   ; el efecto 0xCB
+	call 04145h		;8a87   ; banco 0: pide_sonido
+	jp 05c95h		;8a8a   ; y a montar la presentacion
 
-; ======================================================================
-; CODIGO 0x8a8d..0x8d09  (636 bytes)
-; ======================================================================
-
-
-L_8A8D:
+; ----------------------------------------------------------------------
+; LA REJILLA DE LA PANTALLA DE FIN. Llena 0x0A00 de la VRAM con ceros y luego escribe en la tabla de nombres una rejilla de seis filas por veintiuna casillas con caracteres consecutivos desde 0x40: cada casilla su propio dibujo, que es como se hace un cartel grande sin repetir nada.
+; ----------------------------------------------------------------------
+monta_la_rejilla:
 	ld hl,00000h		;8a8d
 	ld (0e00ah),hl		;8a90
-	call 047e2h		;8a93   ; banco 0: pinta_del_banco_6
-	ld hl,00a00h		;8a96
-	ld bc,003f0h		;8a99
+	call 047e2h		;8a93   ; el guion del banco 6
+	ld hl,00a00h		;8a96   ; 0x0A00 de la VRAM
+	ld bc,003f0h		;8a99   ; 1008 bytes
 	xor a			;8a9c
-	call 00056h		;8a9d   ; BIOS FILVRM - Fills VRAM with value
-	ld hl,03907h		;8aa0
-	ld a,040h		;8aa3
-	ld c,006h		;8aa5
-	ld de,0000bh		;8aa7
-L_8AAA:
-	ld b,015h		;8aaa
-L_8AAC:
-	call 0004dh		;8aac   ; BIOS WRTVRM - Writes data in VRAM
+	call 00056h		;8a9d   ; BIOS FILVRM - Fills VRAM with value | a cero
+	ld hl,03907h		;8aa0   ; la esquina de la rejilla
+	ld a,040h		;8aa3   ; el primer caracter
+	ld c,006h		;8aa5   ; seis filas
+	ld de,0000bh		;8aa7   ; y once casillas de salto al final de cada una
+monta_la_rejilla_fila:
+	ld b,015h		;8aaa   ; veintiuna casillas
+monta_la_rejilla_casilla:
+	call 0004dh		;8aac   ; BIOS WRTVRM - Writes data in VRAM | BIOS WRTVRM
 	inc hl			;8aaf
-	inc a			;8ab0
-	djnz L_8AAC		;8ab1
-	add hl,de			;8ab3
+	inc a			;8ab0   ; y el caracter siguiente
+	djnz monta_la_rejilla_casilla		;8ab1
+	add hl,de			;8ab3   ; a la fila de abajo
 	dec c			;8ab4
-	jr nz,L_8AAA		;8ab5
+	jr nz,monta_la_rejilla_fila		;8ab5
 	ret			;8ab7
-L_8AB8:
-	ld bc,(0e00ah)		;8ab8
-	ld a,0ebh		;8abc
+
+; ----------------------------------------------------------------------
+; IR DESTAPANDO EL CARTEL. Con la rejilla puesta, el cartel se ensena columna a columna escribiendo 0xF0 en los ocho bytes de cada caracter. 0xE00A lleva la columna y 0xE00B la pasada, y se acaba a las seis.
+; ----------------------------------------------------------------------
+destapa_una_columna:
+	ld bc,(0e00ah)		;8ab8   ; por donde va
+	ld a,0ebh		;8abc   ; el primer caracter de la rejilla
 	inc b			;8abe
-L_8ABF:
-	add a,015h		;8abf
-	djnz L_8ABF		;8ac1
+destapa_calcula_la_fila:
+	add a,015h		;8abf   ; veintiuna casillas por fila
+	djnz destapa_calcula_la_fila		;8ac1
 	ld l,a			;8ac3
 	ld h,b			;8ac4
-	add hl,hl			;8ac5
+	add hl,hl			;8ac5   ; por ocho: cada caracter son ocho bytes
 	add hl,hl			;8ac6
 	add hl,hl			;8ac7
-	ld de,00a00h		;8ac8
+	ld de,00a00h		;8ac8   ; la base de los patrones del cartel
 	add hl,de			;8acb
 	ld a,c			;8acc
-	call 04056h		;8acd   ; banco 0: a_mas_hl
-	ld b,015h		;8ad0
-	ld de,00008h		;8ad2
-	ld a,0f0h		;8ad5
-L_8AD7:
-	call 0004dh		;8ad7   ; BIOS WRTVRM - Writes data in VRAM
+	call 04056h		;8acd   ; y la columna que toca
+	ld b,015h		;8ad0   ; veintiuna filas
+	ld de,00008h		;8ad2   ; ocho bytes de una a la siguiente
+	ld a,0f0h		;8ad5   ; 0xF0: media casilla encendida
+destapa_escribe:
+	call 0004dh		;8ad7   ; BIOS WRTVRM - Writes data in VRAM | BIOS WRTVRM
 	add hl,de			;8ada
-	djnz L_8AD7		;8adb
-	ld hl,0e00ah		;8add
+	djnz destapa_escribe		;8adb
+	ld hl,0e00ah		;8add   ; la columna
 	ld a,(hl)			;8ae0
-	inc a			;8ae1
-	and 007h		;8ae2
+	inc a			;8ae1   ; la siguiente
+	and 007h		;8ae2   ; de ocho en ocho
 	ld (hl),a			;8ae4
-	ret nz			;8ae5
+	ret nz			;8ae5   ; y hasta que no da la vuelta no cuenta una pasada
 	inc hl			;8ae6
-	inc (hl)			;8ae7
+	inc (hl)			;8ae7   ; una pasada mas
 	ld a,(hl)			;8ae8
-	cp 006h		;8ae9
+	cp 006h		;8ae9   ; seis pasadas y se acabo
 	ret			;8aeb
 L_8AEC:
 	ld a,(0e0b5h)		;8aec

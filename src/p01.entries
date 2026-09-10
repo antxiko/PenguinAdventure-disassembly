@@ -76,6 +76,7 @@
 0x7D74   # p03:AFC8 jp
 0x7D9C   # p03:A6F1 call
 0x7DD5   # p03:A1DD call
+0x7DF7   # p00:5DBC call
 0x7E2D   # p00:5E8D call
 0x7E7F   # p02:808E call
 0x7F0E   # p02:8078 call

@@ -2323,7 +2323,7 @@ choca_con_lo_de_0xE0C0:
 	ret nc			;b2fe
 	ld a,(0e0c0h)		;b2ff   ; que era lo que habia
 	push af			;b302
-	call L_BBBD		;b303   ; se quita de en medio
+	call quita_lo_de_0xE0C0		;b303   ; se quita de en medio
 	pop af			;b306
 	dec a			;b307   ; y se despacha por lo que era
 	call 04060h		;b308   ; banco 0: despacha
@@ -2509,16 +2509,16 @@ recoger_mira_un_hueco:
 	ld a,(0e089h)		;b426   ; el marcador
 	add a,001h		;b429   ; un punto mas, EN BCD
 	daa			;b42b
-	ld (0e089h),a		;b42c
+	ld (0e089h),a		;b42c   ; el marcador, cifras bajas (BCD)
 	jr nc,recoger_descuenta		;b42f
 	ld a,(0e08ah)		;b431   ; y la cifra alta con su acarreo
 	add a,001h		;b434
 	daa			;b436
-	ld (0e08ah),a		;b437
+	ld (0e08ah),a		;b437   ; el marcador, cifra alta (BCD)
 	cp 010h		;b43a   ; al llegar a 0x10...
 	jr nz,recoger_descuenta		;b43c
 	ld hl,00999h		;b43e   ; ...el marcador se queda en su tope
-	ld (0e089h),hl		;b441
+	ld (0e089h),hl		;b441   ; el marcador, cifras bajas (BCD)
 recoger_descuenta:
 	ld a,(0e203h)		;b444   ; el paso de la transicion
 	cp 001h		;b447   ; en cuatro de ellos -1, 2, 6 y 7-...
@@ -2786,7 +2786,7 @@ monta_el_bonus:
 	ld bc,0029fh		;b5f4   ; 672 bytes: veintiuna filas
 	ld (hl),a			;b5f7
 	ldir		;b5f8
-	ld (0e0d0h),a		;b5fa
+	ld (0e0d0h),a		;b5fa   ; lo que queda de bonus por pasar al marcador
 	ld (0e0a6h),a		;b5fd
 	ld a,008h		;b600   ; el decorado 8: la Tierra desde el espacio
 	ld (0e0a1h),a		;b602   ; el DECORADO, de 0 a 9
@@ -2886,19 +2886,19 @@ bonus_lo_pasa_al_marcador:
 	jr z,bonus_acabado		;b698
 	sub 001h		;b69a   ; uno menos, EN BCD
 	daa			;b69c
-	ld (0e0d0h),a		;b69d
+	ld (0e0d0h),a		;b69d   ; lo que queda de bonus por pasar al marcador
 	ld a,(0e089h)		;b6a0   ; el marcador
 	add a,001h		;b6a3   ; uno mas, tambien en BCD
 	daa			;b6a5
-	ld (0e089h),a		;b6a6
+	ld (0e089h),a		;b6a6   ; el marcador, cifras bajas (BCD)
 	jr nc,L_B6BC		;b6a9   ; y si se ha desbordado, la cifra alta
-	ld a,(0e08ah)		;b6ab
+	ld a,(0e08ah)		;b6ab   ; el marcador, cifra alta (BCD)
 	inc a			;b6ae   ; una mas
-	ld (0e08ah),a		;b6af
+	ld (0e08ah),a		;b6af   ; el marcador, cifra alta (BCD)
 	cp 00ah		;b6b2   ; al llegar a diez...
 	jr c,L_B6BC		;b6b4
 	ld hl,00999h		;b6b6   ; ...el marcador se queda clavado en su tope
-	ld (0e089h),hl		;b6b9
+	ld (0e089h),hl		;b6b9   ; el marcador, cifras bajas (BCD)
 L_B6BC:
 	ld de,00010h		;b6bc   ; donde va el marcador
 	call 09367h		;b6bf   ; banco 2
@@ -3333,151 +3333,166 @@ DATA_BAAD:
 ; ======================================================================
 
 
-L_BACE:
-	ld a,(0e0a1h)		;bace   ; el DECORADO, de 0 a 9
-	cp 007h		;bad1
-	jr nz,L_BB1E		;bad3
-	ld a,(0e216h)		;bad5
+
+; ----------------------------------------------------------------------
+; LO QUE SOLO SALE EN EL DECORADO 7. La primera instruccion lo dice todo: si (0xE0A1) no es 7, esta rutina se va sin hacer nada. Se dispara cuando lo que se maneja pasa de la columna 0x48, y a partir de ahi va bajando por su cuenta durante 0x40 cuadros, cambiando de dibujo cada cuatro.
+; ----------------------------------------------------------------------
+lo_del_decorado_7:
+	ld a,(0e0a1h)		;bace   ; el decorado
+	cp 007h		;bad1   ; solo el 7
+	jr nz,lo_del_decorado_7_se_va		;bad3
+	ld a,(0e216h)		;bad5   ; ¿ya esta en marcha?
 	and a			;bad8
-	jr z,L_BAF8		;bad9
-	ld hl,0e218h		;badb
+	jr z,lo_del_decorado_7_arranca		;bad9
+	ld hl,0e218h		;badb   ; el contador
 	inc (hl)			;bade
 	ld a,(hl)			;badf
-	cp 040h		;bae0
-	jr z,L_BB1E		;bae2
-	bit 2,a		;bae4
+	cp 040h		;bae0   ; a los 0x40 cuadros se acaba
+	jr z,lo_del_decorado_7_se_va		;bae2
+	bit 2,a		;bae4   ; el bit 2: cambia de dibujo cada cuatro cuadros
 	ld a,028h		;bae6
 	jr nz,L_BAEC		;bae8
 	ld a,02ch		;baea
 L_BAEC:
-	ld (0eec6h),a		;baec
-	ld hl,0e219h		;baef
-	dec (hl)			;baf2
+	ld (0eec6h),a		;baec   ; el patron del sprite 17
+	ld hl,0e219h		;baef   ; la fila
+	dec (hl)			;baf2   ; que va bajando
 	ld a,(hl)			;baf3
 	ld (0eec4h),a		;baf4
 	ret			;baf7
-L_BAF8:
-	ld a,(0e204h)		;baf8   ; la X en la pantalla de lo que se maneja
-	cp 048h		;bafb
+lo_del_decorado_7_arranca:
+	ld a,(0e204h)		;baf8   ; la X de lo que se maneja
+	cp 048h		;bafb   ; hasta la columna 0x48 no sale
 	ret c			;bafd
-	ld hl,0e217h		;bafe
+	ld hl,0e217h		;bafe   ; cuantas veces ha salido
 	inc (hl)			;bb01
 	ld c,(hl)			;bb02
 	ld a,001h		;bb03
-	ld (0e216h),a		;bb05
-	ld hl,(0e204h)		;bb08   ; la X en la pantalla de lo que se maneja
+	ld (0e216h),a		;bb05   ; y queda en marcha
+	ld hl,(0e204h)		;bb08   ; su posicion sale de la del jugador
 	ld a,l			;bb0b
-	sub 010h		;bb0c
+	sub 010h		;bb0c   ; dieciseis a la izquierda
 	ld l,a			;bb0e
-	rr c		;bb0f
-	jr nc,L_BB17		;bb11
-	ld a,010h		;bb13
+	rr c		;bb0f   ; y una vez si y otra no...
+	jr nc,lo_del_decorado_7_colocado		;bb11
+	ld a,010h		;bb13   ; ...dieciseis mas abajo
 	add a,h			;bb15
 	ld h,a			;bb16
-L_BB17:
+lo_del_decorado_7_colocado:
 	ld (0e219h),hl		;bb17
-	ld (0eec4h),hl		;bb1a
+	ld (0eec4h),hl		;bb1a   ; y al sprite
 	ret			;bb1d
-L_BB1E:
-	ld a,0e0h		;bb1e
+lo_del_decorado_7_se_va:
+	ld a,0e0h		;bb1e   ; 0xE0: fuera de la pantalla
 	ld (0eec4h),a		;bb20
 	xor a			;bb23
-	ld (0e216h),a		;bb24
+	ld (0e216h),a		;bb24   ; y las dos banderas, a cero
 	ld (0e218h),a		;bb27
 	ret			;bb2a
-L_BB2B:
-	ld hl,(0e0d5h)		;bb2b
+
+; ----------------------------------------------------------------------
+; SACAR LO DE 0xE0C0. Otra cosa que sale a una distancia apuntada, como los enemigos del banco 9, pero esta la lleva el banco 3 y solo sale si NO hay ya ninguna de las otras tres en pantalla -0xE0C0, 0xE0D7 y 0xE0BD-. Entra por arriba o por abajo segun donde este el jugador, igual que el que vuela.
+; ----------------------------------------------------------------------
+saca_lo_de_0xE0C0:
+	ld hl,(0e0d5h)		;bb2b   ; la distancia a la que le toca
 	ld a,h			;bb2e
-	and l			;bb2f
+	and l			;bb2f   ; 0xFFFF quiere decir nunca
 	cp 0ffh		;bb30
 	ret z			;bb32
-	ld de,(0e08dh)		;bb33   ; la distancia a la que sale el objeto siguiente
-	rst 20h			;bb37
+	ld de,(0e08dh)		;bb33   ; lo andado
+	rst 20h			;bb37   ; DCOMPR: ¿hemos llegado?
 	ret nz			;bb38
-	ld hl,0e0d4h		;bb39
+	ld hl,0e0d4h		;bb39   ; cuantas veces ha salido
 	inc (hl)			;bb3c
-	ld a,(0e0c0h)		;bb3d
+	ld a,(0e0c0h)		;bb3d   ; si ya hay una de estas...
 	and a			;bb40
 	jr nz,L_BB72		;bb41
-	ld a,(0e0d7h)		;bb43
+	ld a,(0e0d7h)		;bb43   ; ...o una de las otras...
 	and a			;bb46
 	jr nz,L_BB72		;bb47
-	ld a,(0e0bdh)		;bb49
+	ld a,(0e0bdh)		;bb49   ; ...o el que vuela, no sale
 	and a			;bb4c
 	jr nz,L_BB72		;bb4d
-	ld l,06ch		;bb4f
-	ld a,(0e205h)		;bb51   ; la Y en la pantalla de lo que se maneja
-	cp 070h		;bb54
-	ld h,0e8h		;bb56
+	ld l,06ch		;bb4f   ; la columna por la que entra
+	ld a,(0e205h)		;bb51   ; la Y de lo que se maneja
+	cp 070h		;bb54   ; y segun este arriba o abajo...
+	ld h,0e8h		;bb56   ; ...entra por abajo...
 	ld a,000h		;bb58
 	jr c,L_BB5F		;bb5a
-	ld h,008h		;bb5c
+	ld h,008h		;bb5c   ; ...o por arriba
 	inc a			;bb5e
 L_BB5F:
-	ld (0e0c3h),hl		;bb5f
+	ld (0e0c3h),hl		;bb5f   ; su posicion
 	ld (0e0c2h),a		;bb62
 	xor a			;bb65
 	ld (0e0c1h),a		;bb66
 	inc a			;bb69
-	ld (0e0c0h),a		;bb6a
-	ld a,00dh		;bb6d
+	ld (0e0c0h),a		;bb6a   ; y queda en marcha
+	ld a,00dh		;bb6d   ; el dibujo, en el sprite 8
 	ld (0eea3h),a		;bb6f
 L_BB72:
 	jp 063bch		;bb72   ; banco 1
-L_BB75:
-	ld a,(0e0c0h)		;bb75
+
+; ----------------------------------------------------------------------
+; MOVERLO. Usa LA MISMA tabla de vaiven que el que vuela -la de 0xB5C1-, o sea que los dos ondulan igual aunque sean cosas distintas. Lo unico propio es el dibujo, que sale de la tabla de cuatro de 0xBBD2.
+; ----------------------------------------------------------------------
+mueve_lo_de_0xE0C0:
+	ld a,(0e0c0h)		;bb75   ; ¿esta en pantalla?
 	and a			;bb78
 	ret z			;bb79
 	ld a,(0e003h)		;bb7a   ; el contador de cuadros
-	rra			;bb7d
+	rra			;bb7d   ; uno de cada dos
 	ret nc			;bb7e
-	ld hl,0e0c1h		;bb7f
+	ld hl,0e0c1h		;bb7f   ; el paso del vaiven
 	inc (hl)			;bb82
 	ld a,(hl)			;bb83
-	and 01fh		;bb84
-	ld hl,0b5c1h		;bb86
+	and 01fh		;bb84   ; treinta y dos pasos
+	ld hl,0b5c1h		;bb86   ; la MISMA tabla que el que vuela
 	call 04056h		;bb89   ; banco 0: a_mas_hl
 	ld a,(hl)			;bb8c
-	ld hl,(0e0c3h)		;bb8d
-	add a,l			;bb90
+	ld hl,(0e0c3h)		;bb8d   ; su posicion
+	add a,l			;bb90   ; mas el desplazamiento
 	ld l,a			;bb91
-	ld a,(0e0c2h)		;bb92
+	ld a,(0e0c2h)		;bb92   ; hacia donde va
 	and 07fh		;bb95
-	ld c,0ffh		;bb97
+	ld c,0ffh		;bb97   ; a la izquierda...
 	jr z,L_BB9D		;bb99
-	ld c,001h		;bb9b
+	ld c,001h		;bb9b   ; ...o a la derecha
 L_BB9D:
 	ld a,h			;bb9d
-	add a,c			;bb9e
+	add a,c			;bb9e   ; la fila, un paso
 	ld h,a			;bb9f
-	cp 008h		;bba0
-	jr c,L_BBBD		;bba2
-	cp 0e9h		;bba4
-	jr nc,L_BBBD		;bba6
-	ld (0e0c3h),hl		;bba8
-	ld (0eea0h),hl		;bbab
-	ld a,(0e0c0h)		;bbae
+	cp 008h		;bba0   ; por arriba se sale
+	jr c,quita_lo_de_0xE0C0		;bba2
+	cp 0e9h		;bba4   ; y por abajo tambien
+	jr nc,quita_lo_de_0xE0C0		;bba6
+	ld (0e0c3h),hl		;bba8   ; la posicion nueva
+	ld (0eea0h),hl		;bbab   ; y al sprite 8
+	ld a,(0e0c0h)		;bbae   ; cual de las cuatro es
 	dec a			;bbb1
-	ld hl,0bbd2h		;bbb2
+	ld hl,0bbd2h		;bbb2   ; la tabla de dibujos
 	call 04056h		;bbb5   ; banco 0: a_mas_hl
 	ld a,(hl)			;bbb8
-	ld (0eea3h),a		;bbb9
+	ld (0eea3h),a		;bbb9   ; y al color del sprite
 	ret			;bbbc
-L_BBBD:
-	ld a,0e0h		;bbbd
+quita_lo_de_0xE0C0:
+	ld a,0e0h		;bbbd   ; 0xE0: fuera de la pantalla
 	ld (0eea0h),a		;bbbf
 	ld l,a			;bbc2
 	xor a			;bbc3
 	ld h,a			;bbc4
 	ld (0e0c3h),hl		;bbc5
-	ld (0e0c0h),a		;bbc8
+	ld (0e0c0h),a		;bbc8   ; y todo lo suyo, a cero
 	ld (0e0c1h),a		;bbcb
 	ld (0e0c2h),a		;bbce
 	ret			;bbd1
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xbbd2..0xbbd6  (4 bytes)
-DATA_BBD2:
+; DATOS dibujos_de_lo_de_0xE0C0: Los cuatro dibujos: 0x0D, 0x03, 0x07 y 0x0A.
+;   0xBBB2 elige con (0xE0C0), que es a la vez la bandera de "esta en
+;   pantalla" y cual de los cuatro es.
+;   0xbbd2..0xbbd6  (4 bytes)
+DATA_dibujos_de_lo_de_0xE0C0:
 	defb 00dh,003h,007h,00ah	; bbd2
 
 ; ======================================================================
@@ -3485,52 +3500,56 @@ DATA_BBD2:
 ; ======================================================================
 
 
-L_BBD6:
-	ld a,(0e0c0h)		;bbd6
+
+; ----------------------------------------------------------------------
+; CAMBIARLO POR EL SIGUIENTE. Sube (0xE0C0) de uno en uno y al llegar a 5 vuelve al 1, o sea que los cuatro dan vueltas. Segun cual salga hace una cosa u otra, y el 2 depende ademas del decorado.
+; ----------------------------------------------------------------------
+cambia_lo_de_0xE0C0:
+	ld a,(0e0c0h)		;bbd6   ; ¿hay alguno?
 	and a			;bbd9
 	ret z			;bbda
-L_BBDB:
-	inc a			;bbdb
-	cp 005h		;bbdc
-	jr nz,L_BBE2		;bbde
-	ld a,001h		;bbe0
-L_BBE2:
-	ld c,a			;bbe2
-	dec a			;bbe3
+cambia_al_siguiente:
+	inc a			;bbdb   ; el siguiente
+	cp 005h		;bbdc   ; al llegar a 5...
+	jr nz,cambia_despacha		;bbde
+	ld a,001h		;bbe0   ; ...vuelve al 1
+cambia_despacha:
+	ld c,a			;bbe2   ; C se lo queda
+	dec a			;bbe3   ; el 2...
 	dec a			;bbe4
-	jr z,L_BBED		;bbe5
-	dec a			;bbe7
-	jr z,L_BBF6		;bbe8
-	dec a			;bbea
+	jr z,cambia_a_uno_normal		;bbe5
+	dec a			;bbe7   ; ...el 3...
+	jr z,cambia_al_dos		;bbe8
+	dec a			;bbea   ; ...y el 4 van por su lado
 	jr z,L_BC0C		;bbeb
-L_BBED:
+cambia_a_uno_normal:
 	ld a,c			;bbed
-	ld (0e0c0h),a		;bbee
-	ld a,00dh		;bbf1
+	ld (0e0c0h),a		;bbee   ; el nuevo
+	ld a,00dh		;bbf1   ; el efecto 0x0D
 	jp 0413ah		;bbf3   ; banco 0: pide_sonido_si_esta_activo
-L_BBF6:
-	ld a,(0e0a1h)		;bbf6   ; el DECORADO, de 0 a 9
-	cp 007h		;bbf9
+cambia_al_dos:
+	ld a,(0e0a1h)		;bbf6   ; el decorado
+	cp 007h		;bbf9   ; en el 7, otra cosa
 	jr z,L_BC09		;bbfb
 	ld a,(0e1f1h)		;bbfd
 	and a			;bc00
 	jr nz,L_BC09		;bc01
 	ld a,(0e1f0h)		;bc03
 	and a			;bc06
-	jr z,L_BBED		;bc07
+	jr z,cambia_a_uno_normal		;bc07
 L_BC09:
 	ld a,c			;bc09
-	jr L_BBDB		;bc0a
+	jr cambia_al_siguiente		;bc0a
 L_BC0C:
 	ld a,(0e1f0h)		;bc0c
 	and a			;bc0f
 	jr nz,L_BC18		;bc10
 	ld a,(0e1f1h)		;bc12
 	and a			;bc15
-	jr z,L_BBED		;bc16
+	jr z,cambia_a_uno_normal		;bc16
 L_BC18:
 	ld a,c			;bc18
-	jr L_BBDB		;bc19
+	jr cambia_al_siguiente		;bc19
 L_BC1B:
 	ld hl,0e440h		;bc1b
 	ld b,005h		;bc1e

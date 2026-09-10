@@ -292,13 +292,13 @@ DATA_tabla_de_objetos:
 	defw 0b610h	; a8d9  -> monta_clase_5
 	defw 0b6f4h	; a8db  -> monta_clase_6
 	defw 0b873h	; a8dd  -> monta_clase_7
-	defw 0b909h	; a8df  -> L_B909
-	defw 0b90bh	; a8e1  -> L_B90B
-	defw 0bae0h	; a8e3  -> L_BAE0
-	defw 0bb9bh	; a8e5  -> L_BB9B
-	defw 0bcbfh	; a8e7  -> L_BCBF
-	defw 0bd0fh	; a8e9  -> L_BD0F
-	defw 0be01h	; a8eb  -> L_BE01
+	defw 0b909h	; a8df  -> monta_clase_8
+	defw 0b90bh	; a8e1  -> monta_clase_9
+	defw 0bae0h	; a8e3  -> monta_clase_10
+	defw 0bb9bh	; a8e5  -> monta_clase_11
+	defw 0bcbfh	; a8e7  -> monta_clase_12
+	defw 0bd0fh	; a8e9  -> monta_clase_13
+	defw 0be01h	; a8eb  -> monta_clase_14
 	defw 0be52h	; a8ed  -> L_BE52
 
 ; ----------------------------------------------------------------------
@@ -376,12 +376,16 @@ rutina_propia_de_la_clase:
 	jp L_A8C7		;a987   ; y se salta a la que toque
 
 ; ----------------------------------------------------------------------
-; DATOS tabla_de_atender: La segunda tabla de quince, hermana de la de 0xA8D1:
-;   alli esta la rutina que MONTA cada clase de objeto y aqui la que la
-;   atiende en cada cuadro. Los quince destinos son 0xB5AD, 0xB60B, 0xB60D,
-;   0xB60F, 0xB6C8, 0xB71B, 0xB8AE, 0xB90A, 0xB9C0, 0xBB1E, 0xBC3C, 0xBCFB,
-;   0xBD33, 0xBE51 y 0xBE7E.
-;   0xa98a..0xa9a8  (30 bytes)
+; DATOS tabla_de_atender: La hermana de la de 0xA8D1: alli esta la rutina que
+;   MONTA cada clase de objeto y aqui la que la atiende en cada cuadro. Y
+;   tiene DIECISEIS entradas, una mas que la de montar: 0xB5AD, 0xB60B,
+;   0xB60D, 0xB60F, 0xB6C8, 0xB71B, 0xB8AE, 0xB90A, 0xB9C0, 0xBB1E, 0xBC3C,
+;   0xBCFB, 0xBD33, 0xBE51, 0xBE7E y 0xAAC9. La decimosexta clase existe -su
+;   rutina de atender es codigo de verdad- pero el guion de la fase no puede
+;   sacarla, porque en el mismo hueco de la tabla de montar hay un 0x0F21 que
+;   no es ni una direccion del cartucho: a esa clase la crea otra rutina,
+;   escribiendo el numero directamente en el hueco.
+;   0xa98a..0xa9aa  (32 bytes)
 DATA_tabla_de_atender:
 	defw 0b5adh	; a98a  -> atiende_clase_1
 	defw 0b60bh	; a98c  -> atiende_clase_2
@@ -389,23 +393,19 @@ DATA_tabla_de_atender:
 	defw 0b60fh	; a990  -> atiende_clase_4
 	defw 0b6c8h	; a992  -> atiende_clase_5
 	defw 0b71bh	; a994  -> atiende_clase_6
-	defw 0b8aeh	; a996  -> L_B8AE
-	defw 0b90ah	; a998  -> L_B90A
-	defw 0b9c0h	; a99a  -> L_B9C0
-	defw 0bb1eh	; a99c  -> L_BB1E
-	defw 0bc3ch	; a99e  -> L_BC3C
-	defw 0bcfbh	; a9a0  -> L_BCFB
-	defw 0bd33h	; a9a2  -> L_BD33
+	defw 0b8aeh	; a996  -> atiende_clase_7
+	defw 0b90ah	; a998  -> atiende_clase_8
+	defw 0b9c0h	; a99a  -> atiende_clase_9
+	defw 0bb1eh	; a99c  -> atiende_clase_10
+	defw 0bc3ch	; a99e  -> atiende_clase_11
+	defw 0bcfbh	; a9a0  -> atiende_clase_12
+	defw 0bd33h	; a9a2  -> atiende_clase_13
 	defw 0be51h	; a9a4  -> L_BE51
 	defw 0be7eh	; a9a6  -> L_BE7E
-
-; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa9a8..0xa9aa  (2 bytes)
-DATA_A9A8:
-	defb 0c9h,0aah	; a9a8
+	defw 0aac9h	; a9a8  -> L_AAC9
 
 ; ======================================================================
-; CODIGO 0xa9aa..0xaac9  (287 bytes)
+; CODIGO 0xa9aa..0xab15  (363 bytes)
 ; ======================================================================
 
 
@@ -584,16 +584,53 @@ L_AAC2:
 	add a,a			;aac4
 	ld (ix+004h),a		;aac5
 	ret			;aac8
+L_AAC9:
+	ld a,(ix+01fh)		;aac9
+	and a			;aacc
+	jr z,L_AAD0		;aacd
+	ret			;aacf
+L_AAD0:
+	ld a,(ix+01dh)		;aad0
+	and a			;aad3
+	jr z,L_AADA		;aad4
+	ld (ix+005h),005h		;aad6
+L_AADA:
+	ld a,r		;aada
+	and 001h		;aadc
+	ld (ix+01eh),a		;aade
+	xor a			;aae1
+	ld (ix+00ch),a		;aae2
+	ld (ix+00dh),a		;aae5
+	ld (ix+00eh),a		;aae8
+	ld (ix+010h),a		;aaeb
+	ld (ix+012h),001h		;aaee
+	inc (ix+01fh)		;aaf2
+	ld hl,0ab15h		;aaf5
+	ld a,r		;aaf8
+	and 007h		;aafa
+	add a,l			;aafc
+	ld l,a			;aafd
+	jr nc,L_AB01		;aafe
+	inc h			;ab00
+L_AB01:
+	ld a,(hl)			;ab01
+	ld (ix+011h),a		;ab02
+	inc hl			;ab05
+	ld a,(hl)			;ab06
+	ld b,a			;ab07
+	ld a,(ix+01eh)		;ab08
+	and a			;ab0b
+	ld a,b			;ab0c
+	jr z,L_AB11		;ab0d
+	neg		;ab0f
+L_AB11:
+	ld (ix+00fh),a		;ab11
+	ret			;ab14
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xaac9..0xab1e  (85 bytes)
-DATA_AAC9:
-	defb 0ddh,07eh,01fh,0a7h,028h,001h,0c9h,0ddh,07eh,01dh,0a7h,028h,004h,0ddh,036h,005h	; aac9  .~..(...~..(..6.
-	defb 005h,0edh,05fh,0e6h,001h,0ddh,077h,01eh,0afh,0ddh,077h,00ch,0ddh,077h,00dh,0ddh	; aad9  .._...w...w..w..
-	defb 077h,00eh,0ddh,077h,010h,0ddh,036h,012h,001h,0ddh,034h,01fh,021h,015h,0abh,0edh	; aae9  w..w..6...4.!...
-	defb 05fh,0e6h,007h,085h,06fh,030h,001h,024h,07eh,0ddh,077h,011h,023h,07eh,047h,0ddh	; aaf9  _...o0.$~.w.#~G.
-	defb 07eh,01eh,0a7h,078h,028h,002h,0edh,044h,0ddh,077h,00fh,0c9h,008h,004h,005h,005h	; ab09  ~..x(..D.w......
-	defb 003h,006h,009h,002h,007h	; ab19
+; DATOS sin identificar  0xab15..0xab1e  (9 bytes)
+DATA_AB15:
+	defb 008h,004h,005h,005h,003h,006h,009h,002h,007h	; ab15  .........
 
 ; ======================================================================
 ; CODIGO 0xab1e..0xabb4  (150 bytes)
@@ -1670,137 +1707,155 @@ L_B892:
 	ret			;b89e
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xb89f..0xb8ae  (15 bytes)
-DATA_B89F:
-	defb 098h,00eh,000h,04eh,000h,078h,000h,030h,000h,000h,000h,000h,000h,0feh,001h	; b89f  ...N.x.0.......
+; DATOS plantilla_de_la_clase_7: Los quince bytes de salida: X = 0x4E00, Y =
+;   0x7800, Z = 0x0030, las tres velocidades a cero y la marca de que se
+;   mueve. Sale quieto: lo que lo pone en marcha es la rutina de atender.
+;   0xb89f..0xb8ae  (15 bytes)
+DATA_plantilla_de_la_clase_7:
+	defb 098h,00eh	; b89f
+	defw 04e00h	; b8a1
+	defw 07800h	; b8a3
+	defw 03000h	; b8a5
+	defw 00000h	; b8a7
+	defw 00000h	; b8a9
+	defw 0fe00h	; b8ab
+	defb 001h	; b8ad
 
 ; ======================================================================
 ; CODIGO 0xb8ae..0xb9a7  (249 bytes)
 ; ======================================================================
 
 
-L_B8AE:
-	ld c,02ch		;b8ae
+
+; ----------------------------------------------------------------------
+; ATENDER A LA CLASE 7. Sale quieto y en el primer cuadro se decide hacia donde va: 0xB8CF mira (ix+0x13) y de ahi salen tres velocidades distintas -recto, a un lado o al otro-. Ademas cambia de instrumento segun 0xE16A, que es una de las cosas que se llevan de una fase a otra.
+; ----------------------------------------------------------------------
+atiende_clase_7:
+	ld c,02ch		;b8ae   ; su dibujo
 	call L_AAAD		;b8b0
-	ld a,(0e16ah)		;b8b3
+	ld a,(0e16ah)		;b8b3   ; lo que se lleva
 	and a			;b8b6
-	ld a,005h		;b8b7
-	jr nz,L_B8BC		;b8b9
-	xor a			;b8bb
-L_B8BC:
+	ld a,005h		;b8b7   ; con ello, un dibujo...
+	jr nz,clase_7_guarda_el_dibujo		;b8b9
+	xor a			;b8bb   ; ...y sin ello, otro
+clase_7_guarda_el_dibujo:
 	ld (ix+005h),a		;b8bc
-	ld a,(ix+001h)		;b8bf
-	dec a			;b8c2
-	jr z,L_B8FB		;b8c3
-	ld a,(ix+00bh)		;b8c5
-	cp 00bh		;b8c8
+	ld a,(ix+001h)		;b8bf   ; en que tiempo va
+	dec a			;b8c2   ; el 1 solo acelera
+	jr z,clase_7_acelera		;b8c3
+	ld a,(ix+00bh)		;b8c5   ; la profundidad
+	cp 00bh		;b8c8   ; hasta 0x0B no arranca
 	ret nc			;b8ca
-	ld (ix+00bh),00bh		;b8cb
-	ld a,(ix+013h)		;b8cf
-	ld hl,00000h		;b8d2
+	ld (ix+00bh),00bh		;b8cb   ; y ahi se le clava
+	ld a,(ix+013h)		;b8cf   ; hacia donde va
+	ld hl,00000h		;b8d2   ; recto...
 	ld de,00000h		;b8d5
 	and a			;b8d8
-	jr z,L_B8EA		;b8d9
-	ld hl,00000h		;b8db
+	jr z,clase_7_arranca		;b8d9
+	ld hl,00000h		;b8db   ; ...a un lado...
 	ld de,0ff80h		;b8de
 	dec a			;b8e1
-	jr z,L_B8EA		;b8e2
-	ld hl,00000h		;b8e4
+	jr z,clase_7_arranca		;b8e2
+	ld hl,00000h		;b8e4   ; ...o al otro
 	ld de,00080h		;b8e7
-L_B8EA:
-	call L_AA78		;b8ea
+clase_7_arranca:
+	call L_AA78		;b8ea   ; la velocidad de la Y
 	ex de,hl			;b8ed
-	call L_AA7F		;b8ee
-	ld de,000a0h		;b8f1
+	call L_AA7F		;b8ee   ; y la de la profundidad
+	ld de,000a0h		;b8f1   ; y un empujon en X
 	call L_AA71		;b8f4
-	inc (ix+001h)		;b8f7
+	inc (ix+001h)		;b8f7   ; al tiempo siguiente
 	ret			;b8fa
-L_B8FB:
-	ld l,(ix+00ch)		;b8fb
+clase_7_acelera:
+	ld l,(ix+00ch)		;b8fb   ; la velocidad X
 	ld h,(ix+00dh)		;b8fe
-	inc hl			;b901
+	inc hl			;b901   ; uno mas en cada cuadro
 	ld (ix+00ch),l		;b902
 	ld (ix+00dh),h		;b905
 	ret			;b908
-L_B909:
+monta_clase_8:		; Un `ret`: esta clase no monta nada.
 	ret			;b909
-L_B90A:
+atiende_clase_8:
 	ret			;b90a
-L_B90B:
-	ld hl,0e310h		;b90b
-	ld b,003h		;b90e
+
+; ----------------------------------------------------------------------
+; MONTAR LA CLASE 9: SALEN DE DOS EN DOS. Esta es la unica que necesita OTRO hueco ademas del suyo: busca uno libre entre los tres, y si no lo hay se borra a si misma. Con los dos en la mano copia la misma plantilla de veinticinco bytes en los dos y les da direcciones distintas, sacadas de un contador que va girando en 0xE280.
+; ----------------------------------------------------------------------
+monta_clase_9:
+	ld hl,0e310h		;b90b   ; los tres huecos
+	ld b,003h		;b90e   ; tres
 	xor a			;b910
-	ld de,00020h		;b911
-L_B914:
-	cp (hl)			;b914
-	jr z,L_B91F		;b915
+	ld de,00020h		;b911   ; 0x20 de uno al siguiente
+clase_9_busca_el_segundo_hueco:
+	cp (hl)			;b914   ; ¿esta libre?
+	jr z,clase_9_monta_los_dos		;b915
 	add hl,de			;b917
-	djnz L_B914		;b918
-	ld (ix+000h),000h		;b91a
+	djnz clase_9_busca_el_segundo_hueco		;b918
+	ld (ix+000h),000h		;b91a   ; y si no hay ninguno, esta se borra
 	ret			;b91e
-L_B91F:
-	push hl			;b91f
+clase_9_monta_los_dos:
+	push hl			;b91f   ; IY apunta al segundo
 	pop iy		;b920
-	ld (hl),009h		;b922
+	ld (hl),009h		;b922   ; que pasa a ser de la clase 9
 	inc l			;b924
-	ld b,01fh		;b925
+	ld b,01fh		;b925   ; y se le borran los otros 31 bytes
 	xor a			;b927
-L_B928:
+clase_9_borra_el_segundo:
 	ld (hl),a			;b928
 	inc l			;b929
-	djnz L_B928		;b92a
-	push ix		;b92c
+	djnz clase_9_borra_el_segundo		;b92a
+	push ix		;b92c   ; el primero
 	pop de			;b92e
-	ld a,004h		;b92f
+	ld a,004h		;b92f   ; cuatro bytes mas alla
 	add a,e			;b931
 	ld e,a			;b932
-	ld hl,0b9a7h		;b933
-	ld bc,00019h		;b936
+	ld hl,0b9a7h		;b933   ; la plantilla
+	ld bc,00019h		;b936   ; veinticinco bytes
 	ldir		;b939
-	dec e			;b93b
+	dec e			;b93b   ; cuatro atras
 	dec e			;b93c
 	dec e			;b93d
 	dec e			;b93e
 	xor a			;b93f
 	ld (de),a			;b940
-	ld hl,0e280h		;b941
-	inc (hl)			;b944
+	ld hl,0e280h		;b941   ; el contador que gira
+	inc (hl)			;b944   ; uno mas
 	ld a,(hl)			;b945
-	rra			;b946
+	rra			;b946   ; y de ahi salen tres direcciones
 	ld c,000h		;b947
-	jr nc,L_B950		;b949
+	jr nc,clase_9_direccion_del_primero		;b949
 	inc c			;b94b
 	rra			;b94c
-	jr c,L_B950		;b94d
+	jr c,clase_9_direccion_del_primero		;b94d
 	inc c			;b94f
-L_B950:
-	ld (ix+01ah),c		;b950
+clase_9_direccion_del_primero:
+	ld (ix+01ah),c		;b950   ; apuntada
 	ld a,c			;b953
-	ld de,00000h		;b954
+	ld de,00000h		;b954   ; recto...
 	and a			;b957
-	jr z,L_B963		;b958
-	ld de,0fff0h		;b95a
+	jr z,clase_9_velocidad_del_primero		;b958
+	ld de,0fff0h		;b95a   ; ...a un lado...
 	dec a			;b95d
-	jr z,L_B963		;b95e
-	ld de,00010h		;b960
-L_B963:
+	jr z,clase_9_velocidad_del_primero		;b95e
+	ld de,00010h		;b960   ; ...o al otro
+clase_9_velocidad_del_primero:
 	ld (ix+017h),e		;b963
 	ld (ix+018h),d		;b966
-	push iy		;b969
+	push iy		;b969   ; y ahora el segundo
 	pop de			;b96b
 	ld a,004h		;b96c
 	add a,e			;b96e
 	ld e,a			;b96f
-	ld hl,0b9a7h		;b970
-	ld bc,00019h		;b973
+	ld hl,0b9a7h		;b970   ; la misma plantilla
+	ld bc,00019h		;b973   ; veinticinco bytes
 	ldir		;b976
 	dec e			;b978
 	dec e			;b979
 	dec e			;b97a
 	dec e			;b97b
-	ld a,00ch		;b97c
+	ld a,00ch		;b97c   ; con otro dibujo
 	ld (de),a			;b97e
-	ld hl,0e280h		;b97f
+	ld hl,0e280h		;b97f   ; y el mismo contador
 	ld a,(hl)			;b982
 	rra			;b983
 	ld c,000h		;b984
@@ -1835,94 +1890,98 @@ DATA_B9A7:
 ; ======================================================================
 
 
-L_B9C0:
-	ld c,02ch		;b9c0
+
+; ----------------------------------------------------------------------
+; ATENDER A LA CLASE 9: DAN VUELTAS. La tabla de 0xBA80 son VEINTICUATRO entradas de cuatro bytes -dos desplazamientos de 16 bits cada una- y recorrerlas en orden es dar una vuelta entera: los valores empiezan en (0xFE00, 0x0000) y van girando. El radio no es fijo: cada veinticuatro pasos sube (ix+0x1C), y el desplazamiento se multiplica por el, asi que la vuelta se va abriendo como una espiral. A las ocho vueltas se llama a 0xAB1E.
+; ----------------------------------------------------------------------
+atiende_clase_9:
+	ld c,02ch		;b9c0   ; su dibujo
 	call L_AAAD		;b9c2
-	ld l,(ix+00ch)		;b9c5
+	ld l,(ix+00ch)		;b9c5   ; la velocidad X
 	ld h,(ix+00dh)		;b9c8
 	ld de,00001h		;b9cb
-	add hl,de			;b9ce
+	add hl,de			;b9ce   ; uno mas: va acelerando
 	ld (ix+00ch),l		;b9cf
 	ld (ix+00dh),h		;b9d2
-	ld a,(ix+01ah)		;b9d5
-	ld de,00000h		;b9d8
+	ld a,(ix+01ah)		;b9d5   ; hacia donde gira
+	ld de,00000h		;b9d8   ; recto...
 	and a			;b9db
-	jr z,L_B9E7		;b9dc
-	ld de,0ffffh		;b9de
+	jr z,clase_9_gira		;b9dc
+	ld de,0ffffh		;b9de   ; ...a un lado...
 	dec a			;b9e1
-	jr z,L_B9E7		;b9e2
-	ld de,00001h		;b9e4
-L_B9E7:
-	ld l,(ix+017h)		;b9e7
+	jr z,clase_9_gira		;b9e2
+	ld de,00001h		;b9e4   ; ...o al otro
+clase_9_gira:
+	ld l,(ix+017h)		;b9e7   ; el angulo
 	ld h,(ix+018h)		;b9ea
-	add hl,de			;b9ed
+	add hl,de			;b9ed   ; mas el paso
 	ld (ix+017h),l		;b9ee
 	ld (ix+018h),h		;b9f1
-	ld e,(ix+013h)		;b9f4
+	ld e,(ix+013h)		;b9f4   ; el centro de la vuelta
 	ld d,(ix+014h)		;b9f7
-	add hl,de			;b9fa
+	add hl,de			;b9fa   ; que tambien se mueve
 	ld (ix+013h),l		;b9fb
 	ld (ix+014h),h		;b9fe
-	ld l,(ix+015h)		;ba01
+	ld l,(ix+015h)		;ba01   ; y la profundidad del centro
 	ld h,(ix+016h)		;ba04
-	ld de,00040h		;ba07
+	ld de,00040h		;ba07   ; que baja de 0x40 en 0x40
 	add hl,de			;ba0a
 	ld (ix+015h),l		;ba0b
 	ld (ix+016h),h		;ba0e
-	inc (ix+01bh)		;ba11
+	inc (ix+01bh)		;ba11   ; el contador fino
 	ld a,(ix+01bh)		;ba14
-	cp 018h		;ba17
-	jr nz,L_BA2C		;ba19
-	inc (ix+01ch)		;ba1b
+	cp 018h		;ba17   ; veinticuatro pasos: una vuelta entera
+	jr nz,clase_9_paso_de_la_vuelta		;ba19
+	inc (ix+01ch)		;ba1b   ; una vuelta mas
 	ld (ix+01bh),000h		;ba1e
-	ld a,(ix+01ch)		;ba22
+	ld a,(ix+01ch)		;ba22   ; y a las ocho vueltas...
 	cp 008h		;ba25
-	jr nz,L_BA2C		;ba27
-	call L_AB1E		;ba29
-L_BA2C:
-	inc (ix+019h)		;ba2c
+	jr nz,clase_9_paso_de_la_vuelta		;ba27
+	call L_AB1E		;ba29   ; ...pasa algo
+clase_9_paso_de_la_vuelta:
+	inc (ix+019h)		;ba2c   ; el paso
 	ld a,(ix+019h)		;ba2f
-	cp 018h		;ba32
-	jr nz,L_BA3A		;ba34
+	cp 018h		;ba32   ; veinticuatro y vuelta a empezar
+	jr nz,clase_9_saca_el_desplazamiento		;ba34
 	ld (ix+019h),000h		;ba36
-L_BA3A:
+clase_9_saca_el_desplazamiento:
 	ld a,(ix+019h)		;ba3a
-	add a,a			;ba3d
+	add a,a			;ba3d   ; cuatro bytes por entrada
 	add a,a			;ba3e
-	ld hl,0ba80h		;ba3f
+	ld hl,0ba80h		;ba3f   ; la tabla de la vuelta
 	add a,l			;ba42
 	ld l,a			;ba43
 	jr nc,L_BA47		;ba44
 	inc h			;ba46
 L_BA47:
-	ld e,(hl)			;ba47
+	ld e,(hl)			;ba47   ; el desplazamiento de la Y...
 	inc hl			;ba48
 	ld d,(hl)			;ba49
 	inc hl			;ba4a
-	ld c,(hl)			;ba4b
+	ld c,(hl)			;ba4b   ; ...y el de la profundidad
 	inc hl			;ba4c
 	ld b,(hl)			;ba4d
-	ld a,(ix+01ch)		;ba4e
+	ld a,(ix+01ch)		;ba4e   ; el radio, que sube cada vuelta
 	ld hl,00000h		;ba51
-L_BA54:
-	add hl,bc			;ba54
+clase_9_multiplica_uno:
+	add hl,bc			;ba54   ; sumando tantas veces como diga el radio
 	dec a			;ba55
-	jr nz,L_BA54		;ba56
+	jr nz,clase_9_multiplica_uno		;ba56
 	ld c,l			;ba58
 	ld b,h			;ba59
 	ld a,(ix+01ch)		;ba5a
 	ld hl,00000h		;ba5d
-L_BA60:
+clase_9_multiplica_el_otro:
 	add hl,de			;ba60
 	dec a			;ba61
-	jr nz,L_BA60		;ba62
+	jr nz,clase_9_multiplica_el_otro		;ba62
 	ex de,hl			;ba64
-	ld l,(ix+013h)		;ba65
+	ld l,(ix+013h)		;ba65   ; el centro
 	ld h,(ix+014h)		;ba68
-	add hl,bc			;ba6b
-	ld (ix+008h),l		;ba6c
+	add hl,bc			;ba6b   ; mas el desplazamiento
+	ld (ix+008h),l		;ba6c   ; y esa es la Y
 	ld (ix+009h),h		;ba6f
-	ld l,(ix+015h)		;ba72
+	ld l,(ix+015h)		;ba72   ; lo mismo con la profundidad
 	ld h,(ix+016h)		;ba75
 	add hl,de			;ba78
 	ld (ix+00ah),l		;ba79
@@ -1930,44 +1989,91 @@ L_BA60:
 	ret			;ba7f
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xba80..0xbae0  (96 bytes)
-DATA_BA80:
-	defb 000h,0feh,000h,000h,000h,0feh,080h,0ffh,040h,0feh,000h,0ffh,080h,0feh,080h,0feh	; ba80  ........@.......
-	defb 000h,0ffh,040h,0feh,080h,0ffh,000h,0feh,000h,000h,000h,0feh,080h,000h,000h,0feh	; ba90  ..@.............
-	defb 000h,001h,040h,0feh,080h,001h,080h,0feh,0c0h,001h,000h,0ffh,000h,002h,080h,0ffh	; baa0  ..@.............
-	defb 000h,002h,000h,000h,000h,002h,080h,000h,0c0h,001h,000h,001h,080h,001h,080h,001h	; bab0  ................
-	defb 000h,001h,0c0h,001h,080h,000h,000h,002h,000h,000h,000h,002h,080h,0ffh,000h,002h	; bac0  ................
-	defb 000h,0ffh,0c0h,001h,080h,0feh,080h,001h,040h,0feh,000h,001h,000h,0feh,080h,000h	; bad0  ........@.......
+; DATOS la_vuelta_de_la_clase_9: Veinticuatro entradas de cuatro bytes, dos
+;   desplazamientos de 16 bits cada una, y recorrerlas en orden es UNA VUELTA.
+;   Es la forma de dar vueltas sin senos ni cosenos: la vuelta esta dibujada
+;   de antemano y lo unico que se calcula en marcha es el radio, multiplicando
+;   cada desplazamiento por un contador que sube (0xBA54 y 0xBA60).
+;   0xba80..0xbae0  (96 bytes)
+DATA_la_vuelta_de_la_clase_9:
+	defw 0fe00h	; ba80
+	defw 00000h	; ba82
+	defw 0fe00h	; ba84
+	defw 0ff80h	; ba86
+	defw 0fe40h	; ba88
+	defw 0ff00h	; ba8a
+	defw 0fe80h	; ba8c
+	defw 0fe80h	; ba8e
+	defw 0ff00h	; ba90
+	defw 0fe40h	; ba92
+	defw 0ff80h	; ba94
+	defw 0fe00h	; ba96
+	defw 00000h	; ba98
+	defw 0fe00h	; ba9a
+	defw 00080h	; ba9c
+	defw 0fe00h	; ba9e
+	defw 00100h	; baa0
+	defw 0fe40h	; baa2
+	defw 00180h	; baa4
+	defw 0fe80h	; baa6
+	defw 001c0h	; baa8
+	defw 0ff00h	; baaa
+	defw 00200h	; baac
+	defw 0ff80h	; baae
+	defw 00200h	; bab0
+	defw 00000h	; bab2
+	defw 00200h	; bab4
+	defw 00080h	; bab6
+	defw 001c0h	; bab8
+	defw 00100h	; baba
+	defw 00180h	; babc
+	defw 00180h	; babe
+	defw 00100h	; bac0
+	defw 001c0h	; bac2
+	defw 00080h	; bac4
+	defw 00200h	; bac6
+	defw 00000h	; bac8
+	defw 00200h	; baca
+	defw 0ff80h	; bacc
+	defw 00200h	; bace
+	defw 0ff00h	; bad0
+	defw 001c0h	; bad2
+	defw 0fe80h	; bad4
+	defw 00180h	; bad6
+	defw 0fe40h	; bad8
+	defw 00100h	; bada
+	defw 0fe00h	; badc
+	defw 00080h	; bade
 
 ; ======================================================================
 ; CODIGO 0xbae0..0xbb05  (37 bytes)
 ; ======================================================================
 
 
-L_BAE0:
+monta_clase_10:
 	push ix		;bae0
 	pop de			;bae2
-	ld a,004h		;bae3
+	ld a,004h		;bae3   ; cuatro bytes mas alla del hueco
 	add a,e			;bae5
 	ld e,a			;bae6
-	ld hl,0bb05h		;bae7
-	ld bc,00011h		;baea
+	ld hl,0bb05h		;bae7   ; su plantilla
+	ld bc,00011h		;baea   ; diecisiete bytes
 	ldir		;baed
-	ld hl,0e286h		;baef
+	ld hl,0e286h		;baef   ; un contador que gira
 	ld a,(hl)			;baf2
-	inc (hl)			;baf3
-	and 003h		;baf4
-	ld hl,0bb16h		;baf6
-	add a,a			;baf9
+	inc (hl)			;baf3   ; uno mas
+	and 003h		;baf4   ; de cuatro en cuatro
+	ld hl,0bb16h		;baf6   ; la tabla de cuatro empujones
+	add a,a			;baf9   ; dos bytes por entrada
 	add a,l			;bafa
 	ld l,a			;bafb
 	jr nc,L_BAFF		;bafc
 	inc h			;bafe
 L_BAFF:
-	ld e,(hl)			;baff
+	ld e,(hl)			;baff   ; el que toca
 	inc hl			;bb00
 	ld d,(hl)			;bb01
-	jp L_AA78		;bb02
+	jp L_AA78		;bb02   ; y se le da
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0xbb05..0xbb1e  (25 bytes)
@@ -1980,128 +2086,170 @@ DATA_BB05:
 ; ======================================================================
 
 
-L_BB1E:
-	ld c,038h		;bb1e
+
+; ----------------------------------------------------------------------
+; ATENDER A LA CLASE 10: LA CAIDA. La tabla de 0xBB5B son treinta y dos pasos que van de 0x0100 bajando hasta cero y de ahi a negativo, o sea una parabola: sube frenando y baja acelerando. El paso se multiplica por (ix+0x14), que sube cada treinta y dos cuadros, asi que cada rebote es mas grande que el anterior.
+; ----------------------------------------------------------------------
+atiende_clase_10:
+	ld c,038h		;bb1e   ; su dibujo
 	call L_AA86		;bb20
-	ld l,(ix+00ch)		;bb23
+	ld l,(ix+00ch)		;bb23   ; la velocidad X
 	ld h,(ix+00dh)		;bb26
-	ld de,00002h		;bb29
+	ld de,00002h		;bb29   ; mas dos
 	add hl,de			;bb2c
 	ex de,hl			;bb2d
-	call L_AA71		;bb2e
-	inc (ix+013h)		;bb31
+	call L_AA71		;bb2e   ; y a la X
+	inc (ix+013h)		;bb31   ; el paso de la parabola
 	ld a,(ix+013h)		;bb34
-	cp 020h		;bb37
-	jr nz,L_BB42		;bb39
-	inc (ix+014h)		;bb3b
+	cp 020h		;bb37   ; treinta y dos pasos
+	jr nz,clase_10_saca_el_paso		;bb39
+	inc (ix+014h)		;bb3b   ; y a la vuelta siguiente
 	xor a			;bb3e
 	ld (ix+013h),a		;bb3f
-L_BB42:
-	ld hl,0bb5bh		;bb42
-	add a,a			;bb45
+clase_10_saca_el_paso:
+	ld hl,0bb5bh		;bb42   ; la tabla de la parabola
+	add a,a			;bb45   ; dos bytes por entrada
 	add a,l			;bb46
 	ld l,a			;bb47
 	jr nc,L_BB4B		;bb48
 	inc h			;bb4a
 L_BB4B:
-	ld e,(hl)			;bb4b
+	ld e,(hl)			;bb4b   ; el paso
 	inc hl			;bb4c
 	ld d,(hl)			;bb4d
-	ld b,(ix+014h)		;bb4e
+	ld b,(ix+014h)		;bb4e   ; el multiplicador
 	ld hl,00000h		;bb51
-L_BB54:
-	add hl,de			;bb54
-	djnz L_BB54		;bb55
+clase_10_multiplica:
+	add hl,de			;bb54   ; sumando tantas veces como diga
+	djnz clase_10_multiplica		;bb55
 	ex de,hl			;bb57
-	jp L_AA7F		;bb58
+	jp L_AA7F		;bb58   ; y a la profundidad
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xbb5b..0xbb9b  (64 bytes)
-DATA_BB5B:
-	defb 000h,000h,000h,001h,0c0h,000h,080h,000h,070h,000h,060h,000h,050h,000h,040h,000h	; bb5b  ........p.`.P.@.
-	defb 038h,000h,030h,000h,028h,000h,020h,000h,018h,000h,010h,000h,008h,000h,000h,000h	; bb6b  8.0.(. .........
-	defb 000h,000h,0f8h,0ffh,0f0h,0ffh,0e8h,0ffh,0e0h,0ffh,0d8h,0ffh,0d0h,0ffh,0c8h,0ffh	; bb7b  ................
-	defb 0c0h,0ffh,0b0h,0ffh,0a0h,0ffh,090h,0ffh,080h,0ffh,040h,0ffh,000h,0ffh,000h,000h	; bb8b  ..........@.....
+; DATOS la_parabola: Treinta y dos pasos de 16 bits: 0x0000, 0x0100, 0x00C0,
+;   0x0080, 0x0070, 0x0060... hasta cero y luego 0xFFF8, 0xFFF0... o sea de
+;   positivo grande a negativo grande pasando por cero. Es una parabola
+;   dibujada de antemano, igual que la vuelta de la clase 9 es una
+;   circunferencia dibujada de antemano: en este cartucho no se calcula
+;   ninguna curva, se leen.
+;   0xbb5b..0xbb9b  (64 bytes)
+DATA_la_parabola:
+	defw 00000h	; bb5b
+	defw 00100h	; bb5d
+	defw 000c0h	; bb5f
+	defw 00080h	; bb61
+	defw 00070h	; bb63
+	defw 00060h	; bb65
+	defw 00050h	; bb67
+	defw 00040h	; bb69
+	defw 00038h	; bb6b
+	defw 00030h	; bb6d
+	defw 00028h	; bb6f
+	defw 00020h	; bb71
+	defw 00018h	; bb73
+	defw 00010h	; bb75
+	defw 00008h	; bb77
+	defw 00000h	; bb79
+	defw 00000h	; bb7b
+	defw 0fff8h	; bb7d
+	defw 0fff0h	; bb7f
+	defw 0ffe8h	; bb81
+	defw 0ffe0h	; bb83
+	defw 0ffd8h	; bb85
+	defw 0ffd0h	; bb87
+	defw 0ffc8h	; bb89
+	defw 0ffc0h	; bb8b
+	defw 0ffb0h	; bb8d
+	defw 0ffa0h	; bb8f
+	defw 0ff90h	; bb91
+	defw 0ff80h	; bb93
+	defw 0ff40h	; bb95
+	defw 0ff00h	; bb97
+	defw 00000h	; bb99
 
 ; ======================================================================
 ; CODIGO 0xbb9b..0xbcaf  (276 bytes)
 ; ======================================================================
 
 
-L_BB9B:
-	ld a,001h		;bb9b
+monta_clase_11:
+	ld a,001h		;bb9b   ; la bandera de que hay uno pedido
 	ld (0e283h),a		;bb9d
 	ret			;bba0
-L_BBA1:
-	ld a,(0e283h)		;bba1
+
+; ----------------------------------------------------------------------
+; LO OTRO QUE SE DISPARA. Igual que 0xB616 pero para los tres objetos 0x0E, 0x0F y 0x10 de las cinco ranuras, y saca un objeto de la clase 11. Los saltos entre ranuras vuelven a ser 0x10, 0x0E y 0x0F.
+; ----------------------------------------------------------------------
+dispara_lo_otro:
+	ld a,(0e283h)		;bba1   ; ¿hay disparo pedido?
 	and a			;bba4
 	ret z			;bba5
-	ld hl,0e440h		;bba6
-	ld b,005h		;bba9
-L_BBAB:
-	ld a,(hl)			;bbab
+	ld hl,0e440h		;bba6   ; las cinco ranuras
+	ld b,005h		;bba9   ; cinco
+dispara_lo_otro_recorre:
+	ld a,(hl)			;bbab   ; lo que hay
 	and a			;bbac
-	ld c,010h		;bbad
-	jr z,L_BBCA		;bbaf
+	ld c,010h		;bbad   ; vacia: salto de 0x10
+	jr z,dispara_lo_otro_siguiente		;bbaf
 	inc l			;bbb1
 	inc l			;bbb2
 	ld a,(hl)			;bbb3
-	cp 00eh		;bbb4
+	cp 00eh		;bbb4   ; con un 0x0E ahi, salto de 0x0E
 	ld c,00eh		;bbb6
-	jr nz,L_BBCA		;bbb8
+	jr nz,dispara_lo_otro_siguiente		;bbb8
 	dec l			;bbba
 	ld a,(hl)			;bbbb
-	cp 00eh		;bbbc
-	jr z,L_BBD3		;bbbe
-	cp 00fh		;bbc0
-	jr z,L_BBD3		;bbc2
-	cp 010h		;bbc4
-	jr z,L_BBD3		;bbc6
-	ld c,00fh		;bbc8
-L_BBCA:
+	cp 00eh		;bbbc   ; el 0x0E...
+	jr z,dispara_lo_otro_busca_hueco		;bbbe
+	cp 00fh		;bbc0   ; ...el 0x0F...
+	jr z,dispara_lo_otro_busca_hueco		;bbc2
+	cp 010h		;bbc4   ; ...y el 0x10 se disparan
+	jr z,dispara_lo_otro_busca_hueco		;bbc6
+	ld c,00fh		;bbc8   ; y lo demas, salto de 0x0F
+dispara_lo_otro_siguiente:
 	ld a,c			;bbca
 	add a,l			;bbcb
 	ld l,a			;bbcc
 	jr nc,L_BBD0		;bbcd
 	inc h			;bbcf
 L_BBD0:
-	djnz L_BBAB		;bbd0
+	djnz dispara_lo_otro_recorre		;bbd0
 	ret			;bbd2
-L_BBD3:
-	ld c,a			;bbd3
-	ld hl,0e310h		;bbd4
+dispara_lo_otro_busca_hueco:
+	ld c,a			;bbd3   ; C se queda con lo que se dispara
+	ld hl,0e310h		;bbd4   ; los tres huecos
 	ld b,003h		;bbd7
-L_BBD9:
-	ld a,(hl)			;bbd9
+dispara_lo_otro_mira_el_hueco:
+	ld a,(hl)			;bbd9   ; ¿esta libre?
 	and a			;bbda
-	jr z,L_BBE4		;bbdb
-	ld a,020h		;bbdd
+	jr z,dispara_lo_otro_monta		;bbdb
+	ld a,020h		;bbdd   ; 0x20 al siguiente
 	add a,l			;bbdf
 	ld l,a			;bbe0
-	djnz L_BBD9		;bbe1
-	ret			;bbe3
-L_BBE4:
+	djnz dispara_lo_otro_mira_el_hueco		;bbe1
+	ret			;bbe3   ; y si estan los tres ocupados, nada
+dispara_lo_otro_monta:
 	push hl			;bbe4
-	ld b,020h		;bbe5
-L_BBE7:
+	ld b,020h		;bbe5   ; los 32 bytes del hueco
+dispara_lo_otro_borra:
 	ld (hl),000h		;bbe7
 	inc l			;bbe9
-	djnz L_BBE7		;bbea
+	djnz dispara_lo_otro_borra		;bbea
 	pop ix		;bbec
-	ld (ix+000h),00bh		;bbee
-	ld (ix+012h),001h		;bbf2
+	ld (ix+000h),00bh		;bbee   ; la clase 11
+	ld (ix+012h),001h		;bbf2   ; y se mueve solo
 	xor a			;bbf6
-	ld (0e283h),a		;bbf7
-	ld (ix+007h),0a4h		;bbfa
+	ld (0e283h),a		;bbf7   ; la peticion, atendida
+	ld (ix+007h),0a4h		;bbfa   ; sale de la columna 0xA4
 	ld de,00000h		;bbfe
 	call L_AA71		;bc01
 	call L_AA78		;bc04
-	ld de,00300h		;bc07
+	ld de,00300h		;bc07   ; con profundidad 0x300
 	call L_AA7F		;bc0a
 	ld (ix+013h),003h		;bc0d
 	ld (ix+004h),0a4h		;bc11
 	ld (ix+005h),00fh		;bc15
-	ld a,c			;bc19
+	ld a,c			;bc19   ; y de cual de los tres era...
 	sub 00eh		;bc1a
 	ld c,078h		;bc1c
 	jr z,L_BC27		;bc1e
@@ -2117,67 +2265,74 @@ L_BC27:
 	ld a,011h		;bc36
 	call 0413ah		;bc38   ; banco 0: pide_sonido_si_esta_activo
 	ret			;bc3b
-L_BC3C:
-	inc (ix+015h)		;bc3c
+
+; ----------------------------------------------------------------------
+; ATENDER A LA CLASE 11. Dos tiempos: primero se acerca hasta que la profundidad pasa de 0x80 y ahi arranca; despues rebota. El rebote es un `neg` sobre la velocidad de la Y cuando se sale por arriba o por abajo (0xBC8B), y el dibujo alterna cada ocho cuadros con el bit 3 del contador. La tabla de 0xBCAF -1, 2, 1, 0, -1, -2, -1...- es la que le da el meneo.
+; ----------------------------------------------------------------------
+atiende_clase_11:
+	inc (ix+015h)		;bc3c   ; un contador
 	ld a,(ix+015h)		;bc3f
-	cp 080h		;bc42
-	jr nz,L_BC4D		;bc44
+	cp 080h		;bc42   ; a los 0x80 cuadros...
+	jr nz,clase_11_tiempo		;bc44
 	ld (ix+015h),000h		;bc46
-	call L_AB1E		;bc4a
-L_BC4D:
-	ld a,(ix+001h)		;bc4d
+	call L_AB1E		;bc4a   ; ...pasa algo
+clase_11_tiempo:
+	ld a,(ix+001h)		;bc4d   ; en que tiempo va
 	dec a			;bc50
-	jr z,L_BC67		;bc51
-	ld a,(ix+00bh)		;bc53
-	cp 080h		;bc56
+	jr z,clase_11_rebota		;bc51
+	ld a,(ix+00bh)		;bc53   ; la profundidad
+	cp 080h		;bc56   ; hasta 0x80 no arranca
 	ret c			;bc58
-	ld (ix+00fh),001h		;bc59
+	ld (ix+00fh),001h		;bc59   ; y ahi se le da velocidad en Y
 	ld de,00000h		;bc5d
 	call L_AA7F		;bc60
-	inc (ix+001h)		;bc63
+	inc (ix+001h)		;bc63   ; al tiempo siguiente
 	ret			;bc66
-L_BC67:
-	bit 3,(ix+014h)		;bc67
-	ld a,0a4h		;bc6b
-	jr nz,L_BC71		;bc6d
-	ld a,0a8h		;bc6f
-L_BC71:
+clase_11_rebota:
+	bit 3,(ix+014h)		;bc67   ; el bit 3 del contador
+	ld a,0a4h		;bc6b   ; un dibujo...
+	jr nz,clase_11_guarda_el_dibujo		;bc6d
+	ld a,0a8h		;bc6f   ; ...o el otro
+clase_11_guarda_el_dibujo:
 	ld (ix+004h),a		;bc71
-	ld a,(ix+009h)		;bc74
-	cp 020h		;bc77
-	jr c,L_BC7F		;bc79
-	cp 0d0h		;bc7b
-	jr c,L_BC90		;bc7d
-L_BC7F:
-	ld a,(ix+013h)		;bc7f
+	ld a,(ix+009h)		;bc74   ; la Y
+	cp 020h		;bc77   ; por encima de 0x20...
+	jr c,clase_11_da_la_vuelta		;bc79
+	cp 0d0h		;bc7b   ; ...y por debajo de 0xD0 no rebota
+	jr c,clase_11_menea		;bc7d
+clase_11_da_la_vuelta:
+	ld a,(ix+013h)		;bc7f   ; cuantos rebotes le quedan
 	and a			;bc82
-	jr z,L_BC90		;bc83
-	dec (ix+013h)		;bc85
-	ld a,(ix+00fh)		;bc88
-	neg		;bc8b
+	jr z,clase_11_menea		;bc83
+	dec (ix+013h)		;bc85   ; uno menos
+	ld a,(ix+00fh)		;bc88   ; la velocidad de la Y
+	neg		;bc8b   ; del reves: eso es el rebote
 	ld (ix+00fh),a		;bc8d
-L_BC90:
-	ld c,(ix+014h)		;bc90
+clase_11_menea:
+	ld c,(ix+014h)		;bc90   ; el paso del meneo
 	inc (ix+014h)		;bc93
 	ld a,(ix+014h)		;bc96
-	cp 010h		;bc99
-	jr nz,L_BCA1		;bc9b
+	cp 010h		;bc99   ; dieciseis pasos
+	jr nz,clase_11_saca_el_meneo		;bc9b
 	ld (ix+014h),000h		;bc9d
-L_BCA1:
-	ld hl,0bcafh		;bca1
+clase_11_saca_el_meneo:
+	ld hl,0bcafh		;bca1   ; la tabla del meneo
 	ld a,c			;bca4
 	add a,l			;bca5
 	ld l,a			;bca6
 	jr nc,L_BCAA		;bca7
 	inc h			;bca9
 L_BCAA:
-	ld a,(hl)			;bcaa
-	ld (ix+011h),a		;bcab
+	ld a,(hl)			;bcaa   ; el paso
+	ld (ix+011h),a		;bcab   ; y a la velocidad de la profundidad
 	ret			;bcae
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xbcaf..0xbcbf  (16 bytes)
-DATA_BCAF:
+; DATOS el_meneo_de_la_clase_11: Dieciseis pasos: 1, 2, 1, 0, -1, -2, -1, -1,
+;   -1, -2, -1, 0, 1, 2, 1, 1. Suben y bajan, y por eso el bicho no viene
+;   recto sino temblando.
+;   0xbcaf..0xbcbf  (16 bytes)
+DATA_el_meneo_de_la_clase_11:
 	defb 001h,002h,001h,000h,0ffh,0feh,0ffh,0ffh,0ffh,0feh,0ffh,000h,001h,002h,001h,001h	; bcaf  ................
 
 ; ======================================================================
@@ -2185,197 +2340,233 @@ DATA_BCAF:
 ; ======================================================================
 
 
-L_BCBF:
+
+; ----------------------------------------------------------------------
+; MONTAR LA CLASE 12: SALE HACIA DONDE ESTES. La unica que mira donde esta el jugador para colocarse: 0xBCCE resta la X de lo que se maneja a 0xA0 y con el bit 0 de esa cuenta elige entre subir o bajar. O sea que sale por el lado contrario a donde estas.
+; ----------------------------------------------------------------------
+monta_clase_12:
 	push ix		;bcbf
 	pop de			;bcc1
-	ld a,004h		;bcc2
+	ld a,004h		;bcc2   ; cuatro bytes mas alla del hueco
 	add a,e			;bcc4
 	ld e,a			;bcc5
-	ld hl,0bcech		;bcc6
-	ld bc,0000fh		;bcc9
+	ld hl,0bcech		;bcc6   ; su plantilla
+	ld bc,0000fh		;bcc9   ; quince bytes
 	ldir		;bccc
-	ld a,(0e204h)		;bcce   ; la X en la pantalla de lo que se maneja
+	ld a,(0e204h)		;bcce   ; la X de lo que se maneja
 	ld c,a			;bcd1
-	ld a,0a0h		;bcd2
+	ld a,0a0h		;bcd2   ; 0xA0 menos ella
 	sub c			;bcd4
-	ld (ix+00bh),a		;bcd5
-	ld c,0f0h		;bcd8
+	ld (ix+00bh),a		;bcd5   ; y eso es la profundidad de salida
+	ld c,0f0h		;bcd8   ; sale de abajo...
 	ld de,0fe00h		;bcda
-	bit 0,a		;bcdd
-	jr nz,L_BCE6		;bcdf
-	ld c,002h		;bce1
+	bit 0,a		;bcdd   ; el bit 0 de esa cuenta
+	jr nz,clase_12_colocada		;bcdf
+	ld c,002h		;bce1   ; ...o de arriba
 	ld de,00200h		;bce3
-L_BCE6:
+clase_12_colocada:
 	ld (ix+009h),c		;bce6
 	jp L_AA78		;bce9
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xbcec..0xbcfb  (15 bytes)
-DATA_BCEC:
-	defb 0d8h,008h,000h,0a8h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,001h	; bcec  ...............
+; DATOS plantilla_de_la_clase_12: Quince bytes: X = 0xA800, y todo lo demas a
+;   cero menos la marca de que se mueve. La Y y la profundidad las pone la
+;   propia rutina de montar, que es lo que la hace distinta.
+;   0xbcec..0xbcfb  (15 bytes)
+DATA_plantilla_de_la_clase_12:
+	defb 0d8h,008h	; bcec
+	defw 0a800h	; bcee
+	defw 00000h	; bcf0
+	defw 00000h	; bcf2
+	defw 00000h	; bcf4
+	defw 00000h	; bcf6
+	defw 00000h	; bcf8
+	defb 001h	; bcfa
 
 ; ======================================================================
 ; CODIGO 0xbcfb..0xbd24  (41 bytes)
 ; ======================================================================
 
 
-L_BCFB:
-	ld c,030h		;bcfb
+atiende_clase_12:
+	ld c,030h		;bcfb   ; su dibujo
 	call L_AA86		;bcfd
-	ld a,(ix+009h)		;bd00
-	cp 002h		;bd03
-	jr c,L_BD0A		;bd05
-	cp 0f8h		;bd07
+	ld a,(ix+009h)		;bd00   ; la Y
+	cp 002h		;bd03   ; por debajo de 2...
+	jr c,clase_12_se_ha_ido		;bd05
+	cp 0f8h		;bd07   ; ...o por encima de 0xF8 se ha ido
 	ret c			;bd09
-L_BD0A:
-	ld (ix+000h),000h		;bd0a
+clase_12_se_ha_ido:
+	ld (ix+000h),000h		;bd0a   ; hueco libre
 	ret			;bd0e
-L_BD0F:
+monta_clase_13:
 	push ix		;bd0f
 	pop de			;bd11
-	ld a,004h		;bd12
+	ld a,004h		;bd12   ; cuatro bytes mas alla del hueco
 	add a,e			;bd14
 	ld e,a			;bd15
-	ld hl,0bd24h		;bd16
-	ld bc,00010h		;bd19
+	ld hl,0bd24h		;bd16   ; su plantilla
+	ld bc,00010h		;bd19   ; dieciseis bytes
 	ldir		;bd1c
-	ld a,012h		;bd1e
+	ld a,012h		;bd1e   ; el efecto 0x12
 	call 0413ah		;bd20   ; banco 0: pide_sonido_si_esta_activo
 	ret			;bd23
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xbd24..0xbd33  (15 bytes)
-DATA_BD24:
-	defb 0a4h,00ah,000h,0a8h,000h,078h,000h,098h,000h,000h,000h,0feh,000h,000h,001h	; bd24  .....x.........
+; DATOS plantilla_de_la_clase_13: Quince bytes: X = 0xA800, Y = 0x7800, Z =
+;   0x9800, velocidad X = 0xFE00 -o sea que viene hacia ti- y la marca de que
+;   se mueve.
+;   0xbd24..0xbd33  (15 bytes)
+DATA_plantilla_de_la_clase_13:
+	defb 0a4h,00ah	; bd24
+	defw 0a800h	; bd26
+	defw 07800h	; bd28
+	defw 09800h	; bd2a
+	defw 00000h	; bd2c
+	defw 0fe00h	; bd2e
+	defw 00000h	; bd30
+	defb 001h	; bd32
 
 ; ======================================================================
 ; CODIGO 0xbd33..0xbe3a  (263 bytes)
 ; ======================================================================
 
 
-L_BD33:
-	inc (ix+014h)		;bd33
-	bit 3,(ix+014h)		;bd36
-	ld a,0a4h		;bd3a
-	jr nz,L_BD40		;bd3c
-	ld a,0a8h		;bd3e
-L_BD40:
+
+; ----------------------------------------------------------------------
+; ATENDER A LA CLASE 13. Cuatro tiempos y el mismo parpadeo de dibujo cada ocho cuadros que la clase 11.
+; ----------------------------------------------------------------------
+atiende_clase_13:
+	inc (ix+014h)		;bd33   ; el contador del parpadeo
+	bit 3,(ix+014h)		;bd36   ; el bit 3
+	ld a,0a4h		;bd3a   ; un dibujo...
+	jr nz,clase_13_guarda_el_dibujo		;bd3c
+	ld a,0a8h		;bd3e   ; ...o el otro
+clase_13_guarda_el_dibujo:
 	ld (ix+004h),a		;bd40
-	ld a,(ix+001h)		;bd43
-	dec a			;bd46
-	jr z,L_BD7F		;bd47
-	dec a			;bd49
-	jr z,L_BDAE		;bd4a
-	dec a			;bd4c
-	jp z,L_BDDD		;bd4d
-	ld l,(ix+010h)		;bd50
+	ld a,(ix+001h)		;bd43   ; en que tiempo va
+	dec a			;bd46   ; el 1...
+	jr z,clase_13_tramo_1		;bd47
+	dec a			;bd49   ; ...el 2...
+	jr z,clase_13_tramo_2		;bd4a
+	dec a			;bd4c   ; ...y el 3
+	jp z,clase_13_tramo_3		;bd4d
+
+; ----------------------------------------------------------------------
+; LOS CUATRO TIEMPOS DE LA CLASE 13: UN CUADRADO. Los cuatro trozos son el mismo codigo con los signos cambiados, y leidos juntos se ve la figura: en el tiempo 0 la profundidad baja de ocho en ocho y la Y sube, en el 1 los dos suben, en el 2 la Y baja y la profundidad sube, y en el 3 los dos bajan. O sea que el bicho recorre un cuadrado. Cada tramo acaba cuando el `rl d` saca el bit de signo, que es la forma corta de preguntar "¿ya ha cambiado de sentido?".
+; ----------------------------------------------------------------------
+	ld l,(ix+010h)		;bd50   ; la velocidad de la profundidad
 	ld h,(ix+011h)		;bd53
-	ld de,0fff8h		;bd56
+	ld de,0fff8h		;bd56   ; menos ocho
 	add hl,de			;bd59
 	ex de,hl			;bd5a
 	call L_AA7F		;bd5b
-	ld l,(ix+00eh)		;bd5e
+	ld l,(ix+00eh)		;bd5e   ; y la de la Y
 	ld h,(ix+00fh)		;bd61
-	ld de,00008h		;bd64
+	ld de,00008h		;bd64   ; mas ocho
 	add hl,de			;bd67
 	ex de,hl			;bd68
 	call L_AA78		;bd69
-	rl d		;bd6c
-	ret c			;bd6e
-	ld de,00000h		;bd6f
+	rl d		;bd6c   ; el bit de signo al acarreo
+	ret c			;bd6e   ; mientras no cambie, se sigue en este tramo
+	ld de,00000h		;bd6f   ; y al cambiar, se fijan las dos velocidades del tramo siguiente
 	call L_AA78		;bd72
 	ld de,0fe00h		;bd75
 	call L_AA7F		;bd78
-	inc (ix+001h)		;bd7b
+	inc (ix+001h)		;bd7b   ; al tiempo 1
 	ret			;bd7e
-L_BD7F:
-	ld l,(ix+00eh)		;bd7f
+clase_13_tramo_1:
+	ld l,(ix+00eh)		;bd7f   ; la velocidad de la Y
 	ld h,(ix+00fh)		;bd82
-	ld de,00008h		;bd85
+	ld de,00008h		;bd85   ; mas ocho
 	add hl,de			;bd88
 	ex de,hl			;bd89
 	call L_AA78		;bd8a
-	ld l,(ix+010h)		;bd8d
+	ld l,(ix+010h)		;bd8d   ; y la de la profundidad
 	ld h,(ix+011h)		;bd90
-	ld de,00008h		;bd93
+	ld de,00008h		;bd93   ; tambien mas ocho
 	add hl,de			;bd96
 	ex de,hl			;bd97
 	call L_AA7F		;bd98
-	rl d		;bd9b
+	rl d		;bd9b   ; el signo
 	ret c			;bd9d
 	ld de,00200h		;bd9e
 	call L_AA78		;bda1
 	ld de,00000h		;bda4
 	call L_AA7F		;bda7
-	inc (ix+001h)		;bdaa
+	inc (ix+001h)		;bdaa   ; al tiempo 2
 	ret			;bdad
-L_BDAE:
-	ld l,(ix+010h)		;bdae
+clase_13_tramo_2:
+	ld l,(ix+010h)		;bdae   ; la profundidad
 	ld h,(ix+011h)		;bdb1
-	ld de,00008h		;bdb4
+	ld de,00008h		;bdb4   ; mas ocho
 	add hl,de			;bdb7
 	ex de,hl			;bdb8
 	call L_AA7F		;bdb9
-	ld l,(ix+00eh)		;bdbc
+	ld l,(ix+00eh)		;bdbc   ; y la Y
 	ld h,(ix+00fh)		;bdbf
-	ld de,0fff8h		;bdc2
+	ld de,0fff8h		;bdc2   ; menos ocho
 	add hl,de			;bdc5
 	ex de,hl			;bdc6
 	call L_AA78		;bdc7
-	rl d		;bdca
+	rl d		;bdca   ; el signo, ahora al reves
 	ret nc			;bdcc
 	ld de,00000h		;bdcd
 	call L_AA78		;bdd0
 	ld de,00200h		;bdd3
 	call L_AA7F		;bdd6
-	inc (ix+001h)		;bdd9
+	inc (ix+001h)		;bdd9   ; al tiempo 3
 	ret			;bddc
-L_BDDD:
-	ld l,(ix+00eh)		;bddd
+clase_13_tramo_3:
+	ld l,(ix+00eh)		;bddd   ; la Y
 	ld h,(ix+00fh)		;bde0
-	ld de,0fff8h		;bde3
+	ld de,0fff8h		;bde3   ; menos ocho
 	add hl,de			;bde6
 	ex de,hl			;bde7
 	call L_AA78		;bde8
-	ld l,(ix+010h)		;bdeb
+	ld l,(ix+010h)		;bdeb   ; y la profundidad
 	ld h,(ix+011h)		;bdee
-	ld de,0fff8h		;bdf1
+	ld de,0fff8h		;bdf1   ; tambien menos ocho
 	add hl,de			;bdf4
 	ex de,hl			;bdf5
 	call L_AA7F		;bdf6
-	rl d		;bdf9
+	rl d		;bdf9   ; y al cerrar el cuadrado...
 	ret nc			;bdfb
-	ld (ix+000h),000h		;bdfc
+	ld (ix+000h),000h		;bdfc   ; ...el hueco queda libre
 	ret			;be00
-L_BE01:
+
+; ----------------------------------------------------------------------
+; MONTAR LA CLASE 14: TE BUSCA. Sale a una de ocho alturas -la tabla de 0xBE49, recorrida en circulo por 0xE284- y despues compara esa altura con la del jugador para decidir si sube o baja. Es la unica de las quince que se orienta hacia ti al nacer.
+; ----------------------------------------------------------------------
+monta_clase_14:
 	push ix		;be01
 	pop de			;be03
-	ld a,004h		;be04
+	ld a,004h		;be04   ; cuatro bytes mas alla del hueco
 	add a,e			;be06
 	ld e,a			;be07
-	ld hl,0be3ah		;be08
-	ld bc,0000fh		;be0b
+	ld hl,0be3ah		;be08   ; su plantilla
+	ld bc,0000fh		;be0b   ; quince bytes
 	ldir		;be0e
-	ld hl,0e284h		;be10
+	ld hl,0e284h		;be10   ; el contador que gira
 	ld a,(hl)			;be13
-	inc (hl)			;be14
-	ld hl,0be49h		;be15
-	and 007h		;be18
+	inc (hl)			;be14   ; uno mas
+	ld hl,0be49h		;be15   ; la tabla de ocho alturas
+	and 007h		;be18   ; de ocho en ocho
 	add a,l			;be1a
 	ld l,a			;be1b
 	jr nc,L_BE1F		;be1c
 	inc h			;be1e
 L_BE1F:
-	ld a,(hl)			;be1f
+	ld a,(hl)			;be1f   ; la altura que toca
 	ld (ix+009h),a		;be20
-	ld a,(0e205h)		;be23   ; la Y en la pantalla de lo que se maneja
-	cp (ix+009h)		;be26
-	ld de,0fe00h		;be29
-	jr c,L_BE31		;be2c
-	ld de,00200h		;be2e
-L_BE31:
+	ld a,(0e205h)		;be23   ; la Y de lo que se maneja
+	cp (ix+009h)		;be26   ; contra la suya
+	ld de,0fe00h		;be29   ; si esta por encima, hacia arriba...
+	jr c,clase_14_orientada		;be2c
+	ld de,00200h		;be2e   ; ...y si no, hacia abajo
+clase_14_orientada:
 	call L_AA78		;be31
-	ld a,015h		;be34
+	ld a,015h		;be34   ; el efecto 0x15
 	call 0413ah		;be36   ; banco 0: pide_sonido_si_esta_activo
 	ret			;be39
 

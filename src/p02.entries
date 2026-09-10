@@ -28,6 +28,7 @@
 0x8800   # p02:8014 entrada 13 de la tabla de 0x8017 (call 0x4060 en 0x8014)
 0x8806   # p02:8014 entrada 14 de la tabla de 0x8017 (call 0x4060 en 0x8014)
 0x8933   # p02:8014 entrada 15 de la tabla de 0x8017 (call 0x4060 en 0x8014)
+0x8A55   # la maquina de estados lo mete en la PILA (0x800B) para que el estado vuelva ahi en vez de a quien le llamo
 0x91AD   # p00:455A call
 0x91C4   # p02:91B9 entrada 1 de la tabla de 0x91BC (call 0x4060 en 0x91B9)
 0x91E2   # p02:91B9 entrada 2 de la tabla de 0x91BC (call 0x4060 en 0x91B9)

@@ -929,6 +929,7 @@ lee_los_mandos:
 	call lee_el_estado_de_los_mandos		;44bb   ; primero el estado de ahora
 guarda_lo_que_se_acaba_de_pulsar:
 	ld hl,0e007h		;44be   ; el estado del cuadro anterior
+L_44C1:
 	ld c,(hl)			;44c1   ; C se queda con el viejo
 	ld (hl),a			;44c2   ; y en su sitio va el nuevo
 	xor c			;44c3   ; los bits que han CAMBIADO

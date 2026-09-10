@@ -628,3 +628,104 @@ C 0xB4BE con menos de 5 no estan todas
 C 0xB4C1 ocho bytes a la siguiente
 C 0xB4C8 y con las cuatro llenas, esto
 C 0xB4D3 lo que abre queda en marcha
+
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0xB42C el marcador, cifras bajas (BCD)
+C 0xB437 el marcador, cifra alta (BCD)
+C 0xB441 el marcador, cifras bajas (BCD)
+C 0xB5FA lo que queda de bonus por pasar al marcador
+C 0xB69D lo que queda de bonus por pasar al marcador
+C 0xB6A6 el marcador, cifras bajas (BCD)
+C 0xB6AB el marcador, cifra alta (BCD)
+C 0xB6AF el marcador, cifra alta (BCD)
+C 0xB6B9 el marcador, cifras bajas (BCD)
+
+B 0xBACE LO QUE SOLO SALE EN EL DECORADO 7. La primera instruccion lo dice todo: si (0xE0A1) no es 7, esta rutina se va sin hacer nada. Se dispara cuando lo que se maneja pasa de la columna 0x48, y a partir de ahi va bajando por su cuenta durante 0x40 cuadros, cambiando de dibujo cada cuatro.
+L 0xBACE lo_del_decorado_7
+C 0xBACE el decorado
+C 0xBAD1 solo el 7
+C 0xBAD5 ¿ya esta en marcha?
+C 0xBADB el contador
+C 0xBAE0 a los 0x40 cuadros se acaba
+C 0xBAE4 el bit 2: cambia de dibujo cada cuatro cuadros
+C 0xBAEC el patron del sprite 17
+C 0xBAEF la fila
+C 0xBAF2 que va bajando
+L 0xBAF8 lo_del_decorado_7_arranca
+C 0xBAF8 la X de lo que se maneja
+C 0xBAFB hasta la columna 0x48 no sale
+C 0xBAFE cuantas veces ha salido
+C 0xBB05 y queda en marcha
+C 0xBB08 su posicion sale de la del jugador
+C 0xBB0C dieciseis a la izquierda
+C 0xBB0F y una vez si y otra no...
+C 0xBB13 ...dieciseis mas abajo
+L 0xBB17 lo_del_decorado_7_colocado
+C 0xBB1A y al sprite
+L 0xBB1E lo_del_decorado_7_se_va
+C 0xBB1E 0xE0: fuera de la pantalla
+C 0xBB24 y las dos banderas, a cero
+B 0xBB2B SACAR LO DE 0xE0C0. Otra cosa que sale a una distancia apuntada, como los enemigos del banco 9, pero esta la lleva el banco 3 y solo sale si NO hay ya ninguna de las otras tres en pantalla -0xE0C0, 0xE0D7 y 0xE0BD-. Entra por arriba o por abajo segun donde este el jugador, igual que el que vuela.
+L 0xBB2B saca_lo_de_0xE0C0
+C 0xBB2B la distancia a la que le toca
+C 0xBB2F 0xFFFF quiere decir nunca
+C 0xBB33 lo andado
+C 0xBB37 DCOMPR: ¿hemos llegado?
+C 0xBB39 cuantas veces ha salido
+C 0xBB3D si ya hay una de estas...
+C 0xBB43 ...o una de las otras...
+C 0xBB49 ...o el que vuela, no sale
+C 0xBB4F la columna por la que entra
+C 0xBB51 la Y de lo que se maneja
+C 0xBB54 y segun este arriba o abajo...
+C 0xBB56 ...entra por abajo...
+C 0xBB5C ...o por arriba
+C 0xBB5F su posicion
+C 0xBB6A y queda en marcha
+C 0xBB6D el dibujo, en el sprite 8
+B 0xBB75 MOVERLO. Usa LA MISMA tabla de vaiven que el que vuela -la de 0xB5C1-, o sea que los dos ondulan igual aunque sean cosas distintas. Lo unico propio es el dibujo, que sale de la tabla de cuatro de 0xBBD2.
+L 0xBB75 mueve_lo_de_0xE0C0
+C 0xBB75 ¿esta en pantalla?
+C 0xBB7A el contador de cuadros
+C 0xBB7D uno de cada dos
+C 0xBB7F el paso del vaiven
+C 0xBB84 treinta y dos pasos
+C 0xBB86 la MISMA tabla que el que vuela
+C 0xBB8D su posicion
+C 0xBB90 mas el desplazamiento
+C 0xBB92 hacia donde va
+C 0xBB97 a la izquierda...
+C 0xBB9B ...o a la derecha
+C 0xBB9E la fila, un paso
+C 0xBBA0 por arriba se sale
+C 0xBBA4 y por abajo tambien
+C 0xBBA8 la posicion nueva
+C 0xBBAB y al sprite 8
+C 0xBBAE cual de las cuatro es
+C 0xBBB2 la tabla de dibujos
+C 0xBBB9 y al color del sprite
+L 0xBBBD quita_lo_de_0xE0C0
+C 0xBBBD 0xE0: fuera de la pantalla
+C 0xBBC8 y todo lo suyo, a cero
+D 0xBBD2 0xBBD6 dibujos_de_lo_de_0xE0C0  Los cuatro dibujos: 0x0D, 0x03, 0x07 y 0x0A. 0xBBB2 elige con (0xE0C0), que es a la vez la bandera de "esta en pantalla" y cual de los cuatro es.
+F 0xBBD2 4
+B 0xBBD6 CAMBIARLO POR EL SIGUIENTE. Sube (0xE0C0) de uno en uno y al llegar a 5 vuelve al 1, o sea que los cuatro dan vueltas. Segun cual salga hace una cosa u otra, y el 2 depende ademas del decorado.
+L 0xBBD6 cambia_lo_de_0xE0C0
+C 0xBBD6 ¿hay alguno?
+L 0xBBDB cambia_al_siguiente
+C 0xBBDB el siguiente
+C 0xBBDC al llegar a 5...
+C 0xBBE0 ...vuelve al 1
+L 0xBBE2 cambia_despacha
+C 0xBBE2 C se lo queda
+C 0xBBE3 el 2...
+C 0xBBE7 ...el 3...
+C 0xBBEA ...y el 4 van por su lado
+L 0xBBED cambia_a_uno_normal
+C 0xBBEE el nuevo
+C 0xBBF1 el efecto 0x0D
+L 0xBBF6 cambia_al_dos
+C 0xBBF6 el decorado
+C 0xBBF9 en el 7, otra cosa

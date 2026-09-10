@@ -839,3 +839,249 @@ C 0x9F80 banco 3
 C 0x9FAC banco 3
 C 0x9FB7 banco 3
 C 0x9FFC banco 3
+
+L 0x8648 estado_11_espera
+C 0x8653 el paso de la transicion
+C 0x8656 hasta cero no se sigue
+L 0x865B estado_11_monta_otra_vez
+C 0x865D esconder los sprites
+C 0x8660 borrar la zona de juego
+C 0x8666 empezar una vida
+C 0x8669 los tres tercios de caracteres
+C 0x8684 subir la zona de juego
+C 0x868A y al estado 4
+L 0x868F estado_11_ultimo
+C 0x8692 la clase de paso de fase
+C 0x8699 el paso de la transicion, a 0x1B
+C 0x869F un valor de trabajo
+C 0x86A4 catorce sprites
+C 0x86A6 desde el hueco 4
+L 0x86A9 estado_11_llena_los_sprites
+C 0x86A9 cuatro bytes por sprite
+C 0x86AB la plantilla de sprite
+L 0x86AE estado_11_copia_el_sprite
+C 0x86B4 un sprite menos
+C 0x86BA el efecto 0x89
+D 0x86C2 0x86C6 sprite_de_relleno  Los cuatro bytes -Y 0xE0, X 0x78, patron 0x34 y color 0x0A- que 0x86A9 repite en los catorce sprites de arriba. La Y a 0xE0 los deja fuera de la pantalla: se preparan escondidos y luego se van bajando.
+F 0x86C2 4
+B 0x86C6 ESTADO 12: LA ESCENA LARGA. El estado con mas subestados de todos -nueve-, y el unico que se salta subestados a proposito: 0x8748 sube 0xE001 tres veces de golpe y 0x877C una, segun lo que devuelva la rutina del banco 1 en 0xE096. O sea que la escena tiene ramas.
+L 0x86C6 estado_12
+C 0x86CE el paso de la transicion
+C 0x86D1 en el 0x11 se sigue
+L 0x86D7 estado_12_subestado_1
+C 0x86D9 esconder los sprites
+C 0x86DC borrar la zona de juego
+C 0x86E5 el efecto 0x1F
+L 0x86ED estado_12_subestado_2
+C 0x86F8 el paso de la transicion
+C 0x86FB hasta cero no se sigue
+C 0x86FD el efecto 0x20
+C 0x8702 el modo
+C 0x8705 el 3 lleva un efecto...
+C 0x870B ...el 4 otro...
+C 0x8710 ...y los demas el de siempre
+L 0x8712 estado_12_suena
+C 0x871F color 4 en los cuatro primeros sprites
+C 0x872B subir los sprites
+C 0x872F y los avisos, a cero
+L 0x8735 estado_12_la_rama
+C 0x8737 la escena, en el banco 1
+C 0x873A lo que ha devuelto
+C 0x873E sin aviso, se sigue esperando
+C 0x873F con un 1 se avanza uno...
+C 0x8748 ...y con otra cosa se saltan TRES subestados de golpe
+L 0x8751 estado_12_subestado_4
+C 0x8753 el sprite 0
+C 0x8756 a la fila 0xD0
+C 0x875B borrar la zona de juego
+C 0x8761 el efecto 0x74
+L 0x8769 estado_12_subestado_5
+C 0x876E los avisos
+C 0x8772 sin aviso, se espera
+C 0x877C y aqui se salta UN subestado
+L 0x8783 estado_12_subestado_6
+C 0x8785 borrar la zona de juego
+C 0x878B subir los sprites
+C 0x878E el modo, otra vez con sus tres efectos
+C 0x87A6 y el subestado vuelve al 3: la escena da la vuelta
+L 0x87AE estado_12_subestado_7
+C 0x87B0 esconder los sprites
+C 0x87B3 borrar la zona de juego
+C 0x87B9 empezar una vida
+C 0x87BC los tres tercios de caracteres
+
+L 0x87DC estado_12_subestado_8
+C 0x87E4 el paso de la transicion
+C 0x87E7 en el 4 se acaba
+C 0x87ED y al estado 4
+L 0x87F2 estado_12_ultimo
+C 0x87F5 subir la zona de juego
+C 0x87F8 el efecto 0x92
+L 0x8800 estado_13_la_pausa
+B 0x8800 ESTADO 13: PARADO. Dos llamadas y ya esta. Es donde se queda el juego mientras la pausa este puesta, y de aqui solo se sale por el estado 5, que es quien mira la tecla.
+C 0x8800 lo que hay que hacer aunque este parado
+C 0x8803 y lo del banco 3
+B 0x8806 ESTADO 14: PERDER UNA VIDA. Aqui esta la cuenta: 0x8833 baja 0xE090 EN BCD y, si ya estaba a cero, se pasa al estado siguiente -que es el de fin de partida-. Si quedaba alguna, se rehace la escena y se vuelve al 4.
+L 0x8806 estado_14
+C 0x8811 los avisos
+C 0x8815 mientras haya alguno, se espera
+L 0x881D estado_14_quita_una_vida
+C 0x881F esconder los sprites
+C 0x8822 borrar la zona de juego
+C 0x8825 el modo
+C 0x8828 en el modo 1 se va al estado 8
+C 0x8833 LAS VIDAS
+C 0x8837 si no queda ninguna, se acabo la partida
+C 0x883B una menos...
+C 0x883D ...EN BCD
+C 0x883F rehacer sin perder la cuenta
+C 0x8842 empezar una vida
+C 0x8866 y sin espera
+L 0x8869 estado_14_espera_y_rehace
+C 0x8869 este subestado se mira con `dec b`, no con `djnz`
+C 0x8870 la espera
+C 0x8874 mientras dure, nada
+C 0x8879 los tres sprites de arriba...
+C 0x887C ...fuera de la pantalla
+C 0x8891 borrar la zona de juego
+C 0x8894 los tres tercios de caracteres
+C 0x88A0 por que vuelta va
+C 0x88A3 la 2 y la 3 tienen su propia carga
+C 0x88B1 subir la zona de juego
+C 0x88B7 y al estado 4
+L 0x88BC estado_14_vuelta_2
+C 0x88BC el 1-2-3 de la fase
+C 0x88BF solo el 3 lleva la carga especial
+C 0x88CF subir la zona de juego
+C 0x88D5 y al estado 4
+L 0x88DA estado_14_vuelta_3
+C 0x88EA una bandera a cero
+C 0x88F0 el efecto 0x65
+C 0x88F7 al estado 7...
+C 0x88FC ...y al subestado 3
+C 0x88FF subir la zona de juego
+L 0x8902 estado_14_vuelta_2_normal
+C 0x890E subir la zona de juego
+
+B 0x8933 ESTADO 15: FIN DE PARTIDA, Y EL CONTINUE. Lo interesante esta en como se hace el continue: no hay ninguna rutina que "guarde la partida". Lo que hay es un borrado de RAM con las seis cosas que importan a salvo en la PILA -0xE0C6 a 0xE0CB, y por otro lado el numero de fase, la fase, el 1-2-3 y lo de uno o dos jugadores-, y despues de borrar se vuelven a poner. Y las vidas se dejan en DOS, no en las que hubiera al empezar.
+L 0x8933 estado_15
+C 0x8933 este se mira con `dec b`, no con `djnz`
+C 0x8937 una bandera que INIT deja a cero
+C 0x893A y que aqui vale 0xFE
+C 0x893F otra
+C 0x8944 ¿se puede continuar?
+C 0x8948 si no, se acabo del todo
+C 0x894B las seis cosas de 0xE0C6...
+C 0x8963 ...a la pila
+C 0x8966 el numero de fase que se pinta
+C 0x896A la fase
+C 0x896E el 1-2-3
+C 0x8972 uno o dos jugadores
+C 0x8976 y tambien a la pila
+C 0x8978 y ahora se borra la RAM
+C 0x897E 217 bytes desde 0xE086
+C 0x8985 la bandera de antes
+C 0x898C otros 143 bytes
+C 0x8999 y 64 mas del espejo de pantalla
+L 0x89A6 estado_15_borra_lo_demas
+C 0x89A6 2.447 bytes de variables de fase
+C 0x89B3 y 800 del espejo de la zona de juego
+C 0x89C0 lo que se salvo
+C 0x89C2 las vidas...
+C 0x89C5 ...que quedan en DOS
+C 0x89C8 el numero de fase
+C 0x89CA la fase
+C 0x89CC el 1-2-3
+C 0x89CF y un cinco cuatro bytes mas alla
+C 0x89D8 uno o dos jugadores
+C 0x89DB y las seis de 0xE0C6, de vuelta
+C 0x89F6 montar la fase desde el decorado
+C 0x89F9 borrar la zona de juego
+C 0x89FC y al estado 3
+L 0x8A01 estado_15_se_acabo_del_todo
+C 0x8A01 las banderas de la partida
+C 0x8A05 se le quita el bit 6
+C 0x8A09 y uno o dos jugadores, a cero
+C 0x8A0C y vuelta a la presentacion
+L 0x8A0F estado_15_pinta_el_fin
+C 0x8A0F borrar la pantalla entera
+C 0x8A12 el efecto 0xC8
+C 0x8A1A el rotulo del final
+C 0x8A1D pintado
+
+C 0x8A20 el marcador
+C 0x8A23 donde va en la pantalla
+C 0x8A29 y la otra cifra
+C 0x8A32 la bandera de continue
+C 0x8A35 con 0xFE o mas...
+C 0x8A39 ...se pinta el rotulo de continuar
+L 0x8A3F estado_15_avanza
+B 0x8A42 ¿QUIERE CONTINUAR? Mira el bit 6 de las teclas recien pulsadas y, si esta, enciende 0xE0DF y repinta el rotulo con la mascara a cero -o sea, lo borra-. Lo llama el propio estado 15 desde 0x893C, y solo mientras la bandera de 0xF0F7 lo permita.
+L 0x8A42 mira_si_quiere_continuar
+C 0x8A42 las teclas recien pulsadas
+C 0x8A45 el bit 6
+C 0x8A47 si no se ha pulsado, nada
+C 0x8A4A se apunta que si
+C 0x8A4D el rotulo de continuar
+C 0x8A50 con la mascara a cero: se borra
+B 0x8A55 LO QUE LA MAQUINA DE ESTADOS METE EN LA PILA. No la llama ningun `call`: p02:800B hace `ld hl,0x8A55` y `push hl` antes de despachar, asi que el `ret` del estado cae aqui. Es un `call` escrito del reves, y sirve para que los tres estados de la presentacion compartan la salida sin gastar una llamada. Lo que hace es mirar si se ha pulsado algo para arrancar la partida.
+L 0x8A55 salida_de_la_presentacion
+C 0x8A55 leer los mandos
+C 0x8A58 y quedarse con lo recien pulsado
+C 0x8A5E si no se ha tocado nada, se sigue en la presentacion
+C 0x8A60 la espera, a cero
+C 0x8A65 el estado
+C 0x8A69 el 0 va por otro lado
+C 0x8A6B en los demas, los bits 4 y 5: la barra o el disparo
+C 0x8A6D y si no son esos, nada
+C 0x8A6E el bit 6 de las banderas: se enciende el sonido
+C 0x8A73 al estado 3, que es el menu
+C 0x8A76 y al subestado 0
+L 0x8A79 salida_desde_el_estado_0
+C 0x8A79 el estado
+C 0x8A7D el subestado
+C 0x8A80 en el 3 no se hace nada
+L 0x8A83 salida_arranca_la_presentacion
+C 0x8A83 al estado 1
+C 0x8A85 el efecto 0xCB
+C 0x8A8A y a montar la presentacion
+B 0x8A8D LA REJILLA DE LA PANTALLA DE FIN. Llena 0x0A00 de la VRAM con ceros y luego escribe en la tabla de nombres una rejilla de seis filas por veintiuna casillas con caracteres consecutivos desde 0x40: cada casilla su propio dibujo, que es como se hace un cartel grande sin repetir nada.
+L 0x8A8D monta_la_rejilla
+C 0x8A93 el guion del banco 6
+C 0x8A96 0x0A00 de la VRAM
+C 0x8A99 1008 bytes
+C 0x8A9D a cero
+C 0x8AA0 la esquina de la rejilla
+C 0x8AA3 el primer caracter
+C 0x8AA5 seis filas
+C 0x8AA7 y once casillas de salto al final de cada una
+L 0x8AAA monta_la_rejilla_fila
+C 0x8AAA veintiuna casillas
+L 0x8AAC monta_la_rejilla_casilla
+C 0x8AAC BIOS WRTVRM
+C 0x8AB0 y el caracter siguiente
+C 0x8AB3 a la fila de abajo
+B 0x8AB8 IR DESTAPANDO EL CARTEL. Con la rejilla puesta, el cartel se ensena columna a columna escribiendo 0xF0 en los ocho bytes de cada caracter. 0xE00A lleva la columna y 0xE00B la pasada, y se acaba a las seis.
+L 0x8AB8 destapa_una_columna
+C 0x8AB8 por donde va
+C 0x8ABC el primer caracter de la rejilla
+C 0x8ABF veintiuna casillas por fila
+L 0x8ABF destapa_calcula_la_fila
+C 0x8AC5 por ocho: cada caracter son ocho bytes
+C 0x8AC8 la base de los patrones del cartel
+C 0x8ACD y la columna que toca
+C 0x8AD0 veintiuna filas
+C 0x8AD2 ocho bytes de una a la siguiente
+C 0x8AD5 0xF0: media casilla encendida
+L 0x8AD7 destapa_escribe
+C 0x8AD7 BIOS WRTVRM
+C 0x8ADD la columna
+C 0x8AE1 la siguiente
+C 0x8AE2 de ocho en ocho
+C 0x8AE5 y hasta que no da la vuelta no cuenta una pasada
+C 0x8AE7 una pasada mas
+C 0x8AE9 seis pasadas y se acabo
+
+# --- Las llamadas al banco 0, que esta fijo en 0x4000-0x5FFF. Los nombres los
+# saca tools/anota_llamadas.py de las directivas L de src/p00.notes.
+C 0x8A87 banco 0: pide_sonido
