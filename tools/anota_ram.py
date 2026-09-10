@@ -46,9 +46,11 @@ RAM = {
     0xE0A1: ("el DECORADO, de 0 a 9", "p01:6000 despacha por el"),
     0xE0A2: ("el modo en el que esta el juego", "p00:4566 y p09:A83F"),
     0xE0DC: ("la pausa que se hace al perder o al cambiar de fase", "p00:451F"),
-    0xE203: ("por que hueco se parte la tabla de sprites al subirla",
-             "p00:42FB y p00:4332 comparan con 4 y con 16 para elegir "
-             "en cuantos trozos y desde donde subirla"),
+    0xE203: ("el paso de la transicion",
+             "los estados 7 a 11 del banco 2 lo comparan con 0x0C, 0x11, 0x19, "
+             "0x05 y 0x00 para saber cuando ha acabado; y de paso p00:42FB y "
+             "p00:4332 lo usan para decidir por donde partir la tabla de "
+             "sprites al subirla"),
     0xE300: ("por que pareja del guion de la fase va", "p09:A85C"),
     0xE301: ("lo andado en la fase", "p09:A848"),
     0xE310: ("el primer hueco de objeto, de tres de 0x20 bytes", "p09:A92B"),

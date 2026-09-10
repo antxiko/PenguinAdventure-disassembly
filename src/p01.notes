@@ -984,3 +984,102 @@ C 0x7849 los avisos que deja el cuadro
 C 0x7892 los avisos que deja el cuadro
 C 0x7AE2 los avisos que deja el cuadro
 C 0x7F5D la bandera de que la fase se ha acabado
+
+# --- Las llamadas al banco 0, que esta fijo en 0x4000-0x5FFF. Los nombres los
+# saca tools/anota_llamadas.py de las directivas L de src/p00.notes.
+C 0x6536 banco 2
+C 0x6DF5 banco 12
+C 0x6EED banco 13
+C 0x6F00 banco 12
+C 0x71AB banco 10
+C 0x71D1 banco 10
+C 0x71D6 banco 10
+C 0x7295 banco 10
+C 0x7298 banco 10
+C 0x72B9 banco 10
+C 0x7306 banco 11
+C 0x735D banco 11
+C 0x7392 banco 10
+C 0x73F2 banco 10
+C 0x75F7 banco 11
+C 0x760D banco 11
+C 0x7622 banco 10
+C 0x76ED banco 11
+C 0x7785 banco 10
+C 0x77FE banco 11
+C 0x7806 banco 10
+C 0x78BB banco 10
+C 0x793F banco 10
+C 0x7A9D banco 10
+C 0x7E86 banco 10
+C 0x7EBB banco 10
+C 0x7ED7 banco 10
+C 0x7EDD banco 10
+C 0x7EEB banco 11
+
+B 0x6799 LO QUE SALE DEL TERRENO. La rutina que convierte el byte de terreno en cosas puestas en las cinco ranuras de 0xE440. Tiene dos fuentes segun el modo: en el modo 1 lee una lista de 0x81F2 -banco 10-, y en el de jugar coge el byte de terreno de ahora (0xE402), lo multiplica por OCHO y con eso indexa la tabla de 0x84EA: ocho cosas por cada tramo de terreno, y 0xE403 dice por cual va.
+L 0x6799 lo_que_sale_del_terreno
+C 0x6799 por que vuelta va
+C 0x679E y otra bandera
+C 0x67A3 la marca de que ya se ha usado el byte
+C 0x67A8 si sigue puesta, no toca
+C 0x67A9 el byte de terreno
+C 0x67AC que pasa a ser el de ahora
+C 0x67AE el banco 10
+C 0x67B8 y el 11
+L 0x67C1 lee_lo_que_toca_del_terreno
+C 0x67C1 el modo
+C 0x67C5 en el modo 1, otra tabla
+C 0x67CA cual de ellas
+C 0x67CD dos bytes por entrada
+C 0x67D3 por donde va la lista
+C 0x67D6 uno mas
+C 0x67D8 DE = lista + indice
+C 0x67DB lo que hay
+C 0x67DC 0xFF cierra la lista
+C 0x67E0 y se vuelve a empezar
+L 0x67E7 lo_del_terreno_encontrado
+C 0x67E7 C se queda con lo que sale
+L 0x67EA lo_que_sale_en_el_juego
+C 0x67EA el byte de terreno de ahora
+C 0x67ED la tabla de tramos
+C 0x67F3 por ocho: ocho cosas por tramo
+C 0x67F6 y ahi esta el tramo
+C 0x67F8 por cual de las ocho va
+C 0x67FC la siguiente
+C 0x67FE a las ocho...
+C 0x6802 ...vuelta a empezar
+L 0x6804 coge_la_cosa_del_tramo
+C 0x6806 HL = tramo + la que toca
+C 0x6809 y lo que sale
+C 0x680A un cero es "aqui no sale nada"
+C 0x680E una bandera que cambia lo que sale
+C 0x6814 con un 2 sale otra cosa
+C 0x681A y segun el nibble alto, dos mas
+L 0x6822 mete_la_cosa_en_una_ranura
+C 0x6822 lo que sale
+C 0x6823 de 0x30 para arriba, por otro camino
+C 0x6828 de 0x27 a 0x2F, por otro
+L 0x682E busca_ranura_libre
+C 0x682E las cinco ranuras
+C 0x6831 cinco
+L 0x6833 busca_ranura_libre_vuelta
+C 0x6833 ¿esta ocupada?
+C 0x6837 0x10 bytes a la siguiente
+L 0x683D devuelve_el_2_y_el_3
+C 0x683E el banco 2
+C 0x6848 y el 3
+L 0x6852 llena_la_ranura
+C 0x6852 la ranura queda ocupada
+C 0x6855 con lo que sale
+C 0x6857 y el tercer byte a cero
+C 0x685B por debajo de 3...
+C 0x685D ...un uno...
+C 0x6861 ...y si no, un cero
+C 0x6864 lo que sale
+C 0x6865 de 0x0A a 0x0D...
+C 0x686D ...se le guardan dos cosas mas de la RAM
+C 0x6879 que quedan gastadas
+L 0x687F otra_cosa_del_mismo_tramo
+C 0x687F ¿habia una segunda?
+C 0x6881 pues se mete tambien

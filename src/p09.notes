@@ -267,3 +267,121 @@ C 0xB882 la Y en la pantalla de lo que se maneja
 C 0xBCCE la X en la pantalla de lo que se maneja
 C 0xBE23 la Y en la pantalla de lo que se maneja
 C 0xBE94 la Y en la pantalla de lo que se maneja
+
+L 0xB610 monta_clase_5
+C 0xB610 la bandera de que hay uno pedido
+B 0xB616 LO QUE SE DISPARA. Recorre las CINCO ranuras de lo que se lleva (0xE440) buscando una que tenga un 0x0C o un 0x0D, y si la encuentra saca un objeto de la clase 5. Las ranuras NO son todas del mismo tamano: el paso de una a la siguiente es 0x10, 0x0E o 0x0F segun lo que haya dentro, y esos tres saltos estan escritos en las tres ramas de 0xB622, 0xB62B y 0xB639.
+L 0xB616 dispara_lo_que_se_lleva
+C 0xB616 ¿hay disparo pedido?
+C 0xB61A si no, nada
+C 0xB61B las cinco ranuras
+C 0xB61E cinco
+L 0xB620 dispara_recorre_las_ranuras
+C 0xB620 lo que hay en la ranura
+C 0xB621 vacia: el salto es de 0x10
+C 0xB626 dos bytes mas alla
+C 0xB629 con un 8 ahi, el salto es de 0x0E
+C 0xB62F y si no, se mira el primer byte
+C 0xB631 el 0x0C...
+C 0xB635 ...o el 0x0D son los que se disparan
+C 0xB639 y para todo lo demas, 0x0F
+L 0xB63B dispara_a_la_ranura_siguiente
+C 0xB63B el salto que toque
+L 0xB641 dispara_siguiente
+C 0xB641 una ranura menos
+L 0xB644 dispara_busca_hueco
+C 0xB644 C se queda con lo que se dispara
+C 0xB645 los tres huecos de objeto
+C 0xB648 tres
+L 0xB64A dispara_mira_el_hueco
+C 0xB64A ¿esta libre?
+C 0xB64E 0x20 bytes al hueco siguiente
+C 0xB654 si los tres estan ocupados, no se dispara
+L 0xB655 dispara_monta_el_objeto
+C 0xB656 los 32 bytes del hueco
+L 0xB658 dispara_borra_el_hueco
+C 0xB65F la clase 5
+C 0xB663 y se mueve solo
+C 0xB668 la peticion, atendida
+C 0xB66B sale de la columna 0x70
+C 0xB66F con velocidad
+C 0xB673 y la profundidad a cero
+C 0xB689 el efecto 0x14
+C 0xB68E un contador que va girando
+C 0xB692 uno mas
+C 0xB693 de cuatro en cuatro
+C 0xB695 la tabla de cuatro alturas
+C 0xB69D la altura que toca
+C 0xB6A0 y segun sea 0x0C o 0x0D...
+C 0xB6A2 ...sale de una fila...
+C 0xB6A6 ...o de la otra
+C 0xB6A9 esa es su Y
+C 0xB6AC la Y de lo que se maneja
+C 0xB6AF la diferencia
+C 0xB6B2 si esta cerca, no se corrige
+
+D 0xB6C4 0xB6C8 alturas_del_disparo  Las cuatro alturas por las que puede salir lo que se dispara: 0x00, 0x18, 0x08 y 0x10. 0xB68E las va dando en circulo, asi que dos disparos seguidos no salen a la misma altura.
+F 0xB6C4 4
+L 0xB6C8 atiende_clase_5
+C 0xB6C8 el dibujo, segun lo cerca que este
+C 0xB6CB y la profundidad va bajando de 0x40 en 0x40
+L 0xB6DC dibujo_del_disparo
+C 0xB6DC la distancia
+C 0xB6DF por debajo de 0x80 no se cambia
+C 0xB6E2 primer dibujo
+C 0xB6E8 segundo
+C 0xB6EE y tercero
+L 0xB6F0 guarda_el_dibujo_del_disparo
+L 0xB6F4 monta_clase_6
+C 0xB6F4 DE apunta al hueco
+C 0xB6F7 cuatro bytes mas alla
+C 0xB6FB la plantilla
+C 0xB6FE veintitres bytes, mas que las otras: esta clase gasta hasta el 0x1A
+D 0xB704 0xB71B plantilla_de_la_clase_6  Los veintitres bytes de salida: X = 0x4E00, Y = 0x7800, Z = 0x0418, velocidades 0xFF00, 0x0020 y 0x0001, y detras los contadores de los dos vaivenes puestos a cero y a uno.
+F 0xB704 2,w1,w1,w1,w1,w1,w1,9
+B 0xB71B ATENDER A LA CLASE 6: DOS VAIVENES A LA VEZ. Lo que hace a este bicho distinto es que no se mueve en linea recta ni con un solo vaiven: lleva DOS osciladores independientes, uno para la Y (contadores en +0x13, +0x15 y +0x16) y otro para la Z (+0x17, +0x19 y +0x1A). Cada uno saca su paso de una tabla de rampas, le da la vuelta al signo cada media vuelta -los `cpl` de 0xB750 y 0xB79F- y multiplica el resultado por un contador que sube: eso es lo que hace que el recorrido se vaya abriendo.
+L 0xB71B atiende_clase_6
+C 0xB71B el dibujo base
+C 0xB720 la velocidad X
+C 0xB726 mas dos
+C 0xB72B y a la X
+C 0xB72E el contador fino del primer vaiven
+C 0xB734 a las 128 vueltas...
+C 0xB738 ...se reinicia...
+C 0xB73C ...y el multiplicador sube uno
+L 0xB73F clase_6_primer_vaiven
+C 0xB73F el contador del paso
+C 0xB745 sesenta y cuatro pasos
+C 0xB749 y vuelta a empezar
+C 0xB750 dandole la vuelta al signo
+L 0xB754 clase_6_paso_del_primer_vaiven
+C 0xB757 dos bytes por entrada
+C 0xB758 la tabla de rampas
+C 0xB760 el paso, de 16 bits
+C 0xB763 la bandera de signo
+C 0xB769 y si esta puesta, se niega el par entero
+L 0xB770 clase_6_multiplica_el_primer_vaiven
+C 0xB770 el multiplicador
+C 0xB773 sumando tantas veces como diga: eso es multiplicar
+L 0xB776 clase_6_multiplica_bucle
+C 0xB77A y a la Y
+C 0xB77D el contador fino del segundo vaiven
+C 0xB783 treinta y cuatro vueltas
+L 0xB78B clase_6_segundo_vaiven
+C 0xB78B su contador de paso
+C 0xB791 diecisiete pasos
+C 0xB795 el multiplicador sube
+C 0xB79F y el signo se da la vuelta
+L 0xB7A3 clase_6_paso_del_segundo_vaiven
+C 0xB7A7 la segunda tabla de rampas
+L 0xB7BF clase_6_multiplica_el_segundo
+C 0xB7C9 y a la profundidad
+L 0xB7C5 clase_6_multiplica_bucle_2
+D 0xB7CD 0xB851 rampa_del_primer_vaiven  Sesenta y cuatro pasos de 16 bits, y son una rampa limpia: de 0xFF00 a 0xFFF8 de ocho en ocho y luego de 0x0000 a 0x0100. O sea que el paso crece de forma continua, y lo que hace la curva es el cambio de signo de 0xB750 y la multiplicacion de 0xB776.
+F 0xB7CD w1
+D 0xB851 0xB873 rampa_del_segundo_vaiven  Diecisiete pasos, la misma idea pero de 0x10 en 0x10: de 0xFF80 a 0x0080.
+F 0xB851 w1
+L 0xB873 monta_clase_7
+C 0xB876 cuatro bytes mas alla del hueco
+C 0xB87A su plantilla
+C 0xB87D quince bytes

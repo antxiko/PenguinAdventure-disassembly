@@ -425,3 +425,206 @@ C 0xB6E2 la espera
 C 0xB6E4 y se borran los avisos: se sigue jugando
 D 0xB6E9 0xB6F8 rotulos_del_bonus  Dos guiones para el pintor con mascara, cada uno con su destino de VRAM delante. El primero pone BONUS en 0x388D y el segundo cuatro caracteres en 0x390C. Las letras van con el alfabeto del cartucho, que empieza en 0x21 = A: 0x22 0x2F 0x2E 0x35 0x33 se leen B, O, N, U y S.
 F 0xB6E9 w1
+
+# --- Las llamadas al banco 0, que esta fijo en 0x4000-0x5FFF. Los nombres los
+# saca tools/anota_llamadas.py de las directivas L de src/p00.notes.
+C 0xA1DD banco 1
+C 0xA268 banco 2
+C 0xA288 banco 2
+C 0xA5FB banco 1
+C 0xA601 banco 2
+C 0xA654 banco 1
+C 0xA6BA banco 1
+C 0xA6F1 banco 1
+C 0xAABF banco 1
+C 0xAB3D banco 1
+C 0xAB7D banco 1
+C 0xAB9B banco 1
+C 0xABD7 banco 1
+C 0xABFC banco 1
+C 0xAC34 banco 1
+C 0xAC6D banco 1
+C 0xACB2 banco 1
+C 0xACD6 banco 1
+C 0xAFC8 banco 1
+C 0xB31B banco 2
+C 0xB467 banco 2
+C 0xB4C8 banco 1
+C 0xB4E8 banco 2
+C 0xB622 banco 1
+C 0xB625 banco 1
+C 0xB62C banco 1
+C 0xB62F banco 1
+C 0xB632 banco 1
+C 0xB6BF banco 2
+C 0xB6CD banco 2
+C 0xB783 banco 1
+C 0xB786 banco 1
+C 0xB789 banco 1
+C 0xB78C banco 1
+C 0xB78F banco 1
+C 0xB792 banco 1
+C 0xB795 banco 1
+C 0xB798 banco 1
+C 0xB8DA banco 1
+C 0xB944 banco 1
+C 0xB947 banco 1
+C 0xBA11 banco 1
+C 0xBA14 banco 1
+C 0xBA17 banco 1
+C 0xBA1A banco 1
+C 0xBA1D banco 1
+C 0xBA20 banco 1
+C 0xBA23 banco 1
+C 0xBA26 banco 1
+C 0xBA2C banco 1
+C 0xBA75 banco 1
+C 0xBA8B banco 1
+C 0xBB72 banco 1
+
+# ======================================================================
+# LAS COLISIONES
+# ======================================================================
+# Aqui no hay deteccion de sprites por hardware: el VDP del MSX1 la tiene, pero
+# solo dice "dos sprites se han tocado", no cuales. Asi que se hace a mano, y
+# siempre igual: se le suma un margen a la posicion de lo que se maneja, se le
+# resta la del objeto, y si lo que queda cabe en el ancho y en el alto de un
+# rectangulo, es que se han tocado. Un `cp` sin acarreo detras basta para las
+# dos comparaciones de cada eje, porque la resta da un numero grande cuando se
+# ha pasado por cualquiera de los dos lados.
+B 0xB2D9 CHOCAR CON LO QUE HAY EN 0xE0C0. El rectangulo es de 0x24 de ancho por 0x20 de alto, con margen de 0x1C y 0x18. Y hay TRES pasos de transicion en los que no se choca -el 3, el 8 y el 10-, que son en los que el juego esta cambiando de escena.
+L 0xB2D9 choca_con_lo_de_0xE0C0
+C 0xB2D9 ¿hay algo de eso puesto?
+C 0xB2DD si no, no hay con que chocar
+C 0xB2DE el paso de la transicion
+C 0xB2E1 en el 3...
+C 0xB2E4 ...en el 8...
+C 0xB2E7 ...y en el 10 no se choca
+C 0xB2EA la posicion de lo que se maneja
+C 0xB2ED y la del objeto
+C 0xB2F2 el margen en X
+C 0xB2F4 menos la del objeto
+C 0xB2F5 ¿cabe en los 0x24 de ancho?
+C 0xB2F7 si no, no se han tocado
+C 0xB2F9 y ahora el margen en Y
+C 0xB2FC ¿cabe en los 0x20 de alto?
+C 0xB2FF que era lo que habia
+C 0xB303 se quita de en medio
+C 0xB307 y se despacha por lo que era
+D 0xB30B 0xB313 que_pasa_al_cogerlo  Las cuatro cosas que puede haber en 0xE0C0, con lo que hace cada una: 0xB313 da puntos, 0xB31E ALARGA la fase, 0xB331 y 0xB35E arrancan sendos movimientos.
+F 0xB30B w1
+L 0xB313 coger_da_puntos
+C 0xB313 el efecto 0x26
+C 0xB318 0x1000 puntos
+C 0xB31B y a sumarlos, en el banco 2
+B 0xB31E COGER ESTO ALARGA LA FASE. Le suma 0x50 EN BCD al largo, o sea que la meta se va mas lejos. Es la unica cosa de todo el cartucho que toca 0xE08B despues de montada la fase.
+L 0xB31E coger_alarga_la_fase
+C 0xB31E el largo de la fase
+C 0xB321 0x50 mas
+C 0xB324 en BCD
+C 0xB326 con su acarreo al byte alto
+C 0xB329 y guardado
+C 0xB32C el efecto 0x27
+L 0xB331 coger_arranca_el_movimiento
+C 0xB334 se coloca en la columna 0x70
+C 0xB339 el paso de la transicion, a 15
+C 0xB343 una velocidad
+C 0xB349 y los dos sprites, colocados
+L 0xB354 coger_suena_doble
+C 0xB354 el efecto 0x28
+C 0xB359 y detras el 0x5C
+L 0xB35E coger_arranca_el_otro
+C 0xB363 su velocidad
+B 0xB36B CHOCAR CON LO QUE HAY EN 0xE0D7. La misma cuenta pero con otro objeto y un rectangulo un poco mas ancho -0x28 en vez de 0x24-, y con los mismos tres pasos de transicion exentos.
+L 0xB36B choca_con_lo_de_0xE0D7
+C 0xB36B ¿hay algo?
+C 0xB370 el paso de la transicion
+C 0xB373 el 3...
+C 0xB376 ...el 8...
+C 0xB379 ...y el 10 no chocan
+C 0xB37C la posicion de lo que se maneja
+C 0xB37F y la del objeto
+C 0xB384 el margen en X
+C 0xB387 0x28 de ancho
+C 0xB38B el margen en Y
+C 0xB38E y 0x20 de alto
+C 0xB391 lo que era
+C 0xB398 el efecto 0x24
+
+B 0xB3A0 CHOCAR CON EL QUE VUELA. El rectangulo mas grande de los tres -0x30 de ancho por 0x20 de alto- y el unico que acaba mal: pone el modo a 1, que es el de perder, y deja un aviso de 2 para que la maquina de estados se salte dos estados.
+L 0xB3A0 choca_con_el_que_vuela
+C 0xB3A0 ¿esta en pantalla?
+C 0xB3A5 el paso de la transicion
+C 0xB3B1 la posicion de lo que se maneja
+C 0xB3B4 y la del que vuela
+C 0xB3B9 el margen en X
+C 0xB3BC 0x30 de ancho: el mas ancho de los tres
+C 0xB3C0 el margen en Y
+C 0xB3C3 y 0x20 de alto
+C 0xB3C6 el que vuela se va
+C 0xB3D1 modo 1: se ha perdido
+C 0xB3D5 y un aviso de 2
+C 0xB3DB por que vuelta va
+C 0xB3E0 el paso de la transicion, a 16
+B 0xB3E4 RECOGER. Los tres huecos de 0xE3A0, de dieciseis bytes cada uno, y una cuenta distinta de las de arriba: aqui no hay rectangulo fijo, el alto que se admite DEPENDE de lo lejos que este -0xB41C dobla la diferencia en X y se la suma al margen-, que es lo que hace que valga tocarlo tanto de cerca como de lejos. Recoger da un punto de los de uno en uno y 0x10 de los de golpe, y suena el efecto 0x0C.
+L 0xB3E4 recoger
+C 0xB3E4 el paso de la transicion
+C 0xB3E7 el 3, el 4, el 8 y el 10 no cuentan
+C 0xB3F3 los tres huecos
+C 0xB3F7 tres
+L 0xB3F9 recoger_mira_un_hueco
+C 0xB3F9 ¿hay algo?
+C 0xB400 y el segundo byte
+C 0xB403 por debajo de 0x10 todavia no se puede coger
+C 0xB407 su posicion
+C 0xB40D y la de lo que se maneja
+C 0xB411 la diferencia en X
+C 0xB413 si esta a mas de diez, no
+C 0xB417 y de ahi sale el margen en Y...
+C 0xB41C ...doblando la diferencia en X: cuanto mas lejos, mas se perdona
+C 0xB421 la diferencia en Y
+C 0xB424 y si se pasa, no se ha cogido
+C 0xB426 el marcador
+C 0xB429 un punto mas, EN BCD
+C 0xB431 y la cifra alta con su acarreo
+C 0xB43A al llegar a 0x10...
+C 0xB43E ...el marcador se queda en su tope
+L 0xB444 recoger_descuenta
+C 0xB444 el paso de la transicion
+C 0xB447 en cuatro de ellos -1, 2, 6 y 7-...
+C 0xB457 ...se descuenta uno de 0xE111
+L 0xB45B recoger_suena_y_borra
+C 0xB45C las banderas de la partida
+C 0xB45F el bit 6, el del sonido
+C 0xB464 0x10 puntos mas
+C 0xB467 sumados en el banco 2
+C 0xB46B el efecto 0x0C
+C 0xB470 el hueco
+C 0xB473 sus dieciseis bytes
+L 0xB476 recoger_borra_el_hueco
+C 0xB47B y los dos sprites, fuera de la pantalla
+L 0xB483 recoger_hueco_siguiente
+C 0xB483 dieciseis bytes al siguiente
+B 0xB48D LAS CUATRO RANURAS DE 0xE550. Ocho bytes cada una, y lo que cuenta es que las CUATRO lleguen a 5: mientras alguna no lo este, la rutina se vuelve. Cuando lo estan todas, se arranca lo que sea que se abre.
+L 0xB48D mira_las_cuatro_ranuras
+C 0xB48D la Y de lo que se maneja
+C 0xB491 cuatro ranuras
+C 0xB493 y ahi estan
+L 0xB496 mira_una_ranura
+C 0xB496 lo que tiene
+C 0xB497 con un 5 ya esta llena
+C 0xB499 y el salto a la siguiente es de ocho
+C 0xB49F su altura
+C 0xB4A0 menos la de lo que se maneja
+C 0xB4A3 si no cae dentro de 0x18, no
+C 0xB4A9 y si cae, la ranura sube uno
+C 0xB4AA el efecto 0x1C
+L 0xB4B1 ranura_siguiente_seis
+C 0xB4B1 aqui el salto es de seis
+L 0xB4B3 ranura_siguiente
+L 0xB4BD mira_si_estan_las_cuatro
+C 0xB4BD la ranura
+C 0xB4BE con menos de 5 no estan todas
+C 0xB4C1 ocho bytes a la siguiente
+C 0xB4C8 y con las cuatro llenas, esto
+C 0xB4D3 lo que abre queda en marcha

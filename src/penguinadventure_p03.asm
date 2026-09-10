@@ -291,7 +291,7 @@ L_A1D1:
 	ld (0e204h),a		;a1d7   ; la X en la pantalla de lo que se maneja
 L_A1DA:
 	call L_A1C9		;a1da
-	call 07dd5h		;a1dd
+	call 07dd5h		;a1dd   ; banco 1
 	ld hl,0e21dh		;a1e0
 	inc (hl)			;a1e3
 	ld hl,0e21bh		;a1e4
@@ -377,7 +377,7 @@ L_A25A:
 L_A267:
 	dec (hl)			;a267
 L_A268:
-	jp 09a1dh		;a268
+	jp 09a1dh		;a268   ; banco 2
 L_A26B:
 	ld a,004h		;a26b
 	ld (0e21eh),a		;a26d
@@ -396,7 +396,7 @@ L_A27A:
 L_A287:
 	dec (hl)			;a287
 L_A288:
-	jp 09c3ah		;a288
+	jp 09c3ah		;a288   ; banco 2
 L_A28B:
 	ld hl,0e21eh		;a28b
 	inc (hl)			;a28e
@@ -620,9 +620,9 @@ L_A5D0:
 	inc hl			;a5f6
 	ld d,(hl)			;a5f7
 	ld hl,0ae85h		;a5f8
-	call 07d9ch		;a5fb
+	call 07d9ch		;a5fb   ; banco 1
 	ld de,01000h		;a5fe
-	call 09367h		;a601
+	call 09367h		;a601   ; banco 2
 	pop af			;a604
 	dec a			;a605
 	and 003h		;a606
@@ -671,7 +671,7 @@ L_A645:
 	inc hl			;a64f
 	ld d,(hl)			;a650
 	ld hl,0ae94h		;a651
-	call 07d9ch		;a654
+	call 07d9ch		;a654   ; banco 1
 	pop bc			;a657
 	djnz L_A645		;a658
 L_A65A:
@@ -732,7 +732,7 @@ L_A6A8:
 	ld b,a			;a6b7
 	ld e,c			;a6b8
 	ld d,b			;a6b9
-	call 07d9ch		;a6ba
+	call 07d9ch		;a6ba   ; banco 1
 	pop hl			;a6bd
 	pop bc			;a6be
 	djnz L_A6A8		;a6bf
@@ -764,7 +764,7 @@ L_A6E2:
 	inc hl			;a6ec
 	ld d,(hl)			;a6ed
 	ld hl,0aec1h		;a6ee
-	call 07d9ch		;a6f1
+	call 07d9ch		;a6f1   ; banco 1
 	pop bc			;a6f4
 	djnz L_A6E2		;a6f5
 	ret			;a6f7
@@ -1267,7 +1267,7 @@ L_AAB1:
 	cp 01bh		;aab6
 	call c,L_AD4C		;aab8
 	ld de,(0e4e0h)		;aabb   ; la tabla de cambio de color, nibble alto
-	call 07b85h		;aabf
+	call 07b85h		;aabf   ; banco 1
 	ld (0e4e0h),de		;aac2   ; la tabla de cambio de color, nibble alto
 	ret nz			;aac6
 	ld a,071h		;aac7
@@ -1332,7 +1332,7 @@ L_AB2A:
 L_AB38:
 	djnz L_AB42		;ab38
 	ld hl,0b58ch		;ab3a
-	call 07be7h		;ab3d
+	call 07be7h		;ab3d   ; banco 1
 	jr L_AB56		;ab40
 L_AB42:
 	djnz L_AB4E		;ab42
@@ -1372,7 +1372,7 @@ L_AB75:
 L_AB77:
 	djnz L_AB91		;ab77
 	ld de,(0e4e0h)		;ab79   ; la tabla de cambio de color, nibble alto
-	call 07b85h		;ab7d
+	call 07b85h		;ab7d   ; banco 1
 	ld (0e4e0h),de		;ab80   ; la tabla de cambio de color, nibble alto
 	ret nz			;ab84
 	ld a,070h		;ab85
@@ -1386,7 +1386,7 @@ L_AB91:
 	dec (hl)			;ab96
 	ret nz			;ab97
 	ld hl,0b90dh		;ab98
-	call 07be7h		;ab9b
+	call 07be7h		;ab9b   ; banco 1
 	ld a,0bfh		;ab9e
 	ld (0e204h),a		;aba0   ; la X en la pantalla de lo que se maneja
 	jr L_AB75		;aba3
@@ -1416,7 +1416,7 @@ L_ABCC:
 	cp 00fh		;abcf
 	jp nz,L_ABDF		;abd1
 	ld hl,0b930h		;abd4
-	call 07be7h		;abd7
+	call 07be7h		;abd7   ; banco 1
 	ld a,07dh		;abda
 	call 04145h		;abdc   ; banco 0: pide_sonido
 L_ABDF:
@@ -1434,7 +1434,7 @@ L_ABE7:
 	dec (hl)			;abf5
 	jp nz,L_A8F5		;abf6
 	ld hl,0b93ch		;abf9
-	call 07be7h		;abfc
+	call 07be7h		;abfc   ; banco 1
 	ld a,080h		;abff
 	call 04145h		;ac01   ; banco 0: pide_sonido
 	call 05667h		;ac04
@@ -1462,7 +1462,7 @@ L_AC1A:
 L_AC2F:
 	djnz L_AC39		;ac2f
 	ld hl,0b891h		;ac31
-	call 07be7h		;ac34
+	call 07be7h		;ac34   ; banco 1
 L_AC37:
 	jr L_ABB9		;ac37
 L_AC39:
@@ -1490,7 +1490,7 @@ L_AC57:
 L_AC67:
 	djnz L_AC9A		;ac67
 	ld de,(0e4e0h)		;ac69   ; la tabla de cambio de color, nibble alto
-	call 07b85h		;ac6d
+	call 07b85h		;ac6d   ; banco 1
 	ld (0e4e0h),de		;ac70   ; la tabla de cambio de color, nibble alto
 	ld a,(0e0b8h)		;ac74
 	cp 016h		;ac77
@@ -1520,7 +1520,7 @@ L_ACAC:
 	jp L_AB4E		;acac
 L_ACAF:
 	ld hl,0b995h		;acaf
-	jp 07be7h		;acb2
+	jp 07be7h		;acb2   ; banco 1
 L_ACB5:
 	ld a,(0e003h)		;acb5   ; el contador de cuadros
 	and 007h		;acb8
@@ -1539,7 +1539,7 @@ L_ACC8:
 	inc (hl)			;acd4
 	ret			;acd5
 L_ACD6:
-	call 07baeh		;acd6
+	call 07baeh		;acd6   ; banco 1
 	xor a			;acd9
 	ld de,00020h		;acda
 L_ACDD:
@@ -1890,7 +1890,7 @@ L_AFBD:
 	jr z,L_AFCB		;afc4
 	rra			;afc6
 	ret nc			;afc7
-	jp 07d74h		;afc8
+	jp 07d74h		;afc8   ; banco 1
 L_AFCB:
 	xor a			;afcb
 	ld (0e533h),a		;afcc
@@ -2294,156 +2294,182 @@ L_B2C2:
 	ld h,a			;b2d4
 	ld (0eef6h),hl		;b2d5
 	ret			;b2d8
-L_B2D9:
-	ld a,(0e0c0h)		;b2d9
+
+; ----------------------------------------------------------------------
+; CHOCAR CON LO QUE HAY EN 0xE0C0. El rectangulo es de 0x24 de ancho por 0x20 de alto, con margen de 0x1C y 0x18. Y hay TRES pasos de transicion en los que no se choca -el 3, el 8 y el 10-, que son en los que el juego esta cambiando de escena.
+; ----------------------------------------------------------------------
+choca_con_lo_de_0xE0C0:
+	ld a,(0e0c0h)		;b2d9   ; ¿hay algo de eso puesto?
 	and a			;b2dc
-	ret z			;b2dd
-	ld a,(0e203h)		;b2de   ; por donde va la rotacion de los sprites
-	cp 003h		;b2e1
+	ret z			;b2dd   ; si no, no hay con que chocar
+	ld a,(0e203h)		;b2de   ; el paso de la transicion
+	cp 003h		;b2e1   ; en el 3...
 	ret z			;b2e3
-	cp 008h		;b2e4
+	cp 008h		;b2e4   ; ...en el 8...
 	ret z			;b2e6
-	cp 00ah		;b2e7
+	cp 00ah		;b2e7   ; ...y en el 10 no se choca
 	ret z			;b2e9
-	ld hl,(0e204h)		;b2ea   ; la X en la pantalla de lo que se maneja
-	ld de,(0e0c3h)		;b2ed
+	ld hl,(0e204h)		;b2ea   ; la posicion de lo que se maneja
+	ld de,(0e0c3h)		;b2ed   ; y la del objeto
 	ld a,l			;b2f1
-	add a,01ch		;b2f2
-	sub e			;b2f4
-	cp 024h		;b2f5
-	ret nc			;b2f7
+	add a,01ch		;b2f2   ; el margen en X
+	sub e			;b2f4   ; menos la del objeto
+	cp 024h		;b2f5   ; ¿cabe en los 0x24 de ancho?
+	ret nc			;b2f7   ; si no, no se han tocado
 	ld a,h			;b2f8
-	add a,018h		;b2f9
+	add a,018h		;b2f9   ; y ahora el margen en Y
 	sub d			;b2fb
-	cp 020h		;b2fc
+	cp 020h		;b2fc   ; ¿cabe en los 0x20 de alto?
 	ret nc			;b2fe
-	ld a,(0e0c0h)		;b2ff
+	ld a,(0e0c0h)		;b2ff   ; que era lo que habia
 	push af			;b302
-	call L_BBBD		;b303
+	call L_BBBD		;b303   ; se quita de en medio
 	pop af			;b306
-	dec a			;b307
+	dec a			;b307   ; y se despacha por lo que era
 	call 04060h		;b308   ; banco 0: despacha
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xb30b..0xb313  (8 bytes)
-DATA_B30B:
-	defb 013h,0b3h,01eh,0b3h,031h,0b3h,05eh,0b3h	; b30b  ....1.^.
+; DATOS que_pasa_al_cogerlo: Las cuatro cosas que puede haber en 0xE0C0, con
+;   lo que hace cada una: 0xB313 da puntos, 0xB31E ALARGA la fase, 0xB331 y
+;   0xB35E arrancan sendos movimientos.
+;   0xb30b..0xb313  (8 bytes)
+DATA_que_pasa_al_cogerlo:
+	defw 0b313h	; b30b  -> coger_da_puntos
+	defw 0b31eh	; b30d  -> coger_alarga_la_fase
+	defw 0b331h	; b30f  -> coger_arranca_el_movimiento
+	defw 0b35eh	; b311  -> coger_arranca_el_otro
 
 ; ======================================================================
 ; CODIGO 0xb313..0xb534  (545 bytes)
 ; ======================================================================
 
 
-L_B313:
-	ld a,026h		;b313
+coger_da_puntos:
+	ld a,026h		;b313   ; el efecto 0x26
 	call 0413ah		;b315   ; banco 0: pide_sonido_si_esta_activo
-	ld de,01000h		;b318
-	jp 09367h		;b31b
-L_B31E:
+	ld de,01000h		;b318   ; 0x1000 puntos
+	jp 09367h		;b31b   ; y a sumarlos, en el banco 2
+
+; ----------------------------------------------------------------------
+; COGER ESTO ALARGA LA FASE. Le suma 0x50 EN BCD al largo, o sea que la meta se va mas lejos. Es la unica cosa de todo el cartucho que toca 0xE08B despues de montada la fase.
+; ----------------------------------------------------------------------
+coger_alarga_la_fase:
 	ld hl,(0e08bh)		;b31e   ; el largo de la fase
-	ld a,050h		;b321
+	ld a,050h		;b321   ; 0x50 mas
 	add a,l			;b323
-	daa			;b324
+	daa			;b324   ; en BCD
 	ld l,a			;b325
-	jr nc,L_B329		;b326
+	jr nc,L_B329		;b326   ; con su acarreo al byte alto
 	inc h			;b328
 L_B329:
-	ld (0e08bh),hl		;b329   ; el largo de la fase
-	ld a,027h		;b32c
+	ld (0e08bh),hl		;b329   ; y guardado
+	ld a,027h		;b32c   ; el efecto 0x27
 	jp 0413ah		;b32e   ; banco 0: pide_sonido_si_esta_activo
-L_B331:
+coger_arranca_el_movimiento:
 	call 058b1h		;b331
-	ld a,070h		;b334
+	ld a,070h		;b334   ; se coloca en la columna 0x70
 	ld (0e204h),a		;b336   ; la X en la pantalla de lo que se maneja
-	ld a,00fh		;b339
+	ld a,00fh		;b339   ; el paso de la transicion, a 15
 	ld (0e203h),a		;b33b   ; por donde va la rotacion de los sprites
 	ld a,001h		;b33e
 	ld (0e1f0h),a		;b340
-	ld hl,00400h		;b343
+	ld hl,00400h		;b343   ; una velocidad
 	ld (0e1f4h),hl		;b346
-	ld hl,00e70h		;b349
+	ld hl,00e70h		;b349   ; y los dos sprites, colocados
 	ld (0ee92h),hl		;b34c
 	ld l,074h		;b34f
 	ld (0ee96h),hl		;b351
-L_B354:
-	ld a,028h		;b354
+coger_suena_doble:
+	ld a,028h		;b354   ; el efecto 0x28
 	call 0413ah		;b356   ; banco 0: pide_sonido_si_esta_activo
-	ld a,05ch		;b359
+	ld a,05ch		;b359   ; y detras el 0x5C
 	jp 0413ah		;b35b   ; banco 0: pide_sonido_si_esta_activo
-L_B35E:
+coger_arranca_el_otro:
 	ld a,001h		;b35e
 	ld (0e1f1h),a		;b360
-	ld hl,00400h		;b363
+	ld hl,00400h		;b363   ; su velocidad
 	ld (0e1f2h),hl		;b366
-	jr L_B354		;b369
-L_B36B:
-	ld a,(0e0d7h)		;b36b
+	jr coger_suena_doble		;b369
+
+; ----------------------------------------------------------------------
+; CHOCAR CON LO QUE HAY EN 0xE0D7. La misma cuenta pero con otro objeto y un rectangulo un poco mas ancho -0x28 en vez de 0x24-, y con los mismos tres pasos de transicion exentos.
+; ----------------------------------------------------------------------
+choca_con_lo_de_0xE0D7:
+	ld a,(0e0d7h)		;b36b   ; ¿hay algo?
 	and a			;b36e
 	ret z			;b36f
-	ld a,(0e203h)		;b370   ; por donde va la rotacion de los sprites
-	cp 003h		;b373
+	ld a,(0e203h)		;b370   ; el paso de la transicion
+	cp 003h		;b373   ; el 3...
 	ret z			;b375
-	cp 008h		;b376
+	cp 008h		;b376   ; ...el 8...
 	ret z			;b378
-	cp 00ah		;b379
+	cp 00ah		;b379   ; ...y el 10 no chocan
 	ret z			;b37b
-	ld hl,(0e204h)		;b37c   ; la X en la pantalla de lo que se maneja
-	ld de,(0e0dah)		;b37f
+	ld hl,(0e204h)		;b37c   ; la posicion de lo que se maneja
+	ld de,(0e0dah)		;b37f   ; y la del objeto
 	ld a,l			;b383
-	add a,01ch		;b384
+	add a,01ch		;b384   ; el margen en X
 	sub e			;b386
-	cp 028h		;b387
+	cp 028h		;b387   ; 0x28 de ancho
 	ret nc			;b389
 	ld a,h			;b38a
-	add a,018h		;b38b
+	add a,018h		;b38b   ; el margen en Y
 	sub d			;b38d
-	cp 020h		;b38e
+	cp 020h		;b38e   ; y 0x20 de alto
 	ret nc			;b390
-	ld a,(0e0d7h)		;b391
+	ld a,(0e0d7h)		;b391   ; lo que era
 	ld c,a			;b394
 	call L_BA2F		;b395
-	ld a,024h		;b398
+	ld a,024h		;b398   ; el efecto 0x24
 	call 0413ah		;b39a   ; banco 0: pide_sonido_si_esta_activo
 	jp L_BFAB		;b39d
-L_B3A0:
-	ld a,(0e0bdh)		;b3a0
+
+; ----------------------------------------------------------------------
+; CHOCAR CON EL QUE VUELA. El rectangulo mas grande de los tres -0x30 de ancho por 0x20 de alto- y el unico que acaba mal: pone el modo a 1, que es el de perder, y deja un aviso de 2 para que la maquina de estados se salte dos estados.
+; ----------------------------------------------------------------------
+choca_con_el_que_vuela:
+	ld a,(0e0bdh)		;b3a0   ; ¿esta en pantalla?
 	and a			;b3a3
 	ret z			;b3a4
-	ld a,(0e203h)		;b3a5   ; por donde va la rotacion de los sprites
+	ld a,(0e203h)		;b3a5   ; el paso de la transicion
 	cp 003h		;b3a8
 	ret z			;b3aa
 	cp 008h		;b3ab
 	ret z			;b3ad
 	cp 00ah		;b3ae
 	ret z			;b3b0
-	ld hl,(0e204h)		;b3b1   ; la X en la pantalla de lo que se maneja
-	ld de,(0e0bbh)		;b3b4
+	ld hl,(0e204h)		;b3b1   ; la posicion de lo que se maneja
+	ld de,(0e0bbh)		;b3b4   ; y la del que vuela
 	ld a,l			;b3b8
-	add a,020h		;b3b9
+	add a,020h		;b3b9   ; el margen en X
 	sub e			;b3bb
-	cp 030h		;b3bc
+	cp 030h		;b3bc   ; 0x30 de ancho: el mas ancho de los tres
 	ret nc			;b3be
 	ld a,h			;b3bf
-	add a,020h		;b3c0
+	add a,020h		;b3c0   ; el margen en Y
 	sub d			;b3c2
-	cp 020h		;b3c3
+	cp 020h		;b3c3   ; y 0x20 de alto
 	ret nc			;b3c5
-	call el_que_vuela_se_va		;b3c6
+	call el_que_vuela_se_va		;b3c6   ; el que vuela se va
 	xor a			;b3c9
 	ld (0e1f1h),a		;b3ca
 	ld (0e1f2h),a		;b3cd
 	inc a			;b3d0
-	ld (0e0a2h),a		;b3d1   ; el modo en el que esta el juego
+	ld (0e0a2h),a		;b3d1   ; modo 1: se ha perdido
 	inc a			;b3d4
-	ld (0e096h),a		;b3d5   ; los avisos que deja el cuadro
+	ld (0e096h),a		;b3d5   ; y un aviso de 2
 	ld a,(0e0adh)		;b3d8
-	ld (0e0a3h),a		;b3db
+	ld (0e0a3h),a		;b3db   ; por que vuelta va
 	ld a,010h		;b3de
-	ld (0e203h),a		;b3e0   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;b3e0   ; el paso de la transicion, a 16
 	ret			;b3e3
-L_B3E4:
-	ld a,(0e203h)		;b3e4   ; por donde va la rotacion de los sprites
-	cp 003h		;b3e7
+
+; ----------------------------------------------------------------------
+; RECOGER. Los tres huecos de 0xE3A0, de dieciseis bytes cada uno, y una cuenta distinta de las de arriba: aqui no hay rectangulo fijo, el alto que se admite DEPENDE de lo lejos que este -0xB41C dobla la diferencia en X y se la suma al margen-, que es lo que hace que valga tocarlo tanto de cerca como de lejos. Recoger da un punto de los de uno en uno y 0x10 de los de golpe, y suena el efecto 0x0C.
+; ----------------------------------------------------------------------
+recoger:
+	ld a,(0e203h)		;b3e4   ; el paso de la transicion
+	cp 003h		;b3e7   ; el 3, el 4, el 8 y el 10 no cuentan
 	ret z			;b3e9
 	cp 004h		;b3ea
 	ret z			;b3ec
@@ -2451,130 +2477,134 @@ L_B3E4:
 	ret z			;b3ef
 	cp 00ah		;b3f0
 	ret z			;b3f2
-	ld ix,0e3a0h		;b3f3
-	ld b,003h		;b3f7
-L_B3F9:
-	ld a,(ix+000h)		;b3f9
+	ld ix,0e3a0h		;b3f3   ; los tres huecos
+	ld b,003h		;b3f7   ; tres
+recoger_mira_un_hueco:
+	ld a,(ix+000h)		;b3f9   ; ¿hay algo?
 	and a			;b3fc
-	jp z,L_B483		;b3fd
-	ld a,(ix+002h)		;b400
-	cp 010h		;b403
-	jr c,L_B483		;b405
-	ld e,(ix+003h)		;b407
+	jp z,recoger_hueco_siguiente		;b3fd
+	ld a,(ix+002h)		;b400   ; y el segundo byte
+	cp 010h		;b403   ; por debajo de 0x10 todavia no se puede coger
+	jr c,recoger_hueco_siguiente		;b405
+	ld e,(ix+003h)		;b407   ; su posicion
 	ld d,(ix+004h)		;b40a
-	ld hl,(0e204h)		;b40d   ; la X en la pantalla de lo que se maneja
+	ld hl,(0e204h)		;b40d   ; y la de lo que se maneja
 	ld a,e			;b410
-	sub l			;b411
+	sub l			;b411   ; la diferencia en X
 	ld e,a			;b412
-	sub 00ah		;b413
-	jr nc,L_B483		;b415
-	ld a,013h		;b417
+	sub 00ah		;b413   ; si esta a mas de diez, no
+	jr nc,recoger_hueco_siguiente		;b415
+	ld a,013h		;b417   ; y de ahi sale el margen en Y...
 	add a,e			;b419
 	ld l,a			;b41a
 	ld a,e			;b41b
-	add a,a			;b41c
+	add a,a			;b41c   ; ...doblando la diferencia en X: cuanto mas lejos, mas se perdona
 	add a,017h		;b41d
 	ld e,a			;b41f
 	ld a,d			;b420
-	sub h			;b421
+	sub h			;b421   ; la diferencia en Y
 	sub l			;b422
 	add a,e			;b423
-	jr nc,L_B483		;b424
-	ld a,(0e089h)		;b426
-	add a,001h		;b429
+	jr nc,recoger_hueco_siguiente		;b424   ; y si se pasa, no se ha cogido
+	ld a,(0e089h)		;b426   ; el marcador
+	add a,001h		;b429   ; un punto mas, EN BCD
 	daa			;b42b
 	ld (0e089h),a		;b42c
-	jr nc,L_B444		;b42f
-	ld a,(0e08ah)		;b431
+	jr nc,recoger_descuenta		;b42f
+	ld a,(0e08ah)		;b431   ; y la cifra alta con su acarreo
 	add a,001h		;b434
 	daa			;b436
 	ld (0e08ah),a		;b437
-	cp 010h		;b43a
-	jr nz,L_B444		;b43c
-	ld hl,00999h		;b43e
+	cp 010h		;b43a   ; al llegar a 0x10...
+	jr nz,recoger_descuenta		;b43c
+	ld hl,00999h		;b43e   ; ...el marcador se queda en su tope
 	ld (0e089h),hl		;b441
-L_B444:
-	ld a,(0e203h)		;b444   ; por donde va la rotacion de los sprites
-	cp 001h		;b447
+recoger_descuenta:
+	ld a,(0e203h)		;b444   ; el paso de la transicion
+	cp 001h		;b447   ; en cuatro de ellos -1, 2, 6 y 7-...
 	jr z,L_B457		;b449
 	cp 002h		;b44b
 	jr z,L_B457		;b44d
 	cp 006h		;b44f
 	jr z,L_B457		;b451
 	cp 007h		;b453
-	jr nz,L_B45B		;b455
+	jr nz,recoger_suena_y_borra		;b455
 L_B457:
-	ld hl,0e111h		;b457
+	ld hl,0e111h		;b457   ; ...se descuenta uno de 0xE111
 	dec (hl)			;b45a
-L_B45B:
+recoger_suena_y_borra:
 	push bc			;b45b
-	ld a,(0e002h)		;b45c
-	and 040h		;b45f
+	ld a,(0e002h)		;b45c   ; las banderas de la partida
+	and 040h		;b45f   ; el bit 6, el del sonido
 	call nz,0947bh		;b461
-	ld de,00010h		;b464
-	call 09367h		;b467
+	ld de,00010h		;b464   ; 0x10 puntos mas
+	call 09367h		;b467   ; sumados en el banco 2
 	pop bc			;b46a
-	ld a,00ch		;b46b
+	ld a,00ch		;b46b   ; el efecto 0x0C
 	call 04145h		;b46d   ; banco 0: pide_sonido
-	push ix		;b470
+	push ix		;b470   ; el hueco
 	pop hl			;b472
-	ld c,010h		;b473
+	ld c,010h		;b473   ; sus dieciseis bytes
 	xor a			;b475
-L_B476:
+recoger_borra_el_hueco:
 	ld (hl),a			;b476
 	inc l			;b477
 	dec c			;b478
-	jr nz,L_B476		;b479
-	ld (ix+003h),0e0h		;b47b
+	jr nz,recoger_borra_el_hueco		;b479
+	ld (ix+003h),0e0h		;b47b   ; y los dos sprites, fuera de la pantalla
 	ld (ix+007h),0e0h		;b47f
-L_B483:
-	ld de,00010h		;b483
+recoger_hueco_siguiente:
+	ld de,00010h		;b483   ; dieciseis bytes al siguiente
 	add ix,de		;b486
 	dec b			;b488
-	jp nz,L_B3F9		;b489
+	jp nz,recoger_mira_un_hueco		;b489
 	ret			;b48c
-L_B48D:
-	ld a,(0e205h)		;b48d   ; la Y en la pantalla de lo que se maneja
+
+; ----------------------------------------------------------------------
+; LAS CUATRO RANURAS DE 0xE550. Ocho bytes cada una, y lo que cuenta es que las CUATRO lleguen a 5: mientras alguna no lo este, la rutina se vuelve. Cuando lo estan todas, se arranca lo que sea que se abre.
+; ----------------------------------------------------------------------
+mira_las_cuatro_ranuras:
+	ld a,(0e205h)		;b48d   ; la Y de lo que se maneja
 	ld c,a			;b490
-	ld b,004h		;b491
-	ld hl,0e550h		;b493
-L_B496:
-	ld a,(hl)			;b496
-	cp 005h		;b497
-	ld a,008h		;b499
-	jr z,L_B4B3		;b49b
+	ld b,004h		;b491   ; cuatro ranuras
+	ld hl,0e550h		;b493   ; y ahi estan
+mira_una_ranura:
+	ld a,(hl)			;b496   ; lo que tiene
+	cp 005h		;b497   ; con un 5 ya esta llena
+	ld a,008h		;b499   ; y el salto a la siguiente es de ocho
+	jr z,ranura_siguiente		;b49b
 	inc l			;b49d
 	inc l			;b49e
-	ld a,(hl)			;b49f
-	sub c			;b4a0
-	jr c,L_B4B1		;b4a1
-	cp 018h		;b4a3
-	jr nc,L_B4B1		;b4a5
+	ld a,(hl)			;b49f   ; su altura
+	sub c			;b4a0   ; menos la de lo que se maneja
+	jr c,ranura_siguiente_seis		;b4a1
+	cp 018h		;b4a3   ; si no cae dentro de 0x18, no
+	jr nc,ranura_siguiente_seis		;b4a5
 	dec l			;b4a7
 	dec l			;b4a8
-	inc (hl)			;b4a9
-	ld a,01ch		;b4aa
+	inc (hl)			;b4a9   ; y si cae, la ranura sube uno
+	ld a,01ch		;b4aa   ; el efecto 0x1C
 	call 0413ah		;b4ac   ; banco 0: pide_sonido_si_esta_activo
-	jr L_B4B3		;b4af
-L_B4B1:
-	ld a,006h		;b4b1
-L_B4B3:
+	jr ranura_siguiente		;b4af
+ranura_siguiente_seis:
+	ld a,006h		;b4b1   ; aqui el salto es de seis
+ranura_siguiente:
 	call 04056h		;b4b3   ; banco 0: a_mas_hl
-	djnz L_B496		;b4b6
+	djnz mira_una_ranura		;b4b6
 	ld hl,0e550h		;b4b8
 	ld b,004h		;b4bb
-L_B4BD:
-	ld a,(hl)			;b4bd
-	cp 005h		;b4be
+mira_si_estan_las_cuatro:
+	ld a,(hl)			;b4bd   ; la ranura
+	cp 005h		;b4be   ; con menos de 5 no estan todas
 	ret nz			;b4c0
-	ld a,008h		;b4c1
+	ld a,008h		;b4c1   ; ocho bytes a la siguiente
 	call 04056h		;b4c3   ; banco 0: a_mas_hl
-	djnz L_B4BD		;b4c6
-	call 07c9fh		;b4c8
+	djnz mira_si_estan_las_cuatro		;b4c6
+	call 07c9fh		;b4c8   ; y con las cuatro llenas, esto
 	ld hl,0ae0ah		;b4cb
 	ld (0e53ah),hl		;b4ce
 	ld a,002h		;b4d1
-	ld (0e530h),a		;b4d3
+	ld (0e530h),a		;b4d3   ; lo que abre queda en marcha
 	xor a			;b4d6
 	ld (0e531h),a		;b4d7
 	ld (0e532h),a		;b4da
@@ -2582,7 +2612,7 @@ L_B4BD:
 	call L_A8F5		;b4e0
 	ld c,001h		;b4e3
 	ld de,00000h		;b4e5
-	jp 09369h		;b4e8
+	jp 09369h		;b4e8   ; banco 2
 
 ; ----------------------------------------------------------------------
 ; ¿SALE EL BICHO QUE VUELA? Tres condiciones y todas tienen que darse: que la partida tenga puesto el bit 6 de sus banderas, que el juego este en el modo de jugar, y que se haya llegado a la distancia apuntada en 0xE0AB -que empieza a 0xFFFF, o sea "nunca"-. Y ademas solo en cuatro de los diez decorados.
@@ -2771,13 +2801,13 @@ monta_el_bonus:
 	ld (0e08bh),de		;b618   ; y ese es el largo del bonus
 	ld hl,09000h		;b61c   ; 0x9000: una distancia a la que no se llega
 	ld (0e08dh),hl		;b61f   ; asi no sale ningun enemigo
-	call 0624ch		;b622
-	call 062b8h		;b625
+	call 0624ch		;b622   ; banco 1
+	call 062b8h		;b625   ; banco 1
 	xor a			;b628
 	ld (0e403h),a		;b629
-	call 06323h		;b62c
-	call 062efh		;b62f
-	jp 062e0h		;b632
+	call 06323h		;b62c   ; banco 1
+	call 062efh		;b62f   ; banco 1
+	jp 062e0h		;b632   ; banco 1
 
 ; ----------------------------------------------------------------------
 ; DATOS largos_del_bonus: Los diez largos de la fase de bonus, indexados por
@@ -2871,12 +2901,12 @@ bonus_lo_pasa_al_marcador:
 	ld (0e089h),hl		;b6b9
 L_B6BC:
 	ld de,00010h		;b6bc   ; donde va el marcador
-	call 09367h		;b6bf
+	call 09367h		;b6bf   ; banco 2
 	ld de,0e0d0h		;b6c2   ; y donde va el bonus
 	ld hl,03911h		;b6c5
 	ld b,001h		;b6c8
 	call 09417h		;b6ca   ; repintados los dos
-	call 0947bh		;b6cd
+	call 0947bh		;b6cd   ; banco 2
 	ld a,00ch		;b6d0   ; y un pitido por cada punto
 	jp 0413ah		;b6d2   ; banco 0: pide_sonido_si_esta_activo
 bonus_acabado:
@@ -2993,14 +3023,14 @@ L_B6F8:
 	ld (0e0a3h),a		;b77a
 	ld (0e0a4h),a		;b77d
 	ld (0e0b3h),a		;b780
-	call 062adh		;b783
-	call 06737h		;b786
-	call 062cbh		;b789
-	call 06323h		;b78c
-	call 06370h		;b78f
-	call 063fdh		;b792
-	call 063bch		;b795
-	jp 07db3h		;b798
+	call 062adh		;b783   ; banco 1
+	call 06737h		;b786   ; banco 1
+	call 062cbh		;b789   ; banco 1
+	call 06323h		;b78c   ; banco 1
+	call 06370h		;b78f   ; banco 1
+	call 063fdh		;b792   ; banco 1
+	call 063bch		;b795   ; banco 1
+	jp 07db3h		;b798   ; banco 1
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0xb79b..0xb8ab  (272 bytes)
@@ -3053,7 +3083,7 @@ L_B8AB:
 L_B8D4:
 	ld a,(0e0b1h)		;b8d4
 	ld (0e0bah),a		;b8d7
-	jp 06370h		;b8da
+	jp 06370h		;b8da   ; banco 1
 L_B8DD:
 	xor a			;b8dd
 	ld hl,0e1f0h		;b8de
@@ -3093,8 +3123,8 @@ L_B8DD:
 	ld (0e204h),hl		;b93a   ; la X en la pantalla de lo que se maneja
 	ld de,00150h		;b93d
 	ld (0e08dh),de		;b940   ; la distancia a la que sale el objeto siguiente
-	call 062b8h		;b944
-	jp 06323h		;b947
+	call 062b8h		;b944   ; banco 1
+	jp 06323h		;b947   ; banco 1
 L_B94A:
 	xor a			;b94a
 	ld hl,0e280h		;b94b
@@ -3207,16 +3237,16 @@ L_B9E0:
 	call L_BAA3		;ba09
 	ld c,00bh		;ba0c
 	call L_BAA3		;ba0e
-	call 0624ch		;ba11
-	call 062adh		;ba14
-	call 06737h		;ba17
-	call 062cbh		;ba1a
-	call 06323h		;ba1d
-	call 06370h		;ba20
-	call 063fdh		;ba23
-	call 063bch		;ba26
+	call 0624ch		;ba11   ; banco 1
+	call 062adh		;ba14   ; banco 1
+	call 06737h		;ba17   ; banco 1
+	call 062cbh		;ba1a   ; banco 1
+	call 06323h		;ba1d   ; banco 1
+	call 06370h		;ba20   ; banco 1
+	call 063fdh		;ba23   ; banco 1
+	call 063bch		;ba26   ; banco 1
 	call L_BE00		;ba29
-	jp 07db3h		;ba2c
+	jp 07db3h		;ba2c   ; banco 1
 L_BA2F:
 	ld a,024h		;ba2f
 	call 0413ah		;ba31   ; banco 0: pide_sonido_si_esta_activo
@@ -3259,7 +3289,7 @@ L_BA67:
 	sla c		;ba71
 	add a,c			;ba73
 	ld c,a			;ba74
-	jp 06d7ch		;ba75
+	jp 06d7ch		;ba75   ; banco 1
 L_BA78:
 	ld hl,03830h		;ba78
 	push hl			;ba7b
@@ -3272,7 +3302,7 @@ L_BA85:
 L_BA87:
 	call 0004ah		;ba87   ; BIOS RDVRM - Reads the content of VRAM
 	ex de,hl			;ba8a
-	call 06fb8h		;ba8b
+	call 06fb8h		;ba8b   ; banco 1
 	call 0004dh		;ba8e   ; BIOS WRTVRM - Writes data in VRAM
 	ex de,hl			;ba91
 	dec de			;ba92
@@ -3393,7 +3423,7 @@ L_BB5F:
 	ld a,00dh		;bb6d
 	ld (0eea3h),a		;bb6f
 L_BB72:
-	jp 063bch		;bb72
+	jp 063bch		;bb72   ; banco 1
 L_BB75:
 	ld a,(0e0c0h)		;bb75
 	and a			;bb78

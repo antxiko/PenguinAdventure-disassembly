@@ -289,9 +289,9 @@ DATA_tabla_de_objetos:
 	defw 0b60ah	; a8d3  -> monta_clase_2
 	defw 0b60ch	; a8d5  -> monta_clase_3
 	defw 0b60eh	; a8d7  -> monta_clase_4
-	defw 0b610h	; a8d9  -> L_B610
-	defw 0b6f4h	; a8db  -> L_B6F4
-	defw 0b873h	; a8dd  -> L_B873
+	defw 0b610h	; a8d9  -> monta_clase_5
+	defw 0b6f4h	; a8db  -> monta_clase_6
+	defw 0b873h	; a8dd  -> monta_clase_7
 	defw 0b909h	; a8df  -> L_B909
 	defw 0b90bh	; a8e1  -> L_B90B
 	defw 0bae0h	; a8e3  -> L_BAE0
@@ -387,8 +387,8 @@ DATA_tabla_de_atender:
 	defw 0b60bh	; a98c  -> atiende_clase_2
 	defw 0b60dh	; a98e  -> atiende_clase_3
 	defw 0b60fh	; a990  -> atiende_clase_4
-	defw 0b6c8h	; a992  -> L_B6C8
-	defw 0b71bh	; a994  -> L_B71B
+	defw 0b6c8h	; a992  -> atiende_clase_5
+	defw 0b71bh	; a994  -> atiende_clase_6
 	defw 0b8aeh	; a996  -> L_B8AE
 	defw 0b90ah	; a998  -> L_B90A
 	defw 0b9c0h	; a99a  -> L_B9C0
@@ -1264,102 +1264,106 @@ monta_clase_4:
 	ret			;b60e
 atiende_clase_4:
 	ret			;b60f
-L_B610:
-	ld a,001h		;b610
+monta_clase_5:
+	ld a,001h		;b610   ; la bandera de que hay uno pedido
 	ld (0e282h),a		;b612
 	ret			;b615
-L_B616:
-	ld a,(0e282h)		;b616
+
+; ----------------------------------------------------------------------
+; LO QUE SE DISPARA. Recorre las CINCO ranuras de lo que se lleva (0xE440) buscando una que tenga un 0x0C o un 0x0D, y si la encuentra saca un objeto de la clase 5. Las ranuras NO son todas del mismo tamano: el paso de una a la siguiente es 0x10, 0x0E o 0x0F segun lo que haya dentro, y esos tres saltos estan escritos en las tres ramas de 0xB622, 0xB62B y 0xB639.
+; ----------------------------------------------------------------------
+dispara_lo_que_se_lleva:
+	ld a,(0e282h)		;b616   ; ¿hay disparo pedido?
 	and a			;b619
-	ret z			;b61a
-	ld hl,0e440h		;b61b
-	ld b,005h		;b61e
-L_B620:
-	ld a,(hl)			;b620
-	and a			;b621
+	ret z			;b61a   ; si no, nada
+	ld hl,0e440h		;b61b   ; las cinco ranuras
+	ld b,005h		;b61e   ; cinco
+dispara_recorre_las_ranuras:
+	ld a,(hl)			;b620   ; lo que hay en la ranura
+	and a			;b621   ; vacia: el salto es de 0x10
 	ld c,010h		;b622
-	jr z,L_B63B		;b624
-	inc l			;b626
+	jr z,dispara_a_la_ranura_siguiente		;b624
+	inc l			;b626   ; dos bytes mas alla
 	inc l			;b627
 	ld a,(hl)			;b628
-	cp 008h		;b629
+	cp 008h		;b629   ; con un 8 ahi, el salto es de 0x0E
 	ld c,00eh		;b62b
-	jr nz,L_B63B		;b62d
-	dec l			;b62f
+	jr nz,dispara_a_la_ranura_siguiente		;b62d
+	dec l			;b62f   ; y si no, se mira el primer byte
 	ld a,(hl)			;b630
-	cp 00ch		;b631
-	jr z,L_B644		;b633
-	cp 00dh		;b635
-	jr z,L_B644		;b637
-	ld c,00fh		;b639
-L_B63B:
-	ld a,c			;b63b
+	cp 00ch		;b631   ; el 0x0C...
+	jr z,dispara_busca_hueco		;b633
+	cp 00dh		;b635   ; ...o el 0x0D son los que se disparan
+	jr z,dispara_busca_hueco		;b637
+	ld c,00fh		;b639   ; y para todo lo demas, 0x0F
+dispara_a_la_ranura_siguiente:
+	ld a,c			;b63b   ; el salto que toque
 	add a,l			;b63c
 	ld l,a			;b63d
-	jr nc,L_B641		;b63e
+	jr nc,dispara_siguiente		;b63e
 	inc h			;b640
-L_B641:
-	djnz L_B620		;b641
+dispara_siguiente:
+	djnz dispara_recorre_las_ranuras		;b641   ; una ranura menos
 	ret			;b643
-L_B644:
-	ld c,a			;b644
-	ld hl,0e310h		;b645
-	ld b,003h		;b648
-L_B64A:
-	ld a,(hl)			;b64a
+dispara_busca_hueco:
+	ld c,a			;b644   ; C se queda con lo que se dispara
+	ld hl,0e310h		;b645   ; los tres huecos de objeto
+	ld b,003h		;b648   ; tres
+dispara_mira_el_hueco:
+	ld a,(hl)			;b64a   ; ¿esta libre?
 	and a			;b64b
-	jr z,L_B655		;b64c
-	ld a,020h		;b64e
+	jr z,dispara_monta_el_objeto		;b64c
+	ld a,020h		;b64e   ; 0x20 bytes al hueco siguiente
 	add a,l			;b650
 	ld l,a			;b651
-	djnz L_B64A		;b652
-	ret			;b654
-L_B655:
+	djnz dispara_mira_el_hueco		;b652
+	ret			;b654   ; si los tres estan ocupados, no se dispara
+dispara_monta_el_objeto:
 	push hl			;b655
-	ld b,020h		;b656
-L_B658:
+	ld b,020h		;b656   ; los 32 bytes del hueco
+dispara_borra_el_hueco:
 	ld (hl),000h		;b658
 	inc l			;b65a
-	djnz L_B658		;b65b
+	djnz dispara_borra_el_hueco		;b65b
 	pop ix		;b65d
-	ld (ix+000h),005h		;b65f
-	ld (ix+012h),001h		;b663
+	ld (ix+000h),005h		;b65f   ; la clase 5
+	ld (ix+012h),001h		;b663   ; y se mueve solo
 	xor a			;b667
-	ld (0e282h),a		;b668
-	ld (ix+007h),070h		;b66b
-	ld (ix+00dh),002h		;b66f
-	ld (ix+00bh),000h		;b673
+	ld (0e282h),a		;b668   ; la peticion, atendida
+	ld (ix+007h),070h		;b66b   ; sale de la columna 0x70
+	ld (ix+00dh),002h		;b66f   ; con velocidad
+	ld (ix+00bh),000h		;b673   ; y la profundidad a cero
 	ld de,00500h		;b677
 	call L_AA7F		;b67a
 	ld (ix+013h),000h		;b67d
 	ld (ix+004h),0b0h		;b681
 	ld (ix+005h),00ah		;b685
-	ld a,014h		;b689
+	ld a,014h		;b689   ; el efecto 0x14
 	call 0413ah		;b68b   ; banco 0: pide_sonido_si_esta_activo
-	ld hl,0e281h		;b68e
+	ld hl,0e281h		;b68e   ; un contador que va girando
 	ld a,(hl)			;b691
-	inc (hl)			;b692
-	and 003h		;b693
-	ld de,0b6c4h		;b695
+	inc (hl)			;b692   ; uno mas
+	and 003h		;b693   ; de cuatro en cuatro
+	ld de,0b6c4h		;b695   ; la tabla de cuatro alturas
 	add a,e			;b698
 	ld e,a			;b699
 	jr nc,L_B69D		;b69a
 	inc d			;b69c
 L_B69D:
-	ld a,(de)			;b69d
+	ld a,(de)			;b69d   ; la altura que toca
 	ld b,a			;b69e
 	ld a,c			;b69f
-	sub 00ch		;b6a0
-	ld a,058h		;b6a2
+	sub 00ch		;b6a0   ; y segun sea 0x0C o 0x0D...
+	ld a,058h		;b6a2   ; ...sale de una fila...
 	jr z,L_B6A8		;b6a4
-	ld a,078h		;b6a6
+	ld a,078h		;b6a6   ; ...o de la otra
 L_B6A8:
 	add a,b			;b6a8
-	ld (ix+009h),a		;b6a9
-	ld hl,0e205h		;b6ac
-	sub (hl)			;b6af
+	ld (ix+009h),a		;b6a9   ; esa es su Y
+	ld hl,0e205h		;b6ac   ; la Y de lo que se maneja
+	sub (hl)			;b6af   ; la diferencia
 	jr c,L_B6BB		;b6b0
-	cp 030h		;b6b2
+	cp 030h		;b6b2   ; si esta cerca, no se corrige
 	ret c			;b6b4
 	ld de,0ff00h		;b6b5
 	jp L_AA78		;b6b8
@@ -1370,8 +1374,11 @@ L_B6BB:
 	jp L_AA78		;b6c1
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xb6c4..0xb6c8  (4 bytes)
-DATA_B6C4:
+; DATOS alturas_del_disparo: Las cuatro alturas por las que puede salir lo que
+;   se dispara: 0x00, 0x18, 0x08 y 0x10. 0xB68E las va dando en circulo, asi
+;   que dos disparos seguidos no salen a la misma altura.
+;   0xb6c4..0xb6c8  (4 bytes)
+DATA_alturas_del_disparo:
 	defb 000h,018h,008h,010h	; b6c4
 
 ; ======================================================================
@@ -1379,123 +1386,136 @@ DATA_B6C4:
 ; ======================================================================
 
 
-L_B6C8:
-	call L_B6DC		;b6c8
-	ld de,0ffc0h		;b6cb
+atiende_clase_5:
+	call dibujo_del_disparo		;b6c8   ; el dibujo, segun lo cerca que este
+	ld de,0ffc0h		;b6cb   ; y la profundidad va bajando de 0x40 en 0x40
 	ld l,(ix+010h)		;b6ce
 	ld h,(ix+011h)		;b6d1
 	add hl,de			;b6d4
 	ld (ix+010h),l		;b6d5
 	ld (ix+011h),h		;b6d8
 	ret			;b6db
-L_B6DC:
-	ld a,(ix+007h)		;b6dc
-	cp 080h		;b6df
+dibujo_del_disparo:
+	ld a,(ix+007h)		;b6dc   ; la distancia
+	cp 080h		;b6df   ; por debajo de 0x80 no se cambia
 	ret c			;b6e1
-	ld c,0b4h		;b6e2
+	ld c,0b4h		;b6e2   ; primer dibujo
 	cp 090h		;b6e4
-	jr c,L_B6F0		;b6e6
-	ld c,0b8h		;b6e8
+	jr c,guarda_el_dibujo_del_disparo		;b6e6
+	ld c,0b8h		;b6e8   ; segundo
 	cp 0a0h		;b6ea
-	jr c,L_B6F0		;b6ec
-	ld c,0bch		;b6ee
-L_B6F0:
+	jr c,guarda_el_dibujo_del_disparo		;b6ec
+	ld c,0bch		;b6ee   ; y tercero
+guarda_el_dibujo_del_disparo:
 	ld (ix+004h),c		;b6f0
 	ret			;b6f3
-L_B6F4:
-	push ix		;b6f4
+monta_clase_6:
+	push ix		;b6f4   ; DE apunta al hueco
 	pop de			;b6f6
-	ld a,004h		;b6f7
+	ld a,004h		;b6f7   ; cuatro bytes mas alla
 	add a,e			;b6f9
 	ld e,a			;b6fa
-	ld hl,0b704h		;b6fb
-	ld bc,00017h		;b6fe
+	ld hl,0b704h		;b6fb   ; la plantilla
+	ld bc,00017h		;b6fe   ; veintitres bytes, mas que las otras: esta clase gasta hasta el 0x1A
 	ldir		;b701
 	ret			;b703
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xb704..0xb71b  (23 bytes)
-DATA_B704:
-	defb 098h,008h,000h,04eh,000h,078h,000h,018h,004h,000h,000h,0ffh,020h,000h,001h,000h	; b704  ...N.x...... ...
-	defb 000h,000h,001h,000h,000h,000h,001h	; b714
+; DATOS plantilla_de_la_clase_6: Los veintitres bytes de salida: X = 0x4E00, Y
+;   = 0x7800, Z = 0x0418, velocidades 0xFF00, 0x0020 y 0x0001, y detras los
+;   contadores de los dos vaivenes puestos a cero y a uno.
+;   0xb704..0xb71b  (23 bytes)
+DATA_plantilla_de_la_clase_6:
+	defb 098h,008h	; b704
+	defw 04e00h	; b706
+	defw 07800h	; b708
+	defw 01800h	; b70a
+	defw 00004h	; b70c
+	defw 0ff00h	; b70e
+	defw 00020h	; b710
+	defb 001h,000h,000h,000h,001h,000h,000h,000h,001h	; b712  .........
 
 ; ======================================================================
 ; CODIGO 0xb71b..0xb7cd  (178 bytes)
 ; ======================================================================
 
 
-L_B71B:
-	ld c,030h		;b71b
+
+; ----------------------------------------------------------------------
+; ATENDER A LA CLASE 6: DOS VAIVENES A LA VEZ. Lo que hace a este bicho distinto es que no se mueve en linea recta ni con un solo vaiven: lleva DOS osciladores independientes, uno para la Y (contadores en +0x13, +0x15 y +0x16) y otro para la Z (+0x17, +0x19 y +0x1A). Cada uno saca su paso de una tabla de rampas, le da la vuelta al signo cada media vuelta -los `cpl` de 0xB750 y 0xB79F- y multiplica el resultado por un contador que sube: eso es lo que hace que el recorrido se vaya abriendo.
+; ----------------------------------------------------------------------
+atiende_clase_6:
+	ld c,030h		;b71b   ; el dibujo base
 	call L_AA86		;b71d
-	ld l,(ix+00ch)		;b720
+	ld l,(ix+00ch)		;b720   ; la velocidad X
 	ld h,(ix+00dh)		;b723
-	ld de,00002h		;b726
+	ld de,00002h		;b726   ; mas dos
 	add hl,de			;b729
 	ex de,hl			;b72a
-	call L_AA71		;b72b
-	inc (ix+013h)		;b72e
+	call L_AA71		;b72b   ; y a la X
+	inc (ix+013h)		;b72e   ; el contador fino del primer vaiven
 	ld a,(ix+013h)		;b731
-	cp 080h		;b734
-	jr nz,L_B73F		;b736
-	ld (ix+013h),000h		;b738
-	inc (ix+016h)		;b73c
-L_B73F:
-	inc (ix+015h)		;b73f
+	cp 080h		;b734   ; a las 128 vueltas...
+	jr nz,clase_6_primer_vaiven		;b736
+	ld (ix+013h),000h		;b738   ; ...se reinicia...
+	inc (ix+016h)		;b73c   ; ...y el multiplicador sube uno
+clase_6_primer_vaiven:
+	inc (ix+015h)		;b73f   ; el contador del paso
 	ld a,(ix+015h)		;b742
-	cp 040h		;b745
-	jr nz,L_B754		;b747
-	ld (ix+015h),000h		;b749
+	cp 040h		;b745   ; sesenta y cuatro pasos
+	jr nz,clase_6_paso_del_primer_vaiven		;b747
+	ld (ix+015h),000h		;b749   ; y vuelta a empezar
 	ld a,(ix+014h)		;b74d
-	cpl			;b750
+	cpl			;b750   ; dandole la vuelta al signo
 	ld (ix+014h),a		;b751
-L_B754:
+clase_6_paso_del_primer_vaiven:
 	ld a,(ix+015h)		;b754
-	add a,a			;b757
-	ld hl,0b7cdh		;b758
+	add a,a			;b757   ; dos bytes por entrada
+	ld hl,0b7cdh		;b758   ; la tabla de rampas
 	add a,l			;b75b
 	ld l,a			;b75c
 	jr nc,L_B760		;b75d
 	inc h			;b75f
 L_B760:
-	ld e,(hl)			;b760
+	ld e,(hl)			;b760   ; el paso, de 16 bits
 	inc hl			;b761
 	ld d,(hl)			;b762
-	ld a,(ix+014h)		;b763
+	ld a,(ix+014h)		;b763   ; la bandera de signo
 	and a			;b766
-	jr z,L_B770		;b767
-	xor a			;b769
+	jr z,clase_6_multiplica_el_primer_vaiven		;b767
+	xor a			;b769   ; y si esta puesta, se niega el par entero
 	sub e			;b76a
 	ld e,a			;b76b
 	ld a,000h		;b76c
 	sbc a,d			;b76e
 	ld d,a			;b76f
-L_B770:
-	ld b,(ix+016h)		;b770
-	ld hl,00000h		;b773
-L_B776:
+clase_6_multiplica_el_primer_vaiven:
+	ld b,(ix+016h)		;b770   ; el multiplicador
+	ld hl,00000h		;b773   ; sumando tantas veces como diga: eso es multiplicar
+clase_6_multiplica_bucle:
 	add hl,de			;b776
-	djnz L_B776		;b777
+	djnz clase_6_multiplica_bucle		;b777
 	ex de,hl			;b779
-	call L_AA78		;b77a
-	inc (ix+017h)		;b77d
+	call L_AA78		;b77a   ; y a la Y
+	inc (ix+017h)		;b77d   ; el contador fino del segundo vaiven
 	ld a,(ix+017h)		;b780
-	cp 022h		;b783
-	jr nz,L_B78B		;b785
+	cp 022h		;b783   ; treinta y cuatro vueltas
+	jr nz,clase_6_segundo_vaiven		;b785
 	ld (ix+017h),000h		;b787
-L_B78B:
-	inc (ix+019h)		;b78b
+clase_6_segundo_vaiven:
+	inc (ix+019h)		;b78b   ; su contador de paso
 	ld a,(ix+019h)		;b78e
-	cp 011h		;b791
-	jr nz,L_B7A3		;b793
-	inc (ix+01ah)		;b795
+	cp 011h		;b791   ; diecisiete pasos
+	jr nz,clase_6_paso_del_segundo_vaiven		;b793
+	inc (ix+01ah)		;b795   ; el multiplicador sube
 	ld (ix+019h),000h		;b798
 	ld a,(ix+018h)		;b79c
-	cpl			;b79f
+	cpl			;b79f   ; y el signo se da la vuelta
 	ld (ix+018h),a		;b7a0
-L_B7A3:
+clase_6_paso_del_segundo_vaiven:
 	ld a,(ix+019h)		;b7a3
 	add a,a			;b7a6
-	ld hl,0b851h		;b7a7
+	ld hl,0b851h		;b7a7   ; la segunda tabla de rampas
 	add a,l			;b7aa
 	ld l,a			;b7ab
 	jr nc,L_B7AF		;b7ac
@@ -1506,51 +1526,133 @@ L_B7AF:
 	ld d,(hl)			;b7b1
 	ld a,(ix+018h)		;b7b2
 	and a			;b7b5
-	jr z,L_B7BF		;b7b6
+	jr z,clase_6_multiplica_el_segundo		;b7b6
 	xor a			;b7b8
 	sub e			;b7b9
 	ld e,a			;b7ba
 	ld a,000h		;b7bb
 	sbc a,d			;b7bd
 	ld d,a			;b7be
-L_B7BF:
+clase_6_multiplica_el_segundo:
 	ld b,(ix+01ah)		;b7bf
 	ld hl,00000h		;b7c2
-L_B7C5:
+clase_6_multiplica_bucle_2:
 	add hl,de			;b7c5
-	djnz L_B7C5		;b7c6
+	djnz clase_6_multiplica_bucle_2		;b7c6
 	ex de,hl			;b7c8
-	call L_AA7F		;b7c9
+	call L_AA7F		;b7c9   ; y a la profundidad
 	ret			;b7cc
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xb7cd..0xb873  (166 bytes)
-DATA_B7CD:
-	defb 000h,0ffh,008h,0ffh,010h,0ffh,018h,0ffh,020h,0ffh,028h,0ffh,030h,0ffh,038h,0ffh	; b7cd  ........ .(.0.8.
-	defb 040h,0ffh,048h,0ffh,050h,0ffh,058h,0ffh,060h,0ffh,068h,0ffh,070h,0ffh,078h,0ffh	; b7dd  @.H.P.X.`.h.p.x.
-	defb 080h,0ffh,088h,0ffh,090h,0ffh,09ah,0ffh,0a0h,0ffh,0a8h,0ffh,0b0h,0ffh,0b8h,0ffh	; b7ed  ................
-	defb 0c0h,0ffh,0c8h,0ffh,0d0h,0ffh,0d8h,0ffh,0e0h,0ffh,0e8h,0ffh,0f0h,0ffh,0f8h,0ffh	; b7fd  ................
-	defb 000h,000h,000h,000h,008h,000h,010h,000h,018h,000h,020h,000h,028h,000h,030h,000h	; b80d  .......... .(.0.
-	defb 038h,000h,040h,000h,048h,000h,050h,000h,058h,000h,060h,000h,068h,000h,070h,000h	; b81d  8.@.H.P.X.`.h.p.
-	defb 078h,000h,080h,000h,088h,000h,090h,000h,09ah,000h,0a0h,000h,0a8h,000h,0b0h,000h	; b82d  x...............
-	defb 0b8h,000h,0c0h,000h,0c8h,000h,0d0h,000h,0d8h,000h,0e0h,000h,0e8h,000h,0f0h,000h	; b83d  ................
-	defb 0f8h,000h,000h,001h,080h,0ffh,090h,0ffh,0a0h,0ffh,0b0h,0ffh,0c0h,0ffh,0d0h,0ffh	; b84d  ................
-	defb 0e0h,0ffh,0f0h,0ffh,000h,000h,010h,000h,020h,000h,030h,000h,040h,000h,050h,000h	; b85d  ........ .0.@.P.
-	defb 060h,000h,070h,000h,080h,000h	; b86d
+; DATOS rampa_del_primer_vaiven: Sesenta y cuatro pasos de 16 bits, y son una
+;   rampa limpia: de 0xFF00 a 0xFFF8 de ocho en ocho y luego de 0x0000 a
+;   0x0100. O sea que el paso crece de forma continua, y lo que hace la curva
+;   es el cambio de signo de 0xB750 y la multiplicacion de 0xB776.
+;   0xb7cd..0xb851  (132 bytes)
+DATA_rampa_del_primer_vaiven:
+	defw 0ff00h	; b7cd
+	defw 0ff08h	; b7cf
+	defw 0ff10h	; b7d1
+	defw 0ff18h	; b7d3
+	defw 0ff20h	; b7d5
+	defw 0ff28h	; b7d7
+	defw 0ff30h	; b7d9
+	defw 0ff38h	; b7db
+	defw 0ff40h	; b7dd
+	defw 0ff48h	; b7df
+	defw 0ff50h	; b7e1
+	defw 0ff58h	; b7e3
+	defw 0ff60h	; b7e5
+	defw 0ff68h	; b7e7
+	defw 0ff70h	; b7e9
+	defw 0ff78h	; b7eb
+	defw 0ff80h	; b7ed
+	defw 0ff88h	; b7ef
+	defw 0ff90h	; b7f1
+	defw 0ff9ah	; b7f3
+	defw 0ffa0h	; b7f5
+	defw 0ffa8h	; b7f7
+	defw 0ffb0h	; b7f9
+	defw 0ffb8h	; b7fb
+	defw 0ffc0h	; b7fd
+	defw 0ffc8h	; b7ff
+	defw 0ffd0h	; b801
+	defw 0ffd8h	; b803
+	defw 0ffe0h	; b805
+	defw 0ffe8h	; b807
+	defw 0fff0h	; b809
+	defw 0fff8h	; b80b
+	defw 00000h	; b80d
+	defw 00000h	; b80f
+	defw 00008h	; b811
+	defw 00010h	; b813
+	defw 00018h	; b815
+	defw 00020h	; b817
+	defw 00028h	; b819
+	defw 00030h	; b81b
+	defw 00038h	; b81d
+	defw 00040h	; b81f
+	defw 00048h	; b821
+	defw 00050h	; b823
+	defw 00058h	; b825
+	defw 00060h	; b827
+	defw 00068h	; b829
+	defw 00070h	; b82b
+	defw 00078h	; b82d
+	defw 00080h	; b82f
+	defw 00088h	; b831
+	defw 00090h	; b833
+	defw 0009ah	; b835
+	defw 000a0h	; b837
+	defw 000a8h	; b839
+	defw 000b0h	; b83b
+	defw 000b8h	; b83d
+	defw 000c0h	; b83f
+	defw 000c8h	; b841
+	defw 000d0h	; b843
+	defw 000d8h	; b845
+	defw 000e0h	; b847
+	defw 000e8h	; b849
+	defw 000f0h	; b84b
+	defw 000f8h	; b84d
+	defw 00100h	; b84f
+
+; ----------------------------------------------------------------------
+; DATOS rampa_del_segundo_vaiven: Diecisiete pasos, la misma idea pero de 0x10
+;   en 0x10: de 0xFF80 a 0x0080.
+;   0xb851..0xb873  (34 bytes)
+DATA_rampa_del_segundo_vaiven:
+	defw 0ff80h	; b851
+	defw 0ff90h	; b853
+	defw 0ffa0h	; b855
+	defw 0ffb0h	; b857
+	defw 0ffc0h	; b859
+	defw 0ffd0h	; b85b
+	defw 0ffe0h	; b85d
+	defw 0fff0h	; b85f
+	defw 00000h	; b861
+	defw 00010h	; b863
+	defw 00020h	; b865
+	defw 00030h	; b867
+	defw 00040h	; b869
+	defw 00050h	; b86b
+	defw 00060h	; b86d
+	defw 00070h	; b86f
+	defw 00080h	; b871
 
 ; ======================================================================
 ; CODIGO 0xb873..0xb89f  (44 bytes)
 ; ======================================================================
 
 
-L_B873:
+monta_clase_7:
 	push ix		;b873
 	pop de			;b875
-	ld a,004h		;b876
+	ld a,004h		;b876   ; cuatro bytes mas alla del hueco
 	add a,e			;b878
 	ld e,a			;b879
-	ld hl,0b89fh		;b87a
-	ld bc,0000fh		;b87d
+	ld hl,0b89fh		;b87a   ; su plantilla
+	ld bc,0000fh		;b87d   ; quince bytes
 	ldir		;b880
 	ld a,(0e205h)		;b882   ; la Y en la pantalla de lo que se maneja
 	cp 050h		;b885

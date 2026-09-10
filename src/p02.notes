@@ -516,3 +516,326 @@ C 0x9F9E la X en la pantalla de lo que se maneja
 C 0x9FC9 la X en la pantalla de lo que se maneja
 C 0x9FCE la X en la pantalla de lo que se maneja
 C 0x9FF5 la X en la pantalla de lo que se maneja
+
+B 0x8278 ESTADO 6: SE ACABO LA FASE. Nueve subestados que llevan del "se acabo" al "empieza la siguiente", y en medio esta la cuenta de la fase: 0x8317 sube el numero que se pinta EN BCD, 0x831D hace girar el 1-2-3 del decorado y 0x8326 sube la fase de verdad. Cuando esa llega a 0x19 -o sea 25- se acaba el juego, y ahi esta escrito que las fases son VEINTICUATRO.
+L 0x8278 estado_6
+C 0x8280 lo que haya que rematar en el banco 2
+C 0x8283 y en el 3
+C 0x828B 0x40 cuadros de espera
+L 0x8293 estado_6_subestado_1
+C 0x8298 la espera
+C 0x829C una bandera
+L 0x82A5 estado_6_subestado_2
+L 0x82B7 estado_6_subestado_3
+L 0x82C1 estado_6_mira_si_toca_bonus
+C 0x82C3 el 1-2-3 del decorado
+C 0x82C6 solo en el 3 puede tocar
+C 0x82CA la fase
+C 0x82CD la 12...
+C 0x82D3 ...o la 24
+L 0x82D7 estado_6_sin_bonus
+C 0x82D7 el subestado
+C 0x82DA se salta uno
+L 0x82DE estado_6_bonus_de_la_24
+C 0x82DE las veces que se ha parado
+L 0x82E9 estado_6_apunta_el_bonus
+C 0x82EA que clase de bonus toca
+L 0x82F8 estado_6_subestado_5
+L 0x830B estado_6_pasa_de_fase
+C 0x830D esconder los sprites
+C 0x8310 y borrar la zona de juego
+C 0x8313 el numero de fase que se pinta
+C 0x8317 uno mas, EN BCD
+C 0x831B dos bytes mas alla: el 1-2-3 del decorado
+C 0x831D uno mas
+C 0x831F al llegar a 4...
+C 0x8323 ...vuelve a 1
+L 0x8325 estado_6_sube_la_fase
+C 0x8326 la FASE, una mas
+C 0x8328 y en la 25 se acabo: son VEINTICUATRO
+C 0x832D montar la fase siguiente
+C 0x8330 y al estado 3
+L 0x8335 estado_6_se_acabo_el_juego
+C 0x8337 borrar la pantalla entera
+C 0x833A el espejo de pantalla, entero
+C 0x8340 767 bytes
+C 0x8347 el efecto 0xC2
+L 0x834F estado_6_los_rotulos_del_final
+C 0x8351 subir la zona de juego
+C 0x8354 y el texto que sube
+C 0x835C las banderas de la partida, a cero
+C 0x835F y a empezar de nuevo
+L 0x8362 estado_6_entre_fases
+C 0x8368 subir la zona de juego
+C 0x836B el 1-2-3 del decorado
+C 0x836E en el 3 se pasa de largo
+C 0x8373 0xE0: un sprite fuera de la pantalla
+C 0x8378 el decorado
+C 0x837B el 4 y el 5 llevan un efecto...
+C 0x8387 ...el 7 otro...
+C 0x838D ...y los demas, el de siempre
+L 0x8391 estado_6_suena_el_paso_de_fase
+C 0x8392 el efecto que toque
+C 0x8396 y la clase de paso de fase
+C 0x839B por que hueco se parte la tabla de sprites
+L 0x83A1 estado_6_avisa_y_avanza
+C 0x83A3 un aviso
+
+B 0x83A9 ESTADO 7: LA META. Los subestados que rematan una fase cuando se llega al final, con la comprobacion de las cuatro ranuras de 0xE550 y el parpadeo del borde de la pantalla.
+L 0x83A9 estado_7
+C 0x83B4 por que hueco se parte la tabla de sprites
+C 0x83B7 hasta el 12 no se sigue
+C 0x83BA lo que sea, en el banco 1
+L 0x83C0 estado_7_subestado_1
+C 0x83C5 subir la mitad de arriba de los sprites
+C 0x83CE las cuatro ranuras de 0xE550
+C 0x83D1 cuatro
+L 0x83D3 estado_7_mira_las_ranuras
+C 0x83D3 lo que hay en la ranura
+C 0x83D6 si alguna esta por debajo de 2, no se sigue
+C 0x83D7 ocho bytes de una a la siguiente
+L 0x83E4 estado_7_la_tanda_larga
+C 0x83E6 subir la mitad de abajo
+C 0x841C una bandera
+C 0x8421 la bandera de que la fase se ha acabado
+C 0x8425 si no se ha acabado, al estado 13
+C 0x842E una ranura
+C 0x8431 y solo con un 2 se sigue
+C 0x8437 el efecto 0x7A
+L 0x8445 estado_7_parpadea_el_borde
+C 0x8447 una ranura
+C 0x844A por debajo de 3 no parpadea
+C 0x844E el contador de cuadros
+C 0x8451 el bit 0 al acarreo
+C 0x8452 un cuadro el borde negro...
+C 0x8456 ...y el otro gris
+C 0x8458 el registro 7 del VDP, que es el del borde
+L 0x845B estado_7_sigue
+C 0x8467 la ranura
+C 0x846B mientras no llegue a cero, se sigue parpadeando
+C 0x846C y al acabar, borde negro
+L 0x8474 estado_7_prepara_la_siguiente
+C 0x8478 la clase de paso de fase
+C 0x847D por que hueco se parte la tabla de sprites
+C 0x8484 el largo de la fase
+C 0x8487 los cuatro bits de abajo
+C 0x8489 y de ahi salen cinco posiciones distintas
+C 0x84A1 y la de por defecto
+L 0x84A3 estado_7_guarda_la_posicion
+C 0x84A4 apuntada
+C 0x84AD y al estado 5, o sea a jugar
+L 0x84B5 estado_7_ultimo
+C 0x84B8 color 1 en los cuatro primeros sprites
+C 0x84C8 por que hueco se parte la tabla de sprites
+C 0x84CD la vuelta 3
+
+B 0x84E1 LOS ESTADOS 8 A 11: LAS TRANSICIONES. Cuatro estados que se parecen mucho y que hacen lo mismo con distintos motivos -perder una vida, entrar al bonus, salir de el, empezar la vuelta siguiente-. El patron es siempre el mismo: subir los sprites y esperar a que (0xE203) llegue a cierto numero, y cuando llega, esconder los sprites, borrar la zona de juego, montar la escena otra vez con las tres cargas de caracteres y volver al estado 4.
+L 0x84E1 estado_8
+C 0x84EF el paso de la transicion
+C 0x84F2 en el 0x19 se acaba
+L 0x84F8 estado_8_monta_otra_vez
+C 0x84FA esconder los sprites
+C 0x84FD borrar la zona de juego
+C 0x8500 montar la fase de bonus, en el banco 3
+C 0x8503 empezar una vida
+C 0x8506 los caracteres del tercio de arriba
+C 0x8509 los del de en medio
+C 0x850C y los del de abajo
+C 0x851F subir la zona de juego
+C 0x8525 y al estado 4
+L 0x852A estado_8_ultimo
+C 0x8530 el efecto 0xC5
+L 0x8538 estado_9
+C 0x853A subir los sprites
+C 0x8540 los avisos
+C 0x8544 mientras haya alguno, se espera
+C 0x8545 el paso de la cuenta del bonus, a cero
+C 0x854F borrar la zona de juego
+L 0x8558 estado_9_la_cuenta_del_bonus
+C 0x855A la cuenta del bonus, en el banco 3
+C 0x855D los avisos
+C 0x8561 mientras dure, se espera
+L 0x8565 estado_9_monta_otra_vez
+C 0x8567 borrar la zona de juego
+C 0x856D empezar una vida
+C 0x8570 los tres tercios de caracteres
+C 0x858B subir la zona de juego
+C 0x858E el efecto 0x1F
+L 0x8596 estado_9_espera_la_transicion
+C 0x85A1 el paso de la transicion
+C 0x85A5 con cero, un efecto...
+C 0x85A9 ...y con cinco, otro
+C 0x85B8 y al estado 4
+L 0x85AE estado_9_suena_y_vuelve
+L 0x85BD estado_9_ultimo
+C 0x85BD el efecto 0x56
+L 0x85C2 avisa_y_avanza_con_paso
+C 0x85C2 subir la zona de juego
+C 0x85C7 el paso de la transicion, a 0x1A
+C 0x85CC y un aviso
+L 0x85D2 estado_10
+C 0x85DA el paso de la transicion
+C 0x85DD en el 0x11 se acaba
+L 0x85E3 estado_10_monta_otra_vez
+C 0x85E5 esconder los sprites
+C 0x85E8 borrar la zona de juego
+C 0x85EE empezar una vida
+C 0x8612 subir la zona de juego
+C 0x8618 el efecto 0x1F
+L 0x8620 estado_10_espera
+C 0x862B el paso de la transicion
+C 0x862F hasta cero no se sigue
+C 0x8630 el efecto 0x20
+C 0x8638 y al estado 4
+L 0x863D estado_10_ultimo
+C 0x8640 el efecto 0x92
+L 0x8648 estado_11
+
+# --- Las llamadas al banco 0, que esta fijo en 0x4000-0x5FFF. Los nombres los
+# saca tools/anota_llamadas.py de las directivas L de src/p00.notes.
+C 0x8075 banco 1
+C 0x8078 banco 1
+C 0x808E banco 1
+C 0x8188 banco 1
+C 0x8300 banco 3
+C 0x8362 banco 3
+C 0x83B1 banco 3
+C 0x83C8 banco 3
+C 0x83CB banco 1
+C 0x83DE banco 3
+C 0x83EF banco 3
+C 0x83F2 banco 3
+C 0x83F5 banco 3
+C 0x83F8 banco 1
+C 0x83FB banco 1
+C 0x83FE banco 3
+C 0x8401 banco 3
+C 0x8404 banco 3
+C 0x8407 banco 1
+C 0x840A banco 3
+C 0x840D banco 1
+C 0x8416 banco 1
+C 0x8419 banco 1
+C 0x8434 banco 1
+C 0x8461 banco 3
+C 0x8464 banco 1
+C 0x84D5 banco 3
+C 0x84D8 banco 3
+C 0x84E9 banco 3
+C 0x84EC banco 3
+C 0x8519 banco 1
+C 0x851C banco 1
+C 0x852D banco 1
+C 0x856A banco 3
+C 0x8585 banco 1
+C 0x8588 banco 1
+C 0x859E banco 3
+C 0x85EB banco 3
+C 0x860C banco 1
+C 0x860F banco 1
+C 0x8615 banco 1
+C 0x8628 banco 3
+C 0x8650 banco 3
+C 0x8663 banco 3
+C 0x867E banco 1
+C 0x8681 banco 1
+C 0x869C banco 1
+C 0x86E2 banco 1
+C 0x86F5 banco 3
+C 0x8716 banco 3
+C 0x871A banco 3
+C 0x8737 banco 1
+C 0x875E banco 1
+C 0x876B banco 1
+C 0x8788 banco 1
+C 0x87B6 banco 1
+C 0x8803 banco 3
+C 0x880E banco 3
+C 0x8854 banco 1
+C 0x88ED banco 3
+C 0x9322 banco 1
+C 0x9737 banco 3
+C 0x977D banco 3
+C 0x9780 banco 3
+C 0x979A banco 3
+C 0x97A7 banco 3
+C 0x97AD banco 3
+C 0x97E1 banco 3
+C 0x97F0 banco 3
+C 0x97FC banco 3
+C 0x9813 banco 3
+C 0x9819 banco 3
+C 0x9878 banco 3
+C 0x9887 banco 3
+C 0x9893 banco 3
+C 0x98B0 banco 3
+C 0x98FC banco 3
+C 0x9901 banco 3
+C 0x9905 banco 3
+C 0x9908 banco 3
+C 0x9914 banco 3
+C 0x994A banco 1
+C 0x994D banco 1
+C 0x9950 banco 1
+C 0x9961 banco 3
+C 0x997A banco 1
+C 0x997D banco 1
+C 0x9980 banco 1
+C 0x99D9 banco 3
+C 0x99DD banco 3
+C 0x99E0 banco 3
+C 0x9A1A banco 3
+C 0x9A4A banco 3
+C 0x9A6D banco 3
+C 0x9A73 banco 3
+C 0x9AB3 banco 3
+C 0x9AC2 banco 3
+C 0x9ACE banco 3
+C 0x9AE5 banco 3
+C 0x9AEB banco 3
+C 0x9B56 banco 3
+C 0x9B65 banco 3
+C 0x9B71 banco 3
+C 0x9B74 banco 3
+C 0x9BA6 banco 3
+C 0x9BAB banco 3
+C 0x9BAF banco 3
+C 0x9BE9 banco 1
+C 0x9BEC banco 1
+C 0x9BEF banco 1
+C 0x9BF9 banco 3
+C 0x9C31 banco 3
+C 0x9C37 banco 3
+C 0x9C71 banco 3
+C 0x9C80 banco 3
+C 0x9CCB banco 3
+C 0x9CD0 banco 3
+C 0x9CD4 banco 3
+C 0x9D0A banco 3
+C 0x9D41 banco 1
+C 0x9D44 banco 1
+C 0x9D47 banco 1
+C 0x9D61 banco 3
+C 0x9D69 banco 3
+C 0x9D9A banco 3
+C 0x9D9D banco 3
+C 0x9DB7 banco 3
+C 0x9DC4 banco 3
+C 0x9DCA banco 3
+C 0x9E00 banco 3
+C 0x9E0F banco 3
+C 0x9E1B banco 3
+C 0x9E28 banco 3
+C 0x9E2E banco 3
+C 0x9E8F banco 3
+C 0x9E9E banco 3
+C 0x9EAA banco 3
+C 0x9F11 banco 3
+C 0x9F48 banco 3
+C 0x9F4E banco 3
+C 0x9F5B banco 3
+C 0x9F7D banco 3
+C 0x9F80 banco 3
+C 0x9FAC banco 3
+C 0x9FB7 banco 3
+C 0x9FFC banco 3
