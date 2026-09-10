@@ -21,7 +21,7 @@ que además el listado no *mienta* sobre lo que reensambla.
 | reensambla byte a byte | sí, los 16 bancos y la imagen entera |
 | código trazado | 32.185 bytes |
 | datos identificados | 98.887 bytes |
-| listado | 25.701 líneas |
+| listado | 25.709 líneas |
 | puntos de entrada, cada uno con su justificación | 360 |
 | etiquetas con nombre | 237 |
 | comentarios anclados | 4.399 |

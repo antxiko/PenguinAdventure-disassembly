@@ -32,7 +32,7 @@ D 0x4012 0x4014 gm_catalogo  El numero de catalogo en BCD y por la cifra alta pr
 F 0x4012 2
 D 0x4014 0x4015 gm_banderas  0x60: que campos vienen detras. Se leen del bit 0 al 7 con `rra` y el bit CLARO significa "este campo viene en el flujo"; el puesto deja el valor por defecto que el Game Master trae en su 0x6034. Los bits 5 y 6 estan a uno.
 F 0x4014 1
-D 0x4015 0x4023 gm_campos  Los seis campos que anuncia el byte de banderas, en el orden de los bits: 0xE000 (la variable de fase, que el Game Master guarda en su 0xD304) y el 0x04 que va con ella; 0xE092 (0xD30A) y el 0x0D de detras, que son las TRECE fases del juego (0xD313, de donde el Game Master saca entre cuanto dividir); 0xE090 (0xD308); 0xE083 (0xD30C, los datos del juego); 0xE086 (0xD30E, el marcador); y el ultimo, 0x40F7, que NO es una variable sino la RUTINA de este mismo banco a la que el Game Master salta por CALSLT.
+D 0x4015 0x4023 gm_campos  Los seis campos que anuncia el byte de banderas, en el orden de los bits: 0xE000 (la variable de fase, que el Game Master guarda en su 0xD304) y el 0x04 que va con ella; 0xE092 (0xD30A) y el 0x0D de detras, que es lo que el cartucho le DICE al Game Master que tiene: trece fases (0xD313, de donde saca entre cuanto dividir). El juego tiene veinticuatro, asi que o el Game Master solo sabe llegar a la trece o esa cifra esta puesta a la ligera; 0xE090 (0xD308); 0xE083 (0xD30C, los datos del juego); 0xE086 (0xD30E, el marcador); y el ultimo, 0x40F7, que NO es una variable sino la RUTINA de este mismo banco a la que el Game Master salta por CALSLT.
 F 0x4015 w1,1,w1,1,w1,w1,w1,w1
 
 # ======================================================================
@@ -131,7 +131,7 @@ L 0x40F7 arranca_en_la_fase_pedida
 C 0x40F7 la fase que ha pedido el usuario en el MODIFY MODE del Game Master
 C 0x40FA si es cero es que no ha pedido ninguna
 C 0x40FD y entonces se empieza por la primera
-C 0x4101 y con la fase en la mano se sacan las dos cosas que dependen de ella
+C 0x4101 y con la fase en la mano se sacan las dos cosas que dependen de ella (OJO: estas dos tablas solo cubren las trece primeras de las veinticuatro)
 C 0x4104 las tablas van desde 1, no desde 0
 C 0x4105 la primera tabla
 C 0x4108 HL = 0x4120 + fase - 1
@@ -140,9 +140,9 @@ C 0x410F otra vez la fase
 C 0x4113 y la segunda tabla
 C 0x411A el decorado que le toca a esa fase
 C 0x411D y a montar la fase
-D 0x4120 0x412D numero_de_fase_pintado  Trece bytes, uno por fase, con el numero tal como sale en pantalla: 01..09 y luego 10, 11, 12 y 13, en BCD. Trece es justo lo que la cabecera de 0x4010 le declara al Game Master en su 0xD313.
+D 0x4120 0x412D numero_de_fase_pintado  Trece bytes con el numero de fase tal como sale en pantalla: 01..09 y luego 10, 11, 12 y 13, en BCD. Trece es justo lo que la cabecera de 0x4010 le declara al Game Master en su 0xD313... **y el juego tiene VEINTICUATRO**: p02:8328 sube (0xE092) y la compara con 0x19, y las tres tablas de guion de fase -0xA8FB en el banco 9, 0x8000 en el 10 y 0xACBA en el 13- tienen veinticuatro entradas justas. O sea que esta tabla, y la de al lado, solo valen para las trece primeras: son las que usa el cartucho de trucos, no el juego.
 F 0x4120 13
-D 0x412D 0x413A decorado_de_cada_fase  Trece bytes mas, tambien uno por fase, con los valores 1, 2 y 3 dando vueltas. Es lo que 0x411A guarda en 0xE093.
+D 0x412D 0x413A decorado_de_cada_fase  Trece bytes mas, con los valores 1, 2 y 3 dando vueltas. Es lo que 0x411A guarda en 0xE093, y en el juego lo lleva p02:831D subiendolo de uno en uno y volviendo a 1 al pasar de 3.
 F 0x412D 13
 
 # ======================================================================

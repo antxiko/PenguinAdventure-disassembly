@@ -21,7 +21,7 @@ listing does not *lie* about what it reassembles.
 | reassembles byte for byte | yes, all 16 banks and the whole image |
 | traced code | 32,185 bytes |
 | identified data | 98,887 bytes |
-| listing | 25,701 lines |
+| listing | 25,709 lines |
 | entry points, each with its justification | 360 |
 | named labels | 237 |
 | anchored comments | 4,399 |

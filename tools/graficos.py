@@ -422,9 +422,11 @@ def hoja_de_sprites_de(cart, guion):
 #             detras parejas de (clase de objeto, cuanto hay que andar), con la
 #             distancia en BCD y cerradas con 0xFF.
 #   p01:66DA  el tercero, en el banco 13 (0xADE8), con entradas de tres bytes.
-TERRENO = {"1 jugador": 0x8000, "2 jugadores": 0x80F9}
+# Cada juego de guiones son 24 punteros seguidos de sus 24 tiras, todas
+# pegadas: el final de la ultima es donde empieza lo siguiente.
+TERRENO = {"1 jugador": (0x8000, 0x80F9), "2 jugadores": (0x80F9, 0x81F2)}
 GUION_DE_ENEMIGOS = 0xA8FB
-N_FASES = 13
+N_FASES = 24
 
 # Un tipo de letra de 3x5, solo lo que hace falta para rotular el mapa.
 LETRAS = {
@@ -453,15 +455,20 @@ def _texto(img, x, y, s, color):
         _letra(img, x + i * 4, y, ch, color)
 
 
-def terreno_de_las_fases(cart, base):
-    """Los tramos de cada fase, del banco 10."""
+def terreno_de_las_fases(cart, base_y_fin):
+    """Los tramos de cada fase, del banco 10.
+
+    Las veinticuatro tiras van pegadas una detras de otra, asi que cada una
+    acaba donde empieza la siguiente y la ultima donde acaba el bloque.
+    """
+    base, fin_bloque = base_y_fin
     b = (1, 10, 11)
     def pal(a):
         return cart.leer(a, b) | (cart.leer(a + 1, b) << 8)
     ps = [pal(base + 2 * i) for i in range(N_FASES)]
     fuera = []
     for i in range(N_FASES):
-        fin = ps[i + 1] if i + 1 < N_FASES else ps[i] + (ps[i] - ps[i - 1])
+        fin = ps[i + 1] if i + 1 < N_FASES else fin_bloque
         fuera.append([cart.leer(ps[i] + k, b) for k in range(max(0, fin - ps[i]))])
     return fuera
 
@@ -491,7 +498,8 @@ def mapa_de_fases(cart, jugadores="1 jugador"):
     """Las trece fases, una fila cada una: los tramos y donde sale cada bicho."""
     terreno = terreno_de_las_fases(cart, TERRENO[jugadores])
     enemigos = enemigos_de_las_fases(cart)
-    ancho, alto_fila = 30 + 13 * 20, 22
+    mas_tramos = max(len(t) for t in terreno)
+    ancho, alto_fila = 30 + mas_tramos * 20, 22
     img = [[1] * ancho for _ in range(N_FASES * alto_fila + 8)]
     for f in range(N_FASES):
         y = 4 + f * alto_fila

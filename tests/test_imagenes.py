@@ -202,8 +202,16 @@ class Imagenes(unittest.TestCase):
                            "la hoja de 0x7FBC sale casi vacia")
 
 
-    def test_las_trece_fases_estan_escritas_en_dos_guiones(self):
-        """El terreno y los enemigos, y son trece en los dos.
+    def test_las_veinticuatro_fases_estan_escritas_en_tres_guiones(self):
+        """El terreno y los enemigos, y son VEINTICUATRO en los dos.
+
+        Que sean veinticuatro y no trece lo dice p02:8328, que sube (0xE092) y
+        la compara con 0x19; y lo confirman las tres tablas, que cierran justo
+        ahi: la de enemigos ocupa 0xA8FB-0xA92A -y 0xA92B ya es codigo-, la de
+        terreno 0x8000-0x802F -y el primer guion empieza en 0x8030- y la de
+        datos de fase 0xACBA-0xAD19, pegada a la tabla de tres bytes de
+        p01:627A. Los trece que la cabecera de 0x4010 le declara al Game Master
+        son otra cosa.
 
         El terreno esta en el banco 10 -0x8000 para un jugador y 0x80F9 para
         dos- con un puntero por fase y detras de cinco a nueve bytes, un tramo
@@ -212,12 +220,16 @@ class Imagenes(unittest.TestCase):
         """
         for jug, base in sorted(graficos.TERRENO.items()):
             t = graficos.terreno_de_las_fases(self.cart, base)
-            self.assertEqual(len(t), 13, "%s: no salen trece fases" % jug)
+            self.assertEqual(len(t), 24,
+                             "%s: no salen veinticuatro fases" % jug)
             for i, tramos in enumerate(t):
-                self.assertTrue(5 <= len(tramos) <= 9,
+                self.assertTrue(5 <= len(tramos) <= 14,
                                 "%s, fase %d: %d tramos" % (jug, i + 1, len(tramos)))
+            # las veinticuatro tiras van PEGADAS: 201 bytes justos
+            self.assertEqual(sum(len(x) for x in t), 201,
+                             "%s: los tramos no cierran el bloque" % jug)
         e = graficos.enemigos_de_las_fases(self.cart)
-        self.assertEqual(len(e), 13)
+        self.assertEqual(len(e), 24)
 
     def test_la_partida_de_dos_es_OTRO_diseno(self):
         """No es la misma fase con mas bichos: el terreno cambia entero."""
