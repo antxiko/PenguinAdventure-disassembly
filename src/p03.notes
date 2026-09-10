@@ -1,7 +1,427 @@
 # Banco 03 (se ejecuta en 0xa000). Directivas: L etiqueta, C comentario de
 # linea, B cabecera de bloque, D rango de datos, F anchura de fila.
+#
+# El tercero del trio que esta puesto mientras se juega. La rutina de cuadro
+# (p00:451C) lo llama diecinueve veces, mas que a ningun otro.
+
+B 0xB4EB ¿SALE EL BICHO QUE VUELA? Tres condiciones y todas tienen que darse: que la partida tenga puesto el bit 6 de sus banderas, que el juego este en el modo de jugar, y que se haya llegado a la distancia apuntada en 0xE0AB -que empieza a 0xFFFF, o sea "nunca"-. Y ademas solo en cuatro de los diez decorados.
+L 0xB4EB mira_si_sale_el_que_vuela
+C 0xB4EB las banderas de la partida
+C 0xB4EE el bit 6
+C 0xB4F0 sin el, no sale
+C 0xB4F4 y fuera del modo de jugar, tampoco
+C 0xB4F6 la distancia a la que le toca salir
+C 0xB4FA 0xFFFF quiere decir que no sale nunca
+C 0xB4FC la distancia de ahora
+C 0xB500 DCOMPR: ¿hemos llegado?
+C 0xB502 y una vez que sale, no vuelve a salir
+C 0xB50B solo en cuatro decorados: el 1, el 2, el 6 y el 7
+C 0xB51A si hay otra cosa ocupando, no
+C 0xB51F ni si hay otra
+C 0xB524 ni si ya esta el mismo
+C 0xB529 y si no, se enciende
+B 0xB52E EL BICHO QUE VUELA, EN TRES TIEMPOS. Se despacha por 0xE0BD con el despachador de la casa: 0 no hace nada, 1 lo coloca y 2 lo mueve.
+L 0xB52E el_que_vuela
+C 0xB52E en que tiempo va
+C 0xB531 el despachador, con la tabla pegada detras
+D 0xB534 0xB53A tiempos_del_que_vuela  Los tres destinos: 0xB558 -que es un `ret`-, 0xB53A y 0xB559.
+F 0xB534 w1
+L 0xB53A el_que_vuela_aparece
+C 0xB53A el tiempo
+C 0xB53D al siguiente
+C 0xB53E la columna por la que entra
+C 0xB540 la Y de lo que se maneja
+C 0xB543 y segun este arriba o abajo...
+C 0xB545 ...entra por abajo del todo...
+C 0xB54B ...o por arriba
+C 0xB54E su posicion
+C 0xB551 y hacia donde va
+C 0xB555 el paso del vaiven, a cero
+L 0xB558 el_que_vuela_quieto
+B 0xB559 EL VAIVEN. La columna avanza siempre en la misma direccion, pero la fila sale de una tabla de 32 valores que se recorre en circulo: eso es lo que le da el vuelo ondulado. Y suena uno de cada ocho cuadros.
+L 0xB559 el_que_vuela_se_mueve
+C 0xB559 el contador de cuadros
+C 0xB55C uno de cada ocho
+C 0xB560 el efecto 2
+C 0xB565 el contador otra vez
+C 0xB568 y ahora uno de cada dos
+C 0xB56A el paso del vaiven
+C 0xB56D uno mas
+C 0xB56F treinta y dos pasos, y vuelta a empezar
+C 0xB571 la tabla del vaiven
+C 0xB577 el desplazamiento que toca
+C 0xB578 su posicion
+C 0xB57B sumado a la columna
+C 0xB57D hacia donde va
+C 0xB582 a la izquierda...
+C 0xB586 ...o a la derecha
+C 0xB589 la fila, un paso
+C 0xB58B por arriba se sale
+C 0xB58F y por abajo tambien
+C 0xB593 la posicion nueva
+C 0xB599 y a su hueco de sprite, el 6
+C 0xB59C el contador de cuadros
 
 # --- El protocolo del mapper, paso a paso. Lo genera tools/anota_mapper.py
 # siguiendo el estado real de HL y de A; la explicacion de por que se hace asi
 # esta en el banco 0.
 
+
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0xA01C el contador de cuadros
+C 0xA02F por donde va la rotacion de los sprites
+C 0xA03B el contador de cuadros
+C 0xA04E por donde va la rotacion de los sprites
+C 0xA068 el DECORADO, de 0 a 9
+C 0xA0A1 el modo en el que esta el juego
+C 0xA0C5 el modo en el que esta el juego
+C 0xA0E6 la tabla de atributos de los 32 sprites
+C 0xA139 el modo en el que esta el juego
+C 0xA238 el contador de cuadros
+C 0xA2CF el contador de cuadros
+C 0xA32A el largo de la fase
+C 0xA34B el largo de la fase
+C 0xA36E el DECORADO, de 0 a 9
+C 0xA5D2 la tabla de atributos de los 32 sprites
+C 0xA669 el contador de cuadros
+C 0xA6C1 el contador de cuadros
+C 0xA6FD las teclas recien pulsadas
+C 0xA708 el contador de cuadros
+C 0xA765 el contador de cuadros
+C 0xA847 por donde va la rotacion de los sprites
+C 0xA84B el estado de los mandos del cuadro anterior
+C 0xA855 las teclas recien pulsadas
+C 0xA8B6 el contador de cuadros
+C 0xA8DF la tabla de atributos de los 32 sprites
+C 0xA985 por donde va la rotacion de los sprites
+C 0xAA99 la tabla de cambio de color, nibble alto
+C 0xAABB la tabla de cambio de color, nibble alto
+C 0xAAC2 la tabla de cambio de color, nibble alto
+C 0xAAEA el contador de cuadros
+C 0xAB15 el contador de cuadros
+C 0xAB66 el DECORADO, de 0 a 9
+C 0xAB72 la tabla de cambio de color, nibble alto
+C 0xAB79 la tabla de cambio de color, nibble alto
+C 0xAB80 la tabla de cambio de color, nibble alto
+C 0xABC1 el contador de cuadros
+C 0xAC69 la tabla de cambio de color, nibble alto
+C 0xAC70 la tabla de cambio de color, nibble alto
+C 0xACB5 el contador de cuadros
+C 0xACE6 el contador de cuadros
+C 0xAEE9 la FASE, de 1 a 13
+C 0xAF0E la FASE, de 1 a 13
+C 0xAF28 la FASE, de 1 a 13
+C 0xAFE1 el DECORADO, de 0 a 9
+C 0xB048 el DECORADO, de 0 a 9
+C 0xB0AF el contador de cuadros
+C 0xB2DE por donde va la rotacion de los sprites
+C 0xB31E el largo de la fase
+C 0xB329 el largo de la fase
+C 0xB33B por donde va la rotacion de los sprites
+C 0xB370 por donde va la rotacion de los sprites
+C 0xB3A5 por donde va la rotacion de los sprites
+C 0xB3D1 el modo en el que esta el juego
+C 0xB3E0 por donde va la rotacion de los sprites
+C 0xB3E4 por donde va la rotacion de los sprites
+C 0xB444 por donde va la rotacion de los sprites
+C 0xB4F1 el modo en el que esta el juego
+C 0xB4FC la distancia a la que sale el objeto siguiente
+C 0xB508 por donde va la rotacion de los sprites
+C 0xB559 el contador de cuadros
+C 0xB565 el contador de cuadros
+C 0xB59C el contador de cuadros
+C 0xB602 el DECORADO, de 0 a 9
+C 0xB605 el largo de la fase
+C 0xB618 el largo de la fase
+C 0xB61F la distancia a la que sale el objeto siguiente
+C 0xB68E el contador de cuadros
+C 0xB713 por donde va la rotacion de los sprites
+C 0xB71F el largo de la fase
+C 0xB736 la distancia a la que sale el objeto siguiente
+C 0xB73C el valor 1-2-3 de la fase
+C 0xB741 el DECORADO, de 0 a 9
+C 0xB767 lo andado en la fase
+C 0xB76D por que pareja del guion de la fase va
+C 0xB777 el modo en el que esta el juego
+C 0xB8B3 la distancia a la que sale el objeto siguiente
+C 0xB934 el DECORADO, de 0 a 9
+C 0xB940 la distancia a la que sale el objeto siguiente
+C 0xB977 la distancia a la que sale el objeto siguiente
+C 0xB97E el valor 1-2-3 de la fase
+C 0xB983 el DECORADO, de 0 a 9
+C 0xB992 el numero de fase tal como se pinta
+C 0xB997 el numero de fase tal como se pinta
+C 0xB99A la FASE, de 1 a 13
+C 0xB99E la FASE, de 1 a 13
+C 0xB9BD lo andado en la fase
+C 0xB9C3 por que pareja del guion de la fase va
+C 0xB9C7 el largo de la fase
+C 0xB9E0 el largo de la fase
+C 0xB9EA el modo en el que esta el juego
+C 0xBACE el DECORADO, de 0 a 9
+C 0xBB33 la distancia a la que sale el objeto siguiente
+C 0xBB7A el contador de cuadros
+C 0xBBF6 el DECORADO, de 0 a 9
+C 0xBC8A el DECORADO, de 0 a 9
+C 0xBCA0 el contador de cuadros
+C 0xBD53 el DECORADO, de 0 a 9
+C 0xBD8F por donde va la rotacion de los sprites
+C 0xBD9E las teclas recien pulsadas
+C 0xBE13 la FASE, de 1 a 13
+C 0xBE46 la FASE, de 1 a 13
+C 0xBEA8 por donde va la rotacion de los sprites
+C 0xBEB8 las teclas recien pulsadas
+C 0xBEF1 por donde va la rotacion de los sprites
+C 0xBF0B las teclas recien pulsadas
+C 0xBF38 el modo en el que esta el juego
+C 0xBF77 el contador de cuadros
+
+# --- Las llamadas al banco 0, que esta fijo en 0x4000-0x5FFF. Los nombres los
+# saca tools/anota_llamadas.py de las directivas L de src/p00.notes.
+C 0xA090 banco 0: despacha
+C 0xA15A banco 0: pide_sonido_si_esta_activo
+C 0xA17B banco 0: pide_sonido_si_esta_activo
+C 0xA195 banco 0: despacha
+C 0xA1EB banco 0: pide_sonido_si_esta_activo
+C 0xA218 banco 0: despacha
+C 0xA257 banco 0: pide_sonido_si_esta_activo
+C 0xA277 banco 0: pide_sonido_si_esta_activo
+C 0xA296 banco 0: pide_sonido_si_esta_activo
+C 0xA31D banco 0: pide_sonido_si_esta_activo
+C 0xA340 banco 0: pide_sonido_si_esta_activo
+C 0xA362 banco 0: dos_por_a_mas_hl
+C 0xA5C5 banco 0: despacha
+C 0xA5F2 banco 0: dos_por_a_mas_hl
+C 0xA60B banco 0: pide_sonido_si_esta_activo
+C 0xA620 banco 0: pide_sonido_si_esta_activo
+C 0xA64B banco 0: dos_por_a_mas_hl
+C 0xA6B0 banco 0: a_mas_de
+C 0xA6C8 banco 0: trae_un_caracter_del_banco_6
+C 0xA6E8 banco 0: dos_por_a_mas_hl
+C 0xA71C banco 0: a_mas_hl
+C 0xA77E banco 0: dos_por_a_mas_hl
+C 0xA7CF banco 0: despacha
+C 0xA7F2 banco 0: dos_por_a_mas_hl
+C 0xA82B banco 0: dos_por_a_mas_hl
+C 0xA8FA banco 0: dos_por_a_mas_hl
+C 0xA988 banco 0: despacha
+C 0xA9E1 banco 0: dos_por_a_mas_hl
+C 0xAA87 banco 0: despacha
+C 0xAAC9 banco 0: pide_sonido
+C 0xAB0E banco 0: pide_sonido
+C 0xAB33 banco 0: pide_sonido
+C 0xAB4E banco 0: esconde_los_sprites
+C 0xAB8C banco 0: pide_sonido
+C 0xABB6 banco 0: pide_sonido
+C 0xABDC banco 0: pide_sonido
+C 0xAC01 banco 0: pide_sonido
+C 0xAC23 banco 0: pide_sonido
+C 0xAC8B banco 0: pide_sonido
+C 0xAD29 banco 0: a_mas_hl
+C 0xAD35 banco 0: a_mas_hl
+C 0xAD63 banco 0: a_mas_hl
+C 0xAEA2 banco 0: a_mas_hl
+C 0xAECA banco 0: a_mas_hl
+C 0xAEEF banco 0: a_mas_de
+C 0xAEFB banco 0: a_mas_hl
+C 0xAF14 banco 0: a_mas_de
+C 0xAF20 banco 0: a_mas_hl
+C 0xAF2E banco 0: a_mas_de
+C 0xAF41 banco 0: a_mas_hl
+C 0xAFB4 banco 0: despacha
+C 0xAFF1 banco 0: copia_a_vram
+C 0xAFFD banco 0: copia_a_vram
+C 0xB009 banco 0: copia_a_vram
+C 0xB015 banco 0: copia_a_vram
+C 0xB021 banco 0: copia_a_vram
+C 0xB02D banco 0: copia_a_vram
+C 0xB039 banco 0: copia_a_vram
+C 0xB045 banco 0: copia_a_vram
+C 0xB058 banco 0: copia_a_vram
+C 0xB064 banco 0: copia_a_vram
+C 0xB070 banco 0: copia_a_vram
+C 0xB07C banco 0: copia_a_vram
+C 0xB088 banco 0: copia_a_vram
+C 0xB094 banco 0: copia_a_vram
+C 0xB0A0 banco 0: copia_a_vram
+C 0xB0AC banco 0: copia_a_vram
+C 0xB150 banco 0: pide_sonido_si_esta_activo
+C 0xB15A banco 0: a_mas_hl
+C 0xB15F banco 0: a_mas_de
+C 0xB187 banco 0: despacha
+C 0xB1FC banco 0: a_mas_de
+C 0xB20F banco 0: pide_sonido_si_esta_activo
+C 0xB308 banco 0: despacha
+C 0xB315 banco 0: pide_sonido_si_esta_activo
+C 0xB32E banco 0: pide_sonido_si_esta_activo
+C 0xB356 banco 0: pide_sonido_si_esta_activo
+C 0xB35B banco 0: pide_sonido_si_esta_activo
+C 0xB39A banco 0: pide_sonido_si_esta_activo
+C 0xB46D banco 0: pide_sonido
+C 0xB4AC banco 0: pide_sonido_si_esta_activo
+C 0xB4B3 banco 0: a_mas_hl
+C 0xB4C3 banco 0: a_mas_hl
+C 0xB531 banco 0: despacha
+C 0xB562 banco 0: pide_sonido_si_esta_activo
+C 0xB574 banco 0: a_mas_hl
+C 0xB611 banco 0: a_mas_hl
+C 0xB642 banco 0: despacha
+C 0xB652 banco 0: pinta_guion_con_mascara
+C 0xB667 banco 0: pinta_guion_con_mascara
+C 0xB677 banco 0: pide_sonido_si_esta_activo
+C 0xB6D2 banco 0: pide_sonido_si_esta_activo
+C 0xB8D1 banco 0: pide_sonido_si_esta_activo
+C 0xBA31 banco 0: pide_sonido_si_esta_activo
+C 0xBA38 banco 0: a_mas_hl
+C 0xBA40 banco 0: a_mas_hl
+C 0xBA5B banco 0: dos_por_a_mas_hl
+C 0xBAA7 banco 0: a_mas_de
+C 0xBB89 banco 0: a_mas_hl
+C 0xBBB5 banco 0: a_mas_hl
+C 0xBBF3 banco 0: pide_sonido_si_esta_activo
+C 0xBCBF banco 0: a_mas_de
+C 0xBDC7 banco 0: pide_sonido
+C 0xBE4A banco 0: despacha
+C 0xBE96 banco 0: a_mas_hl
+C 0xBF07 banco 0: a_mas_hl
+C 0xBF6F banco 0: pide_sonido_si_esta_activo
+C 0xBF86 banco 0: a_mas_hl
+
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0xA021 la X en la pantalla de lo que se maneja
+C 0xA026 la X en la pantalla de lo que se maneja
+C 0xA040 la X en la pantalla de lo que se maneja
+C 0xA045 la X en la pantalla de lo que se maneja
+C 0xA059 la Y en la pantalla de lo que se maneja
+C 0xA0DA la X en la pantalla de lo que se maneja
+C 0xA149 la X en la pantalla de lo que se maneja
+C 0xA15F la X en la pantalla de lo que se maneja
+C 0xA166 los avisos que deja el cuadro
+C 0xA17F los avisos que deja el cuadro
+C 0xA1D7 la X en la pantalla de lo que se maneja
+C 0xA201 la X en la pantalla de lo que se maneja
+C 0xA20D los avisos que deja el cuadro
+C 0xA396 los avisos que deja el cuadro
+C 0xA6F9 los avisos que deja el cuadro
+C 0xA742 la X en la pantalla de lo que se maneja
+C 0xA7B6 la X en la pantalla de lo que se maneja
+C 0xA7BB la X en la pantalla de lo que se maneja
+C 0xA7C4 los avisos que deja el cuadro
+C 0xA840 la X en la pantalla de lo que se maneja
+C 0xA8DB la X en la pantalla de lo que se maneja
+C 0xA9C3 la X en la pantalla de lo que se maneja
+C 0xA9E7 la Y en la pantalla de lo que se maneja
+C 0xAA3F la X en la pantalla de lo que se maneja
+C 0xAA49 la X en la pantalla de lo que se maneja
+C 0xAA51 la X en la pantalla de lo que se maneja
+C 0xAAD2 la X en la pantalla de lo que se maneja
+C 0xAAD7 la Y en la pantalla de lo que se maneja
+C 0xAADE la X en la pantalla de lo que se maneja
+C 0xAB4A los avisos que deja el cuadro
+C 0xAB87 la Y en la pantalla de lo que se maneja
+C 0xABA0 la X en la pantalla de lo que se maneja
+C 0xABA7 la X en la pantalla de lo que se maneja
+C 0xABEB la X en la pantalla de lo que se maneja
+C 0xAC90 la Y en la pantalla de lo que se maneja
+C 0xAC95 la X en la pantalla de lo que se maneja
+C 0xACEC la X en la pantalla de lo que se maneja
+C 0xACF0 la X en la pantalla de lo que se maneja
+C 0xACF6 la X en la pantalla de lo que se maneja
+C 0xACFD la X en la pantalla de lo que se maneja
+C 0xAD39 la X en la pantalla de lo que se maneja
+C 0xAED7 la Y en la pantalla de lo que se maneja
+C 0xAF91 la Y en la pantalla de lo que se maneja
+C 0xB1E3 la Y en la pantalla de lo que se maneja
+C 0xB2EA la X en la pantalla de lo que se maneja
+C 0xB336 la X en la pantalla de lo que se maneja
+C 0xB37C la X en la pantalla de lo que se maneja
+C 0xB3B1 la X en la pantalla de lo que se maneja
+C 0xB3D5 los avisos que deja el cuadro
+C 0xB40D la X en la pantalla de lo que se maneja
+C 0xB48D la Y en la pantalla de lo que se maneja
+C 0xB540 la Y en la pantalla de lo que se maneja
+C 0xB6E5 los avisos que deja el cuadro
+C 0xB719 la X en la pantalla de lo que se maneja
+C 0xB93A la X en la pantalla de lo que se maneja
+C 0xBAF8 la X en la pantalla de lo que se maneja
+C 0xBB08 la X en la pantalla de lo que se maneja
+C 0xBB51 la Y en la pantalla de lo que se maneja
+C 0xBC69 la Y en la pantalla de lo que se maneja
+C 0xBDB0 la X en la pantalla de lo que se maneja
+C 0xBEDA la Y en la pantalla de lo que se maneja
+C 0xBEE2 la Y en la pantalla de lo que se maneja
+C 0xBF18 la bandera de PAUSA
+C 0xBF4C la Y en la pantalla de lo que se maneja
+
+C 0xB5A1 y el dibujo cambia cada ocho cuadros: eso son las alas
+C 0xB5A8 al color de su hueco de sprite
+L 0xB5AC el_que_vuela_se_va
+C 0xB5AC 0xE0 en la Y: fuera de la pantalla
+C 0xB5B4 y todo lo suyo, a cero
+D 0xB5C1 0xB5E1 vaiven_del_que_vuela  Los treinta y dos pasos del vuelo: 0, 0, 1, 1, 2, 2, 2, 3, 3, 2, 2, 2, 1, 1, 0, 0 y los mismos en negativo. Sube y baja, y por eso vuela ondulando en vez de en linea recta.
+F 0xB5C1 16
+B 0xB5E1 MONTAR LA FASE DE BONUS. Se reconoce por el decorado que pone: el 8, que es la Tierra vista desde el espacio. Borra 2.335 bytes de variables y los 672 de la zona de juego, se guarda el largo de la fase de verdad en 0xE0CC y lo cambia por uno de los diez de la tabla de 0xB635, que van de 0x85 a 0x40: cuanto mas veces se ha llegado aqui, mas corta es.
+L 0xB5E1 monta_el_bonus
+C 0xB5E2 las variables de 0xE280
+C 0xB5E8 2.335 bytes
+C 0xB5EE y la zona de juego
+C 0xB5F4 672 bytes: veintiuna filas
+C 0xB600 el decorado 8: la Tierra desde el espacio
+C 0xB605 el largo de la fase de verdad
+C 0xB608 se guarda aparte, que luego hay que devolverlo
+C 0xB60B cuantas veces se ha llegado al bonus
+C 0xB60E la tabla de largos
+C 0xB618 y ese es el largo del bonus
+C 0xB61C 0x9000: una distancia a la que no se llega
+C 0xB61F asi no sale ningun enemigo
+D 0xB635 0xB63F largos_del_bonus  Los diez largos de la fase de bonus, indexados por 0xE0A3: 0x85, 0x80, 0x75, 0x70, 0x65, 0x60, 0x55, 0x50, 0x45 y 0x40. Cada vez que se vuelve, dura menos.
+F 0xB635 10
+B 0xB63F LA CUENTA DEL BONUS, EN CINCO TIEMPOS. Escribe BONUS en la pantalla, va pasando el bonus al marcador de uno en uno con un pitido por cada punto, y cuando se acaba se vuelve. Los numeros van en BCD -de ahi los `daa`- y el marcador tiene tope: al llegar a 10 en la cifra alta se queda clavado en 0x0999.
+L 0xB63F la_cuenta_del_bonus
+C 0xB63F en que tiempo va
+C 0xB642 el despachador, con la tabla detras
+D 0xB645 0xB64F tiempos_del_bonus  Los cinco: 0xB64F, 0xB65F, 0xB684, 0xB68E y 0xB6DF.
+F 0xB645 w1
+L 0xB64F bonus_escribe_el_rotulo
+C 0xB64F el guion del rotulo
+C 0xB655 al tiempo siguiente
+C 0xB659 y 0x30 cuadros de espera
+L 0xB65F bonus_escribe_la_cifra
+C 0xB65F la espera
+C 0xB663 mientras dure, nada
+C 0xB664 el segundo guion
+C 0xB66A el bonus que hay
+C 0xB66D donde va en la pantalla
+C 0xB672 el pintor de cifras BCD del banco 2
+C 0xB675 el efecto 0x59
+C 0xB67E y 0x40 cuadros
+L 0xB684 bonus_espera
+C 0xB687 la espera
+L 0xB68E bonus_lo_pasa_al_marcador
+C 0xB68E el contador de cuadros
+C 0xB691 uno de cada cuatro
+C 0xB694 lo que queda de bonus
+C 0xB697 cuando se acaba, al tiempo siguiente
+C 0xB69A uno menos, EN BCD
+C 0xB6A0 el marcador
+C 0xB6A3 uno mas, tambien en BCD
+C 0xB6A9 y si se ha desbordado, la cifra alta
+C 0xB6AE una mas
+C 0xB6B2 al llegar a diez...
+C 0xB6B6 ...el marcador se queda clavado en su tope
+C 0xB6BC donde va el marcador
+C 0xB6C2 y donde va el bonus
+C 0xB6CA repintados los dos
+C 0xB6D0 y un pitido por cada punto
+L 0xB6D5 bonus_acabado
+C 0xB6D8 al ultimo tiempo
+C 0xB6D9 con 0x40 cuadros
+L 0xB6DF bonus_se_acabo
+C 0xB6E2 la espera
+C 0xB6E4 y se borran los avisos: se sigue jugando
+D 0xB6E9 0xB6F8 rotulos_del_bonus  Dos guiones para el pintor con mascara, cada uno con su destino de VRAM delante. El primero pone BONUS en 0x388D y el segundo cuatro caracteres en 0x390C. Las letras van con el alfabeto del cartucho, que empieza en 0x21 = A: 0x22 0x2F 0x2E 0x35 0x33 se leen B, O, N, U y S.
+F 0xB6E9 w1

@@ -1,7 +1,518 @@
 # Banco 02 (se ejecuta en 0x8000). Directivas: L etiqueta, C comentario de
 # linea, B cabecera de bloque, D rango de datos, F anchura de fila.
+#
+# Este banco lleva la MAQUINA DE ESTADOS del juego entero, y es lo primero que
+# la interrupcion llama en cada cuadro: p00:404C hace `call 0x8000`, o sea a la
+# direccion 0x8000 de lo que haya en esa ranura, que mientras se juega es este
+# banco.
 
-# --- El protocolo del mapper, paso a paso. Lo genera tools/anota_mapper.py
-# siguiendo el estado real de HL y de A; la explicacion de por que se hace asi
-# esta en el banco 0.
+# ======================================================================
+# LA MAQUINA DE ESTADOS
+# ======================================================================
+B 0x8000 LA MAQUINA DE ESTADOS. Dieciseis estados y, dentro de cada uno, tantos SUBESTADOS como haga falta. El truco esta en el `ld bc,(0xE000)` de 0x800F: con una sola instruccion se cargan los dos, el estado en C y el subestado en B, y luego el despachador de la casa salta por C mientras cada estado va bajando B con `djnz` hasta dar con el subestado que toca. Salir de un subestado es tan corto como `inc (hl)` sobre 0xE001, que es lo que hace 0x8094.
+B 0x8000 Y el detalle de 0x800B: en los estados 0, 1 y 2 se mete 0x8A55 en la PILA antes de despachar, de modo que cuando el estado haga `ret` no vuelva a quien le llamo sino ahi. Es una forma de encadenar sin gastar una llamada.
+L 0x8000 maquina_de_estados
+C 0x8000 el contador de cuadros
+C 0x8003 uno mas, y es el reloj de todo el juego
+C 0x8007 los estados 0, 1 y 2 son los de la presentacion
+C 0x800B y en ellos se cuela un destino en la pila
+C 0x800F el estado en C y el subestado en B, de un tiron
+C 0x8013 se despacha por el estado
+C 0x8014 el despachador de la casa: la tabla va pegada detras
+D 0x8017 0x8037 estados_del_juego  Los dieciseis estados, y la tabla acaba justo donde empieza el primero de ellos: 0x8037, 0x8060, 0x8073, 0x8099, 0x814B, 0x81C5, 0x8278, 0x83A9, 0x84E1, 0x8538, 0x85D2, 0x8648, 0x86C6, 0x8800, 0x8806 y 0x8933.
+F 0x8017 w1
+L 0x8037 estado_0
+C 0x8037 el subestado
+C 0x8039 el contador de cuadros
+C 0x803C uno de cada dos
+C 0x8042 a cero
+L 0x8045 estado_0_subestado_1
+C 0x8047 el contador de espera
+C 0x804B mientras no llegue a cero, nada
+C 0x804C montar la presentacion
+L 0x8052 estado_0_subestado_2
+C 0x8052 los ocho registros del VDP
+C 0x8055 borrar la pantalla
+L 0x8060 estado_1
+C 0x8060 subir los sprites
+C 0x8063 el cuadro de la presentacion
+C 0x8066 una bandera de la presentacion
+C 0x806B el efecto 0xCB
+L 0x8080 estado_a_0xFF
+C 0x8080 0xFF: el estado se dara la vuelta a 0 al sumarle uno
+L 0x8082 pon_el_estado
+L 0x8088 estado_2
+C 0x8088 borrar la pantalla
+L 0x8091 pon_la_espera_y_avanza
+C 0x8091 lo que haya en A pasa a ser la espera
+L 0x8094 avanza_el_subestado
+C 0x8094 el subestado
+C 0x8097 uno mas
+B 0x8099 ESTADO 3: EL MENU. El que espera a que se pulse algo, hace parpadear el rotulo y deja elegir entre uno y dos jugadores. La eleccion vive en 0xE082 y los dos rotulos que se intercambian son los guiones 0x8E0A y 0x8E14.
+L 0x8099 estado_3
+C 0x8099 el subestado
+C 0x809B el contador
+C 0x809F cuando llega a cero, otra cosa
+C 0x80A1 el bit 2 del contador es lo que hace el parpadeo
+C 0x80A3 el rotulo
+C 0x80A6 pintado
+C 0x80A9 o borrado, con la mascara a cero
+L 0x80AE estado_3_suena
+C 0x80AE el efecto 0xCB
+L 0x80B5 estado_3_subestado_2
+C 0x80B7 borrar la pantalla
+C 0x80BD tres rotulos, uno detras de otro
+C 0x80CF con la mascara abierta
+L 0x80D6 estado_3_espera_a_que_pulsen
+C 0x80D8 el contador
+C 0x80E2 las teclas recien pulsadas
+C 0x80E5 el bit 4: la barra o el disparo
+C 0x80E7 si no se ha pulsado, a esperar
+C 0x80E8 el efecto 0xAA
+C 0x80F5 uno o dos jugadores
+C 0x80F9 el rotulo de uno...
+C 0x80FE ...o el de dos
+C 0x8106 y 0x50 cuadros de espera
+L 0x810A estado_3_parpadeo_final
+C 0x810C el contador
+C 0x8112 el bit 3: el parpadeo, mas rapido que el de antes
+C 0x8122 el que este elegido va en un color y el otro en el otro
+C 0x8128 y se intercambian
 
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0x8004 la variable de fase
+C 0x800F la variable de fase
+C 0x8039 el contador de cuadros
+C 0x8082 la variable de fase
+C 0x80E2 las teclas recien pulsadas
+C 0x8192 el contador de cuadros
+C 0x81CC el modo en el que esta el juego
+C 0x81D2 las teclas recien pulsadas
+C 0x81DA la marca de silencio general
+C 0x82C3 el valor 1-2-3 de la fase
+C 0x82CA la FASE, de 1 a 13
+C 0x836B el valor 1-2-3 de la fase
+C 0x8378 el DECORADO, de 0 a 9
+C 0x839B por donde va la rotacion de los sprites
+C 0x83B4 por donde va la rotacion de los sprites
+C 0x844E el contador de cuadros
+C 0x847D por donde va la rotacion de los sprites
+C 0x8484 el largo de la fase
+C 0x84C8 por donde va la rotacion de los sprites
+C 0x84EF por donde va la rotacion de los sprites
+C 0x85A1 por donde va la rotacion de los sprites
+C 0x85C7 por donde va la rotacion de los sprites
+C 0x85DA por donde va la rotacion de los sprites
+C 0x862B por donde va la rotacion de los sprites
+C 0x8653 por donde va la rotacion de los sprites
+C 0x8699 por donde va la rotacion de los sprites
+C 0x86CE por donde va la rotacion de los sprites
+C 0x86F8 por donde va la rotacion de los sprites
+C 0x8702 el modo en el que esta el juego
+C 0x878E el modo en el que esta el juego
+C 0x87E4 por donde va la rotacion de los sprites
+C 0x8825 el modo en el que esta el juego
+C 0x88BC el valor 1-2-3 de la fase
+C 0x88F7 la variable de fase
+C 0x8966 el numero de fase tal como se pinta
+C 0x896A la FASE, de 1 a 13
+C 0x896E el valor 1-2-3 de la fase
+C 0x8A42 las teclas recien pulsadas
+C 0x8C46 el contador de cuadros
+C 0x8CBE la FASE, de 1 a 13
+C 0x91AD el DECORADO, de 0 a 9
+C 0x91B4 el estado de los mandos del cuadro anterior
+C 0x921B el modo en el que esta el juego
+C 0x9227 el contador de cuadros
+C 0x923B el largo de la fase
+C 0x9253 el modo en el que esta el juego
+C 0x925D por donde va la rotacion de los sprites
+C 0x9278 por donde va la rotacion de los sprites
+C 0x92BB el contador de cuadros
+C 0x92EC el DECORADO, de 0 a 9
+C 0x9384 los datos del juego
+C 0x9440 el modo en el que esta el juego
+C 0x944F el contador de cuadros
+C 0x9453 el modo en el que esta el juego
+C 0x9485 por donde va la rotacion de los sprites
+C 0x9493 el DECORADO, de 0 a 9
+C 0x94B0 el contador de cuadros
+C 0x94D1 el largo de la fase
+C 0x94D8 el contador de cuadros
+C 0x94F4 el largo de la fase
+C 0x9508 las teclas recien pulsadas
+C 0x968C la FASE, de 1 a 13
+C 0x96F9 por donde va la rotacion de los sprites
+C 0x9741 el DECORADO, de 0 a 9
+C 0x9748 las teclas recien pulsadas
+C 0x976C por donde va la rotacion de los sprites
+C 0x9773 el DECORADO, de 0 a 9
+C 0x9786 el contador de cuadros
+C 0x97B0 el contador de cuadros
+C 0x97DB por donde va la rotacion de los sprites
+C 0x982D el estado de los mandos del cuadro anterior
+C 0x9845 el contador de cuadros
+C 0x985D el contador de cuadros
+C 0x9872 por donde va la rotacion de los sprites
+C 0x98CD el contador de cuadros
+C 0x993C por donde va la rotacion de los sprites
+C 0x996E las teclas recien pulsadas
+C 0x9984 por donde va la rotacion de los sprites
+C 0x99A2 las teclas recien pulsadas
+C 0x99AB por donde va la rotacion de los sprites
+C 0x99B1 el modo en el que esta el juego
+C 0x99C3 el contador de cuadros
+C 0x99EA las teclas recien pulsadas
+C 0x9A0F por donde va la rotacion de los sprites
+C 0x9A33 la tabla de atributos de los 32 sprites
+C 0x9A36 el contador de cuadros
+C 0x9A4D el contador de cuadros
+C 0x9A76 el contador de cuadros
+C 0x9AA6 por donde va la rotacion de los sprites
+C 0x9AFF el estado de los mandos del cuadro anterior
+C 0x9B17 el contador de cuadros
+C 0x9B2F el contador de cuadros
+C 0x9B49 por donde va la rotacion de los sprites
+C 0x9B91 el contador de cuadros
+C 0x9BDB por donde va la rotacion de los sprites
+C 0x9BF2 las teclas recien pulsadas
+C 0x9C00 el contador de cuadros
+C 0x9C57 la tabla de atributos de los 32 sprites
+C 0x9C5D el contador de cuadros
+C 0x9C98 el contador de cuadros
+C 0x9CF4 la tabla de atributos de los 32 sprites
+C 0x9D33 por donde va la rotacion de los sprites
+C 0x9D6C las teclas recien pulsadas
+C 0x9D90 por donde va la rotacion de los sprites
+C 0x9DA3 el contador de cuadros
+C 0x9DCD el contador de cuadros
+C 0x9DFD por donde va la rotacion de los sprites
+C 0x9E42 el estado de los mandos del cuadro anterior
+C 0x9E5A el contador de cuadros
+C 0x9E72 el contador de cuadros
+C 0x9E8C por donde va la rotacion de los sprites
+C 0x9EC2 por donde va la rotacion de los sprites
+C 0x9ECF el DECORADO, de 0 a 9
+C 0x9EF7 el contador de cuadros
+C 0x9F0A las teclas recien pulsadas
+C 0x9F18 el contador de cuadros
+C 0x9F83 el contador de cuadros
+C 0x9F96 por donde va la rotacion de los sprites
+C 0x9FBA el contador de cuadros
+C 0x9FD9 el DECORADO, de 0 a 9
+C 0x9FF1 por donde va la rotacion de los sprites
+
+L 0x8133 estado_3_arranca_la_partida
+C 0x8135 borrar la pantalla
+C 0x813B uno o dos jugadores
+C 0x813E queda apuntado para la partida
+C 0x8141 y a montar la fase
+L 0x8146 estado_3_ultimo
+C 0x8146 0x50 cuadros
+B 0x814B ESTADO 4: MONTAR LA FASE. La tanda mas larga de llamadas del cartucho, y se lee de un vistazo lo que hace falta para empezar: esconder los tres sprites de arriba, borrar la pantalla, cargar los caracteres del decorado con las tres rutinas de los tres tercios, montar el mapa y subirlo, y poner el contador de cuadros a cero.
+L 0x814B estado_4
+C 0x814B el subestado
+C 0x8150 una espera
+C 0x8155 la Y del sprite 0
+C 0x8158 0xE0: fuera de la pantalla
+C 0x815D la del 1
+C 0x8165 y la del 2
+C 0x816D borrar la zona de juego
+C 0x8170 el marcador
+C 0x8173 los caracteres del tercio de arriba
+C 0x8176 los del de en medio
+C 0x8179 y los del de abajo
+C 0x8185 el mapa del decorado
+C 0x818B subir la zona de juego
+C 0x8192 el contador de cuadros, a cero
+L 0x8198 pasa_al_estado_siguiente
+C 0x8198 el estado
+C 0x819B uno mas
+C 0x819C y el subestado, a cero
+L 0x81A0 estado_4_ya_montada
+C 0x81A3 empezar una vida
+C 0x81BC el efecto 0xAD
+B 0x81C5 ESTADO 5: JUGAR. Y aqui esta LA PAUSA. El bit 7 de las teclas recien pulsadas es la tecla de parar, y lo que hace es dar la vuelta a 0xE0A0: con esa bandera puesta el juego se va al estado 13 y se queda ahi hasta que se vuelva a pulsar. De paso calla el sonido -0xE07A- y esconde dos de los tres sprites de arriba, dejando solo el primero con la Y a 0xD0.
+L 0x81C5 estado_5_jugar
+C 0x81C5 el modo del juego
+C 0x81C8 con 2 o mas no se admite pausa
+C 0x81CC y con el modo distinto de cero, tampoco
+C 0x81D2 las teclas recien pulsadas
+C 0x81D5 el bit 7: la tecla de parar
+C 0x81D7 si no esta, a jugar
+C 0x81D9 el bit sube al acarreo y baja al 0
+C 0x81DA y con el se calla o se descalla el sonido
+C 0x81DD la bandera de pausa
+C 0x81E0 se le da la vuelta
+C 0x81E4 ¿ha quedado en pausa o ha salido de ella?
+C 0x81EE la cuenta de veces que se ha parado
+C 0x81F2 el efecto 0x3A, que reinicia las voces
+C 0x81F7 el sprite 0
+C 0x81FA 0xD0, que lo deja visible pero abajo del todo
+C 0x81FF borrar la zona de juego
+L 0x820B estado_5_mira_la_pausa
+C 0x820B la bandera de pausa
+C 0x820F sin pausa, se juega
+C 0x8211 y con pausa, al estado de parado
+L 0x8214 estado_5_sale_de_la_pausa
+C 0x8214 el sprite 0, abajo
+C 0x821C y los otros dos, fuera
+C 0x822F otra vez los caracteres de los tres tercios
+C 0x8241 subir la zona de juego
+C 0x8244 y los sprites
+L 0x8247 estado_5_el_cuadro
+C 0x8247 EL CUADRO: todo el juego pasa por esa llamada
+C 0x824A el estado
+C 0x824D la bandera de que la fase se ha acabado
+C 0x8251 si no se ha acabado, se mira por que otra razon se sale
+C 0x8253 y si se ha acabado, al estado 13
+L 0x8257 estado_5_por_que_se_sale
+C 0x8257 los avisos que ha dejado el cuadro
+C 0x825B sin ninguno, se sigue jugando
+C 0x825C y con el bit que sea puesto se salta tantos estados como haga falta
+C 0x826B cada `inc (hl)` es un estado mas
+L 0x826C avanza_cinco
+L 0x826D avanza_cuatro
+L 0x826E avanza_tres
+L 0x826F avanza_dos
+L 0x8271 estado_5_sale
+C 0x8271 los avisos, a cero
+L 0x8278 estado_6
+C 0x827A subir la zona de juego
+C 0x827D y los sprites
+
+# --- Las llamadas al banco 0, que esta fijo en 0x4000-0x5FFF. Los nombres los
+# saca tools/anota_llamadas.py de las directivas L de src/p00.notes.
+C 0x806D banco 0: pide_sonido
+C 0x80AB banco 0: pinta_guion_lee_destino
+C 0x80B0 banco 0: pide_sonido
+C 0x80C0 banco 0: pinta_guion_con_mascara
+C 0x80C6 banco 0: pinta_guion_con_mascara
+C 0x80CC banco 0: pinta_guion_con_mascara
+C 0x80EA banco 0: pide_sonido_si_esta_activo
+C 0x8103 banco 0: pinta_guion_lee_destino
+C 0x812A banco 0: pinta_guion_lee_destino
+C 0x8130 banco 0: pinta_guion_lee_destino
+C 0x81AF banco 0: sube_el_marcador
+C 0x81BE banco 0: pide_sonido_si_esta_activo
+C 0x81F4 banco 0: pide_sonido_si_esta_activo
+C 0x822C banco 0: borra_el_area_de_juego
+C 0x82FA banco 0: sube_el_area_de_juego
+C 0x82FD banco 0: sube_los_sprites
+C 0x830D banco 0: esconde_los_sprites
+C 0x8310 banco 0: borra_el_area_de_juego
+C 0x832D banco 0: monta_la_fase
+C 0x8337 banco 0: borra_la_pantalla_entera
+C 0x8349 banco 0: pide_sonido_si_esta_activo
+C 0x8351 banco 0: sube_el_area_de_juego
+C 0x8354 banco 0: rotulos_que_suben
+C 0x8368 banco 0: sube_el_area_de_juego
+C 0x8392 banco 0: pide_sonido_si_esta_activo
+C 0x83AB banco 0: sube_los_sprites
+C 0x83C2 banco 0: sube_el_area_de_juego
+C 0x83C5 banco 0: sube_los_sprites_desde_arriba
+C 0x83D9 banco 0: a_mas_hl
+C 0x83E6 banco 0: sube_la_mitad_de_abajo
+C 0x83E9 banco 0: sube_los_sprites
+C 0x8439 banco 0: pide_sonido_si_esta_activo
+C 0x8458 banco 0: escribe_el_registro_7
+C 0x845B banco 0: sube_el_area_de_juego
+C 0x845E banco 0: sube_los_sprites
+C 0x846E banco 0: escribe_el_registro_7
+C 0x84B5 banco 0: sube_el_area_de_juego
+C 0x84D2 banco 0: pide_sonido_si_esta_activo
+C 0x84E3 banco 0: sube_los_sprites_desde_arriba
+C 0x84FA banco 0: esconde_los_sprites
+C 0x84FD banco 0: borra_el_area_de_juego
+C 0x8503 banco 0: empieza_una_vida
+C 0x851F banco 0: sube_el_area_de_juego
+C 0x8532 banco 0: pide_sonido_si_esta_activo
+C 0x853A banco 0: sube_los_sprites
+C 0x854F banco 0: borra_el_area_de_juego
+C 0x8567 banco 0: borra_el_area_de_juego
+C 0x856D banco 0: empieza_una_vida
+C 0x858B banco 0: sube_el_area_de_juego
+C 0x8590 banco 0: pide_sonido_si_esta_activo
+C 0x8598 banco 0: sube_los_sprites_desde_arriba
+C 0x85AF banco 0: pide_sonido_si_esta_activo
+C 0x85BF banco 0: pide_sonido_si_esta_activo
+C 0x85C2 banco 0: sube_el_area_de_juego
+C 0x85D4 banco 0: sube_los_sprites_desde_arriba
+C 0x85E5 banco 0: esconde_los_sprites
+C 0x85E8 banco 0: borra_el_area_de_juego
+C 0x85EE banco 0: empieza_una_vida
+C 0x8612 banco 0: sube_el_area_de_juego
+C 0x861A banco 0: pide_sonido_si_esta_activo
+C 0x8622 banco 0: sube_los_sprites_desde_arriba
+C 0x8632 banco 0: pide_sonido_si_esta_activo
+C 0x8642 banco 0: pide_sonido_si_esta_activo
+C 0x864A banco 0: sube_los_sprites_desde_arriba
+C 0x865D banco 0: esconde_los_sprites
+C 0x8660 banco 0: borra_el_area_de_juego
+C 0x8666 banco 0: empieza_una_vida
+C 0x8684 banco 0: sube_el_area_de_juego
+C 0x86BC banco 0: pide_sonido_si_esta_activo
+C 0x86C8 banco 0: sube_los_sprites_desde_arriba
+C 0x86D9 banco 0: esconde_los_sprites
+C 0x86DC banco 0: borra_el_area_de_juego
+C 0x86E7 banco 0: pide_sonido_si_esta_activo
+C 0x86EF banco 0: sube_los_sprites_desde_arriba
+C 0x86FF banco 0: pide_sonido_si_esta_activo
+C 0x8713 banco 0: pide_sonido_si_esta_activo
+C 0x872B banco 0: sube_los_sprites
+C 0x875B banco 0: borra_el_area_de_juego
+C 0x8763 banco 0: pide_sonido_si_esta_activo
+C 0x8785 banco 0: borra_el_area_de_juego
+C 0x878B banco 0: sube_los_sprites
+C 0x879F banco 0: pide_sonido_si_esta_activo
+C 0x87B0 banco 0: esconde_los_sprites
+C 0x87B3 banco 0: borra_el_area_de_juego
+C 0x87B9 banco 0: empieza_una_vida
+C 0x87D1 banco 0: sube_el_area_de_juego
+C 0x87D6 banco 0: pide_sonido_si_esta_activo
+C 0x87DE banco 0: sube_los_sprites_desde_arriba
+C 0x87F5 banco 0: sube_el_area_de_juego
+C 0x87FA banco 0: pide_sonido_si_esta_activo
+C 0x8808 banco 0: sube_los_sprites_desde_arriba
+C 0x881F banco 0: esconde_los_sprites
+C 0x8822 banco 0: borra_el_area_de_juego
+C 0x883F banco 0: reempieza
+C 0x8842 banco 0: empieza_una_vida
+C 0x8891 banco 0: borra_el_area_de_juego
+C 0x88B1 banco 0: sube_el_area_de_juego
+C 0x88CF banco 0: sube_el_area_de_juego
+C 0x88F2 banco 0: pide_sonido_si_esta_activo
+C 0x88FF banco 0: sube_el_area_de_juego
+C 0x890E banco 0: sube_el_area_de_juego
+C 0x891C banco 0: sube_el_area_de_juego
+C 0x89F6 banco 0: monta_la_fase_desde_el_decorado
+C 0x89F9 banco 0: borra_el_area_de_juego
+C 0x8A0F banco 0: borra_la_pantalla_entera
+C 0x8A14 banco 0: pide_sonido_si_esta_activo
+C 0x8A1D banco 0: pinta_guion_con_mascara
+C 0x8A3C banco 0: pinta_guion_con_mascara
+C 0x8A52 banco 0: pinta_guion_lee_destino
+C 0x8A93 banco 0: pinta_del_banco_6
+C 0x8ACD banco 0: a_mas_hl
+C 0x8B29 banco 0: a_mas_hl
+C 0x8CA3 banco 0: copia_a_vram
+C 0x8CD3 banco 0: dos_por_a_mas_hl
+C 0x8D06 banco 0: pide_sonido_si_esta_activo
+C 0x91B9 banco 0: despacha
+C 0x9218 banco 0: pinta_guion_bucle
+C 0x9281 banco 0: pide_sonido_si_esta_activo
+C 0x9294 banco 0: a_mas_hl
+C 0x92CB banco 0: pide_sonido_si_esta_activo
+C 0x932C banco 0: llena_los_tres_tercios
+C 0x933C banco 0: llena_los_tres_tercios
+C 0x93A9 banco 0: pide_sonido_si_esta_activo
+C 0x93D1 banco 0: pinta_guion_con_mascara
+C 0x93F8 banco 0: pinta_guion_bucle
+C 0x93FE banco 0: pinta_guion_con_mascara
+C 0x940C banco 0: pinta_guion_con_mascara
+C 0x9434 banco 0: pinta_guion_con_mascara
+C 0x9466 banco 0: pinta_guion_lee_destino
+C 0x9499 banco 0: a_mas_hl
+C 0x949D banco 0: pide_sonido_si_esta_activo
+C 0x94C9 banco 0: pide_sonido_si_esta_activo
+C 0x94E2 banco 0: pide_sonido_si_esta_activo
+C 0x951F banco 0: pide_sonido_si_esta_activo
+C 0x9690 banco 0: despacha
+C 0x96FC banco 0: despacha
+C 0x9770 banco 0: pide_sonido
+C 0x97E7 banco 0: a_mas_hl
+C 0x983C banco 0: a_mas_hl
+C 0x987E banco 0: a_mas_hl
+C 0x98C5 banco 0: pide_sonido
+C 0x98E9 banco 0: a_mas_hl
+C 0x992E banco 0: pide_sonido
+C 0x9934 banco 0: pide_sonido
+C 0x9A14 banco 0: pide_sonido
+C 0x9AB0 banco 0: pide_sonido
+C 0x9AB9 banco 0: a_mas_hl
+C 0x9B0E banco 0: a_mas_hl
+C 0x9B53 banco 0: pide_sonido
+C 0x9B5C banco 0: a_mas_hl
+C 0x9B89 banco 0: pide_sonido
+C 0x9BCC banco 0: pide_sonido
+C 0x9BD2 banco 0: pide_sonido
+C 0x9C14 banco 0: a_mas_hl
+C 0x9C95 banco 0: pide_sonido
+C 0x9CB4 banco 0: a_mas_hl
+C 0x9D24 banco 0: pide_sonido
+C 0x9D2A banco 0: pide_sonido
+C 0x9D94 banco 0: pide_sonido_si_esta_activo
+C 0x9E06 banco 0: a_mas_hl
+C 0x9E51 banco 0: a_mas_hl
+C 0x9E95 banco 0: a_mas_hl
+C 0x9F07 banco 0: pide_sonido_si_esta_activo
+C 0x9F2C banco 0: a_mas_hl
+C 0x9FF9 banco 0: pide_sonido_si_esta_activo
+
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0x807B la bandera de que la fase se ha acabado
+C 0x8195 el contador de espera del estado
+C 0x81E1 la bandera de PAUSA
+C 0x8272 los avisos que deja el cuadro
+C 0x8286 los avisos que deja el cuadro
+C 0x828D el contador de espera del estado
+C 0x829F los avisos que deja el cuadro
+C 0x82AA los avisos que deja el cuadro
+C 0x82B1 el contador de espera del estado
+C 0x82F2 los avisos que deja el cuadro
+C 0x8303 los avisos que deja el cuadro
+C 0x8357 los avisos que deja el cuadro
+C 0x83A3 los avisos que deja el cuadro
+C 0x8421 la bandera de que la fase se ha acabado
+C 0x84CD por que vuelta de la fase va
+C 0x8540 los avisos que deja el cuadro
+C 0x8549 los avisos que deja el cuadro
+C 0x855D los avisos que deja el cuadro
+C 0x85CC los avisos que deja el cuadro
+C 0x872F los avisos que deja el cuadro
+C 0x873A los avisos que deja el cuadro
+C 0x8742 los avisos que deja el cuadro
+C 0x876E los avisos que deja el cuadro
+C 0x8776 los avisos que deja el cuadro
+C 0x87A3 los avisos que deja el cuadro
+C 0x87A8 el SUBESTADO
+C 0x8811 los avisos que deja el cuadro
+C 0x88A0 por que vuelta de la fase va
+C 0x88FC el SUBESTADO
+C 0x892A los avisos que deja el cuadro
+C 0x892D la bandera de que la fase se ha acabado
+C 0x8A09 uno o dos jugadores
+C 0x8B0D el contador de espera del estado
+C 0x8CEB el contador de espera del estado
+C 0x9207 uno o dos jugadores
+C 0x925A la bandera de que la fase se ha acabado
+C 0x929B los avisos que deja el cuadro
+C 0x92C2 por que vuelta de la fase va
+C 0x9501 los avisos que deja el cuadro
+C 0x9514 uno o dos jugadores
+C 0x951A uno o dos jugadores
+C 0x973A por que vuelta de la fase va
+C 0x98CA la X en la pantalla de lo que se maneja
+C 0x9977 la X en la pantalla de lo que se maneja
+C 0x99BC los avisos que deja el cuadro
+C 0x99D6 la X en la pantalla de lo que se maneja
+C 0x99E3 por que vuelta de la fase va
+C 0x9A03 la X en la pantalla de lo que se maneja
+C 0x9A1D la X en la pantalla de lo que se maneja
+C 0x9AAB la X en la pantalla de lo que se maneja
+C 0x9B4E la X en la pantalla de lo que se maneja
+C 0x9B8E la X en la pantalla de lo que se maneja
+C 0x9C3A la X en la pantalla de lo que se maneja
+C 0x9CD7 la X en la pantalla de lo que se maneja
+C 0x9EFE por que vuelta de la fase va
+C 0x9F51 la X en la pantalla de lo que se maneja
+C 0x9F88 la X en la pantalla de lo que se maneja
+C 0x9F9B la X en la pantalla de lo que se maneja
+C 0x9F9E la X en la pantalla de lo que se maneja
+C 0x9FC9 la X en la pantalla de lo que se maneja
+C 0x9FCE la X en la pantalla de lo que se maneja
+C 0x9FF5 la X en la pantalla de lo que se maneja

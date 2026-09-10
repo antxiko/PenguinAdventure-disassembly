@@ -1282,14 +1282,14 @@ C 0x5D97 y de cuatro en cuatro se llega al 8
 C 0x5D9C el contador a cero
 L 0x5DA5 presentacion_estado_siguiente
 C 0x5DA5 al estado siguiente
-L 0x5DAA presentacion_escribe_los_rotulos
-B 0x5DAA LOS ROTULOS DE LA PRESENTACION. Uno cada ocho cuadros, sacando el puntero de la tabla de 0x5E3C con el contador de 0xE155 y pasandoselo al escritor de texto del banco 1. Son DIEZ: cuando el contador llega a diez se acaba y se pasa al estado siguiente.
+L 0x5DAA presentacion_dibuja_por_pasos
+B 0x5DAA EL DIBUJO QUE SE MONTA SOLO. Uno cada ocho cuadros, sacando el guion de la tabla de 0x5E3C con el contador de 0xE155 y pasandoselo a p01:7DF7. Son DIEZ pasos, y los cinco ultimos son los cinco primeros al reves: el dibujo aparece y se deshace.
 C 0x5DAA el contador de cuadros
 C 0x5DAD uno de cada ocho
-C 0x5DB0 por que rotulo va
-C 0x5DB3 la tabla de punteros
+C 0x5DB0 por que paso va
+C 0x5DB3 la tabla de los diez guiones
 C 0x5DB6 dos bytes por entrada
-C 0x5DBC el escritor de texto, en el banco 1
+C 0x5DBC p01:7DF7, que mete los bancos 10 y 11 y lo pinta
 C 0x5DBF y el siguiente
 C 0x5DC4 diez son todos
 C 0x5DC7 se reinicia el subestado
@@ -1332,7 +1332,7 @@ L 0x5E35 baja_el_contador
 C 0x5E35 el contador de la presentacion, un cuadro menos
 D 0x5E3A 0x5E3C tope_de_los_recorridos  Los dos topes que 0x5E2B compara: 4 y 11.
 F 0x5E3A 2
-D 0x5E3C 0x5E50 rotulos_de_la_presentacion  Diez punteros a los textos del banco 3, que 0x5DB3 recorre con el contador de 0xE155. El orden es simetrico -0xB3B7, 0xB3C1, 0xB3CB, 0xB3D6, 0xB3EA y luego los mismos al reves- porque el rotulo sale y vuelve a entrar; el decimo, 0xB3FE, es el que cierra.
+D 0x5E3C 0x5E50 dibujos_de_la_presentacion  Diez punteros a guiones del BANCO 11, que 0x5DB3 recorre con el contador de 0xE155 y le pasa a p01:7DF7 -que es quien mete los bancos 10 y 11 y llama al pintor con mascara-. No son textos: son tiras de numeros de caracter que se sueltan en la tabla de nombres, o sea un dibujo por pasos. El orden es simetrico -0xB3B7, 0xB3C1, 0xB3CB, 0xB3D6, 0xB3EA y luego los mismos al reves- porque el dibujo se monta y se desmonta; el decimo, 0xB3FE, es el que cierra.
 F 0x5E3C w1
 D 0x5E50 0x5E60 las_cuatro_estrellas  Cuatro entradas de cuatro bytes, que 0x5DEA copia enteras a 0xE151: los dos primeros son el puntero a los tres caracteres del centelleo y los dos ultimos la direccion de VRAM donde va. Las dos parejas de punteros se repiten -0x5E60 y 0x5E63- porque lo que cambia entre unas estrellas y otras es DONDE estan, no como parpadean.
 F 0x5E50 w1,w1
@@ -2470,3 +2470,68 @@ C 0x5EF5 el mapa ya esta entero
 C 0x5EF6 sin interrupciones mientras cambia el mapa
 C 0x5EFC y en su copia de RAM
 C 0x5EFF el mapa ya esta entero1098 comentarios
+
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0x4050 el semaforo de reentrada de la interrupcion
+C 0x40FE la FASE, de 1 a 13
+C 0x410C el numero de fase tal como se pinta
+C 0x4151 la segunda copia del banco de 0x8000, la del sonido
+C 0x4157 la segunda copia del banco de 0xA000, la del sonido
+C 0x415F la copia en RAM del banco de 0x8000
+C 0x4167 la copia en RAM del banco de 0xA000
+C 0x4176 la copia en RAM del banco de 0x8000
+C 0x4179 la segunda copia del banco de 0xA000, la del sonido
+C 0x417F la copia en RAM del banco de 0xA000
+C 0x452B la pausa que se hace al perder o al cambiar de fase
+C 0x470B por que pareja del guion de la fase va
+C 0x472E lo andado en la fase
+C 0x4731 por que pareja del guion de la fase va
+C 0x473A la copia en RAM del banco de 0x8000
+C 0x4744 la copia en RAM del banco de 0xA000
+C 0x478F la copia en RAM del banco de 0x8000
+C 0x4799 la copia en RAM del banco de 0xA000
+C 0x47A3 la copia en RAM del banco de 0x8000
+C 0x47AD la copia en RAM del banco de 0xA000
+C 0x47CE la copia en RAM del banco de 0x8000
+C 0x47D8 la copia en RAM del banco de 0xA000
+C 0x49AE el DECORADO, de 0 a 9
+C 0x49C4 la tabla de cambio de color, nibble alto
+C 0x49EE la tabla de cambio de color, nibble alto
+C 0x4A18 la tabla de cambio de color, nibble alto
+C 0x4A24 el DECORADO, de 0 a 9
+C 0x4A34 la tabla de cambio de color, nibble alto
+C 0x4A46 la tabla de cambio de color, nibble alto
+C 0x4A61 la tabla de cambio de color, nibble alto
+C 0x4BFC el modo en el que esta el juego
+C 0x4CD1 el DECORADO, de 0 a 9
+C 0x4D12 el DECORADO, de 0 a 9
+C 0x4D7F el DECORADO, de 0 a 9
+C 0x4DB5 el DECORADO, de 0 a 9
+C 0x4E1A el DECORADO, de 0 a 9
+C 0x4E5B el DECORADO, de 0 a 9
+C 0x4EB6 el DECORADO, de 0 a 9
+C 0x4F00 el DECORADO, de 0 a 9
+C 0x4F5B el DECORADO, de 0 a 9
+C 0x4FAC el DECORADO, de 0 a 9
+C 0x502D el DECORADO, de 0 a 9
+C 0x50AA el DECORADO, de 0 a 9
+C 0x5127 el DECORADO, de 0 a 9
+C 0x5166 el DECORADO, de 0 a 9
+C 0x52B3 el DECORADO, de 0 a 9
+C 0x5323 el DECORADO, de 0 a 9
+C 0x543D el DECORADO, de 0 a 9
+C 0x54B1 el DECORADO, de 0 a 9
+C 0x559C el DECORADO, de 0 a 9
+C 0x561C el largo de la fase
+C 0x5814 el DECORADO, de 0 a 9
+C 0x5845 el DECORADO, de 0 a 9
+C 0x587F el DECORADO, de 0 a 9
+
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0x489A la bandera de PAUSA
+C 0x5E70 los avisos que deja el cuadro
+C 0x5EE9 los avisos que deja el cuadro

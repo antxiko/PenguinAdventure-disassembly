@@ -18,19 +18,34 @@
 0xABC3   # p00:45FA call
 0xAC52   # p00:45FD call
 0xB581   # tabla de 0xA8D1, entrada 0
+0xB5AD   # tabla de 0xA98A, entrada 0
 0xB60A   # tabla de 0xA8D1, entrada 1
+0xB60B   # tabla de 0xA98A, entrada 1
 0xB60C   # tabla de 0xA8D1, entrada 2
+0xB60D   # tabla de 0xA98A, entrada 2
 0xB60E   # tabla de 0xA8D1, entrada 3
+0xB60F   # tabla de 0xA98A, entrada 3
 0xB610   # tabla de 0xA8D1, entrada 4
 0xB616   # p00:45EB call
+0xB6C8   # tabla de 0xA98A, entrada 4
 0xB6F4   # tabla de 0xA8D1, entrada 5
+0xB71B   # tabla de 0xA98A, entrada 5
 0xB873   # tabla de 0xA8D1, entrada 6
+0xB8AE   # tabla de 0xA98A, entrada 6
 0xB909   # tabla de 0xA8D1, entrada 7
+0xB90A   # tabla de 0xA98A, entrada 7
 0xB90B   # tabla de 0xA8D1, entrada 8
+0xB9C0   # tabla de 0xA98A, entrada 8
 0xBAE0   # tabla de 0xA8D1, entrada 9
+0xBB1E   # tabla de 0xA98A, entrada 9
 0xBB9B   # tabla de 0xA8D1, entrada 10
 0xBBA1   # p00:45EE call
+0xBC3C   # tabla de 0xA98A, entrada 10
 0xBCBF   # tabla de 0xA8D1, entrada 11
+0xBCFB   # tabla de 0xA98A, entrada 11
 0xBD0F   # tabla de 0xA8D1, entrada 12
+0xBD33   # tabla de 0xA98A, entrada 12
 0xBE01   # tabla de 0xA8D1, entrada 13
+0xBE51   # tabla de 0xA98A, entrada 13
 0xBE52   # tabla de 0xA8D1, entrada 14
+0xBE7E   # tabla de 0xA98A, entrada 14

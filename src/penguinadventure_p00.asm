@@ -102,7 +102,7 @@ interrupcion:
 	call lee_los_mandos		;4049   ; la parte del cuadro que vive en el banco fijo
 	call 08000h		;404c   ; y la que vive en el banco que haya en 0x8000, que es el modulo que este mandando ahora
 	xor a			;404f   ; ocupado a cero
-	ld (0e005h),a		;4050
+	ld (0e005h),a		;4050   ; el semaforo de reentrada de la interrupcion
 interrupcion_sale:
 	ei			;4053
 	ret			;4054
@@ -232,14 +232,14 @@ arranca_en_la_fase_pedida:
 	and a			;40fa   ; si es cero es que no ha pedido ninguna
 	jr nz,L_4101		;40fb
 	inc a			;40fd   ; y entonces se empieza por la primera
-	ld (0e092h),a		;40fe
+	ld (0e092h),a		;40fe   ; la FASE, de 1 a 13
 L_4101:
 	ld a,(0e092h)		;4101   ; y con la fase en la mano se sacan las dos cosas que dependen de ella
 	dec a			;4104   ; las tablas van desde 1, no desde 0
 	ld hl,04120h		;4105   ; la primera tabla
 	call a_mas_hl		;4108   ; HL = 0x4120 + fase - 1
 	ld a,(hl)			;410b   ; el numero de fase tal como se pinta
-	ld (0e091h),a		;410c
+	ld (0e091h),a		;410c   ; el numero de fase tal como se pinta
 	ld a,(0e092h)		;410f   ; otra vez la fase
 	dec a			;4112
 	ld hl,0412dh		;4113   ; y la segunda tabla
@@ -289,25 +289,25 @@ L_4147:
 	push iy		;414b
 	push af			;414d
 	ld a,(0f0f2h)		;414e   ; la SEGUNDA copia: lo que hubiera en 0x8000...
-	ld (0f0f4h),a		;4151
+	ld (0f0f4h),a		;4151   ; la segunda copia del banco de 0x8000, la del sonido
 	ld a,(0f0f3h)		;4154   ; ...y en 0xA000
-	ld (0f0f5h),a		;4157
+	ld (0f0f5h),a		;4157   ; la segunda copia del banco de 0xA000, la del sonido
 	ld a,00eh		;415a   ; el 14, que es el reproductor
 	ld (08000h),a		;415c   ; a 0x8000, y ahora si tocando la copia de siempre
-	ld (0f0f2h),a		;415f
+	ld (0f0f2h),a		;415f   ; la copia en RAM del banco de 0x8000
 	ld a,00fh		;4162   ; el 15, sus datos
 	ld (0a000h),a		;4164
-	ld (0f0f3h),a		;4167
+	ld (0f0f3h),a		;4167   ; la copia en RAM del banco de 0xA000
 	pop af			;416a   ; A vuelve a llevar el numero de efecto
 	push af			;416b
 	call 086bah		;416c   ; la puerta del reproductor para los efectos
 	di			;416f
 	ld a,(0f0f4h)		;4170   ; y a devolver las ranuras desde la segunda copia
 	ld (08000h),a		;4173
-	ld (0f0f2h),a		;4176
-	ld a,(0f0f5h)		;4179
+	ld (0f0f2h),a		;4176   ; la copia en RAM del banco de 0x8000
+	ld a,(0f0f5h)		;4179   ; la segunda copia del banco de 0xA000, la del sonido
 	ld (0a000h),a		;417c
-	ld (0f0f3h),a		;417f
+	ld (0f0f3h),a		;417f   ; la copia en RAM del banco de 0xA000
 	pop af			;4182
 	pop iy		;4183
 	pop ix		;4185
@@ -1000,7 +1000,7 @@ cuadro:
 	jr cuadro_llama_a_los_modulos		;4528
 cuadro_en_pausa:
 	dec a			;452a   ; la pausa se acorta un cuadro
-	ld (0e0dch),a		;452b
+	ld (0e0dch),a		;452b   ; la pausa que se hace al perder o al cambiar de fase
 	ld a,(0e1f1h)		;452e   ; si esta a cero, hay que retocar dos sprites
 	and a			;4531
 	jr nz,cuadro_pausa_sprites		;4532
@@ -1222,7 +1222,7 @@ monta_la_fase_desde_el_decorado:		; Aqui es donde entra el callback del Game Mas
 ; ----------------------------------------------------------------------
 reempieza:
 	ld hl,(0e301h)		;4708   ; lo que hay que salvar
-	ld a,(0e300h)		;470b
+	ld a,(0e300h)		;470b   ; por que pareja del guion de la fase va
 	push hl			;470e   ; a la pila, que ahora se borra por encima
 	push af			;470f
 	ld hl,0e1f0h		;4710   ; desde 0xE1F0
@@ -1239,17 +1239,17 @@ reempieza:
 	ldir		;472a
 	pop af			;472c   ; y se devuelve lo salvado
 	pop hl			;472d
-	ld (0e301h),hl		;472e
-	ld (0e300h),a		;4731
+	ld (0e301h),hl		;472e   ; lo andado en la fase
+	ld (0e300h),a		;4731   ; por que pareja del guion de la fase va
 	di			;4734
 	ld a,00ah		;4735   ; el banco 10 a 0x8000
 	ld (08000h),a		;4737
-	ld (0f0f2h),a		;473a
+	ld (0f0f2h),a		;473a   ; la copia en RAM del banco de 0x8000
 	ei			;473d
 	di			;473e
 	ld a,00bh		;473f   ; y el 11 a 0xA000
 	ld (0a000h),a		;4741
-	ld (0f0f3h),a		;4744
+	ld (0f0f3h),a		;4744   ; la copia en RAM del banco de 0xA000
 	ei			;4747
 
 ; ----------------------------------------------------------------------
@@ -1307,12 +1307,12 @@ reparte_siguiente:
 	di			;4789
 	ld a,002h		;478a   ; y a devolver el 2 y el 3
 	ld (08000h),a		;478c
-	ld (0f0f2h),a		;478f
+	ld (0f0f2h),a		;478f   ; la copia en RAM del banco de 0x8000
 	ei			;4792
 	di			;4793
 	ld a,003h		;4794
 	ld (0a000h),a		;4796
-	ld (0f0f3h),a		;4799
+	ld (0f0f3h),a		;4799   ; la copia en RAM del banco de 0xA000
 	ei			;479c
 
 ; ----------------------------------------------------------------------
@@ -1322,12 +1322,12 @@ lee_los_datos_de_la_fase:
 	di			;479d
 	ld a,00ch		;479e   ; el banco 12
 	ld (08000h),a		;47a0
-	ld (0f0f2h),a		;47a3
+	ld (0f0f2h),a		;47a3   ; la copia en RAM del banco de 0x8000
 	ei			;47a6
 	di			;47a7
 	ld a,00dh		;47a8   ; y el 13
 	ld (0a000h),a		;47aa
-	ld (0f0f3h),a		;47ad
+	ld (0f0f3h),a		;47ad   ; la copia en RAM del banco de 0xA000
 	ei			;47b0
 	ld a,(0e092h)		;47b1   ; la FASE, que va de 1 a 13
 	dec a			;47b4   ; las tablas empiezan en la 1
@@ -1346,12 +1346,12 @@ lee_los_datos_de_la_fase:
 	di			;47c8
 	ld a,002h		;47c9   ; el 2 y el 3, de vuelta
 	ld (08000h),a		;47cb
-	ld (0f0f2h),a		;47ce
+	ld (0f0f2h),a		;47ce   ; la copia en RAM del banco de 0x8000
 	ei			;47d1
 	di			;47d2
 	ld a,003h		;47d3
 	ld (0a000h),a		;47d5
-	ld (0f0f3h),a		;47d8
+	ld (0f0f3h),a		;47d8   ; la copia en RAM del banco de 0xA000
 	ei			;47db
 	call 0624ch		;47dc   ; banco 1
 	jp 06323h		;47df   ; y la ultima, tambien en el banco 1
@@ -1455,7 +1455,7 @@ L_481B:
 	ld (hl),a			;4897   ; apuntado en 0xF0F3
 	pop hl			;4898   ; HL, como estaba
 	ei			;4899   ; el mapa ya esta entero
-	ld a,(0e0a0h)		;489a
+	ld a,(0e0a0h)		;489a   ; la bandera de PAUSA
 	and a			;489d
 	ret z			;489e
 	di			;489f   ; sin interrupciones mientras cambia el mapa
@@ -1602,7 +1602,7 @@ L_4995:
 	ld (hl),a			;49ab   ; apuntado en 0xF0F3
 	pop hl			;49ac   ; HL, como estaba
 	ei			;49ad   ; el mapa ya esta entero
-	ld a,(0e0a1h)		;49ae
+	ld a,(0e0a1h)		;49ae   ; el DECORADO, de 0 a 9
 	ld hl,04a89h		;49b1
 	call a_mas_hl		;49b4
 	ld a,(hl)			;49b7
@@ -1610,7 +1610,7 @@ L_4995:
 	ld bc,00008h		;49bb
 	call 00056h		;49be   ; BIOS FILVRM - Fills VRAM with value
 	ld hl,02200h		;49c1
-	ld (0e4e0h),hl		;49c4
+	ld (0e4e0h),hl		;49c4   ; la tabla de cambio de color, nibble alto
 	ld hl,00200h		;49c7
 	ld (0e4e2h),hl		;49ca
 	ld hl,04a93h		;49cd
@@ -1633,7 +1633,7 @@ L_49D2:
 	pop hl			;49e9   ; HL, como estaba
 	ei			;49ea   ; el mapa ya esta entero
 	ld hl,03008h		;49eb
-	ld (0e4e0h),hl		;49ee
+	ld (0e4e0h),hl		;49ee   ; la tabla de cambio de color, nibble alto
 	ld hl,01008h		;49f1
 	ld (0e4e2h),hl		;49f4
 	ld hl,04b5bh		;49f7
@@ -1656,12 +1656,12 @@ L_49FC:
 	pop hl			;4a13   ; HL, como estaba
 	ei			;4a14   ; el mapa ya esta entero
 	ld hl,02808h		;4a15
-	ld (0e4e0h),hl		;4a18
+	ld (0e4e0h),hl		;4a18   ; la tabla de cambio de color, nibble alto
 	ld hl,00808h		;4a1b
 	ld (0e4e2h),hl		;4a1e
 	ld hl,04af7h		;4a21
 L_4A24:
-	ld a,(0e0a1h)		;4a24
+	ld a,(0e0a1h)		;4a24   ; el DECORADO, de 0 a 9
 	add a,a			;4a27
 	ld c,a			;4a28
 	add a,a			;4a29
@@ -1673,7 +1673,7 @@ L_4A24:
 	ld d,(hl)			;4a31
 	inc hl			;4a32
 	push hl			;4a33
-	ld hl,(0e4e0h)		;4a34
+	ld hl,(0e4e0h)		;4a34   ; la tabla de cambio de color, nibble alto
 	ld c,000h		;4a37
 	call pinta		;4a39
 	pop hl			;4a3c
@@ -1686,7 +1686,7 @@ L_4A24:
 	push hl			;4a43
 	ld h,(hl)			;4a44
 	ld l,a			;4a45
-	ld (0e4e0h),hl		;4a46
+	ld (0e4e0h),hl		;4a46   ; la tabla de cambio de color, nibble alto
 	ld c,001h		;4a49
 	call pinta		;4a4b
 	pop hl			;4a4e
@@ -1703,7 +1703,7 @@ L_4A24:
 	ld e,(hl)			;4a5e
 	inc hl			;4a5f
 	ld d,(hl)			;4a60
-	ld hl,(0e4e0h)		;4a61
+	ld hl,(0e4e0h)		;4a61   ; la tabla de cambio de color, nibble alto
 	ld bc,02000h		;4a64
 	and a			;4a67
 	sbc hl,bc		;4a68
@@ -1785,7 +1785,7 @@ L_4BBF:
 	ld de,08a6ch		;4bf3
 	ld hl,00368h		;4bf6
 	call pinta_en_los_tres		;4bf9   ; el guion 0x8A6C del banco 5: 360 bytes de colores (0x0368-0x03DF 0x0B68-0x0BDF 0x1368-0x13DF)
-	ld a,(0e0a2h)		;4bfc
+	ld a,(0e0a2h)		;4bfc   ; el modo en el que esta el juego
 	cp 004h		;4bff
 	jr nz,L_4C1E		;4c01
 	ld de,08abbh		;4c03
@@ -1886,7 +1886,7 @@ L_4C38:
 	ei			;4ccf   ; el mapa ya esta entero
 	ret			;4cd0
 L_4CD1:
-	ld a,(0e0a1h)		;4cd1
+	ld a,(0e0a1h)		;4cd1   ; el DECORADO, de 0 a 9
 	cp 008h		;4cd4
 	ret z			;4cd6
 	di			;4cd7   ; sin interrupciones mientras cambia el mapa
@@ -1917,7 +1917,7 @@ L_4CD1:
 	ld hl,036f0h		;4d0a
 	ld c,001h		;4d0d
 	call pinta		;4d0f   ; el guion 0x6230 del banco 7: 8 bytes de patrones (0x36F0-0x36F7)
-	ld a,(0e0a1h)		;4d12
+	ld a,(0e0a1h)		;4d12   ; el DECORADO, de 0 a 9
 	cp 002h		;4d15
 	ld hl,0970eh		;4d17
 	jr c,L_4D31		;4d1a
@@ -1968,7 +1968,7 @@ L_4D31:
 	ei			;4d7d   ; el mapa ya esta entero
 	ret			;4d7e
 L_4D7F:
-	ld a,(0e0a1h)		;4d7f
+	ld a,(0e0a1h)		;4d7f   ; el DECORADO, de 0 a 9
 	cp 008h		;4d82
 	ret z			;4d84
 	di			;4d85   ; sin interrupciones mientras cambia el mapa
@@ -1995,7 +1995,7 @@ L_4D7F:
 	call pinta		;4dac   ; el guion 0x6360 del banco 7: 48 bytes de patrones (0x2ED0-0x2EFF)
 	ld de,063b9h		;4daf
 	call pinta_sin_color		;4db2   ; el guion 0x63B9 del banco 7: 216 bytes de patrones (0x3718-0x37EF)
-	ld a,(0e0a1h)		;4db5
+	ld a,(0e0a1h)		;4db5   ; el DECORADO, de 0 a 9
 	cp 002h		;4db8
 	ld hl,09756h		;4dba
 	jr c,L_4DD7		;4dbd
@@ -2043,7 +2043,7 @@ L_4DD7:
 	ei			;4e18   ; el mapa ya esta entero
 	ret			;4e19
 L_4E1A:
-	ld a,(0e0a1h)		;4e1a
+	ld a,(0e0a1h)		;4e1a   ; el DECORADO, de 0 a 9
 	cp 004h		;4e1d
 	ret nc			;4e1f
 	di			;4e20   ; sin interrupciones mientras cambia el mapa
@@ -2074,7 +2074,7 @@ L_4E1A:
 	ld hl,03378h		;4e53
 	ld c,001h		;4e56
 	call pinta		;4e58   ; el guion 0x6538 del banco 7: 56 bytes de patrones (0x3378-0x33AF)
-	ld a,(0e0a1h)		;4e5b
+	ld a,(0e0a1h)		;4e5b   ; el DECORADO, de 0 a 9
 	cp 002h		;4e5e
 	ld hl,097b6h		;4e60
 	jr c,L_4E68		;4e63
@@ -2117,7 +2117,7 @@ L_4E68:
 	ei			;4eb4   ; el mapa ya esta entero
 	ret			;4eb5
 L_4EB6:
-	ld a,(0e0a1h)		;4eb6
+	ld a,(0e0a1h)		;4eb6   ; el DECORADO, de 0 a 9
 	cp 004h		;4eb9
 	ret z			;4ebb
 	cp 005h		;4ebc
@@ -2154,7 +2154,7 @@ L_4EB6:
 	ld hl,03470h		;4ef8
 	ld c,001h		;4efb
 	call pinta		;4efd   ; el guion 0x665A del banco 7: 152 bytes de patrones (0x3470-0x3507)
-	ld a,(0e0a1h)		;4f00
+	ld a,(0e0a1h)		;4f00   ; el DECORADO, de 0 a 9
 	cp 002h		;4f03
 	ld hl,097ceh		;4f05
 	jr c,L_4F0D		;4f08
@@ -2197,7 +2197,7 @@ L_4F0D:
 	ei			;4f59   ; el mapa ya esta entero
 	ret			;4f5a
 L_4F5B:
-	ld a,(0e0a1h)		;4f5b
+	ld a,(0e0a1h)		;4f5b   ; el DECORADO, de 0 a 9
 	cp 007h		;4f5e
 	ret nz			;4f60
 	di			;4f61   ; sin interrupciones mientras cambia el mapa
@@ -2242,7 +2242,7 @@ L_4F5B:
 	ei			;4faa   ; el mapa ya esta entero
 	ret			;4fab
 L_4FAC:
-	ld a,(0e0a1h)		;4fac
+	ld a,(0e0a1h)		;4fac   ; el DECORADO, de 0 a 9
 	cp 004h		;4faf
 	jr z,L_4FB6		;4fb1
 	cp 005h		;4fb3
@@ -2306,7 +2306,7 @@ L_4FB6:
 	ei			;502b   ; el mapa ya esta entero
 	ret			;502c
 L_502D:
-	ld a,(0e0a1h)		;502d
+	ld a,(0e0a1h)		;502d   ; el DECORADO, de 0 a 9
 	cp 007h		;5030
 	ret nz			;5032
 	di			;5033   ; sin interrupciones mientras cambia el mapa
@@ -2367,7 +2367,7 @@ L_502D:
 	ei			;50a8   ; el mapa ya esta entero
 	ret			;50a9
 L_50AA:
-	ld a,(0e0a1h)		;50aa
+	ld a,(0e0a1h)		;50aa   ; el DECORADO, de 0 a 9
 	cp 008h		;50ad
 	ret nz			;50af
 	di			;50b0   ; sin interrupciones mientras cambia el mapa
@@ -2428,7 +2428,7 @@ L_50AA:
 	ei			;5125   ; el mapa ya esta entero
 	ret			;5126
 L_5127:
-	ld a,(0e0a1h)		;5127
+	ld a,(0e0a1h)		;5127   ; el DECORADO, de 0 a 9
 	cp 008h		;512a
 	ret nz			;512c
 	di			;512d   ; sin interrupciones mientras cambia el mapa
@@ -2467,7 +2467,7 @@ L_5127:
 	ei			;5164   ; el mapa ya esta entero
 	ret			;5165
 L_5166:
-	ld a,(0e0a1h)		;5166
+	ld a,(0e0a1h)		;5166   ; el DECORADO, de 0 a 9
 	cp 005h		;5169
 	ret z			;516b
 	cp 006h		;516c
@@ -2660,7 +2660,7 @@ L_529A:
 	ld (hl),a			;52b0   ; apuntado en 0xF0F3
 	pop hl			;52b1   ; HL, como estaba
 	ei			;52b2   ; el mapa ya esta entero
-	ld a,(0e0a1h)		;52b3
+	ld a,(0e0a1h)		;52b3   ; el DECORADO, de 0 a 9
 	cp 002h		;52b6
 	ld hl,09816h		;52b8
 	jr c,L_52D2		;52bb
@@ -2719,7 +2719,7 @@ L_530A:
 	ld (hl),a			;5320   ; apuntado en 0xF0F3
 	pop hl			;5321   ; HL, como estaba
 	ei			;5322   ; el mapa ya esta entero
-	ld a,(0e0a1h)		;5323
+	ld a,(0e0a1h)		;5323   ; el DECORADO, de 0 a 9
 	cp 002h		;5326
 	ld hl,09816h		;5328
 	jr c,L_5342		;532b
@@ -2870,7 +2870,7 @@ L_5424:
 	ld (hl),a			;543a   ; apuntado en 0xF0F3
 	pop hl			;543b   ; HL, como estaba
 	ei			;543c   ; el mapa ya esta entero
-	ld a,(0e0a1h)		;543d
+	ld a,(0e0a1h)		;543d   ; el DECORADO, de 0 a 9
 	cp 002h		;5440
 	ld hl,0982eh		;5442
 	jr c,L_544A		;5445
@@ -2929,7 +2929,7 @@ L_5498:
 	ld (hl),a			;54ae   ; apuntado en 0xF0F3
 	pop hl			;54af   ; HL, como estaba
 	ei			;54b0   ; el mapa ya esta entero
-	ld a,(0e0a1h)		;54b1
+	ld a,(0e0a1h)		;54b1   ; el DECORADO, de 0 a 9
 	cp 002h		;54b4
 	ld hl,0982eh		;54b6
 	jr c,L_54BE		;54b9
@@ -3046,7 +3046,7 @@ L_5561:
 	ld hl,032d8h		;5594
 	ld c,001h		;5597
 	call pinta		;5599   ; el guion 0x920B del banco 8: 32 bytes de patrones (0x32D8-0x32F7)
-	ld a,(0e0a1h)		;559c
+	ld a,(0e0a1h)		;559c   ; el DECORADO, de 0 a 9
 	cp 002h		;559f
 	ld hl,0982eh		;55a1
 	jr c,L_55A9		;55a4
@@ -3109,7 +3109,7 @@ L_55F7:
 	call pinta_sin_color		;5613   ; el guion 0x7E3A del banco 7: 704 bytes de patrones de sprite (0x19A0-0x1C5F)
 	ld de,082ddh		;5616
 	call pinta_sin_color		;5619   ; el guion 0x82DD del banco 8: 544 bytes de patrones de sprite (0x1C60-0x1E7F)
-	ld a,(0e08bh)		;561c
+	ld a,(0e08bh)		;561c   ; el largo de la fase
 	and 00fh		;561f
 	cp 007h		;5621
 	jr z,L_5630		;5623
@@ -3430,7 +3430,7 @@ L_57FB:
 	ld (hl),a			;5811   ; apuntado en 0xF0F3
 	pop hl			;5812   ; HL, como estaba
 	ei			;5813   ; el mapa ya esta entero
-	ld a,(0e0a1h)		;5814
+	ld a,(0e0a1h)		;5814   ; el DECORADO, de 0 a 9
 	cp 007h		;5817
 	jr z,L_585B		;5819
 	cp 008h		;581b
@@ -3452,7 +3452,7 @@ L_5839:
 	call pinta_bloque		;583f
 	call pinta_sin_color		;5842
 L_5845:
-	ld a,(0e0a1h)		;5845
+	ld a,(0e0a1h)		;5845   ; el DECORADO, de 0 a 9
 	cp 004h		;5848
 	jr z,L_5850		;584a
 	cp 005h		;584c
@@ -3476,7 +3476,7 @@ L_586D:
 	ld bc,00301h		;5876
 	call pinta_bloque		;5879
 	call pinta_sin_color		;587c
-	ld a,(0e0a1h)		;587f
+	ld a,(0e0a1h)		;587f   ; el DECORADO, de 0 a 9
 	cp 002h		;5882
 	jr z,L_588E		;5884
 	cp 003h		;5886
@@ -4215,7 +4215,7 @@ presentacion_estado_2:
 	jr presentacion_estado_siguiente		;5d61
 presentacion_se_van_volando:
 	dec a			;5d63   ; el subestado 1
-	jr nz,presentacion_escribe_los_rotulos		;5d64
+	jr nz,presentacion_dibuja_por_pasos		;5d64
 	ld a,(0e003h)		;5d66   ; uno de cada dos cuadros
 	and 001h		;5d69
 	ret nz			;5d6b
@@ -4256,19 +4256,19 @@ presentacion_estado_siguiente:
 	ret			;5da9
 
 ; ----------------------------------------------------------------------
-; LOS ROTULOS DE LA PRESENTACION. Uno cada ocho cuadros, sacando el puntero de la tabla de 0x5E3C con el contador de 0xE155 y pasandoselo al escritor de texto del banco 1. Son DIEZ: cuando el contador llega a diez se acaba y se pasa al estado siguiente.
+; EL DIBUJO QUE SE MONTA SOLO. Uno cada ocho cuadros, sacando el guion de la tabla de 0x5E3C con el contador de 0xE155 y pasandoselo a p01:7DF7. Son DIEZ pasos, y los cinco ultimos son los cinco primeros al reves: el dibujo aparece y se deshace.
 ; ----------------------------------------------------------------------
-presentacion_escribe_los_rotulos:
+presentacion_dibuja_por_pasos:
 	ld a,(0e003h)		;5daa   ; el contador de cuadros
 	and 007h		;5dad   ; uno de cada ocho
 	ret nz			;5daf
-	ld a,(0e155h)		;5db0   ; por que rotulo va
-	ld hl,05e3ch		;5db3   ; la tabla de punteros
+	ld a,(0e155h)		;5db0   ; por que paso va
+	ld hl,05e3ch		;5db3   ; la tabla de los diez guiones
 	call dos_por_a_mas_hl		;5db6   ; dos bytes por entrada
 	ld e,(hl)			;5db9
 	inc hl			;5dba
 	ld d,(hl)			;5dbb
-	call 07df7h		;5dbc   ; el escritor de texto, en el banco 1
+	call 07df7h		;5dbc   ; p01:7DF7, que mete los bancos 10 y 11 y lo pinta
 	ld hl,0e155h		;5dbf   ; y el siguiente
 	inc (hl)			;5dc2
 	ld a,(hl)			;5dc3
@@ -4350,13 +4350,15 @@ DATA_tope_de_los_recorridos:
 	defb 004h,00bh	; 5e3a
 
 ; ----------------------------------------------------------------------
-; DATOS rotulos_de_la_presentacion: Diez punteros a los textos del banco 3,
-;   que 0x5DB3 recorre con el contador de 0xE155. El orden es simetrico
-;   -0xB3B7, 0xB3C1, 0xB3CB, 0xB3D6, 0xB3EA y luego los mismos al reves-
-;   porque el rotulo sale y vuelve a entrar; el decimo, 0xB3FE, es el que
-;   cierra.
+; DATOS dibujos_de_la_presentacion: Diez punteros a guiones del BANCO 11, que
+;   0x5DB3 recorre con el contador de 0xE155 y le pasa a p01:7DF7 -que es
+;   quien mete los bancos 10 y 11 y llama al pintor con mascara-. No son
+;   textos: son tiras de numeros de caracter que se sueltan en la tabla de
+;   nombres, o sea un dibujo por pasos. El orden es simetrico -0xB3B7, 0xB3C1,
+;   0xB3CB, 0xB3D6, 0xB3EA y luego los mismos al reves- porque el dibujo se
+;   monta y se desmonta; el decimo, 0xB3FE, es el que cierra.
 ;   0x5e3c..0x5e50  (20 bytes)
-DATA_rotulos_de_la_presentacion:
+DATA_dibujos_de_la_presentacion:
 	defw 0b3b7h	; 5e3c
 	defw 0b3c1h	; 5e3e
 	defw 0b3cbh	; 5e40
@@ -4412,7 +4414,7 @@ DATA_recorrido_del_sprite:
 ; ----------------------------------------------------------------------
 rotulos_que_suben:
 	ld a,001h		;5e6e   ; la bandera que corta la segunda mitad del cuadro
-	ld (0e096h),a		;5e70
+	ld (0e096h),a		;5e70   ; los avisos que deja el cuadro
 	ld a,(0e003h)		;5e73   ; el contador de cuadros
 	and 01fh		;5e76   ; uno de cada treinta y dos
 	ret nz			;5e78
@@ -4475,7 +4477,7 @@ L_5EE1:
 	and a			;5ee6
 	ret nz			;5ee7
 	xor a			;5ee8
-	ld (0e096h),a		;5ee9
+	ld (0e096h),a		;5ee9   ; los avisos que deja el cuadro
 L_5EEC:
 	di			;5eec   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;5eed

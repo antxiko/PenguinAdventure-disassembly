@@ -16,7 +16,7 @@
 0x4060   # p02:8014 call
 0x406A   # cabecera AB: INIT
 0x40F7   # callback de la cabecera CD: el Game Master salta aqui por CALSLT con la direccion que le da 0x4021
-0x413A   # p09:BE36 call
+0x413A   # p09:AB8A call
 0x4145   # p02:9C95 call
 0x418C   # p01:6164 call
 0x41AD   # p01:692D call

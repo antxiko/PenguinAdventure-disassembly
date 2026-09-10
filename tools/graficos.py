@@ -411,6 +411,113 @@ def hoja_de_sprites_de(cart, guion):
     return li, hoja_de_sprites(li)
 
 
+# ===================================================== el mapa de las fases
+# Las trece fases estan escritas en TRES guiones, y los tres hacen falta para
+# saber que hay en una fase:
+#
+#   p01:6737  el TERRENO. Tabla en el banco 10 -0x8000 para un jugador y 0x80F9
+#             para dos-, un puntero por fase, y detras de cinco a nueve bytes:
+#             los tramos de que se compone la fase, en orden.
+#   p09:A83F  los ENEMIGOS. Tabla en el banco 9 (0xA8FB), un puntero por fase, y
+#             detras parejas de (clase de objeto, cuanto hay que andar), con la
+#             distancia en BCD y cerradas con 0xFF.
+#   p01:66DA  el tercero, en el banco 13 (0xADE8), con entradas de tres bytes.
+TERRENO = {"1 jugador": 0x8000, "2 jugadores": 0x80F9}
+GUION_DE_ENEMIGOS = 0xA8FB
+N_FASES = 13
+
+# Un tipo de letra de 3x5, solo lo que hace falta para rotular el mapa.
+LETRAS = {
+    "0": "111101101101111", "1": "010110010010111", "2": "111001111100111",
+    "3": "111001111001111", "4": "101101111001001", "5": "111100111001111",
+    "6": "111100111101111", "7": "111001001001001", "8": "111101111101111",
+    "9": "111101111001111", "F": "111100110100100", "A": "010101111101101",
+    "B": "110101110101110", "C": "011100100100011", "D": "110101101101110",
+    "S": "111100111001111", "E": "111100110100111", " ": "000000000000000",
+    "-": "000000111000000", "/": "001001010100100",
+}
+
+
+def _letra(img, x, y, ch, color):
+    p = LETRAS.get(ch)
+    if not p:
+        return
+    for f in range(5):
+        for c in range(3):
+            if p[f * 3 + c] == "1":
+                img[y + f][x + c] = color
+
+
+def _texto(img, x, y, s, color):
+    for i, ch in enumerate(s):
+        _letra(img, x + i * 4, y, ch, color)
+
+
+def terreno_de_las_fases(cart, base):
+    """Los tramos de cada fase, del banco 10."""
+    b = (1, 10, 11)
+    def pal(a):
+        return cart.leer(a, b) | (cart.leer(a + 1, b) << 8)
+    ps = [pal(base + 2 * i) for i in range(N_FASES)]
+    fuera = []
+    for i in range(N_FASES):
+        fin = ps[i + 1] if i + 1 < N_FASES else ps[i] + (ps[i] - ps[i - 1])
+        fuera.append([cart.leer(ps[i] + k, b) for k in range(max(0, fin - ps[i]))])
+    return fuera
+
+
+def enemigos_de_las_fases(cart):
+    """Las parejas (clase, distancia) de cada fase, del banco 9."""
+    b = (7, 8, 9)
+    def pal(a):
+        return cart.leer(a, b) | (cart.leer(a + 1, b) << 8)
+    fuera = []
+    for f in range(N_FASES):
+        p = pal(GUION_DE_ENEMIGOS + 2 * f)
+        pares, a = [], p
+        for _ in range(120):
+            t, d = cart.leer(a, b), cart.leer(a + 1, b)
+            if t == 0xFF:
+                break
+            pares.append((t, d))
+            a += 2
+            if d == 0xFF:
+                break
+        fuera.append(pares)
+    return fuera
+
+
+def mapa_de_fases(cart, jugadores="1 jugador"):
+    """Las trece fases, una fila cada una: los tramos y donde sale cada bicho."""
+    terreno = terreno_de_las_fases(cart, TERRENO[jugadores])
+    enemigos = enemigos_de_las_fases(cart)
+    ancho, alto_fila = 30 + 13 * 20, 22
+    img = [[1] * ancho for _ in range(N_FASES * alto_fila + 8)]
+    for f in range(N_FASES):
+        y = 4 + f * alto_fila
+        _texto(img, 2, y + 4, "%2d" % (f + 1), 15)
+        # los tramos del terreno, uno por bloque
+        for i, t in enumerate(terreno[f]):
+            x = 30 + i * 20
+            col = 2 + (t % 13)
+            for dy in range(10):
+                for dx in range(18):
+                    img[y + dy][x + dx] = col
+            _texto(img, x + 2, y + 3, "%X" % (t >> 4), 1)
+            _texto(img, x + 8, y + 3, "%X" % (t & 15), 1)
+        # y debajo, una marca por cada bicho, repartidas por la fila
+        n = len(enemigos[f])
+        if n:
+            for i, (tipo, _d) in enumerate(enemigos[f]):
+                x = 30 + int(i * (ancho - 34) / max(1, n))
+                col = 2 + (tipo % 13)
+                for dy in range(5):
+                    for dx in range(3):
+                        if 0 <= x + dx < ancho:
+                            img[y + 12 + dy][x + dx] = col
+    return img
+
+
 def inventario(cart):
     """Que toca cada guion, sin dibujar: para ir cerrando el mapa de la VRAM."""
     for n in sorted(GUION_DE_NOMBRES):
@@ -434,6 +541,10 @@ def main():
         li = decorado(cart, n)
         hechas.append(guarda_png(pinta_pantalla(li),
                                  os.path.join(IMAGENES, "decorado_%d.png" % n)))
+    for jug in sorted(TERRENO):
+        img = mapa_de_fases(cart, jug)
+        hechas.append(guarda_png(img, os.path.join(
+            IMAGENES, "fases_%s.png" % jug.replace(" ", "_")), escala=2))
     for guion in GUIONES_DE_SPRITE:
         _li, img = hoja_de_sprites_de(cart, guion)
         hechas.append(guarda_png(img, os.path.join(

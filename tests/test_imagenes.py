@@ -202,5 +202,40 @@ class Imagenes(unittest.TestCase):
                            "la hoja de 0x7FBC sale casi vacia")
 
 
+    def test_las_trece_fases_estan_escritas_en_dos_guiones(self):
+        """El terreno y los enemigos, y son trece en los dos.
+
+        El terreno esta en el banco 10 -0x8000 para un jugador y 0x80F9 para
+        dos- con un puntero por fase y detras de cinco a nueve bytes, un tramo
+        cada uno. Los enemigos estan en el banco 9 (0xA8FB) con parejas de
+        (clase, distancia).
+        """
+        for jug, base in sorted(graficos.TERRENO.items()):
+            t = graficos.terreno_de_las_fases(self.cart, base)
+            self.assertEqual(len(t), 13, "%s: no salen trece fases" % jug)
+            for i, tramos in enumerate(t):
+                self.assertTrue(5 <= len(tramos) <= 9,
+                                "%s, fase %d: %d tramos" % (jug, i + 1, len(tramos)))
+        e = graficos.enemigos_de_las_fases(self.cart)
+        self.assertEqual(len(e), 13)
+
+    def test_la_partida_de_dos_es_OTRO_diseno(self):
+        """No es la misma fase con mas bichos: el terreno cambia entero."""
+        uno = graficos.terreno_de_las_fases(self.cart, graficos.TERRENO["1 jugador"])
+        dos = graficos.terreno_de_las_fases(self.cart, graficos.TERRENO["2 jugadores"])
+        iguales = sum(1 for a, b in zip(uno, dos) if a == b)
+        self.assertEqual(iguales, 0,
+                         "%d fases tienen el mismo terreno en las dos partidas"
+                         % iguales)
+        # pero el numero de tramos por fase SI coincide: es el mismo esqueleto
+        self.assertEqual([len(x) for x in uno], [len(x) for x in dos])
+
+    def test_las_tres_primeras_fases_sin_enemigos(self):
+        """Las fases 1, 2 y 4 no traen ni un bicho en su guion."""
+        e = graficos.enemigos_de_las_fases(self.cart)
+        vacias = {i + 1 for i, p in enumerate(e) if not p}
+        self.assertEqual(vacias, {1, 2, 4})
+
+
 if __name__ == "__main__":
     unittest.main()

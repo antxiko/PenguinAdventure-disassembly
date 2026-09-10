@@ -317,3 +317,8 @@ C 0x80C4 las cuatro voces atendidas
 C 0x80C9 sin efecto, se atiende normal
 C 0x80CB el volumen entra a cero
 C 0x80CD y se escribe directamente
+
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0x86DF la prioridad del efecto que suena

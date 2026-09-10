@@ -14,140 +14,167 @@
 ; ======================================================================
 
 
-L_8000:
-	ld hl,0e003h		;8000
-	inc (hl)			;8003
-	ld a,(0e000h)		;8004
-	cp 003h		;8007
-	jr nc,L_800F		;8009
-	ld hl,08a55h		;800b
-	push hl			;800e
-L_800F:
-	ld bc,(0e000h)		;800f
-	ld a,c			;8013
-	call 04060h		;8014
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8017..0x8037  (32 bytes)
-DATA_8017:
-	defb 037h,080h,060h,080h,073h,080h,099h,080h,04bh,081h,0c5h,081h,078h,082h,0a9h,083h	; 8017  7.`.s...K...x...
-	defb 0e1h,084h,038h,085h,0d2h,085h,048h,086h,0c6h,086h,000h,088h,006h,088h,033h,089h	; 8027  ..8...H.......3.
+; LA MAQUINA DE ESTADOS. Dieciseis estados y, dentro de cada uno, tantos SUBESTADOS como haga falta. El truco esta en el `ld bc,(0xE000)` de 0x800F: con una sola instruccion se cargan los dos, el estado en C y el subestado en B, y luego el despachador de la casa salta por C mientras cada estado va bajando B con `djnz` hasta dar con el subestado que toca. Salir de un subestado es tan corto como `inc (hl)` sobre 0xE001, que es lo que hace 0x8094.
+; Y el detalle de 0x800B: en los estados 0, 1 y 2 se mete 0x8A55 en la PILA antes de despachar, de modo que cuando el estado haga `ret` no vuelva a quien le llamo sino ahi. Es una forma de encadenar sin gastar una llamada.
+; ----------------------------------------------------------------------
+maquina_de_estados:
+	ld hl,0e003h		;8000   ; el contador de cuadros
+	inc (hl)			;8003   ; uno mas, y es el reloj de todo el juego
+	ld a,(0e000h)		;8004   ; la variable de fase
+	cp 003h		;8007   ; los estados 0, 1 y 2 son los de la presentacion
+	jr nc,L_800F		;8009
+	ld hl,08a55h		;800b   ; y en ellos se cuela un destino en la pila
+	push hl			;800e
+L_800F:
+	ld bc,(0e000h)		;800f   ; la variable de fase
+	ld a,c			;8013   ; se despacha por el estado
+	call 04060h		;8014   ; el despachador de la casa: la tabla va pegada detras
+
+; ----------------------------------------------------------------------
+; DATOS estados_del_juego: Los dieciseis estados, y la tabla acaba justo donde
+;   empieza el primero de ellos: 0x8037, 0x8060, 0x8073, 0x8099, 0x814B,
+;   0x81C5, 0x8278, 0x83A9, 0x84E1, 0x8538, 0x85D2, 0x8648, 0x86C6, 0x8800,
+;   0x8806 y 0x8933.
+;   0x8017..0x8037  (32 bytes)
+DATA_estados_del_juego:
+	defw 08037h	; 8017  -> estado_0
+	defw 08060h	; 8019  -> estado_1
+	defw 08073h	; 801b  -> L_8073
+	defw 08099h	; 801d  -> estado_3
+	defw 0814bh	; 801f  -> estado_4
+	defw 081c5h	; 8021  -> estado_5_jugar
+	defw 08278h	; 8023  -> estado_6
+	defw 083a9h	; 8025  -> L_83A9
+	defw 084e1h	; 8027  -> L_84E1
+	defw 08538h	; 8029  -> L_8538
+	defw 085d2h	; 802b  -> L_85D2
+	defw 08648h	; 802d  -> L_8648
+	defw 086c6h	; 802f  -> L_86C6
+	defw 08800h	; 8031  -> L_8800
+	defw 08806h	; 8033  -> L_8806
+	defw 08933h	; 8035  -> L_8933
 
 ; ======================================================================
 ; CODIGO 0x8037..0x86c2  (1675 bytes)
 ; ======================================================================
 
 
-L_8037:
-	djnz L_8045		;8037
-	ld a,(0e003h)		;8039
-	rra			;803c
+estado_0:
+	djnz estado_0_subestado_1		;8037   ; el subestado
+	ld a,(0e003h)		;8039   ; el contador de cuadros
+	rra			;803c   ; uno de cada dos
 	ret nc			;803d
 	call L_8AB8		;803e
 	ret nz			;8041
-	xor a			;8042
-	jr L_8091		;8043
-L_8045:
-	djnz L_8052		;8045
-	ld hl,0e004h		;8047
+	xor a			;8042   ; a cero
+	jr pon_la_espera_y_avanza		;8043
+estado_0_subestado_1:
+	djnz estado_0_subestado_2		;8045
+	ld hl,0e004h		;8047   ; el contador de espera
 	dec (hl)			;804a
-	ret nz			;804b
-	call 05c95h		;804c
-	jp L_8198		;804f
-L_8052:
-	call 0449eh		;8052
-	call 04224h		;8055
+	ret nz			;804b   ; mientras no llegue a cero, nada
+	call 05c95h		;804c   ; montar la presentacion
+	jp pasa_al_estado_siguiente		;804f
+estado_0_subestado_2:
+	call 0449eh		;8052   ; los ocho registros del VDP
+	call 04224h		;8055   ; borrar la pantalla
 	call 05b91h		;8058
 	call L_8A8D		;805b
-	jr L_8094		;805e
-L_8060:
-	call 042fbh		;8060
-	call 05cd6h		;8063
-	ld a,(0e00fh)		;8066
+	jr avanza_el_subestado		;805e
+estado_1:
+	call 042fbh		;8060   ; subir los sprites
+	call 05cd6h		;8063   ; el cuadro de la presentacion
+	ld a,(0e00fh)		;8066   ; una bandera de la presentacion
 	and a			;8069
 	ret nz			;806a
-	ld a,0cbh		;806b
-	call 04145h		;806d
-	jp L_8198		;8070
+	ld a,0cbh		;806b   ; el efecto 0xCB
+	call 04145h		;806d   ; banco 0: pide_sonido
+	jp pasa_al_estado_siguiente		;8070
 L_8073:
-	djnz L_8088		;8073
+	djnz estado_2		;8073
 	call 07f11h		;8075
 	call 07f0eh		;8078
-	ld a,(0e097h)		;807b
+	ld a,(0e097h)		;807b   ; la bandera de que la fase se ha acabado
 	or a			;807e
 	ret nz			;807f
-L_8080:
-	ld a,0ffh		;8080
-L_8082:
-	ld (0e000h),a		;8082
-	jp L_8198		;8085
-L_8088:
-	call 04224h		;8088
+estado_a_0xFF:
+	ld a,0ffh		;8080   ; 0xFF: el estado se dara la vuelta a 0 al sumarle uno
+pon_el_estado:
+	ld (0e000h),a		;8082   ; la variable de fase
+	jp pasa_al_estado_siguiente		;8085
+estado_2:
+	call 04224h		;8088   ; borrar la pantalla
 	call 05bb6h		;808b
 	call 07e7fh		;808e
-L_8091:
-	ld (0e004h),a		;8091
-L_8094:
-	ld hl,0e001h		;8094
-	inc (hl)			;8097
+pon_la_espera_y_avanza:
+	ld (0e004h),a		;8091   ; lo que haya en A pasa a ser la espera
+avanza_el_subestado:
+	ld hl,0e001h		;8094   ; el subestado
+	inc (hl)			;8097   ; uno mas
 	ret			;8098
-L_8099:
-	djnz L_80B5		;8099
-	ld hl,0e004h		;809b
+
+; ----------------------------------------------------------------------
+; ESTADO 3: EL MENU. El que espera a que se pulse algo, hace parpadear el rotulo y deja elegir entre uno y dos jugadores. La eleccion vive en 0xE082 y los dos rotulos que se intercambian son los guiones 0x8E0A y 0x8E14.
+; ----------------------------------------------------------------------
+estado_3:
+	djnz estado_3_subestado_2		;8099   ; el subestado
+	ld hl,0e004h		;809b   ; el contador
 	dec (hl)			;809e
-	jr z,L_80AE		;809f
-	bit 2,(hl)		;80a1
-	ld de,08de7h		;80a3
-	jp z,042bch		;80a6
-	ld c,000h		;80a9
-	jp 042beh		;80ab
-L_80AE:
-	ld a,0cbh		;80ae
-	call 04145h		;80b0
-	jr L_8094		;80b3
-L_80B5:
-	djnz L_80D6		;80b5
-	call 04224h		;80b7
+	jr z,estado_3_suena		;809f   ; cuando llega a cero, otra cosa
+	bit 2,(hl)		;80a1   ; el bit 2 del contador es lo que hace el parpadeo
+	ld de,08de7h		;80a3   ; el rotulo
+	jp z,042bch		;80a6   ; pintado
+	ld c,000h		;80a9   ; o borrado, con la mascara a cero
+	jp 042beh		;80ab   ; banco 0: pinta_guion_lee_destino
+estado_3_suena:
+	ld a,0cbh		;80ae   ; el efecto 0xCB
+	call 04145h		;80b0   ; banco 0: pide_sonido
+	jr avanza_el_subestado		;80b3
+estado_3_subestado_2:
+	djnz estado_3_espera_a_que_pulsen		;80b5
+	call 04224h		;80b7   ; borrar la pantalla
 	call 05bb6h		;80ba
-	ld de,08df8h		;80bd
-	call 042bch		;80c0
+	ld de,08df8h		;80bd   ; tres rotulos, uno detras de otro
+	call 042bch		;80c0   ; banco 0: pinta_guion_con_mascara
 	ld de,08e0ah		;80c3
-	call 042bch		;80c6
+	call 042bch		;80c6   ; banco 0: pinta_guion_con_mascara
 	ld de,08e14h		;80c9
-	call 042bch		;80cc
-	ld c,0ffh		;80cf
+	call 042bch		;80cc   ; banco 0: pinta_guion_con_mascara
+	ld c,0ffh		;80cf   ; con la mascara abierta
 	call L_9201		;80d1
-	jr L_8094		;80d4
-L_80D6:
-	djnz L_810A		;80d6
-	ld hl,0e004h		;80d8
+	jr avanza_el_subestado		;80d4
+estado_3_espera_a_que_pulsen:
+	djnz estado_3_parpadeo_final		;80d6
+	ld hl,0e004h		;80d8   ; el contador
 	dec (hl)			;80db
 	call L_9505		;80dc
 	call L_91F7		;80df
-	ld a,(0e006h)		;80e2
-	and 010h		;80e5
-	ret z			;80e7
-	ld a,0aah		;80e8
-	call 0413ah		;80ea
+	ld a,(0e006h)		;80e2   ; las teclas recien pulsadas
+	and 010h		;80e5   ; el bit 4: la barra o el disparo
+	ret z			;80e7   ; si no se ha pulsado, a esperar
+	ld a,0aah		;80e8   ; el efecto 0xAA
+	call 0413ah		;80ea   ; banco 0: pide_sonido_si_esta_activo
 	ld c,000h		;80ed
 	call L_9201		;80ef
 	call L_9634		;80f2
-	ld a,(0e082h)		;80f5
+	ld a,(0e082h)		;80f5   ; uno o dos jugadores
 	and a			;80f8
-	ld de,08e14h		;80f9
+	ld de,08e14h		;80f9   ; el rotulo de uno...
 	jr z,L_8101		;80fc
-	ld de,08e0ah		;80fe
+	ld de,08e0ah		;80fe   ; ...o el de dos
 L_8101:
 	ld c,000h		;8101
-	call 042beh		;8103
-	ld a,050h		;8106
-	jr L_8091		;8108
-L_810A:
-	djnz L_8133		;810a
-	ld hl,0e004h		;810c
+	call 042beh		;8103   ; banco 0: pinta_guion_lee_destino
+	ld a,050h		;8106   ; y 0x50 cuadros de espera
+	jr pon_la_espera_y_avanza		;8108
+estado_3_parpadeo_final:
+	djnz estado_3_arranca_la_partida		;810a
+	ld hl,0e004h		;810c   ; el contador
 	dec (hl)			;810f
-	jr z,L_8094		;8110
-	ld a,(0e004h)		;8112
+	jr z,avanza_el_subestado		;8110
+	ld a,(0e004h)		;8112   ; el bit 3: el parpadeo, mas rapido que el de antes
 	bit 3,a		;8115
 	ld c,0ffh		;8117
 	jr z,L_811C		;8119
@@ -155,181 +182,189 @@ L_810A:
 L_811C:
 	ld de,08e0ah		;811c
 	ld hl,08e14h		;811f
-	ld a,(0e082h)		;8122
+	ld a,(0e082h)		;8122   ; el que este elegido va en un color y el otro en el otro
 	and a			;8125
 	jr z,L_8129		;8126
-	ex de,hl			;8128
+	ex de,hl			;8128   ; y se intercambian
 L_8129:
 	push hl			;8129
-	call 042beh		;812a
+	call 042beh		;812a   ; banco 0: pinta_guion_lee_destino
 	pop de			;812d
 	ld c,000h		;812e
-	jp 042beh		;8130
-L_8133:
-	djnz L_8146		;8133
-	call 04224h		;8135
+	jp 042beh		;8130   ; banco 0: pinta_guion_lee_destino
+estado_3_arranca_la_partida:
+	djnz estado_3_ultimo		;8133
+	call 04224h		;8135   ; borrar la pantalla
 	call L_9346		;8138
-	ld a,(0e082h)		;813b
-	ld (0e08fh),a		;813e
-	call 046e3h		;8141
-	jr L_8198		;8144
-L_8146:
-	ld a,050h		;8146
-	jp L_8091		;8148
-L_814B:
-	djnz L_81A0		;814b
+	ld a,(0e082h)		;813b   ; uno o dos jugadores
+	ld (0e08fh),a		;813e   ; queda apuntado para la partida
+	call 046e3h		;8141   ; y a montar la fase
+	jr pasa_al_estado_siguiente		;8144
+estado_3_ultimo:
+	ld a,050h		;8146   ; 0x50 cuadros
+	jp pon_la_espera_y_avanza		;8148
+
+; ----------------------------------------------------------------------
+; ESTADO 4: MONTAR LA FASE. La tanda mas larga de llamadas del cartucho, y se lee de un vistazo lo que hace falta para empezar: esconder los tres sprites de arriba, borrar la pantalla, cargar los caracteres del decorado con las tres rutinas de los tres tercios, montar el mapa y subirlo, y poner el contador de cuadros a cero.
+; ----------------------------------------------------------------------
+estado_4:
+	djnz estado_4_ya_montada		;814b   ; el subestado
 	call L_8AEC		;814d
-	ld a,(0e012h)		;8150
+	ld a,(0e012h)		;8150   ; una espera
 	and a			;8153
 	ret nz			;8154
-	ld hl,03b00h		;8155
-	ld a,0e0h		;8158
+	ld hl,03b00h		;8155   ; la Y del sprite 0
+	ld a,0e0h		;8158   ; 0xE0: fuera de la pantalla
 	call 0004dh		;815a   ; BIOS WRTVRM - Writes data in VRAM
-	ld hl,03b04h		;815d
+	ld hl,03b04h		;815d   ; la del 1
 	ld a,0e0h		;8160
 	call 0004dh		;8162   ; BIOS WRTVRM - Writes data in VRAM
-	ld hl,03b08h		;8165
+	ld hl,03b08h		;8165   ; y la del 2
 	ld a,0e0h		;8168
 	call 0004dh		;816a   ; BIOS WRTVRM - Writes data in VRAM
-	call 04232h		;816d
-	call 051cdh		;8170
-	call 04995h		;8173
-	call 049fch		;8176
-	call 049d2h		;8179
+	call 04232h		;816d   ; borrar la zona de juego
+	call 051cdh		;8170   ; el marcador
+	call 04995h		;8173   ; los caracteres del tercio de arriba
+	call 049fch		;8176   ; los del de en medio
+	call 049d2h		;8179   ; y los del de abajo
 	call L_966B		;817c
 	call 057fbh		;817f
 	call L_9689		;8182
-	call 06000h		;8185
+	call 06000h		;8185   ; el mapa del decorado
 	call 06539h		;8188
-	call 04265h		;818b
+	call 04265h		;818b   ; subir la zona de juego
 	call L_9493		;818e
 	xor a			;8191
-	ld (0e003h),a		;8192
-	ld (0e004h),a		;8195
-L_8198:
-	ld hl,0e000h		;8198
-	inc (hl)			;819b
-	inc l			;819c
+	ld (0e003h),a		;8192   ; el contador de cuadros, a cero
+	ld (0e004h),a		;8195   ; el contador de espera del estado
+pasa_al_estado_siguiente:
+	ld hl,0e000h		;8198   ; el estado
+	inc (hl)			;819b   ; uno mas
+	inc l			;819c   ; y el subestado, a cero
 	ld (hl),000h		;819d
 	ret			;819f
-L_81A0:
+estado_4_ya_montada:
 	call 0481bh		;81a0
-	call 0463fh		;81a3
+	call 0463fh		;81a3   ; empezar una vida
 	call L_9431		;81a6
 	call L_9409		;81a9
 	call L_93FB		;81ac
-	call 0424bh		;81af
+	call 0424bh		;81af   ; banco 0: sube_el_marcador
 	xor a			;81b2
 	ld (0e0b5h),a		;81b3
 	ld (0e126h),a		;81b6
 	call L_8AEC		;81b9
-	ld a,0adh		;81bc
-	call 0413ah		;81be
+	ld a,0adh		;81bc   ; el efecto 0xAD
+	call 0413ah		;81be   ; banco 0: pide_sonido_si_esta_activo
 	xor a			;81c1
-	jp L_8091		;81c2
-L_81C5:
-	ld a,(0e0a5h)		;81c5
-	cp 002h		;81c8
-	jr nc,L_820B		;81ca
-	ld a,(0e0a2h)		;81cc
+	jp pon_la_espera_y_avanza		;81c2
+
+; ----------------------------------------------------------------------
+; ESTADO 5: JUGAR. Y aqui esta LA PAUSA. El bit 7 de las teclas recien pulsadas es la tecla de parar, y lo que hace es dar la vuelta a 0xE0A0: con esa bandera puesta el juego se va al estado 13 y se queda ahi hasta que se vuelva a pulsar. De paso calla el sonido -0xE07A- y esconde dos de los tres sprites de arriba, dejando solo el primero con la Y a 0xD0.
+; ----------------------------------------------------------------------
+estado_5_jugar:
+	ld a,(0e0a5h)		;81c5   ; el modo del juego
+	cp 002h		;81c8   ; con 2 o mas no se admite pausa
+	jr nc,estado_5_mira_la_pausa		;81ca
+	ld a,(0e0a2h)		;81cc   ; y con el modo distinto de cero, tampoco
 	and a			;81cf
-	jr nz,L_820B		;81d0
-	ld a,(0e006h)		;81d2
-	and 080h		;81d5
-	jr z,L_820B		;81d7
-	rlca			;81d9
-	ld (0e07ah),a		;81da
-	ld a,(0e0a0h)		;81dd
-	cpl			;81e0
-	ld (0e0a0h),a		;81e1
-	and a			;81e4
-	jr z,L_8214		;81e5
+	jr nz,estado_5_mira_la_pausa		;81d0
+	ld a,(0e006h)		;81d2   ; las teclas recien pulsadas
+	and 080h		;81d5   ; el bit 7: la tecla de parar
+	jr z,estado_5_mira_la_pausa		;81d7   ; si no esta, a jugar
+	rlca			;81d9   ; el bit sube al acarreo y baja al 0
+	ld (0e07ah),a		;81da   ; y con el se calla o se descalla el sonido
+	ld a,(0e0a0h)		;81dd   ; la bandera de pausa
+	cpl			;81e0   ; se le da la vuelta
+	ld (0e0a0h),a		;81e1   ; la bandera de PAUSA
+	and a			;81e4   ; ¿ha quedado en pausa o ha salido de ella?
+	jr z,estado_5_sale_de_la_pausa		;81e5
 	xor a			;81e7
 	ld (0e0b5h),a		;81e8
 	ld (0e126h),a		;81eb
-	ld hl,0e0deh		;81ee
+	ld hl,0e0deh		;81ee   ; la cuenta de veces que se ha parado
 	inc (hl)			;81f1
-	ld a,03ah		;81f2
-	call 0413ah		;81f4
-	ld hl,03b00h		;81f7
-	ld a,0d0h		;81fa
+	ld a,03ah		;81f2   ; el efecto 0x3A, que reinicia las voces
+	call 0413ah		;81f4   ; banco 0: pide_sonido_si_esta_activo
+	ld hl,03b00h		;81f7   ; el sprite 0
+	ld a,0d0h		;81fa   ; 0xD0, que lo deja visible pero abajo del todo
 	call 0004dh		;81fc   ; BIOS WRTVRM - Writes data in VRAM
-	call 04232h		;81ff
+	call 04232h		;81ff   ; borrar la zona de juego
 	call 05b91h		;8202
 	call 0481bh		;8205
 	call L_93C5		;8208
-L_820B:
-	ld a,(0e0a0h)		;820b
+estado_5_mira_la_pausa:
+	ld a,(0e0a0h)		;820b   ; la bandera de pausa
 	and a			;820e
-	jr z,L_8247		;820f
-	jp L_8800		;8211
-L_8214:
-	ld hl,03b00h		;8214
+	jr z,estado_5_el_cuadro		;820f   ; sin pausa, se juega
+	jp L_8800		;8211   ; y con pausa, al estado de parado
+estado_5_sale_de_la_pausa:
+	ld hl,03b00h		;8214   ; el sprite 0, abajo
 	ld a,0d0h		;8217
 	call 0004dh		;8219   ; BIOS WRTVRM - Writes data in VRAM
-	ld hl,03b04h		;821c
+	ld hl,03b04h		;821c   ; y los otros dos, fuera
 	ld a,0e0h		;821f
 	call 0004dh		;8221   ; BIOS WRTVRM - Writes data in VRAM
 	ld hl,03b08h		;8224
 	ld a,0e0h		;8227
 	call 0004dh		;8229   ; BIOS WRTVRM - Writes data in VRAM
-	call 04232h		;822c
-	call 04995h		;822f
+	call 04232h		;822c   ; banco 0: borra_el_area_de_juego
+	call 04995h		;822f   ; otra vez los caracteres de los tres tercios
 	call 049fch		;8232
 	call 049d2h		;8235
 	call L_966B		;8238
 	call 05974h		;823b
 	call L_9689		;823e
-	call 04265h		;8241
-	call 042fbh		;8244
-L_8247:
-	call 0451ch		;8247
-	ld hl,0e000h		;824a
-	ld a,(0e097h)		;824d
+	call 04265h		;8241   ; subir la zona de juego
+	call 042fbh		;8244   ; y los sprites
+estado_5_el_cuadro:
+	call 0451ch		;8247   ; EL CUADRO: todo el juego pasa por esa llamada
+	ld hl,0e000h		;824a   ; el estado
+	ld a,(0e097h)		;824d   ; la bandera de que la fase se ha acabado
 	and a			;8250
-	jr nz,L_8257		;8251
-	ld (hl),00dh		;8253
-	jr L_8271		;8255
-L_8257:
-	ld a,(0e096h)		;8257
+	jr nz,estado_5_por_que_se_sale		;8251   ; si no se ha acabado, se mira por que otra razon se sale
+	ld (hl),00dh		;8253   ; y si se ha acabado, al estado 13
+	jr estado_5_sale		;8255
+estado_5_por_que_se_sale:
+	ld a,(0e096h)		;8257   ; los avisos que ha dejado el cuadro
 	and a			;825a
-	ret z			;825b
-	rra			;825c
-	jr c,L_8271		;825d
+	ret z			;825b   ; sin ninguno, se sigue jugando
+	rra			;825c   ; y con el bit que sea puesto se salta tantos estados como haga falta
+	jr c,estado_5_sale		;825d
 	rra			;825f
-	jr c,L_826F		;8260
+	jr c,avanza_dos		;8260
 	rra			;8262
-	jr c,L_826E		;8263
+	jr c,avanza_tres		;8263
 	rra			;8265
-	jr c,L_826D		;8266
+	jr c,avanza_cuatro		;8266
 	rra			;8268
-	jr c,L_826C		;8269
-	inc (hl)			;826b
-L_826C:
+	jr c,avanza_cinco		;8269
+	inc (hl)			;826b   ; cada `inc (hl)` es un estado mas
+avanza_cinco:
 	inc (hl)			;826c
-L_826D:
+avanza_cuatro:
 	inc (hl)			;826d
-L_826E:
+avanza_tres:
 	inc (hl)			;826e
-L_826F:
+avanza_dos:
 	inc (hl)			;826f
 	inc (hl)			;8270
-L_8271:
-	xor a			;8271
-	ld (0e096h),a		;8272
-	jp L_8198		;8275
-L_8278:
+estado_5_sale:
+	xor a			;8271   ; los avisos, a cero
+	ld (0e096h),a		;8272   ; los avisos que deja el cuadro
+	jp pasa_al_estado_siguiente		;8275
+estado_6:
 	djnz L_8293		;8278
-	call 04265h		;827a
-	call 042fbh		;827d
+	call 04265h		;827a   ; subir la zona de juego
+	call 042fbh		;827d   ; y los sprites
 	call L_96F9		;8280
 	call 0a985h		;8283
-	ld a,(0e096h)		;8286
+	ld a,(0e096h)		;8286   ; los avisos que deja el cuadro
 	and a			;8289
 	ret nz			;828a
 	ld a,040h		;828b
-	ld (0e004h),a		;828d
-	jp L_8094		;8290
+	ld (0e004h),a		;828d   ; el contador de espera del estado
+	jp avanza_el_subestado		;8290
 L_8293:
 	djnz L_82A5		;8293
 	ld hl,0e004h		;8295
@@ -337,29 +372,29 @@ L_8293:
 	ret nz			;8299
 	ld a,001h		;829a
 	ld (0e0e1h),a		;829c
-	ld (0e096h),a		;829f
-	jp L_8094		;82a2
+	ld (0e096h),a		;829f   ; los avisos que deja el cuadro
+	jp avanza_el_subestado		;82a2
 L_82A5:
 	djnz L_82B7		;82a5
 	call L_94AA		;82a7
-	ld a,(0e096h)		;82aa
+	ld a,(0e096h)		;82aa   ; los avisos que deja el cuadro
 	and a			;82ad
 	ret nz			;82ae
 	ld a,040h		;82af
-	ld (0e004h),a		;82b1
-	jp L_8094		;82b4
+	ld (0e004h),a		;82b1   ; el contador de espera del estado
+	jp avanza_el_subestado		;82b4
 L_82B7:
 	djnz L_82C1		;82b7
 	ld hl,0e004h		;82b9
 	dec (hl)			;82bc
 	ret nz			;82bd
-	jp L_8094		;82be
+	jp avanza_el_subestado		;82be
 L_82C1:
 	djnz L_82F8		;82c1
-	ld a,(0e093h)		;82c3
+	ld a,(0e093h)		;82c3   ; el valor 1-2-3 de la fase
 	cp 003h		;82c6
 	jr nz,L_82D7		;82c8
-	ld a,(0e092h)		;82ca
+	ld a,(0e092h)		;82ca   ; la FASE, de 1 a 13
 	cp 00ch		;82cd
 	ld c,002h		;82cf
 	jr z,L_82E9		;82d1
@@ -368,7 +403,7 @@ L_82C1:
 L_82D7:
 	ld hl,0e001h		;82d7
 	inc (hl)			;82da
-	jp L_8094		;82db
+	jp avanza_el_subestado		;82db
 L_82DE:
 	ld a,(0e0deh)		;82de
 	and 003h		;82e1
@@ -382,21 +417,21 @@ L_82E9:
 	xor a			;82ed
 	ld (0e0b7h),a		;82ee
 	inc a			;82f1
-	ld (0e096h),a		;82f2
-	jp L_8094		;82f5
+	ld (0e096h),a		;82f2   ; los avisos que deja el cuadro
+	jp avanza_el_subestado		;82f5
 L_82F8:
 	djnz L_830B		;82f8
-	call 04265h		;82fa
-	call 042fbh		;82fd
+	call 04265h		;82fa   ; banco 0: sube_el_area_de_juego
+	call 042fbh		;82fd   ; banco 0: sube_los_sprites
 	call 0aa80h		;8300
-	ld a,(0e096h)		;8303
+	ld a,(0e096h)		;8303   ; los avisos que deja el cuadro
 	and a			;8306
 	ret nz			;8307
-	jp L_8094		;8308
+	jp avanza_el_subestado		;8308
 L_830B:
 	djnz L_8335		;830b
-	call 042edh		;830d
-	call 04232h		;8310
+	call 042edh		;830d   ; banco 0: esconde_los_sprites
+	call 04232h		;8310   ; banco 0: borra_el_area_de_juego
 	ld hl,0e091h		;8313
 	ld a,(hl)			;8316
 	add a,001h		;8317
@@ -414,40 +449,40 @@ L_8325:
 	inc (hl)			;8326
 	ld a,(hl)			;8327
 	cp 019h		;8328
-	jp z,L_8094		;832a
-	call 04660h		;832d
+	jp z,avanza_el_subestado		;832a
+	call 04660h		;832d   ; banco 0: monta_la_fase
 	ld a,003h		;8330
-	jp L_8082		;8332
+	jp pon_el_estado		;8332
 L_8335:
 	djnz L_834F		;8335
-	call 04224h		;8337
+	call 04224h		;8337   ; banco 0: borra_la_pantalla_entera
 	ld hl,0eb80h		;833a
 	ld de,0eb81h		;833d
 	ld bc,002ffh		;8340
 	ld (hl),000h		;8343
 	ldir		;8345
 	ld a,0c2h		;8347
-	call 0413ah		;8349
-	jp L_8094		;834c
+	call 0413ah		;8349   ; banco 0: pide_sonido_si_esta_activo
+	jp avanza_el_subestado		;834c
 L_834F:
 	djnz L_8362		;834f
-	call 04265h		;8351
-	call 05e6eh		;8354
-	ld a,(0e096h)		;8357
+	call 04265h		;8351   ; banco 0: sube_el_area_de_juego
+	call 05e6eh		;8354   ; banco 0: rotulos_que_suben
+	ld a,(0e096h)		;8357   ; los avisos que deja el cuadro
 	and a			;835a
 	ret nz			;835b
 	ld (0e002h),a		;835c
-	jp L_8080		;835f
+	jp estado_a_0xFF		;835f
 L_8362:
 	call 0a083h		;8362
 	call 042dfh		;8365
-	call 04265h		;8368
-	ld a,(0e093h)		;836b
+	call 04265h		;8368   ; banco 0: sube_el_area_de_juego
+	ld a,(0e093h)		;836b   ; el valor 1-2-3 de la fase
 	cp 003h		;836e
-	jp z,L_8198		;8370
+	jp z,pasa_al_estado_siguiente		;8370
 	ld a,0e0h		;8373
 	ld (0eec4h),a		;8375
-	ld a,(0e0a1h)		;8378
+	ld a,(0e0a1h)		;8378   ; el DECORADO, de 0 a 9
 	cp 004h		;837b
 	ld c,002h		;837d
 	ld b,098h		;837f
@@ -461,30 +496,30 @@ L_8362:
 	ld b,086h		;838f
 L_8391:
 	ld a,b			;8391
-	call 0413ah		;8392
+	call 0413ah		;8392   ; banco 0: pide_sonido_si_esta_activo
 	ld a,c			;8395
 	ld (0e21eh),a		;8396
 	ld a,017h		;8399
-	ld (0e203h),a		;839b
+	ld (0e203h),a		;839b   ; por donde va la rotacion de los sprites
 	call 055f7h		;839e
 L_83A1:
 	ld a,001h		;83a1
-	ld (0e096h),a		;83a3
-	jp L_8094		;83a6
+	ld (0e096h),a		;83a3   ; los avisos que deja el cuadro
+	jp avanza_el_subestado		;83a6
 L_83A9:
 	djnz L_83C0		;83a9
-	call 042fbh		;83ab
+	call 042fbh		;83ab   ; banco 0: sube_los_sprites
 	call L_96F9		;83ae
 	call 0a985h		;83b1
-	ld a,(0e203h)		;83b4
+	ld a,(0e203h)		;83b4   ; por donde va la rotacion de los sprites
 	cp 00ch		;83b7
 	ret nz			;83b9
 	call 07db3h		;83ba
-	jp L_8094		;83bd
+	jp avanza_el_subestado		;83bd
 L_83C0:
 	djnz L_83E4		;83c0
-	call 04265h		;83c2
-	call 04332h		;83c5
+	call 04265h		;83c2   ; banco 0: sube_el_area_de_juego
+	call 04332h		;83c5   ; banco 0: sube_los_sprites_desde_arriba
 	call 0b12bh		;83c8
 	call 07cf8h		;83cb
 	ld hl,0e550h		;83ce
@@ -494,14 +529,14 @@ L_83D3:
 	cp 002h		;83d4
 	ret c			;83d6
 	ld a,008h		;83d7
-	call 04056h		;83d9
+	call 04056h		;83d9   ; banco 0: a_mas_hl
 	djnz L_83D3		;83dc
 	call 0b165h		;83de
-	jp L_8094		;83e1
+	jp avanza_el_subestado		;83e1
 L_83E4:
 	djnz L_8445		;83e4
-	call 04258h		;83e6
-	call 042fbh		;83e9
+	call 04258h		;83e6   ; banco 0: sube_la_mitad_de_abajo
+	call 042fbh		;83e9   ; banco 0: sube_los_sprites
 	call L_96F9		;83ec
 	call 0a985h		;83ef
 	call 0bd8ah		;83f2
@@ -520,10 +555,10 @@ L_83E4:
 	call 07799h		;8419
 	ld a,001h		;841c
 	ld (0e0e0h),a		;841e
-	ld a,(0e097h)		;8421
+	ld a,(0e097h)		;8421   ; la bandera de que la fase se ha acabado
 	and a			;8424
 	ld a,00dh		;8425
-	jp z,L_8082		;8427
+	jp z,pon_el_estado		;8427
 	xor a			;842a
 	ld (0e0e0h),a		;842b
 	ld a,(0e530h)		;842e
@@ -531,42 +566,42 @@ L_83E4:
 	ret nz			;8433
 	call 07c3eh		;8434
 	ld a,07ah		;8437
-	call 0413ah		;8439
+	call 0413ah		;8439   ; banco 0: pide_sonido_si_esta_activo
 	call 042e8h		;843c
 	call 05561h		;843f
-	jp L_8094		;8442
+	jp avanza_el_subestado		;8442
 L_8445:
 	djnz L_8474		;8445
 	ld a,(0e530h)		;8447
 	cp 003h		;844a
 	jr c,L_845B		;844c
-	ld a,(0e003h)		;844e
+	ld a,(0e003h)		;844e   ; el contador de cuadros
 	rra			;8451
 	ld b,000h		;8452
 	jr c,L_8458		;8454
 	ld b,00eh		;8456
 L_8458:
-	call 044b6h		;8458
+	call 044b6h		;8458   ; banco 0: escribe_el_registro_7
 L_845B:
-	call 04265h		;845b
-	call 042fbh		;845e
+	call 04265h		;845b   ; banco 0: sube_el_area_de_juego
+	call 042fbh		;845e   ; banco 0: sube_los_sprites
 	call 0afafh		;8461
 	call 07c3eh		;8464
 	ld a,(0e530h)		;8467
 	and a			;846a
 	ret nz			;846b
 	ld b,000h		;846c
-	call 044b6h		;846e
-	jp L_8094		;8471
+	call 044b6h		;846e   ; banco 0: escribe_el_registro_7
+	jp avanza_el_subestado		;8471
 L_8474:
 	djnz L_84B5		;8474
 	ld a,001h		;8476
 	ld (0e21eh),a		;8478
 	ld a,018h		;847b
-	ld (0e203h),a		;847d
+	ld (0e203h),a		;847d   ; por donde va la rotacion de los sprites
 	xor a			;8480
 	ld (0e0ddh),a		;8481
-	ld a,(0e08bh)		;8484
+	ld a,(0e08bh)		;8484   ; el largo de la fase
 	and 00fh		;8487
 	cp 002h		;8489
 	ld c,028h		;848b
@@ -587,41 +622,41 @@ L_84A3:
 	call 05667h		;84a7
 	call 0550ch		;84aa
 	ld a,005h		;84ad
-	call L_8082		;84af
+	call pon_el_estado		;84af
 	jp L_83A1		;84b2
 L_84B5:
-	call 04265h		;84b5
+	call 04265h		;84b5   ; banco 0: sube_el_area_de_juego
 	ld a,001h		;84b8
 	ld (0ee83h),a		;84ba
 	ld (0ee87h),a		;84bd
 	ld (0ee8bh),a		;84c0
 	ld (0ee8fh),a		;84c3
 	ld a,00bh		;84c6
-	ld (0e203h),a		;84c8
+	ld (0e203h),a		;84c8   ; por donde va la rotacion de los sprites
 	ld a,003h		;84cb
-	ld (0e0a5h),a		;84cd
+	ld (0e0a5h),a		;84cd   ; por que vuelta de la fase va
 	ld a,062h		;84d0
-	call 0413ah		;84d2
+	call 0413ah		;84d2   ; banco 0: pide_sonido_si_esta_activo
 	call 0ae0fh		;84d5
 	call 0ae23h		;84d8
 	call 057c2h		;84db
-	jp L_8094		;84de
+	jp avanza_el_subestado		;84de
 L_84E1:
 	djnz L_84F8		;84e1
-	call 04332h		;84e3
+	call 04332h		;84e3   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;84e6
 	call 0a985h		;84e9
 	call 0be41h		;84ec
-	ld a,(0e203h)		;84ef
+	ld a,(0e203h)		;84ef   ; por donde va la rotacion de los sprites
 	cp 019h		;84f2
 	ret nz			;84f4
-	jp L_8094		;84f5
+	jp avanza_el_subestado		;84f5
 L_84F8:
 	djnz L_852A		;84f8
-	call 042edh		;84fa
-	call 04232h		;84fd
+	call 042edh		;84fa   ; banco 0: esconde_los_sprites
+	call 04232h		;84fd   ; banco 0: borra_el_area_de_juego
 	call 0b5e1h		;8500
-	call 0463fh		;8503
+	call 0463fh		;8503   ; banco 0: empieza_una_vida
 	call 04995h		;8506
 	call 049fch		;8509
 	call 049d2h		;850c
@@ -631,42 +666,42 @@ L_84F8:
 	call L_9453		;8516
 	call 06000h		;8519
 	call 06539h		;851c
-	call 04265h		;851f
+	call 04265h		;851f   ; banco 0: sube_el_area_de_juego
 	call L_9493		;8522
 	ld a,004h		;8525
-	jp L_8082		;8527
+	jp pon_el_estado		;8527
 L_852A:
 	call 042e8h		;852a
 	call 07db3h		;852d
 	ld a,0c5h		;8530
-	call 0413ah		;8532
-	jp L_8094		;8535
+	call 0413ah		;8532   ; banco 0: pide_sonido_si_esta_activo
+	jp avanza_el_subestado		;8535
 L_8538:
 	djnz L_8558		;8538
-	call 042fbh		;853a
+	call 042fbh		;853a   ; banco 0: sube_los_sprites
 	call L_96F9		;853d
-	ld a,(0e096h)		;8540
+	ld a,(0e096h)		;8540   ; los avisos que deja el cuadro
 	and a			;8543
 	ret nz			;8544
 	ld (0e0ceh),a		;8545
 	inc a			;8548
-	ld (0e096h),a		;8549
+	ld (0e096h),a		;8549   ; los avisos que deja el cuadro
 	call 042e8h		;854c
-	call 04232h		;854f
+	call 04232h		;854f   ; banco 0: borra_el_area_de_juego
 	call 05b91h		;8552
-	jp L_8094		;8555
+	jp avanza_el_subestado		;8555
 L_8558:
 	djnz L_8565		;8558
 	call 0b63fh		;855a
-	ld a,(0e096h)		;855d
+	ld a,(0e096h)		;855d   ; los avisos que deja el cuadro
 	and a			;8560
 	ret nz			;8561
-	jp L_8094		;8562
+	jp avanza_el_subestado		;8562
 L_8565:
 	djnz L_8596		;8565
-	call 04232h		;8567
+	call 04232h		;8567   ; banco 0: borra_el_area_de_juego
 	call 0b6f8h		;856a
-	call 0463fh		;856d
+	call 0463fh		;856d   ; banco 0: empieza_una_vida
 	call 04995h		;8570
 	call 049fch		;8573
 	call 049d2h		;8576
@@ -676,16 +711,16 @@ L_8565:
 	call L_9431		;8582
 	call 06000h		;8585
 	call 06539h		;8588
-	call 04265h		;858b
+	call 04265h		;858b   ; banco 0: sube_el_area_de_juego
 	ld a,01fh		;858e
-	call 0413ah		;8590
-	jp L_8094		;8593
+	call 0413ah		;8590   ; banco 0: pide_sonido_si_esta_activo
+	jp avanza_el_subestado		;8593
 L_8596:
 	djnz L_85BD		;8596
-	call 04332h		;8598
+	call 04332h		;8598   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;859b
 	call 0a985h		;859e
-	ld a,(0e203h)		;85a1
+	ld a,(0e203h)		;85a1   ; por donde va la rotacion de los sprites
 	and a			;85a4
 	ld c,020h		;85a5
 	jr z,L_85AE		;85a7
@@ -694,35 +729,35 @@ L_8596:
 	ld c,006h		;85ac
 L_85AE:
 	ld a,c			;85ae
-	call 0413ah		;85af
+	call 0413ah		;85af   ; banco 0: pide_sonido_si_esta_activo
 	call 042e8h		;85b2
 	call L_9493		;85b5
 	ld a,004h		;85b8
-	jp L_8082		;85ba
+	jp pon_el_estado		;85ba
 L_85BD:
 	ld a,056h		;85bd
-	call 0413ah		;85bf
+	call 0413ah		;85bf   ; banco 0: pide_sonido_si_esta_activo
 L_85C2:
-	call 04265h		;85c2
+	call 04265h		;85c2   ; banco 0: sube_el_area_de_juego
 	ld a,01ah		;85c5
-	ld (0e203h),a		;85c7
+	ld (0e203h),a		;85c7   ; por donde va la rotacion de los sprites
 	ld a,001h		;85ca
-	ld (0e096h),a		;85cc
-	jp L_8094		;85cf
+	ld (0e096h),a		;85cc   ; los avisos que deja el cuadro
+	jp avanza_el_subestado		;85cf
 L_85D2:
 	djnz L_85E3		;85d2
-	call 04332h		;85d4
+	call 04332h		;85d4   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;85d7
-	ld a,(0e203h)		;85da
+	ld a,(0e203h)		;85da   ; por donde va la rotacion de los sprites
 	cp 011h		;85dd
 	ret nz			;85df
-	jp L_8094		;85e0
+	jp avanza_el_subestado		;85e0
 L_85E3:
 	djnz L_8620		;85e3
-	call 042edh		;85e5
-	call 04232h		;85e8
+	call 042edh		;85e5   ; banco 0: esconde_los_sprites
+	call 04232h		;85e8   ; banco 0: borra_el_area_de_juego
 	call 0b8ddh		;85eb
-	call 0463fh		;85ee
+	call 0463fh		;85ee   ; banco 0: empieza_una_vida
 	ld a,002h		;85f1
 	ld (0e4c0h),a		;85f3
 	ld (0e4c1h),a		;85f6
@@ -735,44 +770,44 @@ L_85E3:
 	call L_9453		;8609
 	call 06000h		;860c
 	call 06539h		;860f
-	call 04265h		;8612
+	call 04265h		;8612   ; banco 0: sube_el_area_de_juego
 	call 07db3h		;8615
 	ld a,01fh		;8618
-	call 0413ah		;861a
-	jp L_8094		;861d
+	call 0413ah		;861a   ; banco 0: pide_sonido_si_esta_activo
+	jp avanza_el_subestado		;861d
 L_8620:
 	djnz L_863D		;8620
-	call 04332h		;8622
+	call 04332h		;8622   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;8625
 	call 0a985h		;8628
-	ld a,(0e203h)		;862b
+	ld a,(0e203h)		;862b   ; por donde va la rotacion de los sprites
 	and a			;862e
 	ret nz			;862f
 	ld a,020h		;8630
-	call 0413ah		;8632
+	call 0413ah		;8632   ; banco 0: pide_sonido_si_esta_activo
 	call L_9493		;8635
 	ld a,004h		;8638
-	jp L_8082		;863a
+	jp pon_el_estado		;863a
 L_863D:
 	call 042dfh		;863d
 	ld a,092h		;8640
-	call 0413ah		;8642
-	jp L_8094		;8645
+	call 0413ah		;8642   ; banco 0: pide_sonido_si_esta_activo
+	jp avanza_el_subestado		;8645
 L_8648:
 	djnz L_865B		;8648
-	call 04332h		;864a
+	call 04332h		;864a   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;864d
 	call 0a985h		;8650
-	ld a,(0e203h)		;8653
+	ld a,(0e203h)		;8653   ; por donde va la rotacion de los sprites
 	and a			;8656
 	ret nz			;8657
-	jp L_8094		;8658
+	jp avanza_el_subestado		;8658
 L_865B:
 	djnz L_868F		;865b
-	call 042edh		;865d
-	call 04232h		;8660
+	call 042edh		;865d   ; banco 0: esconde_los_sprites
+	call 04232h		;8660   ; banco 0: borra_el_area_de_juego
 	call 0b94ah		;8663
-	call 0463fh		;8666
+	call 0463fh		;8666   ; banco 0: empieza_una_vida
 	call 04995h		;8669
 	call 049fch		;866c
 	call 049d2h		;866f
@@ -782,16 +817,16 @@ L_865B:
 	call L_9431		;867b
 	call 06000h		;867e
 	call 06539h		;8681
-	call 04265h		;8684
+	call 04265h		;8684   ; banco 0: sube_el_area_de_juego
 	call L_9493		;8687
 	ld a,004h		;868a
-	jp L_8082		;868c
+	jp pon_el_estado		;868c
 L_868F:
 	call 042e8h		;868f
 	ld a,001h		;8692
 	ld (0e21eh),a		;8694
 	ld a,01bh		;8697
-	ld (0e203h),a		;8699
+	ld (0e203h),a		;8699   ; por donde va la rotacion de los sprites
 	call 07db3h		;869c
 	ld a,0f8h		;869f
 	ld (0e21fh),a		;86a1
@@ -810,8 +845,8 @@ L_86AE:
 	jr nz,L_86A9		;86b5
 	call 056a0h		;86b7
 	ld a,089h		;86ba
-	call 0413ah		;86bc
-	jp L_8094		;86bf
+	call 0413ah		;86bc   ; banco 0: pide_sonido_si_esta_activo
+	jp avanza_el_subestado		;86bf
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x86c2..0x86c6  (4 bytes)
@@ -825,32 +860,32 @@ DATA_86C2:
 
 L_86C6:
 	djnz L_86D7		;86c6
-	call 04332h		;86c8
+	call 04332h		;86c8   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;86cb
-	ld a,(0e203h)		;86ce
+	ld a,(0e203h)		;86ce   ; por donde va la rotacion de los sprites
 	cp 011h		;86d1
 	ret nz			;86d3
-	jp L_8094		;86d4
+	jp avanza_el_subestado		;86d4
 L_86D7:
 	djnz L_86ED		;86d7
-	call 042edh		;86d9
-	call 04232h		;86dc
+	call 042edh		;86d9   ; banco 0: esconde_los_sprites
+	call 04232h		;86dc   ; banco 0: borra_el_area_de_juego
 	call L_9431		;86df
 	call 06befh		;86e2
 	ld a,01fh		;86e5
-	call 0413ah		;86e7
-	jp L_8094		;86ea
+	call 0413ah		;86e7   ; banco 0: pide_sonido_si_esta_activo
+	jp avanza_el_subestado		;86ea
 L_86ED:
 	djnz L_8735		;86ed
-	call 04332h		;86ef
+	call 04332h		;86ef   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;86f2
 	call 0a985h		;86f5
-	ld a,(0e203h)		;86f8
+	ld a,(0e203h)		;86f8   ; por donde va la rotacion de los sprites
 	and a			;86fb
 	ret nz			;86fc
 	ld a,020h		;86fd
-	call 0413ah		;86ff
-	ld a,(0e0a2h)		;8702
+	call 0413ah		;86ff   ; banco 0: pide_sonido_si_esta_activo
+	ld a,(0e0a2h)		;8702   ; el modo en el que esta el juego
 	sub 003h		;8705
 	ld c,06bh		;8707
 	jr z,L_8712		;8709
@@ -860,7 +895,7 @@ L_86ED:
 	ld c,068h		;8710
 L_8712:
 	ld a,c			;8712
-	call 0413ah		;8713
+	call 0413ah		;8713   ; banco 0: pide_sonido_si_esta_activo
 	call 0a8dbh		;8716
 	xor a			;8719
 	call 0a8f5h		;871a
@@ -869,54 +904,54 @@ L_8712:
 	ld (0ee87h),a		;8722
 	ld (0ee8bh),a		;8725
 	ld (0ee8fh),a		;8728
-	call 042fbh		;872b
+	call 042fbh		;872b   ; banco 0: sube_los_sprites
 	xor a			;872e
-	ld (0e096h),a		;872f
-	jp L_8094		;8732
+	ld (0e096h),a		;872f   ; los avisos que deja el cuadro
+	jp avanza_el_subestado		;8732
 L_8735:
 	djnz L_8751		;8735
 	call 06e1eh		;8737
-	ld a,(0e096h)		;873a
+	ld a,(0e096h)		;873a   ; los avisos que deja el cuadro
 	and a			;873d
 	ret z			;873e
 	dec a			;873f
 	ld a,000h		;8740
-	ld (0e096h),a		;8742
-	jp nz,L_8094		;8745
+	ld (0e096h),a		;8742   ; los avisos que deja el cuadro
+	jp nz,avanza_el_subestado		;8745
 	ld hl,0e001h		;8748
 	inc (hl)			;874b
 	inc (hl)			;874c
 	inc (hl)			;874d
-	jp L_8094		;874e
+	jp avanza_el_subestado		;874e
 L_8751:
 	djnz L_8769		;8751
 	ld hl,03b00h		;8753
 	ld a,0d0h		;8756
 	call 0004dh		;8758   ; BIOS WRTVRM - Writes data in VRAM
-	call 04232h		;875b
+	call 04232h		;875b   ; banco 0: borra_el_area_de_juego
 	call 07809h		;875e
 	ld a,074h		;8761
-	call 0413ah		;8763
-	jp L_8094		;8766
+	call 0413ah		;8763   ; banco 0: pide_sonido_si_esta_activo
+	jp avanza_el_subestado		;8766
 L_8769:
 	djnz L_8783		;8769
 	call 0781eh		;876b
-	ld a,(0e096h)		;876e
+	ld a,(0e096h)		;876e   ; los avisos que deja el cuadro
 	and a			;8771
 	ret z			;8772
 	dec a			;8773
 	ld a,000h		;8774
-	ld (0e096h),a		;8776
-	jp nz,L_8094		;8779
+	ld (0e096h),a		;8776   ; los avisos que deja el cuadro
+	jp nz,avanza_el_subestado		;8779
 	ld hl,0e001h		;877c
 	inc (hl)			;877f
-	jp L_8094		;8780
+	jp avanza_el_subestado		;8780
 L_8783:
 	djnz L_87AE		;8783
-	call 04232h		;8785
+	call 04232h		;8785   ; banco 0: borra_el_area_de_juego
 	call 06c7fh		;8788
-	call 042fbh		;878b
-	ld a,(0e0a2h)		;878e
+	call 042fbh		;878b   ; banco 0: sube_los_sprites
+	ld a,(0e0a2h)		;878e   ; el modo en el que esta el juego
 	sub 003h		;8791
 	ld c,06bh		;8793
 	jr z,L_879E		;8795
@@ -926,18 +961,18 @@ L_8783:
 	ld c,068h		;879c
 L_879E:
 	ld a,c			;879e
-	call 0413ah		;879f
+	call 0413ah		;879f   ; banco 0: pide_sonido_si_esta_activo
 	xor a			;87a2
-	ld (0e096h),a		;87a3
+	ld (0e096h),a		;87a3   ; los avisos que deja el cuadro
 	ld a,003h		;87a6
-	ld (0e001h),a		;87a8
-	jp L_8094		;87ab
+	ld (0e001h),a		;87a8   ; el SUBESTADO
+	jp avanza_el_subestado		;87ab
 L_87AE:
 	djnz L_87DC		;87ae
-	call 042edh		;87b0
-	call 04232h		;87b3
+	call 042edh		;87b0   ; banco 0: esconde_los_sprites
+	call 04232h		;87b3   ; banco 0: borra_el_area_de_juego
 	call 07015h		;87b6
-	call 0463fh		;87b9
+	call 0463fh		;87b9   ; banco 0: empieza_una_vida
 	call 04995h		;87bc
 	call 049fch		;87bf
 	call 049d2h		;87c2
@@ -945,60 +980,60 @@ L_87AE:
 	call L_9689		;87c8
 	call L_966B		;87cb
 	call L_9431		;87ce
-	call 04265h		;87d1
+	call 04265h		;87d1   ; banco 0: sube_el_area_de_juego
 	ld a,095h		;87d4
-	call 0413ah		;87d6
-	jp L_8094		;87d9
+	call 0413ah		;87d6   ; banco 0: pide_sonido_si_esta_activo
+	jp avanza_el_subestado		;87d9
 L_87DC:
 	djnz L_87F2		;87dc
-	call 04332h		;87de
+	call 04332h		;87de   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;87e1
-	ld a,(0e203h)		;87e4
+	ld a,(0e203h)		;87e4   ; por donde va la rotacion de los sprites
 	cp 004h		;87e7
 	ret nz			;87e9
 	call L_9493		;87ea
 	ld a,004h		;87ed
-	jp L_8082		;87ef
+	jp pon_el_estado		;87ef
 L_87F2:
 	call 042dfh		;87f2
-	call 04265h		;87f5
+	call 04265h		;87f5   ; banco 0: sube_el_area_de_juego
 	ld a,092h		;87f8
-	call 0413ah		;87fa
-	jp L_8094		;87fd
+	call 0413ah		;87fa   ; banco 0: pide_sonido_si_esta_activo
+	jp avanza_el_subestado		;87fd
 L_8800:
 	call L_8AEC		;8800
 	jp 0be41h		;8803
 L_8806:
 	djnz L_881D		;8806
-	call 04332h		;8808
+	call 04332h		;8808   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;880b
 	call 0a985h		;880e
-	ld a,(0e096h)		;8811
+	ld a,(0e096h)		;8811   ; los avisos que deja el cuadro
 	and a			;8814
 	ret nz			;8815
 	xor a			;8816
 	ld (0e0e0h),a		;8817
-	jp L_8094		;881a
+	jp avanza_el_subestado		;881a
 L_881D:
 	djnz L_8869		;881d
-	call 042edh		;881f
-	call 04232h		;8822
-	ld a,(0e0a2h)		;8825
+	call 042edh		;881f   ; banco 0: esconde_los_sprites
+	call 04232h		;8822   ; banco 0: borra_el_area_de_juego
+	ld a,(0e0a2h)		;8825   ; el modo en el que esta el juego
 	dec a			;8828
 	jr nz,L_8833		;8829
 	ld a,008h		;882b
-	call L_8082		;882d
+	call pon_el_estado		;882d
 	jp L_85C2		;8830
 L_8833:
 	ld hl,0e090h		;8833
 	ld a,(hl)			;8836
 	or a			;8837
-	jp z,L_8198		;8838
+	jp z,pasa_al_estado_siguiente		;8838
 	sub 001h		;883b
 	daa			;883d
 	ld (hl),a			;883e
-	call 04708h		;883f
-	call 0463fh		;8842
+	call 04708h		;883f   ; banco 0: reempieza
+	call 0463fh		;8842   ; banco 0: empieza_una_vida
 	call 05b91h		;8845
 	call 0481bh		;8848
 	call L_9431		;884b
@@ -1012,7 +1047,7 @@ L_8833:
 	ld (0e10eh),a		;885f
 	call L_8AEC		;8862
 	xor a			;8865
-	jp L_8091		;8866
+	jp pon_la_espera_y_avanza		;8866
 L_8869:
 	dec b			;8869
 	jp nz,L_8919		;886a
@@ -1031,34 +1066,34 @@ L_8869:
 	ld hl,03b08h		;8889
 	ld a,0e0h		;888c
 	call 0004dh		;888e   ; BIOS WRTVRM - Writes data in VRAM
-	call 04232h		;8891
+	call 04232h		;8891   ; banco 0: borra_el_area_de_juego
 	call 04995h		;8894
 	call 049fch		;8897
 	call 049d2h		;889a
 	call 057fbh		;889d
-	ld a,(0e0a5h)		;88a0
+	ld a,(0e0a5h)		;88a0   ; por que vuelta de la fase va
 	cp 002h		;88a3
 	jr z,L_88BC		;88a5
 	cp 003h		;88a7
 	jr z,L_88DA		;88a9
 	call L_966B		;88ab
 	call L_9689		;88ae
-	call 04265h		;88b1
+	call 04265h		;88b1   ; banco 0: sube_el_area_de_juego
 	call L_9493		;88b4
 	ld a,004h		;88b7
-	jp L_8082		;88b9
+	jp pon_el_estado		;88b9
 L_88BC:
-	ld a,(0e093h)		;88bc
+	ld a,(0e093h)		;88bc   ; el valor 1-2-3 de la fase
 	cp 003h		;88bf
 	jr nz,L_8902		;88c1
 	call 0537ah		;88c3
 	call 053cfh		;88c6
 	call 05424h		;88c9
 	call 05498h		;88cc
-	call 04265h		;88cf
+	call 04265h		;88cf   ; banco 0: sube_el_area_de_juego
 	call L_9493		;88d2
 	ld a,004h		;88d5
-	jp L_8082		;88d7
+	jp pon_el_estado		;88d7
 L_88DA:
 	call 0537ah		;88da
 	call 053cfh		;88dd
@@ -1069,32 +1104,32 @@ L_88DA:
 	ld (0e540h),a		;88ea
 	call 0b165h		;88ed
 	ld a,065h		;88f0
-	call 0413ah		;88f2
+	call 0413ah		;88f2   ; banco 0: pide_sonido_si_esta_activo
 	ld a,007h		;88f5
-	ld (0e000h),a		;88f7
+	ld (0e000h),a		;88f7   ; la variable de fase
 	ld a,003h		;88fa
-	ld (0e001h),a		;88fc
-	jp 04265h		;88ff
+	ld (0e001h),a		;88fc   ; el SUBESTADO
+	jp 04265h		;88ff   ; banco 0: sube_el_area_de_juego
 L_8902:
 	call 05212h		;8902
 	call 05256h		;8905
 	call 0529ah		;8908
 	call 0530ah		;890b
-	call 04265h		;890e
+	call 04265h		;890e   ; banco 0: sube_el_area_de_juego
 	call L_9493		;8911
 	ld a,004h		;8914
-	jp L_8082		;8916
+	jp pon_el_estado		;8916
 L_8919:
 	call 042dfh		;8919
-	call 04265h		;891c
+	call 04265h		;891c   ; banco 0: sube_el_area_de_juego
 	call 05750h		;891f
 	xor a			;8922
 	ld (0e21dh),a		;8923
 	ld (0e21bh),a		;8926
 	inc a			;8929
-	ld (0e096h),a		;892a
-	ld (0e097h),a		;892d
-	jp L_8094		;8930
+	ld (0e096h),a		;892a   ; los avisos que deja el cuadro
+	ld (0e097h),a		;892d   ; la bandera de que la fase se ha acabado
+	jp avanza_el_subestado		;8930
 L_8933:
 	dec b			;8933
 	jp nz,L_8A0F		;8934
@@ -1122,11 +1157,11 @@ L_8933:
 	push bc			;8963
 	push de			;8964
 	push hl			;8965
-	ld a,(0e091h)		;8966
+	ld a,(0e091h)		;8966   ; el numero de fase tal como se pinta
 	ld c,a			;8969
-	ld a,(0e092h)		;896a
+	ld a,(0e092h)		;896a   ; la FASE, de 1 a 13
 	ld b,a			;896d
-	ld a,(0e093h)		;896e
+	ld a,(0e093h)		;896e   ; el valor 1-2-3 de la fase
 	ld e,a			;8971
 	ld a,(0e08fh)		;8972
 	ld d,a			;8975
@@ -1195,25 +1230,25 @@ L_89A6:
 	ld (0e0cah),a		;89ef
 	ld a,h			;89f2
 	ld (0e0cbh),a		;89f3
-	call 046e3h		;89f6
-	call 04232h		;89f9
+	call 046e3h		;89f6   ; banco 0: monta_la_fase_desde_el_decorado
+	call 04232h		;89f9   ; banco 0: borra_el_area_de_juego
 	ld a,003h		;89fc
-	jp L_8082		;89fe
+	jp pon_el_estado		;89fe
 L_8A01:
 	ld hl,0e002h		;8a01
 	ld a,(hl)			;8a04
 	and 0bfh		;8a05
 	ld (hl),a			;8a07
 	xor a			;8a08
-	ld (0e082h),a		;8a09
-	jp L_8080		;8a0c
+	ld (0e082h),a		;8a09   ; uno o dos jugadores
+	jp estado_a_0xFF		;8a0c
 L_8A0F:
-	call 04224h		;8a0f
+	call 04224h		;8a0f   ; banco 0: borra_la_pantalla_entera
 	ld a,0c8h		;8a12
-	call 0413ah		;8a14
+	call 0413ah		;8a14   ; banco 0: pide_sonido_si_esta_activo
 	call 05b91h		;8a17
 	ld de,08e30h		;8a1a
-	call 042bch		;8a1d
+	call 042bch		;8a1d   ; banco 0: pinta_guion_con_mascara
 	ld de,0e085h		;8a20
 	ld hl,03971h		;8a23
 	call L_93E3		;8a26
@@ -1224,18 +1259,18 @@ L_8A0F:
 	cp 0feh		;8a35
 	jr c,L_8A3F		;8a37
 	ld de,08e1eh		;8a39
-	call 042bch		;8a3c
+	call 042bch		;8a3c   ; banco 0: pinta_guion_con_mascara
 L_8A3F:
-	jp L_8094		;8a3f
+	jp avanza_el_subestado		;8a3f
 L_8A42:
-	ld a,(0e006h)		;8a42
+	ld a,(0e006h)		;8a42   ; las teclas recien pulsadas
 	and 040h		;8a45
 	ret z			;8a47
 	ld a,001h		;8a48
 	ld (0e0dfh),a		;8a4a
 	ld de,08e1eh		;8a4d
 	ld c,000h		;8a50
-	jp 042beh		;8a52
+	jp 042beh		;8a52   ; banco 0: pinta_guion_lee_destino
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x8a55..0x8a8d  (56 bytes)
@@ -1253,7 +1288,7 @@ DATA_8A55:
 L_8A8D:
 	ld hl,00000h		;8a8d
 	ld (0e00ah),hl		;8a90
-	call 047e2h		;8a93
+	call 047e2h		;8a93   ; banco 0: pinta_del_banco_6
 	ld hl,00a00h		;8a96
 	ld bc,003f0h		;8a99
 	xor a			;8a9c
@@ -1288,7 +1323,7 @@ L_8ABF:
 	ld de,00a00h		;8ac8
 	add hl,de			;8acb
 	ld a,c			;8acc
-	call 04056h		;8acd
+	call 04056h		;8acd   ; banco 0: a_mas_hl
 	ld b,015h		;8ad0
 	ld de,00008h		;8ad2
 	ld a,0f0h		;8ad5
@@ -1326,7 +1361,7 @@ L_8AFE:
 	dec a			;8b07
 	jp nz,L_8CF3		;8b08
 	ld a,050h		;8b0b
-	ld (0e004h),a		;8b0d
+	ld (0e004h),a		;8b0d   ; el contador de espera del estado
 	ld b,005h		;8b10
 	jp L_8CFA		;8b12
 L_8B15:
@@ -1342,7 +1377,7 @@ L_8B15:
 	add a,a			;8b26
 	add a,b			;8b27
 	add a,c			;8b28
-	call 04056h		;8b29
+	call 04056h		;8b29   ; banco 0: a_mas_hl
 	ld a,(hl)			;8b2c
 	inc hl			;8b2d
 	ld e,(hl)			;8b2e
@@ -1499,7 +1534,7 @@ L_8C34:
 	ret			;8c43
 L_8C44:
 	djnz L_8C70		;8c44
-	ld a,(0e003h)		;8c46
+	ld a,(0e003h)		;8c46   ; el contador de cuadros
 	and 003h		;8c49
 	jp nz,L_8AF9		;8c4b
 	ld de,(0e124h)		;8c4e
@@ -1547,7 +1582,7 @@ L_8C9C:
 	ex de,hl			;8c9c
 	ld hl,(0e124h)		;8c9d
 	ld bc,0001ah		;8ca0
-	jp 0428fh		;8ca3
+	jp 0428fh		;8ca3   ; banco 0: copia_a_vram
 L_8CA6:
 	ld b,040h		;8ca6
 	ld a,(0e10eh)		;8ca8
@@ -1561,7 +1596,7 @@ L_8CB0:
 	ld (0e141h),hl		;8cb7
 	xor a			;8cba
 	ld (0e143h),a		;8cbb
-	ld a,(0e092h)		;8cbe
+	ld a,(0e092h)		;8cbe   ; la FASE, de 1 a 13
 	dec a			;8cc1
 	ld b,a			;8cc2
 	cp 00eh		;8cc3
@@ -1572,7 +1607,7 @@ L_8CB0:
 L_8CCF:
 	ld a,b			;8ccf
 	ld hl,0917bh		;8cd0
-	call 04055h		;8cd3
+	call 04055h		;8cd3   ; banco 0: dos_por_a_mas_hl
 	ld e,(hl)			;8cd6
 	inc hl			;8cd7
 	ld d,(hl)			;8cd8
@@ -1583,7 +1618,7 @@ L_8CCF:
 	and a			;8ce5
 	jp nz,L_8CF3		;8ce6
 	ld a,050h		;8ce9
-	ld (0e004h),a		;8ceb
+	ld (0e004h),a		;8ceb   ; el contador de espera del estado
 	ld b,005h		;8cee
 	jp L_8CFA		;8cf0
 L_8CF3:
@@ -1599,7 +1634,7 @@ L_8CFF:
 	and a			;8d02
 	ret nz			;8d03
 	ld a,039h		;8d04
-	jp 0413ah		;8d06
+	jp 0413ah		;8d06   ; banco 0: pide_sonido_si_esta_activo
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x8d09..0x91ad  (1188 bytes)
@@ -1686,13 +1721,13 @@ DATA_8D09:
 
 
 L_91AD:
-	ld a,(0e0a1h)		;91ad
+	ld a,(0e0a1h)		;91ad   ; el DECORADO, de 0 a 9
 	sub 009h		;91b0
 	jr z,L_91B9		;91b2
-	ld a,(0e007h)		;91b4
+	ld a,(0e007h)		;91b4   ; el estado de los mandos del cuadro anterior
 	and 003h		;91b7
 L_91B9:
-	call 04060h		;91b9
+	call 04060h		;91b9   ; banco 0: despacha
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x91bc..0x91c4  (8 bytes)
@@ -1750,7 +1785,7 @@ L_91F7:
 L_9201:
 	ld hl,0398ah		;9201
 	ld de,039eah		;9204
-	ld a,(0e082h)		;9207
+	ld a,(0e082h)		;9207   ; uno o dos jugadores
 	or a			;920a
 	jr z,L_920E		;920b
 	ex de,hl			;920d
@@ -1761,15 +1796,15 @@ L_920E:
 	ld c,000h		;9213
 L_9215:
 	ld de,08e07h		;9215
-	jp 042c1h		;9218
+	jp 042c1h		;9218   ; banco 0: pinta_guion_bucle
 L_921B:
-	ld a,(0e0a2h)		;921b
+	ld a,(0e0a2h)		;921b   ; el modo en el que esta el juego
 	cp 002h		;921e
 	ret nc			;9220
 	ld a,(0e0a4h)		;9221
 	and a			;9224
 	jr nz,L_928A		;9225
-	ld a,(0e003h)		;9227
+	ld a,(0e003h)		;9227   ; el contador de cuadros
 	and 01fh		;922a
 	ret nz			;922c
 	ld hl,0e08bh		;922d
@@ -1782,7 +1817,7 @@ L_921B:
 	sbc a,000h		;9237
 	daa			;9239
 	ld (hl),a			;923a
-	ld hl,(0e08bh)		;923b
+	ld hl,(0e08bh)		;923b   ; el largo de la fase
 	ld a,h			;923e
 	and a			;923f
 	jr nz,L_9250		;9240
@@ -1797,12 +1832,12 @@ L_9250:
 	ld a,l			;9250
 	or h			;9251
 	ret nz			;9252
-	ld a,(0e0a2h)		;9253
+	ld a,(0e0a2h)		;9253   ; el modo en el que esta el juego
 	dec a			;9256
 	jr z,L_9284		;9257
 	xor a			;9259
-	ld (0e097h),a		;925a
-	ld a,(0e203h)		;925d
+	ld (0e097h),a		;925a   ; la bandera de que la fase se ha acabado
+	ld a,(0e203h)		;925d   ; por donde va la rotacion de los sprites
 	cp 004h		;9260
 	ld c,016h		;9262
 	jr z,L_9277		;9264
@@ -1817,11 +1852,11 @@ L_9250:
 	dec c			;9276
 L_9277:
 	ld a,c			;9277
-	ld (0e203h),a		;9278
+	ld (0e203h),a		;9278   ; por donde va la rotacion de los sprites
 	xor a			;927b
 	ld (0e21dh),a		;927c
 	ld a,08ch		;927f
-	jp 0413ah		;9281
+	jp 0413ah		;9281   ; banco 0: pide_sonido_si_esta_activo
 L_9284:
 	ld a,001h		;9284
 	ld (0e0a4h),a		;9286
@@ -1834,10 +1869,10 @@ L_928F:
 	and a			;9290
 	ret nz			;9291
 	ld a,010h		;9292
-	call 04056h		;9294
+	call 04056h		;9294   ; banco 0: a_mas_hl
 	djnz L_928F		;9297
 	ld a,004h		;9299
-	ld (0e096h),a		;929b
+	ld (0e096h),a		;929b   ; los avisos que deja el cuadro
 	ret			;929e
 L_929F:
 	ld a,(0e1f1h)		;929f
@@ -1855,14 +1890,14 @@ L_929F:
 	ld de,00004h		;92b5
 	rst 20h			;92b8
 	jr c,L_92CE		;92b9
-	ld a,(0e003h)		;92bb
+	ld a,(0e003h)		;92bb   ; el contador de cuadros
 	and 00fh		;92be
 	jr nz,L_92CE		;92c0
-	ld a,(0e0a5h)		;92c2
+	ld a,(0e0a5h)		;92c2   ; por que vuelta de la fase va
 	cp 002h		;92c5
 	jr nc,L_92CE		;92c7
 	ld a,01bh		;92c9
-	call 0413ah		;92cb
+	call 0413ah		;92cb   ; banco 0: pide_sonido_si_esta_activo
 L_92CE:
 	ld a,l			;92ce
 	and 00fh		;92cf
@@ -1886,7 +1921,7 @@ L_92E3:
 	ld (0e1f2h),a		;92e6
 	jp L_9493		;92e9
 L_92EC:
-	ld a,(0e0a1h)		;92ec
+	ld a,(0e0a1h)		;92ec   ; el DECORADO, de 0 a 9
 	cp 001h		;92ef
 	ret z			;92f1
 	cp 003h		;92f2
@@ -1917,7 +1952,7 @@ L_9325:
 	ld hl,02000h		;9325
 	ld bc,00080h		;9328
 	xor a			;932b
-	call 04293h		;932c
+	call 04293h		;932c   ; banco 0: llena_los_tres_tercios
 	ld hl,00000h		;932f
 	ld de,00008h		;9332
 	ld b,010h		;9335
@@ -1925,7 +1960,7 @@ L_9337:
 	push bc			;9337
 	ld bc,00008h		;9338
 	push hl			;933b
-	call 04293h		;933c
+	call 04293h		;933c   ; banco 0: llena_los_tres_tercios
 	pop hl			;933f
 	add hl,de			;9340
 	inc a			;9341
@@ -1979,7 +2014,7 @@ L_9369:
 	ld (hl),a			;937e
 	jr nc,L_938B		;937f
 	ld hl,09999h		;9381
-	ld (0e083h),hl		;9384
+	ld (0e083h),hl		;9384   ; los datos del juego
 	ld (0e084h),hl		;9387
 	ret			;938a
 L_938B:
@@ -2003,7 +2038,7 @@ L_939A:
 	ld (hl),099h		;93a5
 L_93A7:
 	ld a,037h		;93a7
-	call 0413ah		;93a9
+	call 0413ah		;93a9   ; banco 0: pide_sonido_si_esta_activo
 L_93AC:
 	ex de,hl			;93ac
 	ld b,003h		;93ad
@@ -2027,7 +2062,7 @@ L_93C5:
 	call L_9409		;93c8
 	call L_93FB		;93cb
 	ld de,08dafh		;93ce
-	call 042bch		;93d1
+	call 042bch		;93d1   ; banco 0: pinta_guion_con_mascara
 	ld de,0e085h		;93d4
 	ld hl,038d1h		;93d7
 	call L_93E3		;93da
@@ -2045,16 +2080,16 @@ L_93E7:
 L_93F3:
 	ld hl,03869h		;93f3
 	ld c,0ffh		;93f6
-	jp 042c1h		;93f8
+	jp 042c1h		;93f8   ; banco 0: pinta_guion_bucle
 L_93FB:
 	ld de,08dc9h		;93fb
-	call 042bch		;93fe
+	call 042bch		;93fe   ; banco 0: pinta_guion_con_mascara
 	ld hl,038b1h		;9401
 	ld de,0e090h		;9404
 	jr L_9415		;9407
 L_9409:
 	ld de,08dc1h		;9409
-	call 042bch		;940c
+	call 042bch		;940c   ; banco 0: pinta_guion_con_mascara
 	ld hl,03891h		;940f
 	ld de,0e091h		;9412
 L_9415:
@@ -2080,12 +2115,12 @@ L_9424:
 	ret			;9430
 L_9431:
 	ld de,08e4fh		;9431
-	call 042bch		;9434
+	call 042bch		;9434   ; banco 0: pinta_guion_con_mascara
 	call L_9469		;9437
 	call L_9471		;943a
 	jp L_947B		;943d
 L_9440:
-	ld a,(0e0a2h)		;9440
+	ld a,(0e0a2h)		;9440   ; el modo en el que esta el juego
 	and a			;9443
 	ret z			;9444
 	ld a,(0e0a4h)		;9445
@@ -2094,10 +2129,10 @@ L_9440:
 	ld c,000h		;944b
 	jr L_9453		;944d
 L_944F:
-	ld a,(0e003h)		;944f
+	ld a,(0e003h)		;944f   ; el contador de cuadros
 	ld c,a			;9452
 L_9453:
-	ld a,(0e0a2h)		;9453
+	ld a,(0e0a2h)		;9453   ; el modo en el que esta el juego
 	dec a			;9456
 	ld de,08e66h		;9457
 	jr z,L_945F		;945a
@@ -2108,7 +2143,7 @@ L_945F:
 	jr z,L_9466		;9463
 	inc c			;9465
 L_9466:
-	jp 042beh		;9466
+	jp 042beh		;9466   ; banco 0: pinta_guion_lee_destino
 L_9469:
 	ld hl,03806h		;9469
 	ld de,0e08ch		;946c
@@ -2125,7 +2160,7 @@ L_9481:
 	ld b,002h		;9481
 	jr L_9424		;9483
 L_9485:
-	ld a,(0e203h)		;9485
+	ld a,(0e203h)		;9485   ; por donde va la rotacion de los sprites
 	sub 00fh		;9488
 	ret nz			;948a
 	ld (0e1f0h),a		;948b
@@ -2133,11 +2168,11 @@ L_9485:
 	ld h,a			;948f
 	ld (0e1f4h),hl		;9490
 L_9493:
-	ld a,(0e0a1h)		;9493
+	ld a,(0e0a1h)		;9493   ; el DECORADO, de 0 a 9
 	ld hl,094a0h		;9496
-	call 04056h		;9499
+	call 04056h		;9499   ; banco 0: a_mas_hl
 	ld a,(hl)			;949c
-	jp 0413ah		;949d
+	jp 0413ah		;949d   ; banco 0: pide_sonido_si_esta_activo
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x94a0..0x94aa  (10 bytes)
@@ -2153,7 +2188,7 @@ L_94AA:
 	ld a,(0e0e1h)		;94aa
 	and a			;94ad
 	jr z,L_94D1		;94ae
-	ld a,(0e003h)		;94b0
+	ld a,(0e003h)		;94b0   ; el contador de cuadros
 	and 01fh		;94b3
 	ret nz			;94b5
 	ld hl,0e08ch		;94b6
@@ -2165,22 +2200,22 @@ L_94AA:
 	ld de,02000h		;94c1
 	call L_9367		;94c4
 	ld a,02dh		;94c7
-	jp 0413ah		;94c9
+	jp 0413ah		;94c9   ; banco 0: pide_sonido_si_esta_activo
 L_94CC:
 	ld hl,0e0e1h		;94cc
 	dec (hl)			;94cf
 	ret			;94d0
 L_94D1:
-	ld hl,(0e08bh)		;94d1
+	ld hl,(0e08bh)		;94d1   ; el largo de la fase
 	ld a,h			;94d4
 	or l			;94d5
 	jr z,L_9500		;94d6
-	ld a,(0e003h)		;94d8
+	ld a,(0e003h)		;94d8   ; el contador de cuadros
 	and 003h		;94db
 	jr nz,L_94E6		;94dd
 	push af			;94df
 	ld a,02eh		;94e0
-	call 0413ah		;94e2
+	call 0413ah		;94e2   ; banco 0: pide_sonido_si_esta_activo
 	pop af			;94e5
 L_94E6:
 	rra			;94e6
@@ -2195,17 +2230,17 @@ L_94E6:
 	daa			;94f2
 	ld h,a			;94f3
 L_94F4:
-	ld (0e08bh),hl		;94f4
+	ld (0e08bh),hl		;94f4   ; el largo de la fase
 	ld de,00020h		;94f7
 	call L_9367		;94fa
 	jp L_9469		;94fd
 L_9500:
 	xor a			;9500
-	ld (0e096h),a		;9501
+	ld (0e096h),a		;9501   ; los avisos que deja el cuadro
 	ret			;9504
 L_9505:
 	call L_9522		;9505
-	ld a,(0e006h)		;9508
+	ld a,(0e006h)		;9508   ; las teclas recien pulsadas
 	ld c,a			;950b
 	and 001h		;950c
 	jr nz,L_9514		;950e
@@ -2213,12 +2248,12 @@ L_9505:
 	and 002h		;9511
 	ret z			;9513
 L_9514:
-	ld a,(0e082h)		;9514
+	ld a,(0e082h)		;9514   ; uno o dos jugadores
 	cpl			;9517
 	and 001h		;9518
-	ld (0e082h),a		;951a
+	ld (0e082h),a		;951a   ; uno o dos jugadores
 	ld a,023h		;951d
-	jp 0413ah		;951f
+	jp 0413ah		;951f   ; banco 0: pide_sonido_si_esta_activo
 L_9522:
 	ld a,002h		;9522
 	call 00141h		;9524   ; BIOS SNSMAT - Returns the value of the specified line from the keyboard matrix
@@ -2442,9 +2477,9 @@ L_966B:
 	jp 05166h		;9686
 L_9689:
 	call 05b1fh		;9689
-	ld a,(0e092h)		;968c
+	ld a,(0e092h)		;968c   ; la FASE, de 1 a 13
 	dec a			;968f
-	call 04060h		;9690
+	call 04060h		;9690   ; banco 0: despacha
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x9693..0x96c3  (48 bytes)
@@ -2491,8 +2526,8 @@ L_96F3:
 L_96F6:
 	jp 05aadh		;96f6
 L_96F9:
-	ld a,(0e203h)		;96f9
-	call 04060h		;96fc
+	ld a,(0e203h)		;96f9   ; por donde va la rotacion de los sprites
+	call 04060h		;96fc   ; banco 0: despacha
 
 ; ----------------------------------------------------------------------
 ; DATOS sin identificar  0x96ff..0x9737  (56 bytes)
@@ -2509,13 +2544,13 @@ DATA_96FF:
 
 L_9737:
 	call 0a84bh		;9737
-	ld a,(0e0a5h)		;973a
+	ld a,(0e0a5h)		;973a   ; por que vuelta de la fase va
 	cp 002h		;973d
 	jr z,L_9773		;973f
-	ld a,(0e0a1h)		;9741
+	ld a,(0e0a1h)		;9741   ; el DECORADO, de 0 a 9
 	cp 009h		;9744
 	jr z,L_9773		;9746
-	ld a,(0e006h)		;9748
+	ld a,(0e006h)		;9748   ; las teclas recien pulsadas
 	and 010h		;974b
 	jr z,L_9773		;974d
 	ld a,0ffh		;974f
@@ -2532,11 +2567,11 @@ L_9737:
 	inc a			;9769
 	ld b,004h		;976a
 L_976C:
-	ld (0e203h),a		;976c
+	ld (0e203h),a		;976c   ; por donde va la rotacion de los sprites
 	ld a,b			;976f
-	jp 04145h		;9770
+	jp 04145h		;9770   ; banco 0: pide_sonido
 L_9773:
-	ld a,(0e0a1h)		;9773
+	ld a,(0e0a1h)		;9773   ; el DECORADO, de 0 a 9
 	cp 009h		;9776
 	jr z,L_9780		;9778
 	ld a,(0e209h)		;977a
@@ -2544,7 +2579,7 @@ L_9773:
 L_9780:
 	call 0a8dbh		;9780
 	ld hl,0e206h		;9783
-	ld a,(0e003h)		;9786
+	ld a,(0e003h)		;9786   ; el contador de cuadros
 	and 007h		;9789
 	jr nz,L_978E		;978b
 	inc (hl)			;978d
@@ -2569,7 +2604,7 @@ L_979D:
 	ld a,(0e209h)		;97aa
 L_97AD:
 	call 0a87ah		;97ad
-	ld a,(0e003h)		;97b0
+	ld a,(0e003h)		;97b0   ; el contador de cuadros
 	and 003h		;97b3
 	jr nz,L_97F0		;97b5
 	ld a,(0e207h)		;97b7
@@ -2593,12 +2628,12 @@ L_97CD:
 	xor a			;97d6
 	ld (hl),a			;97d7
 	ld (0e207h),a		;97d8
-	ld (0e203h),a		;97db
+	ld (0e203h),a		;97db   ; por donde va la rotacion de los sprites
 	ld (0e20ah),a		;97de
 	jp 0bbd6h		;97e1
 L_97E4:
 	ld hl,097ffh		;97e4
-	call 04056h		;97e7
+	call 04056h		;97e7   ; banco 0: a_mas_hl
 	ld a,(hl)			;97ea
 	ld hl,0e204h		;97eb
 	add a,(hl)			;97ee
@@ -2640,18 +2675,18 @@ L_9819:
 	jr c,L_9845		;9827
 	cp 0ffh		;9829
 	jr z,L_9845		;982b
-	ld a,(0e007h)		;982d
+	ld a,(0e007h)		;982d   ; el estado de los mandos del cuadro anterior
 	and 010h		;9830
 	jr nz,L_9845		;9832
 	ld a,(0e208h)		;9834
 	sub 004h		;9837
 	ld hl,09896h		;9839
-	call 04056h		;983c
+	call 04056h		;983c   ; banco 0: a_mas_hl
 	ld a,(hl)			;983f
 	ld (0e208h),a		;9840
 	jr L_9857		;9843
 L_9845:
-	ld a,(0e003h)		;9845
+	ld a,(0e003h)		;9845   ; el contador de cuadros
 	and 003h		;9848
 	jr nz,L_9887		;984a
 	ld hl,0e208h		;984c
@@ -2665,7 +2700,7 @@ L_9857:
 	inc (hl)			;985a
 	jr L_9887		;985b
 L_985D:
-	ld a,(0e003h)		;985d
+	ld a,(0e003h)		;985d   ; el contador de cuadros
 	and 003h		;9860
 	jr nz,L_9887		;9862
 	ld hl,0e208h		;9864
@@ -2676,12 +2711,12 @@ L_985D:
 	xor a			;986d
 	ld (hl),a			;986e
 	ld (0e207h),a		;986f
-	ld (0e203h),a		;9872
+	ld (0e203h),a		;9872   ; por donde va la rotacion de los sprites
 	ld (0e20ah),a		;9875
 	jp 0bbd6h		;9878
 L_987B:
 	ld hl,0989ch		;987b
-	call 04056h		;987e
+	call 04056h		;987e   ; banco 0: a_mas_hl
 	ld a,(hl)			;9881
 	ld hl,0e204h		;9882
 	add a,(hl)			;9885
@@ -2717,11 +2752,11 @@ L_98B0:
 	ld hl,0e20bh		;98bf
 	inc (hl)			;98c2
 	ld a,007h		;98c3
-	call 04145h		;98c5
+	call 04145h		;98c5   ; banco 0: pide_sonido
 	ld a,090h		;98c8
-	ld (0e204h),a		;98ca
+	ld (0e204h),a		;98ca   ; la X en la pantalla de lo que se maneja
 L_98CD:
-	ld a,(0e003h)		;98cd
+	ld a,(0e003h)		;98cd   ; el contador de cuadros
 	and 003h		;98d0
 	jr nz,L_990B		;98d2
 	ld hl,0e20ch		;98d4
@@ -2734,7 +2769,7 @@ L_98CD:
 	ld hl,0995bh		;98e3
 L_98E6:
 	ld a,(0e20ch)		;98e6
-	call 04056h		;98e9
+	call 04056h		;98e9   ; banco 0: a_mas_hl
 	ld a,(hl)			;98ec
 	ld hl,0e204h		;98ed
 	add a,(hl)			;98f0
@@ -2773,16 +2808,16 @@ L_9914:
 	cp 002h		;9928
 	jr nz,L_9931		;992a
 	ld a,008h		;992c
-	jp 04145h		;992e
+	jp 04145h		;992e   ; banco 0: pide_sonido
 L_9931:
 	push af			;9931
 	ld a,009h		;9932
-	call 04145h		;9934
+	call 04145h		;9934   ; banco 0: pide_sonido
 	pop af			;9937
 	cp 004h		;9938
 	ret nz			;993a
 	xor a			;993b
-	ld (0e203h),a		;993c
+	ld (0e203h),a		;993c   ; por donde va la rotacion de los sprites
 	xor a			;993f
 	ld (hl),a			;9940
 	ld (0e20ch),a		;9941
@@ -2811,16 +2846,16 @@ L_9961:
 	dec (hl)			;996b
 	jr L_999C		;996c
 L_996E:
-	ld a,(0e006h)		;996e
+	ld a,(0e006h)		;996e   ; las teclas recien pulsadas
 	and 010h		;9971
 	jr z,L_999C		;9973
 	ld a,090h		;9975
-	ld (0e204h),a		;9977
+	ld (0e204h),a		;9977   ; la X en la pantalla de lo que se maneja
 	call 062a4h		;997a
 	call 06507h		;997d
 	call 068e2h		;9980
 	xor a			;9983
-	ld (0e203h),a		;9984
+	ld (0e203h),a		;9984   ; por donde va la rotacion de los sprites
 	ld (0e20dh),a		;9987
 	ld (0e20eh),a		;998a
 	ld (0e201h),a		;998d
@@ -2833,21 +2868,21 @@ L_999C:
 	ld a,(0e215h)		;999c
 	and a			;999f
 	jr z,L_99C0		;99a0
-	ld a,(0e006h)		;99a2
+	ld a,(0e006h)		;99a2   ; las teclas recien pulsadas
 	and 002h		;99a5
 	jr z,L_99C0		;99a7
 	ld a,012h		;99a9
-	ld (0e203h),a		;99ab
+	ld (0e203h),a		;99ab   ; por donde va la rotacion de los sprites
 	ld a,(0e215h)		;99ae
-	ld (0e0a2h),a		;99b1
+	ld (0e0a2h),a		;99b1   ; el modo en el que esta el juego
 	ld a,(0e0d2h)		;99b4
 	ld (0e0a3h),a		;99b7
 	ld a,008h		;99ba
-	ld (0e096h),a		;99bc
+	ld (0e096h),a		;99bc   ; los avisos que deja el cuadro
 	ret			;99bf
 L_99C0:
 	ld hl,0e20dh		;99c0
-	ld a,(0e003h)		;99c3
+	ld a,(0e003h)		;99c3   ; el contador de cuadros
 	and 007h		;99c6
 	jr nz,L_99CB		;99c8
 	inc (hl)			;99ca
@@ -2860,16 +2895,16 @@ L_99CB:
 	ld a,09eh		;99d3
 	inc b			;99d5
 L_99D6:
-	ld (0e204h),a		;99d6
+	ld (0e204h),a		;99d6   ; la X en la pantalla de lo que se maneja
 	call 0a8dbh		;99d9
 	ld a,b			;99dc
 	jp 0a8f5h		;99dd
 L_99E0:
 	call 0a84bh		;99e0
-	ld a,(0e0a5h)		;99e3
+	ld a,(0e0a5h)		;99e3   ; por que vuelta de la fase va
 	cp 002h		;99e6
 	jr z,L_9A17		;99e8
-	ld a,(0e006h)		;99ea
+	ld a,(0e006h)		;99ea   ; las teclas recien pulsadas
 	and 010h		;99ed
 	jr z,L_9A17		;99ef
 	ld a,0ffh		;99f1
@@ -2879,21 +2914,21 @@ L_99E0:
 	ld a,(0e209h)		;99fb
 	ld (0e20ah),a		;99fe
 	ld a,090h		;9a01
-	ld (0e204h),a		;9a03
+	ld (0e204h),a		;9a03   ; la X en la pantalla de lo que se maneja
 	ld a,(0e161h)		;9a06
 	and a			;9a09
 	ld a,006h		;9a0a
 	jr z,L_9A0F		;9a0c
 	inc a			;9a0e
 L_9A0F:
-	ld (0e203h),a		;9a0f
+	ld (0e203h),a		;9a0f   ; por donde va la rotacion de los sprites
 	ld a,005h		;9a12
-	jp 04145h		;9a14
+	jp 04145h		;9a14   ; banco 0: pide_sonido
 L_9A17:
 	ld a,(0e209h)		;9a17
 	call 0a87ah		;9a1a
 L_9A1D:
-	ld hl,(0e204h)		;9a1d
+	ld hl,(0e204h)		;9a1d   ; la X en la pantalla de lo que se maneja
 	ld d,h			;9a20
 	ld (0ee88h),hl		;9a21
 	ld a,010h		;9a24
@@ -2905,8 +2940,8 @@ L_9A1D:
 	ld l,a			;9a2e
 	ld (0ee84h),hl		;9a2f
 	ld h,d			;9a32
-	ld (0ee80h),hl		;9a33
-	ld a,(0e003h)		;9a36
+	ld (0ee80h),hl		;9a33   ; la tabla de atributos de los 32 sprites
+	ld a,(0e003h)		;9a36   ; el contador de cuadros
 	and 020h		;9a39
 	jr z,L_9A48		;9a3b
 	ld a,(0ee88h)		;9a3d
@@ -2916,7 +2951,7 @@ L_9A1D:
 L_9A48:
 	ld a,00ah		;9a48
 	call 0a8f5h		;9a4a
-	ld a,(0e003h)		;9a4d
+	ld a,(0e003h)		;9a4d   ; el contador de cuadros
 	and 010h		;9a50
 	ld hl,00004h		;9a52
 	jr z,L_9A5A		;9a55
@@ -2936,7 +2971,7 @@ L_9A63:
 	ld a,(0e209h)		;9a70
 L_9A73:
 	call 0a87ah		;9a73
-	ld a,(0e003h)		;9a76
+	ld a,(0e003h)		;9a76   ; el contador de cuadros
 	and 003h		;9a79
 	jr nz,L_9AC2		;9a7b
 	ld a,(0e207h)		;9a7d
@@ -2962,15 +2997,15 @@ L_9A93:
 	ld (0e207h),a		;9a9e
 	ld (0e20ah),a		;9aa1
 	ld a,005h		;9aa4
-	ld (0e203h),a		;9aa6
+	ld (0e203h),a		;9aa6   ; por donde va la rotacion de los sprites
 	ld a,0a0h		;9aa9
-	ld (0e204h),a		;9aab
+	ld (0e204h),a		;9aab   ; la X en la pantalla de lo que se maneja
 	ld a,006h		;9aae
-	call 04145h		;9ab0
+	call 04145h		;9ab0   ; banco 0: pide_sonido
 	jp 0bbd6h		;9ab3
 L_9AB6:
 	ld hl,09ad1h		;9ab6
-	call 04056h		;9ab9
+	call 04056h		;9ab9   ; banco 0: a_mas_hl
 	ld a,(hl)			;9abc
 	ld hl,0e204h		;9abd
 	add a,(hl)			;9ac0
@@ -3012,18 +3047,18 @@ L_9AEB:
 	jr c,L_9B17		;9af9
 	cp 0ffh		;9afb
 	jr z,L_9B17		;9afd
-	ld a,(0e007h)		;9aff
+	ld a,(0e007h)		;9aff   ; el estado de los mandos del cuadro anterior
 	and 010h		;9b02
 	jr nz,L_9B17		;9b04
 	ld a,(0e208h)		;9b06
 	sub 004h		;9b09
 	ld hl,09896h		;9b0b
-	call 04056h		;9b0e
+	call 04056h		;9b0e   ; banco 0: a_mas_hl
 	ld a,(hl)			;9b11
 	ld (0e208h),a		;9b12
 	jr L_9B29		;9b15
 L_9B17:
-	ld a,(0e003h)		;9b17
+	ld a,(0e003h)		;9b17   ; el contador de cuadros
 	and 003h		;9b1a
 	jr nz,L_9B65		;9b1c
 	ld hl,0e208h		;9b1e
@@ -3037,7 +3072,7 @@ L_9B29:
 	inc (hl)			;9b2c
 	jr L_9B65		;9b2d
 L_9B2F:
-	ld a,(0e003h)		;9b2f
+	ld a,(0e003h)		;9b2f   ; el contador de cuadros
 	and 003h		;9b32
 	jr nz,L_9B65		;9b34
 	ld hl,0e208h		;9b36
@@ -3050,15 +3085,15 @@ L_9B2F:
 	ld (0e207h),a		;9b41
 	ld (0e20ah),a		;9b44
 	ld a,005h		;9b47
-	ld (0e203h),a		;9b49
+	ld (0e203h),a		;9b49   ; por donde va la rotacion de los sprites
 	ld a,0a0h		;9b4c
-	ld (0e204h),a		;9b4e
+	ld (0e204h),a		;9b4e   ; la X en la pantalla de lo que se maneja
 	ld a,006h		;9b51
-	call 04145h		;9b53
+	call 04145h		;9b53   ; banco 0: pide_sonido
 	jp 0bbd6h		;9b56
 L_9B59:
 	ld hl,0989ch		;9b59
-	call 04056h		;9b5c
+	call 04056h		;9b5c   ; banco 0: a_mas_hl
 	ld a,(hl)			;9b5f
 	ld hl,0e204h		;9b60
 	add a,(hl)			;9b63
@@ -3082,11 +3117,11 @@ L_9B74:
 	ld hl,0e20bh		;9b83
 	inc (hl)			;9b86
 	ld a,007h		;9b87
-	call 04145h		;9b89
+	call 04145h		;9b89   ; banco 0: pide_sonido
 	ld a,0a0h		;9b8c
-	ld (0e204h),a		;9b8e
+	ld (0e204h),a		;9b8e   ; la X en la pantalla de lo que se maneja
 L_9B91:
-	ld a,(0e003h)		;9b91
+	ld a,(0e003h)		;9b91   ; el contador de cuadros
 	and 003h		;9b94
 	jr nz,L_9BB2		;9b96
 	ld hl,0e20ch		;9b98
@@ -3118,16 +3153,16 @@ L_9BB2:
 	cp 002h		;9bc6
 	jr nz,L_9BCF		;9bc8
 	ld a,008h		;9bca
-	jp 04145h		;9bcc
+	jp 04145h		;9bcc   ; banco 0: pide_sonido
 L_9BCF:
 	push af			;9bcf
 	ld a,009h		;9bd0
-	call 04145h		;9bd2
+	call 04145h		;9bd2   ; banco 0: pide_sonido
 	pop af			;9bd5
 	cp 004h		;9bd6
 	ret nz			;9bd8
 	ld a,005h		;9bd9
-	ld (0e203h),a		;9bdb
+	ld (0e203h),a		;9bdb   ; por donde va la rotacion de los sprites
 	xor a			;9bde
 	ld (hl),a			;9bdf
 	ld (0e20ch),a		;9be0
@@ -3137,14 +3172,14 @@ L_9BCF:
 	call 06507h		;9bec
 	jp 068e2h		;9bef
 L_9BF2:
-	ld a,(0e006h)		;9bf2
+	ld a,(0e006h)		;9bf2   ; las teclas recien pulsadas
 	and 010h		;9bf5
 	jr z,L_9C00		;9bf7
 	call 0bbd6h		;9bf9
 	xor a			;9bfc
 	ld (0e212h),a		;9bfd
 L_9C00:
-	ld a,(0e003h)		;9c00
+	ld a,(0e003h)		;9c00   ; el contador de cuadros
 	and 003h		;9c03
 	jr nz,L_9C31		;9c05
 	ld hl,0e212h		;9c07
@@ -3154,7 +3189,7 @@ L_9C00:
 	ld a,(hl)			;9c0f
 	inc (hl)			;9c10
 	ld hl,09c74h		;9c11
-	call 04056h		;9c14
+	call 04056h		;9c14   ; banco 0: a_mas_hl
 	ld a,(hl)			;9c17
 	ld (0e214h),a		;9c18
 L_9C1B:
@@ -3175,7 +3210,7 @@ L_9C31:
 	ld a,(0e209h)		;9c34
 	call 0a87ah		;9c37
 L_9C3A:
-	ld hl,(0e204h)		;9c3a
+	ld hl,(0e204h)		;9c3a   ; la X en la pantalla de lo que se maneja
 	ld d,h			;9c3d
 	ld (0ee84h),hl		;9c3e
 	ld a,010h		;9c41
@@ -3192,9 +3227,9 @@ L_9C3A:
 	ld a,003h		;9c53
 	add a,l			;9c55
 	ld l,a			;9c56
-	ld (0ee80h),hl		;9c57
+	ld (0ee80h),hl		;9c57   ; la tabla de atributos de los 32 sprites
 	ld hl,0e213h		;9c5a
-	ld a,(0e003h)		;9c5d
+	ld a,(0e003h)		;9c5d   ; el contador de cuadros
 	and 007h		;9c60
 	jr nz,L_9C65		;9c62
 	inc (hl)			;9c64
@@ -3231,9 +3266,9 @@ L_9C80:
 	ld hl,0e20bh		;9c8f
 	inc (hl)			;9c92
 	ld a,007h		;9c93
-	call 04145h		;9c95
+	call 04145h		;9c95   ; banco 0: pide_sonido
 L_9C98:
-	ld a,(0e003h)		;9c98
+	ld a,(0e003h)		;9c98   ; el contador de cuadros
 	and 003h		;9c9b
 	jr nz,L_9CF7		;9c9d
 	ld hl,0e20ch		;9c9f
@@ -3246,7 +3281,7 @@ L_9C98:
 	ld hl,09d52h		;9cae
 L_9CB1:
 	ld a,(0e20ch)		;9cb1
-	call 04056h		;9cb4
+	call 04056h		;9cb4   ; banco 0: a_mas_hl
 	ld a,(hl)			;9cb7
 	ld hl,0e204h		;9cb8
 	add a,(hl)			;9cbb
@@ -3267,7 +3302,7 @@ L_9CCA:
 	call 0a87ah		;9cd0
 	pop af			;9cd3
 	call 0a87ah		;9cd4
-	ld hl,(0e204h)		;9cd7
+	ld hl,(0e204h)		;9cd7   ; la X en la pantalla de lo que se maneja
 	ld d,h			;9cda
 	ld (0ee84h),hl		;9cdb
 	ld a,010h		;9cde
@@ -3284,7 +3319,7 @@ L_9CCA:
 	ld a,003h		;9cf0
 	add a,l			;9cf2
 	ld l,a			;9cf3
-	ld (0ee80h),hl		;9cf4
+	ld (0ee80h),hl		;9cf4   ; la tabla de atributos de los 32 sprites
 L_9CF7:
 	ld a,(0e20bh)		;9cf7
 	rla			;9cfa
@@ -3311,16 +3346,16 @@ L_9D09:
 	cp 002h		;9d1e
 	jr nz,L_9D27		;9d20
 	ld a,008h		;9d22
-	jp 04145h		;9d24
+	jp 04145h		;9d24   ; banco 0: pide_sonido
 L_9D27:
 	push af			;9d27
 	ld a,009h		;9d28
-	call 04145h		;9d2a
+	call 04145h		;9d2a   ; banco 0: pide_sonido
 	pop af			;9d2d
 	cp 004h		;9d2e
 	ret nz			;9d30
 	ld a,009h		;9d31
-	ld (0e203h),a		;9d33
+	ld (0e203h),a		;9d33   ; por donde va la rotacion de los sprites
 	xor a			;9d36
 	ld (hl),a			;9d37
 	ld (0e20ch),a		;9d38
@@ -3353,7 +3388,7 @@ L_9D64:
 	ret			;9d68
 L_9D69:
 	call 0a84bh		;9d69
-	ld a,(0e006h)		;9d6c
+	ld a,(0e006h)		;9d6c   ; las teclas recien pulsadas
 	and 010h		;9d6f
 	jr z,L_9D97		;9d71
 	ld a,0ffh		;9d73
@@ -3370,15 +3405,15 @@ L_9D69:
 	inc a			;9d8d
 	ld b,004h		;9d8e
 L_9D90:
-	ld (0e203h),a		;9d90
+	ld (0e203h),a		;9d90   ; por donde va la rotacion de los sprites
 	ld a,b			;9d93
-	jp 0413ah		;9d94
+	jp 0413ah		;9d94   ; banco 0: pide_sonido_si_esta_activo
 L_9D97:
 	ld a,(0e209h)		;9d97
 	call 0a87ah		;9d9a
 	call 0a8dbh		;9d9d
 	ld hl,0e206h		;9da0
-	ld a,(0e003h)		;9da3
+	ld a,(0e003h)		;9da3   ; el contador de cuadros
 	and 007h		;9da6
 	jr nz,L_9DAB		;9da8
 	inc (hl)			;9daa
@@ -3403,7 +3438,7 @@ L_9DBA:
 	ld a,(0e209h)		;9dc7
 L_9DCA:
 	call 0a87ah		;9dca
-	ld a,(0e003h)		;9dcd
+	ld a,(0e003h)		;9dcd   ; el contador de cuadros
 	and 003h		;9dd0
 	jr nz,L_9E0F		;9dd2
 	ld a,(0e207h)		;9dd4
@@ -3429,11 +3464,11 @@ L_9DEA:
 	ld (0e207h),a		;9df5
 	ld (0e20ah),a		;9df8
 	ld a,00ch		;9dfb
-	ld (0e203h),a		;9dfd
+	ld (0e203h),a		;9dfd   ; por donde va la rotacion de los sprites
 	jp 0b48dh		;9e00
 L_9E03:
 	ld hl,097ffh		;9e03
-	call 04056h		;9e06
+	call 04056h		;9e06   ; banco 0: a_mas_hl
 	ld a,(hl)			;9e09
 	ld hl,0e204h		;9e0a
 	add a,(hl)			;9e0d
@@ -3464,18 +3499,18 @@ L_9E2E:
 	jr c,L_9E5A		;9e3c
 	cp 0ffh		;9e3e
 	jr z,L_9E5A		;9e40
-	ld a,(0e007h)		;9e42
+	ld a,(0e007h)		;9e42   ; el estado de los mandos del cuadro anterior
 	and 010h		;9e45
 	jr nz,L_9E5A		;9e47
 	ld a,(0e208h)		;9e49
 	sub 004h		;9e4c
 	ld hl,09896h		;9e4e
-	call 04056h		;9e51
+	call 04056h		;9e51   ; banco 0: a_mas_hl
 	ld a,(hl)			;9e54
 	ld (0e208h),a		;9e55
 	jr L_9E6C		;9e58
 L_9E5A:
-	ld a,(0e003h)		;9e5a
+	ld a,(0e003h)		;9e5a   ; el contador de cuadros
 	and 003h		;9e5d
 	jr nz,L_9E9E		;9e5f
 	ld hl,0e208h		;9e61
@@ -3489,7 +3524,7 @@ L_9E6C:
 	inc (hl)			;9e6f
 	jr L_9E9E		;9e70
 L_9E72:
-	ld a,(0e003h)		;9e72
+	ld a,(0e003h)		;9e72   ; el contador de cuadros
 	and 003h		;9e75
 	jr nz,L_9E9E		;9e77
 	ld hl,0e208h		;9e79
@@ -3502,11 +3537,11 @@ L_9E72:
 	ld (0e207h),a		;9e84
 	ld (0e20ah),a		;9e87
 	ld a,00ch		;9e8a
-	ld (0e203h),a		;9e8c
+	ld (0e203h),a		;9e8c   ; por donde va la rotacion de los sprites
 	jp 0b48dh		;9e8f
 L_9E92:
 	ld hl,0989ch		;9e92
-	call 04056h		;9e95
+	call 04056h		;9e95   ; banco 0: a_mas_hl
 	ld a,(hl)			;9e98
 	ld hl,0e204h		;9e99
 	add a,(hl)			;9e9c
@@ -3532,13 +3567,13 @@ L_9EB8:
 	ld (0ee90h),a		;9eba
 	ld (0ee94h),a		;9ebd
 	ld a,011h		;9ec0
-	ld (0e203h),a		;9ec2
+	ld (0e203h),a		;9ec2   ; por donde va la rotacion de los sprites
 	xor a			;9ec5
 	ld (0e1f0h),a		;9ec6
 	ld (0e1f4h),a		;9ec9
 	call L_9493		;9ecc
 L_9ECF:
-	ld a,(0e0a1h)		;9ecf
+	ld a,(0e0a1h)		;9ecf   ; el DECORADO, de 0 a 9
 	cp 002h		;9ed2
 	jr z,L_9EE8		;9ed4
 	cp 003h		;9ed6
@@ -3560,23 +3595,23 @@ L_9EEB:
 	ld de,00004h		;9ef1
 	rst 20h			;9ef4
 	jr c,L_9F0A		;9ef5
-	ld a,(0e003h)		;9ef7
+	ld a,(0e003h)		;9ef7   ; el contador de cuadros
 	and 00fh		;9efa
 	jr nz,L_9F0A		;9efc
-	ld a,(0e0a5h)		;9efe
+	ld a,(0e0a5h)		;9efe   ; por que vuelta de la fase va
 	cp 002h		;9f01
 	jr nc,L_9F0A		;9f03
 	ld a,01bh		;9f05
-	call 0413ah		;9f07
+	call 0413ah		;9f07   ; banco 0: pide_sonido_si_esta_activo
 L_9F0A:
-	ld a,(0e006h)		;9f0a
+	ld a,(0e006h)		;9f0a   ; las teclas recien pulsadas
 	and 010h		;9f0d
 	jr z,L_9F18		;9f0f
 	call 0bbd6h		;9f11
 	xor a			;9f14
 	ld (0e212h),a		;9f15
 L_9F18:
-	ld a,(0e003h)		;9f18
+	ld a,(0e003h)		;9f18   ; el contador de cuadros
 	and 003h		;9f1b
 	jr nz,L_9F48		;9f1d
 	ld hl,0e212h		;9f1f
@@ -3586,7 +3621,7 @@ L_9F18:
 	ld a,(hl)			;9f27
 	inc (hl)			;9f28
 	ld hl,09c74h		;9f29
-	call 04056h		;9f2c
+	call 04056h		;9f2c   ; banco 0: a_mas_hl
 	ld a,(hl)			;9f2f
 	ld (0e214h),a		;9f30
 L_9F33:
@@ -3605,7 +3640,7 @@ L_9F48:
 	call 0a84bh		;9f48
 	ld a,(0e209h)		;9f4b
 	call 0a87ah		;9f4e
-	ld hl,(0e204h)		;9f51
+	ld hl,(0e204h)		;9f51   ; la X en la pantalla de lo que se maneja
 	ld a,01dh		;9f54
 	add a,l			;9f56
 	ld l,a			;9f57
@@ -3630,21 +3665,21 @@ L_9F7C:
 	jp 0a8f5h		;9f7d
 L_9F80:
 	call 0a083h		;9f80
-	ld a,(0e003h)		;9f83
+	ld a,(0e003h)		;9f83   ; el contador de cuadros
 	rra			;9f86
 	ret c			;9f87
-	ld a,(0e204h)		;9f88
+	ld a,(0e204h)		;9f88   ; la X en la pantalla de lo que se maneja
 	cp 0f8h		;9f8b
 	jr nz,L_9F9A		;9f8d
 	ld a,0e0h		;9f8f
 	ld (0ee98h),a		;9f91
 	ld a,019h		;9f94
-	ld (0e203h),a		;9f96
+	ld (0e203h),a		;9f96   ; por donde va la rotacion de los sprites
 	ret			;9f99
 L_9F9A:
 	dec a			;9f9a
-	ld (0e204h),a		;9f9b
-	ld hl,(0e204h)		;9f9e
+	ld (0e204h),a		;9f9b   ; la X en la pantalla de lo que se maneja
+	ld hl,(0e204h)		;9f9e   ; la X en la pantalla de lo que se maneja
 	ld a,l			;9fa1
 	add a,008h		;9fa2
 	ld l,a			;9fa4
@@ -3657,7 +3692,7 @@ L_9F9A:
 	ld (0ee98h),hl		;9fb2
 	ld a,004h		;9fb5
 	call 0a8f5h		;9fb7
-	ld a,(0e003h)		;9fba
+	ld a,(0e003h)		;9fba   ; el contador de cuadros
 	and 008h		;9fbd
 	ld a,07ch		;9fbf
 	jr z,L_9FC5		;9fc1
@@ -3666,14 +3701,14 @@ L_9FC5:
 	ld (0ee9ah),a		;9fc5
 	ret			;9fc8
 L_9FC9:
-	ld a,(0e204h)		;9fc9
+	ld a,(0e204h)		;9fc9   ; la X en la pantalla de lo que se maneja
 	add a,003h		;9fcc
-	ld (0e204h),a		;9fce
+	ld (0e204h),a		;9fce   ; la X en la pantalla de lo que se maneja
 	cp 0f8h		;9fd1
 	jr nc,L_9FFC		;9fd3
 	cp 090h		;9fd5
 	jr c,L_9FFC		;9fd7
-	ld a,(0e0a1h)		;9fd9
+	ld a,(0e0a1h)		;9fd9   ; el DECORADO, de 0 a 9
 	cp 004h		;9fdc
 	ld c,005h		;9fde
 	ld b,0a0h		;9fe0
@@ -3686,11 +3721,11 @@ L_9FC9:
 	ld e,020h		;9fee
 L_9FF0:
 	ld a,c			;9ff0
-	ld (0e203h),a		;9ff1
+	ld (0e203h),a		;9ff1   ; por donde va la rotacion de los sprites
 	ld a,b			;9ff4
-	ld (0e204h),a		;9ff5
+	ld (0e204h),a		;9ff5   ; la X en la pantalla de lo que se maneja
 	ld a,e			;9ff8
-	jp 0413ah		;9ff9
+	jp 0413ah		;9ff9   ; banco 0: pide_sonido_si_esta_activo
 L_9FFC:
 	call 0a8dbh		;9ffc
 

@@ -689,7 +689,7 @@ L_86D8:
 	cp 08ch		;86da   ; el 0x8C ademas borra la prioridad
 	jr nz,arranca_el_efecto_en_la_voz		;86dc
 	xor a			;86de
-	ld (0e051h),a		;86df
+	ld (0e051h),a		;86df   ; la prioridad del efecto que suena
 	ld a,c			;86e2
 	jr arranca_el_efecto_en_la_voz		;86e3
 pide_un_efecto_corto:

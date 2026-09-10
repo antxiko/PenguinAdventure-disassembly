@@ -174,3 +174,96 @@ L 0xAA61 elige_el_dibujo_siguiente
 C 0xAA61 0x20 de un hueco al siguiente
 L 0xAA6B demasiado_cerca
 C 0xAA6B no se dibuja
+
+# ======================================================================
+# LAS QUINCE CLASES DE OBJETO
+# ======================================================================
+# Cada clase tiene dos rutinas: la de MONTAR, que la saca la tabla de 0xA8D1
+# cuando el guion de la fase dice que toca, y la de ATENDER, que la saca la de
+# 0xA98A en cada cuadro mientras el objeto siga vivo.
+#
+# Montar es casi siempre lo mismo: copiar una plantilla de quince bytes al
+# hueco, que es la posicion y las velocidades de salida. Lo que distingue de
+# verdad a una clase de otra es la rutina de atender.
+#
+# Cuatro de las quince -las de 0xB60A, 0xB60B, 0xB60C, 0xB60D, 0xB60E y 0xB60F-
+# son un `ret` pelado. No es un error del desensamblado: son clases que no
+# hacen nada, y ocupan su hueco en las dos tablas para que los numeros cuadren.
+
+B 0xB581 MONTAR LA CLASE 1. Copia los quince bytes de 0xB59C al hueco -de IX+4 en adelante- y, si el juego no va ya muy adelantado, le da un empujon hacia atras.
+L 0xB581 monta_clase_1
+C 0xB581 DE apunta al hueco
+C 0xB584 cuatro bytes mas alla: se salta el tipo y la posicion de pantalla
+C 0xB588 la plantilla
+C 0xB58B quince bytes
+C 0xB590 por donde va la fase
+C 0xB593 pasado 0x70 ya no se le empuja
+C 0xB596 y si no, un empujon de -0x40
+D 0xB59C 0xB5AB plantilla_de_la_clase_1  Los quince bytes que 0xB58E copia al hueco, y que son la posicion y las velocidades con las que sale el objeto: X = 0x4000, Y = 0x7800, Z = 0, velocidad X = 0x00A0, velocidad Y = 0x0040, velocidad Z = 0x00A0 y la marca de que se mueve solo. Los dos primeros -0x98 y 0x01- caen en IX+4 e IX+5, que son los que usa la rutina de atender como contador y como estado.
+F 0xB59C 2,w1,w1,w1,w1,w1,w1,1
+B 0xB5AD ATENDER A LA CLASE 1. Un bicho en TRES tiempos, y los tres cambian su velocidad de PROFUNDIDAD: primero se acerca frenando -le va restando 14 a la velocidad Z-, pasado cierto punto cambia de tiempo, y en el tercero vuelve a acelerar sumando 2. Ademas suena uno de cada ocho cuadros mientras esta en pantalla.
+L 0xB5AD atiende_clase_1
+C 0xB5AD el dibujo base de esta clase
+C 0xB5AF ponerselo
+C 0xB5B2 el contador de cuadros
+C 0xB5B5 uno de cada ocho
+C 0xB5B9 el efecto 1
+C 0xB5BB y a pedirlo al reproductor
+L 0xB5BE atiende_clase_1_estado
+C 0xB5BE en que tiempo va
+C 0xB5C1 el 1
+C 0xB5C4 el 2
+C 0xB5C7 y en el 0, se mira la distancia
+C 0xB5CA hasta 0x74 no pasa nada
+C 0xB5CD y ahi cambia de tiempo
+L 0xB5D1 atiende_clase_1_frena
+C 0xB5D1 la velocidad de profundidad
+C 0xB5D7 menos catorce: viene frenando
+C 0xB5E1 la distancia
+C 0xB5E4 pasado 0x84...
+C 0xB5E8 ...al tiempo siguiente
+L 0xB5EC atiende_clase_1_una_sola_vez
+C 0xB5EC una bandera para que esto pase una vez y no en cada cuadro
+C 0xB5F1 lo que sea que hace al llegar
+C 0xB5F4 y queda marcado
+L 0xB5F9 atiende_clase_1_acelera
+C 0xB5F9 la velocidad de profundidad
+C 0xB5FF y ahora suma de dos en dos: se va alejando
+L 0xB60A monta_clase_2   Un `ret`: esta clase no monta nada.
+L 0xB60B atiende_clase_2   Y tampoco hace nada en cada cuadro.
+L 0xB60C monta_clase_3
+L 0xB60D atiende_clase_3
+L 0xB60E monta_clase_4
+L 0xB60F atiende_clase_4
+
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0xA894 lo andado en la fase
+C 0xAA9E el contador de cuadros
+C 0xAB3E la tabla de cambio de color, nibble alto
+C 0xAC14 la pausa que se hace al perder o al cambiar de fase
+C 0xBE7E el contador de cuadros
+
+# --- Las llamadas al banco 0, que esta fijo en 0x4000-0x5FFF. Los nombres los
+# saca tools/anota_llamadas.py de las directivas L de src/p00.notes.
+C 0xAB8A banco 0: pide_sonido_si_esta_activo
+C 0xAB93 banco 0: pide_sonido_si_esta_activo
+C 0xB68B banco 0: pide_sonido_si_esta_activo
+C 0xB89B banco 0: pide_sonido_si_esta_activo
+C 0xBC38 banco 0: pide_sonido_si_esta_activo
+C 0xBD20 banco 0: pide_sonido_si_esta_activo
+C 0xBE36 banco 0: pide_sonido_si_esta_activo
+
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0xAB4A la X en la pantalla de lo que se maneja
+C 0xAB9E la X en la pantalla de lo que se maneja
+C 0xABA9 la Y en la pantalla de lo que se maneja
+C 0xAC75 la X en la pantalla de lo que se maneja
+C 0xAC79 la Y en la pantalla de lo que se maneja
+C 0xB882 la Y en la pantalla de lo que se maneja
+C 0xBCCE la X en la pantalla de lo que se maneja
+C 0xBE23 la Y en la pantalla de lo que se maneja
+C 0xBE94 la Y en la pantalla de lo que se maneja
