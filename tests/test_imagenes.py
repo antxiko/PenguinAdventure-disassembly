@@ -158,5 +158,49 @@ class Imagenes(unittest.TestCase):
         self.assertEqual(tramos, [(0xEBE0, 0xECA0), (0xECC0, 0xEE80)])
 
 
+    def test_los_guiones_de_sprite_tocan_la_zona_de_sprites(self):
+        """Los diecinueve pintan dentro de 0x1800-0x1FFF y en ningun otro sitio.
+
+        Si alguno se saliera de ahi seria que la lista de
+        graficos.GUIONES_DE_SPRITE tiene metido un guion que no es de sprites,
+        y la hoja saldria en blanco sin que nadie se enterase.
+        """
+        self.assertEqual(len(graficos.GUIONES_DE_SPRITE), 19)
+        for guion in graficos.GUIONES_DE_SPRITE:
+            li = graficos.Lienzo()
+            graficos.pinta(self.cart, (7, 8, 9), guion, li)
+            r = li.rangos()
+            self.assertTrue(r, "el guion %04X no pinta nada" % guion)
+            dentro = sum(f - i for i, f in r
+                         if i >= graficos.SPRITES_PAT and f <= 0x2000)
+            total = sum(f - i for i, f in r)
+            self.assertGreater(dentro, 0,
+                               "el guion %04X no toca la zona de sprites" % guion)
+            # 0x9846 es el de la portada y ademas pinta la pantalla entera; los
+            # otros dieciocho son solo de sprites.
+            if guion != 0x9846:
+                self.assertEqual(dentro, total,
+                                 "el guion %04X pinta %d bytes fuera de la "
+                                 "zona de sprites" % (guion, total - dentro))
+
+    def test_la_hoja_empareja_desde_el_primer_sprite(self):
+        """Las capas se emparejan desde donde empieza el guion, no desde cero.
+
+        Es lo que hace que las figuras salgan enteras: el guion 0x7FBC empieza
+        en 0x19A0, que es el sprite 13, asi que las parejas son (13,14),
+        (15,16)... Si se emparejara desde el 0 saldrian partidas por la mitad.
+        """
+        li = graficos.Lienzo()
+        graficos.pinta(self.cart, (7, 8, 9), 0x7FBC, li)
+        primero = next((a - graficos.SPRITES_PAT) // 32
+                       for a in range(graficos.SPRITES_PAT, 0x2000)
+                       if li.tocado[a])
+        self.assertEqual(primero, 13)
+        img = graficos.hoja_de_sprites(li)
+        pintados = sum(1 for f in img for v in f if v != 1)
+        self.assertGreater(pintados, 2000,
+                           "la hoja de 0x7FBC sale casi vacia")
+
+
 if __name__ == "__main__":
     unittest.main()

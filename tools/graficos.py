@@ -354,24 +354,61 @@ def decorado(cart, n):
     return li
 
 
-def hoja_de_sprites(li, tinta=15, fondo=4):
-    """Los 64 sprites de 16x16 de 0x1800-0x1FFF, en rejilla de ocho por ocho.
+def hoja_de_sprites(li, capas=True, fondo=1, tinta_a=15, tinta_b=13):
+    """Los sprites de 16x16 de 0x1800-0x1FFF, en rejilla.
 
-    Van en blanco a proposito: en la ROM el patron NO lleva color -el color es
-    el cuarto byte de la entrada de la tabla de atributos- y una figura de
-    varios colores son varios sprites superpuestos, uno por capa.
+    DOS CAPAS POR FIGURA. En el MSX1 un sprite es de un solo color, asi que una
+    figura de dos colores son dos sprites puestos en el mismo sitio. El
+    cartucho lo hace con dos huecos de la tabla de atributos separados por
+    nueve: p01:6A25 escribe la figura en 0xEE80 + 4*(0xE0E3) y p01:6A31 la
+    escribe otra vez en 0xEEA4 + 4*(0xE0E3), que es el mismo hueco nueve mas
+    alla. Los patrones de las dos capas van seguidos en la VRAM, asi que aqui
+    se dibujan las parejas (n, n+1) superpuestas.
+
+    Los dos colores de estas hojas NO son los del juego -el color va en el
+    cuarto byte de la entrada de la tabla de atributos, que lo pone cada objeto
+    al aparecer-. Son blanco y gris para que se vea que capa pone que.
     """
-    img = [[fondo] * (8 * 18) for _ in range(8 * 18)]
-    for n in range(64):
-        base = SPRITES_PAT + n * 32
-        fy, fx = (n // 8) * 18, (n % 8) * 18
-        for mitad in range(2):
-            for y in range(16):
-                b = li.v[base + mitad * 16 + y]
-                for x in range(8):
-                    if (b >> (7 - x)) & 1:
-                        img[fy + y + 1][fx + mitad * 8 + x + 1] = tinta
+    # La pareja empieza donde empieza el guion, no en el sprite 0: si el
+    # primero que se toca es el 13, las parejas son (13,14), (15,16)... Coger
+    # la paridad al reves parte todas las figuras por la mitad.
+    primero = 0
+    for a in range(SPRITES_PAT, 0x2000):
+        if li.tocado[a]:
+            primero = (a - SPRITES_PAT) // 32
+            break
+    n_figuras = (64 - primero) // 2 if capas else 64 - primero
+    ancho = 8
+    filas = max(1, (n_figuras + ancho - 1) // ancho)
+    img = [[fondo] * (ancho * 18) for _ in range(filas * 18)]
+    for k in range(n_figuras):
+        fy, fx = (k // ancho) * 18, (k % ancho) * 18
+        capas_k = ((primero + 2 * k, tinta_a), (primero + 2 * k + 1, tinta_b))             if capas else ((primero + k, tinta_a),)
+        for n, tinta in capas_k:
+            base = SPRITES_PAT + n * 32
+            for mitad in range(2):
+                for y in range(16):
+                    b = li.v[base + mitad * 16 + y]
+                    for x in range(8):
+                        if (b >> (7 - x)) & 1:
+                            img[fy + y + 1][fx + mitad * 8 + x + 1] = tinta
     return img
+
+
+# Los guiones que pintan patrones de SPRITE (0x1800-0x1FFF), todos del trio
+# 7-8-9. Salen de recorrer el banco 0 buscando las llamadas a los pintores y
+# quedarse con las que tocan esa zona.
+GUIONES_DE_SPRITE = (
+    0x7686, 0x7D6F, 0x7E3A, 0x7FBC, 0x81CF, 0x823A, 0x82AD, 0x82DD,
+    0x852C, 0x86F5, 0x8757, 0x87B8, 0x882E, 0x888D, 0x88E8, 0x89B8,
+    0x8A7E, 0x8B3A, 0x9846,
+)
+
+
+def hoja_de_sprites_de(cart, guion):
+    li = Lienzo()
+    pinta(cart, (7, 8, 9), guion, li)
+    return li, hoja_de_sprites(li)
 
 
 def inventario(cart):
@@ -397,6 +434,10 @@ def main():
         li = decorado(cart, n)
         hechas.append(guarda_png(pinta_pantalla(li),
                                  os.path.join(IMAGENES, "decorado_%d.png" % n)))
+    for guion in GUIONES_DE_SPRITE:
+        _li, img = hoja_de_sprites_de(cart, guion)
+        hechas.append(guarda_png(img, os.path.join(
+            IMAGENES, "sprites_%04X.png" % guion), escala=3))
     for f in hechas:
         print("  %s" % os.path.relpath(f, RAIZ))
     print("%d imagenes en docs/imagenes/" % len(hechas))
