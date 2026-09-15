@@ -10,7 +10,9 @@ Detras del relleno 0xFF, leyendo hacia el final del fichero:
     BCD]  [0xAA]
 
 El titulo va en katakana con el codigo de la casa: indice = byte - 0x80, y los
-indices 0 a 44 son el gojuon corrido, sin ヲ. El 0x00 es un espacio.
+indices 0 a 44 son el gojuon corrido, sin ヲ. El 0x00 es un espacio. Las
+CIFRAS, en cambio, van en ASCII pelado: pasa en los cartuchos RC-733, RC-737 y
+RC-735, cuyos titulos acaban en un numero.
 
 EN UN MEGAROM NO ESTA AL FINAL DEL FICHERO. En un cartucho de 16 o 32 KB la
 marca cae en los ultimos bytes de la imagen, y basta con saltar el relleno
@@ -29,21 +31,28 @@ import sys
 KANA = ("A I U E O KA KI KU KE KO SA SI SU SE SO TA TI TU TE TO "
         "NA NI NU NE NO HA HI HU HE HO MA MI MU ME MO YA YU YO "
         "RA RI RU RE RO WA N").split()
-# Del 45 en adelante solo estan confirmados estos; el resto, sin comprobar.
-# El 52 salio de Nemesis (RC-742): el titulo es グラディウス y ese es el hueco de la "i"
-# pequena de ディ. Los otros cuatro venian de antes.
+# Los kana pequenos y los signos van detras de los 45 basicos, del 49 en
+# adelante. Cada uno se ha DESPEJADO con una marca ya conocida de la serie, no
+# supuesto por el orden del silabario -que no lo siguen-. Los cartuchos se citan
+# por numero de catalogo, que es como vienen dentro de la propia marca:
 #
-# El 49 y el 58 salen de ESTE cartucho, y se leen solos: la marca del RC-743
-# son 16 caracteres que dan ユメタイリク アドベンチャー -Yume Tairiku
-# Adventure, el titulo japones-. Los dos ultimos bytes son 0xB1 (indice 49) y
-# 0xBA (indice 58), y para que "A TO-dakuten HE-dakuten N TI _ _" se lea
-# アドベンチャー el 49 tiene que ser la ゃ pequena y el 58 el alargador ー.
-EXTRA = {49: "ya", 51: "yo", 52: "i", 53: "tsu", 55: '"', 56: "o", 58: "-"}
+#   49 ya   RC-728  MO HI o RE N SI " [49] [58]        -> モピレンジャー
+#   50 yu   RC-724  YA KI [50] U                       -> ヤキュウ
+#   52 i    RC-742  KU " RA TE " [52] U SU             -> グラディウス
+#   54 a    RC-730  RO [58] TO " _ HU [54] I TA [58]   -> ロードファイター
+#   57 .    RC-725  I [58] [57] A RU [57] KA N HU [58] -> イー・アル・カンフー
+#   58 -    los tres de arriba a la vez (alargamiento)
+#
+# Los otros cuatro ya venian de antes: 51 yo, 53 tsu, 55 dakuten, 56 handakuten.
+EXTRA = {49: "ya", 50: "yu", 51: "yo", 52: "i", 53: "tsu", 54: "a",
+         55: '"', 56: "o", 57: ".", 58: "-"}
 
 
 def caracter(v):
     if v == 0:
         return " "
+    if 0x30 <= v <= 0x39:       # las cifras van en ASCII, no en el codigo de la casa
+        return chr(v)
     i = v - 0x80
     if 0 <= i < len(KANA):
         return KANA[i]
