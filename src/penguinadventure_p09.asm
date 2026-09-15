@@ -2353,7 +2353,7 @@ monta_clase_12:
 	ld hl,0bcech		;bcc6   ; su plantilla
 	ld bc,0000fh		;bcc9   ; quince bytes
 	ldir		;bccc
-	ld a,(0e204h)		;bcce   ; la X de lo que se maneja
+	ld a,(0e204h)		;bcce   ; la X en la pantalla de lo que se maneja
 	ld c,a			;bcd1
 	ld a,0a0h		;bcd2   ; 0xA0 menos ella
 	sub c			;bcd4
@@ -2559,7 +2559,7 @@ monta_clase_14:
 L_BE1F:
 	ld a,(hl)			;be1f   ; la altura que toca
 	ld (ix+009h),a		;be20
-	ld a,(0e205h)		;be23   ; la Y de lo que se maneja
+	ld a,(0e205h)		;be23   ; la Y en la pantalla de lo que se maneja
 	cp (ix+009h)		;be26   ; contra la suya
 	ld de,0fe00h		;be29   ; si esta por encima, hacia arriba...
 	jr c,clase_14_orientada		;be2c

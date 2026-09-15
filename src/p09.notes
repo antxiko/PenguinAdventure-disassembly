@@ -588,7 +588,6 @@ L 0xBCBF monta_clase_12
 C 0xBCC2 cuatro bytes mas alla del hueco
 C 0xBCC6 su plantilla
 C 0xBCC9 quince bytes
-C 0xBCCE la X de lo que se maneja
 C 0xBCD2 0xA0 menos ella
 C 0xBCD5 y eso es la profundidad de salida
 C 0xBCDD el bit 0 de esa cuenta
@@ -663,7 +662,6 @@ C 0xBE14 uno mas
 C 0xBE15 la tabla de ocho alturas
 C 0xBE18 de ocho en ocho
 C 0xBE1F la altura que toca
-C 0xBE23 la Y de lo que se maneja
 C 0xBE26 contra la suya
 C 0xBE29 si esta por encima, hacia arriba...
 C 0xBE2E ...y si no, hacia abajo

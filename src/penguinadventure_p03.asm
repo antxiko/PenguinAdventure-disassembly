@@ -2302,14 +2302,14 @@ choca_con_lo_de_0xE0C0:
 	ld a,(0e0c0h)		;b2d9   ; ¿hay algo de eso puesto?
 	and a			;b2dc
 	ret z			;b2dd   ; si no, no hay con que chocar
-	ld a,(0e203h)		;b2de   ; el paso de la transicion
+	ld a,(0e203h)		;b2de   ; por donde va la rotacion de los sprites; el paso de la transicion
 	cp 003h		;b2e1   ; en el 3...
 	ret z			;b2e3
 	cp 008h		;b2e4   ; ...en el 8...
 	ret z			;b2e6
 	cp 00ah		;b2e7   ; ...y en el 10 no se choca
 	ret z			;b2e9
-	ld hl,(0e204h)		;b2ea   ; la posicion de lo que se maneja
+	ld hl,(0e204h)		;b2ea   ; la X en la pantalla de lo que se maneja; la posicion de lo que se maneja
 	ld de,(0e0c3h)		;b2ed   ; y la del objeto
 	ld a,l			;b2f1
 	add a,01ch		;b2f2   ; el margen en X
@@ -2362,7 +2362,7 @@ coger_alarga_la_fase:
 	jr nc,L_B329		;b326   ; con su acarreo al byte alto
 	inc h			;b328
 L_B329:
-	ld (0e08bh),hl		;b329   ; y guardado
+	ld (0e08bh),hl		;b329   ; el largo de la fase; y guardado
 	ld a,027h		;b32c   ; el efecto 0x27
 	jp 0413ah		;b32e   ; banco 0: pide_sonido_si_esta_activo
 coger_arranca_el_movimiento:
@@ -2398,14 +2398,14 @@ choca_con_lo_de_0xE0D7:
 	ld a,(0e0d7h)		;b36b   ; ¿hay algo?
 	and a			;b36e
 	ret z			;b36f
-	ld a,(0e203h)		;b370   ; el paso de la transicion
+	ld a,(0e203h)		;b370   ; por donde va la rotacion de los sprites; el paso de la transicion
 	cp 003h		;b373   ; el 3...
 	ret z			;b375
 	cp 008h		;b376   ; ...el 8...
 	ret z			;b378
 	cp 00ah		;b379   ; ...y el 10 no chocan
 	ret z			;b37b
-	ld hl,(0e204h)		;b37c   ; la posicion de lo que se maneja
+	ld hl,(0e204h)		;b37c   ; la X en la pantalla de lo que se maneja; la posicion de lo que se maneja
 	ld de,(0e0dah)		;b37f   ; y la del objeto
 	ld a,l			;b383
 	add a,01ch		;b384   ; el margen en X
@@ -2431,14 +2431,14 @@ choca_con_el_que_vuela:
 	ld a,(0e0bdh)		;b3a0   ; ¿esta en pantalla?
 	and a			;b3a3
 	ret z			;b3a4
-	ld a,(0e203h)		;b3a5   ; el paso de la transicion
+	ld a,(0e203h)		;b3a5   ; por donde va la rotacion de los sprites; el paso de la transicion
 	cp 003h		;b3a8
 	ret z			;b3aa
 	cp 008h		;b3ab
 	ret z			;b3ad
 	cp 00ah		;b3ae
 	ret z			;b3b0
-	ld hl,(0e204h)		;b3b1   ; la posicion de lo que se maneja
+	ld hl,(0e204h)		;b3b1   ; la X en la pantalla de lo que se maneja; la posicion de lo que se maneja
 	ld de,(0e0bbh)		;b3b4   ; y la del que vuela
 	ld a,l			;b3b8
 	add a,020h		;b3b9   ; el margen en X
@@ -2455,20 +2455,20 @@ choca_con_el_que_vuela:
 	ld (0e1f1h),a		;b3ca
 	ld (0e1f2h),a		;b3cd
 	inc a			;b3d0
-	ld (0e0a2h),a		;b3d1   ; modo 1: se ha perdido
+	ld (0e0a2h),a		;b3d1   ; el modo en el que esta el juego; modo 1: se ha perdido
 	inc a			;b3d4
-	ld (0e096h),a		;b3d5   ; y un aviso de 2
+	ld (0e096h),a		;b3d5   ; los avisos que deja el cuadro; y un aviso de 2
 	ld a,(0e0adh)		;b3d8
 	ld (0e0a3h),a		;b3db   ; por que vuelta va
 	ld a,010h		;b3de
-	ld (0e203h),a		;b3e0   ; el paso de la transicion, a 16
+	ld (0e203h),a		;b3e0   ; por donde va la rotacion de los sprites; el paso de la transicion, a 16
 	ret			;b3e3
 
 ; ----------------------------------------------------------------------
 ; RECOGER. Los tres huecos de 0xE3A0, de dieciseis bytes cada uno, y una cuenta distinta de las de arriba: aqui no hay rectangulo fijo, el alto que se admite DEPENDE de lo lejos que este -0xB41C dobla la diferencia en X y se la suma al margen-, que es lo que hace que valga tocarlo tanto de cerca como de lejos. Recoger da un punto de los de uno en uno y 0x10 de los de golpe, y suena el efecto 0x0C.
 ; ----------------------------------------------------------------------
 recoger:
-	ld a,(0e203h)		;b3e4   ; el paso de la transicion
+	ld a,(0e203h)		;b3e4   ; por donde va la rotacion de los sprites; el paso de la transicion
 	cp 003h		;b3e7   ; el 3, el 4, el 8 y el 10 no cuentan
 	ret z			;b3e9
 	cp 004h		;b3ea
@@ -2488,7 +2488,7 @@ recoger_mira_un_hueco:
 	jr c,recoger_hueco_siguiente		;b405
 	ld e,(ix+003h)		;b407   ; su posicion
 	ld d,(ix+004h)		;b40a
-	ld hl,(0e204h)		;b40d   ; y la de lo que se maneja
+	ld hl,(0e204h)		;b40d   ; la X en la pantalla de lo que se maneja
 	ld a,e			;b410
 	sub l			;b411   ; la diferencia en X
 	ld e,a			;b412
@@ -2520,7 +2520,7 @@ recoger_mira_un_hueco:
 	ld hl,00999h		;b43e   ; ...el marcador se queda en su tope
 	ld (0e089h),hl		;b441   ; el marcador, cifras bajas (BCD)
 recoger_descuenta:
-	ld a,(0e203h)		;b444   ; el paso de la transicion
+	ld a,(0e203h)		;b444   ; por donde va la rotacion de los sprites; el paso de la transicion
 	cp 001h		;b447   ; en cuatro de ellos -1, 2, 6 y 7-...
 	jr z,L_B457		;b449
 	cp 002h		;b44b
@@ -2564,7 +2564,7 @@ recoger_hueco_siguiente:
 ; LAS CUATRO RANURAS DE 0xE550. Ocho bytes cada una, y lo que cuenta es que las CUATRO lleguen a 5: mientras alguna no lo este, la rutina se vuelve. Cuando lo estan todas, se arranca lo que sea que se abre.
 ; ----------------------------------------------------------------------
 mira_las_cuatro_ranuras:
-	ld a,(0e205h)		;b48d   ; la Y de lo que se maneja
+	ld a,(0e205h)		;b48d   ; la Y en la pantalla de lo que se maneja
 	ld c,a			;b490
 	ld b,004h		;b491   ; cuatro ranuras
 	ld hl,0e550h		;b493   ; y ahi estan
@@ -2600,7 +2600,7 @@ mira_si_estan_las_cuatro:
 	ld a,008h		;b4c1   ; ocho bytes a la siguiente
 	call 04056h		;b4c3   ; banco 0: a_mas_hl
 	djnz mira_si_estan_las_cuatro		;b4c6
-	call 07c9fh		;b4c8   ; y con las cuatro llenas, esto
+	call 07c9fh		;b4c8   ; banco 1; y con las cuatro llenas, esto
 	ld hl,0ae0ah		;b4cb
 	ld (0e53ah),hl		;b4ce
 	ld a,002h		;b4d1
@@ -2628,7 +2628,7 @@ mira_si_sale_el_que_vuela:
 	ld a,h			;b4f9
 	inc a			;b4fa   ; 0xFFFF quiere decir que no sale nunca
 	ret z			;b4fb
-	ld de,(0e08dh)		;b4fc   ; la distancia a la que sale el objeto siguiente
+	ld de,(0e08dh)		;b4fc   ; la distancia de ahora; la distancia a la que sale el objeto siguiente
 	rst 20h			;b500   ; DCOMPR: ¿hemos llegado?
 	ret nz			;b501
 	ld hl,0ffffh		;b502   ; y una vez que sale, no vuelve a salir
@@ -2661,7 +2661,7 @@ L_B51A:
 ; ----------------------------------------------------------------------
 el_que_vuela:
 	ld a,(0e0bdh)		;b52e   ; en que tiempo va
-	call 04060h		;b531   ; banco 0: despacha
+	call 04060h		;b531   ; el despachador, con la tabla pegada detras; banco 0: despacha
 
 ; ----------------------------------------------------------------------
 ; DATOS tiempos_del_que_vuela: Los tres destinos: 0xB558 -que es un `ret`-,
@@ -2706,7 +2706,7 @@ el_que_vuela_se_mueve:
 	ld a,002h		;b560   ; el efecto 2
 	call 0413ah		;b562   ; banco 0: pide_sonido_si_esta_activo
 L_B565:
-	ld a,(0e003h)		;b565   ; el contador de cuadros
+	ld a,(0e003h)		;b565   ; el contador otra vez; el contador de cuadros
 	rra			;b568   ; y ahora uno de cada dos
 	ret nc			;b569
 	ld hl,0e0beh		;b56a   ; el paso del vaiven
@@ -2798,9 +2798,9 @@ monta_el_bonus:
 	ld e,(hl)			;b614
 	inc hl			;b615
 	ld d,000h		;b616
-	ld (0e08bh),de		;b618   ; y ese es el largo del bonus
+	ld (0e08bh),de		;b618   ; el largo de la fase; y ese es el largo del bonus
 	ld hl,09000h		;b61c   ; 0x9000: una distancia a la que no se llega
-	ld (0e08dh),hl		;b61f   ; asi no sale ningun enemigo
+	ld (0e08dh),hl		;b61f   ; la distancia a la que sale el objeto siguiente; asi no sale ningun enemigo
 	call 0624ch		;b622   ; banco 1
 	call 062b8h		;b625   ; banco 1
 	xor a			;b628
@@ -2828,7 +2828,7 @@ DATA_largos_del_bonus:
 ; ----------------------------------------------------------------------
 la_cuenta_del_bonus:
 	ld a,(0e0ceh)		;b63f   ; en que tiempo va
-	call 04060h		;b642   ; el despachador, con la tabla detras
+	call 04060h		;b642   ; banco 0: despacha; el despachador, con la tabla detras
 
 ; ----------------------------------------------------------------------
 ; DATOS tiempos_del_bonus: Los cinco: 0xB64F, 0xB65F, 0xB684, 0xB68E y 0xB6DF.
@@ -3338,7 +3338,7 @@ DATA_BAAD:
 ; LO QUE SOLO SALE EN EL DECORADO 7. La primera instruccion lo dice todo: si (0xE0A1) no es 7, esta rutina se va sin hacer nada. Se dispara cuando lo que se maneja pasa de la columna 0x48, y a partir de ahi va bajando por su cuenta durante 0x40 cuadros, cambiando de dibujo cada cuatro.
 ; ----------------------------------------------------------------------
 lo_del_decorado_7:
-	ld a,(0e0a1h)		;bace   ; el decorado
+	ld a,(0e0a1h)		;bace   ; el DECORADO, de 0 a 9
 	cp 007h		;bad1   ; solo el 7
 	jr nz,lo_del_decorado_7_se_va		;bad3
 	ld a,(0e216h)		;bad5   ; ¿ya esta en marcha?
@@ -3361,7 +3361,7 @@ L_BAEC:
 	ld (0eec4h),a		;baf4
 	ret			;baf7
 lo_del_decorado_7_arranca:
-	ld a,(0e204h)		;baf8   ; la X de lo que se maneja
+	ld a,(0e204h)		;baf8   ; la X en la pantalla de lo que se maneja
 	cp 048h		;bafb   ; hasta la columna 0x48 no sale
 	ret c			;bafd
 	ld hl,0e217h		;bafe   ; cuantas veces ha salido
@@ -3369,7 +3369,7 @@ lo_del_decorado_7_arranca:
 	ld c,(hl)			;bb02
 	ld a,001h		;bb03
 	ld (0e216h),a		;bb05   ; y queda en marcha
-	ld hl,(0e204h)		;bb08   ; su posicion sale de la del jugador
+	ld hl,(0e204h)		;bb08   ; la X en la pantalla de lo que se maneja; su posicion sale de la del jugador
 	ld a,l			;bb0b
 	sub 010h		;bb0c   ; dieciseis a la izquierda
 	ld l,a			;bb0e
@@ -3399,7 +3399,7 @@ saca_lo_de_0xE0C0:
 	and l			;bb2f   ; 0xFFFF quiere decir nunca
 	cp 0ffh		;bb30
 	ret z			;bb32
-	ld de,(0e08dh)		;bb33   ; lo andado
+	ld de,(0e08dh)		;bb33   ; la distancia a la que sale el objeto siguiente; lo andado
 	rst 20h			;bb37   ; DCOMPR: ¿hemos llegado?
 	ret nz			;bb38
 	ld hl,0e0d4h		;bb39   ; cuantas veces ha salido
@@ -3414,7 +3414,7 @@ saca_lo_de_0xE0C0:
 	and a			;bb4c
 	jr nz,L_BB72		;bb4d
 	ld l,06ch		;bb4f   ; la columna por la que entra
-	ld a,(0e205h)		;bb51   ; la Y de lo que se maneja
+	ld a,(0e205h)		;bb51   ; la Y en la pantalla de lo que se maneja
 	cp 070h		;bb54   ; y segun este arriba o abajo...
 	ld h,0e8h		;bb56   ; ...entra por abajo...
 	ld a,000h		;bb58
@@ -3528,7 +3528,7 @@ cambia_a_uno_normal:
 	ld a,00dh		;bbf1   ; el efecto 0x0D
 	jp 0413ah		;bbf3   ; banco 0: pide_sonido_si_esta_activo
 cambia_al_dos:
-	ld a,(0e0a1h)		;bbf6   ; el decorado
+	ld a,(0e0a1h)		;bbf6   ; el DECORADO, de 0 a 9
 	cp 007h		;bbf9   ; en el 7, otra cosa
 	jr z,L_BC09		;bbfb
 	ld a,(0e1f1h)		;bbfd
@@ -3790,7 +3790,7 @@ el_segundo_boton:
 	ld a,(0e162h)		;bd8a   ; ¿esta permitido?
 	and a			;bd8d
 	ret z			;bd8e
-	ld a,(0e203h)		;bd8f   ; el paso de la transicion
+	ld a,(0e203h)		;bd8f   ; por donde va la rotacion de los sprites; el paso de la transicion
 	cp 003h		;bd92   ; el 3, el 4, el 8 y el 10 no valen
 	ret z			;bd94
 	cp 004h		;bd95
@@ -3810,7 +3810,7 @@ el_segundo_boton:
 	inc l			;bdac
 	ld (hl),000h		;bdad   ; el contador de vida, a cero
 	inc l			;bdaf
-	ld de,(0e204h)		;bdb0   ; la posicion del jugador
+	ld de,(0e204h)		;bdb0   ; la X en la pantalla de lo que se maneja; la posicion del jugador
 	ld a,e			;bdb4
 	sub 00ah		;bdb5   ; diez a la izquierda
 	ld e,a			;bdb7
@@ -3883,7 +3883,7 @@ prepara_lo_propio_de_la_fase:
 	ldir		;be0b
 	ld (0e0c5h),a		;be0d
 	ld (0e221h),a		;be10
-	ld a,(0e092h)		;be13   ; la fase
+	ld a,(0e092h)		;be13   ; la FASE, de 1 a 24
 	ld hl,0e112h		;be16
 	ld bc,00708h		;be19   ; los valores de la 3
 	cp 003h		;be1c   ; la fase 3...
@@ -3914,9 +3914,9 @@ mira_el_secreto_de_la_fase:
 	ld a,(0e115h)		;be41   ; ¿ya se ha conseguido el premio?
 	or a			;be44
 	ret nz			;be45   ; entonces no hay nada que mirar
-	ld a,(0e092h)		;be46   ; la fase
+	ld a,(0e092h)		;be46   ; la FASE, de 1 a 24
 	dec a			;be49   ; la tabla va desde 1
-	call 04060h		;be4a   ; el despachador, con la tabla pegada detras
+	call 04060h		;be4a   ; banco 0: despacha; el despachador, con la tabla pegada detras
 
 ; ----------------------------------------------------------------------
 ; DATOS secretos_por_fase: Una entrada por cada una de las veinticuatro fases.
@@ -3971,7 +3971,7 @@ secreto_de_la_fase_6_activo:
 consigue_el_premio:
 	ld hl,0e160h		;be92   ; la lista de premios ya conseguidos
 	ld a,c			;be95
-	call 04056h		;be96   ; el que toca
+	call 04056h		;be96   ; banco 0: a_mas_hl; el que toca
 	ld a,(hl)			;be99
 	and a			;be9a   ; si ya lo tiene, no se repite
 	ret nz			;be9b
@@ -3982,7 +3982,7 @@ consigue_el_premio:
 	ret			;bea5
 secreto_de_la_fase_9:
 	ld c,011h		;bea6   ; el premio 0x11
-	ld a,(0e203h)		;bea8   ; el paso de la transicion
+	ld a,(0e203h)		;bea8   ; por donde va la rotacion de los sprites; el paso de la transicion
 	cp 010h		;beab   ; solo en el 0x10
 	jp nz,falla_la_secuencia		;bead
 	ld a,(0e114h)		;beb0   ; un contador
@@ -4005,12 +4005,12 @@ secreto_de_la_fase_13:
 	cp 002h		;bed3
 	jp nz,L_BE3A		;bed5
 	ld d,0c4h		;bed8   ; ...y con un 2, 0xC4
-	ld a,(0e205h)		;beda   ; la Y de lo que se maneja
+	ld a,(0e205h)		;beda   ; la Y en la pantalla de lo que se maneja
 	cp d			;bedd   ; contra el tope
 	ret c			;bede
 	jp secreto_de_la_fase_13_cuenta		;bedf
 secreto_de_la_fase_13_por_arriba:
-	ld a,(0e205h)		;bee2   ; la Y
+	ld a,(0e205h)		;bee2   ; la Y en la pantalla de lo que se maneja
 	cp d			;bee5
 	ret nc			;bee6
 secreto_de_la_fase_13_cuenta:
@@ -4025,7 +4025,7 @@ secreto_de_la_fase_14:
 	ld a,(0e167h)		;beec   ; una bandera
 	and a			;beef
 	ret z			;bef0
-	ld a,(0e203h)		;bef1   ; el paso de la transicion
+	ld a,(0e203h)		;bef1   ; por donde va la rotacion de los sprites; el paso de la transicion
 	cp 004h		;bef4   ; solo en el 4
 	jp nz,falla_la_secuencia		;bef6
 	ld hl,0bf2ch		;bef9   ; la secuencia: dos pasos
@@ -4035,9 +4035,9 @@ comprueba_la_secuencia:
 	ld a,(0e114h)		;bf00   ; por que paso va
 	cp b			;bf03   ; si ya estan todos, premio
 	jp z,consigue_el_premio		;bf04
-	call 04056h		;bf07   ; el paso que toca
+	call 04056h		;bf07   ; banco 0: a_mas_hl; el paso que toca
 	ld d,(hl)			;bf0a   ; la direccion que hay que pulsar
-	ld a,(0e006h)		;bf0b   ; lo recien pulsado
+	ld a,(0e006h)		;bf0b   ; las teclas recien pulsadas; lo recien pulsado
 	and a			;bf0e
 	ret z			;bf0f   ; si no se ha pulsado nada, se espera
 	and d			;bf10   ; y si no es la que toca...

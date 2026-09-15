@@ -16,7 +16,7 @@ C 0x8000 el contador de cuadros
 C 0x8003 uno mas, y es el reloj de todo el juego
 C 0x8007 los estados 0, 1 y 2 son los de la presentacion
 C 0x800B y en ellos se cuela un destino en la pila
-C 0x800F el estado en C y el subestado en B, de un tiron
+C 0x800F el estado en C y el subestado en B, de un tiron; la variable de fase
 C 0x8013 se despacha por el estado
 C 0x8014 el despachador de la casa: la tabla va pegada detras
 D 0x8017 0x8037 estados_del_juego  Los dieciseis estados, y la tabla acaba justo donde empieza el primero de ellos: 0x8037, 0x8060, 0x8073, 0x8099, 0x814B, 0x81C5, 0x8278, 0x83A9, 0x84E1, 0x8538, 0x85D2, 0x8648, 0x86C6, 0x8800, 0x8806 y 0x8933.
@@ -83,39 +83,36 @@ C 0x8128 y se intercambian
 # tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
 # se sabe lo que dice.
 C 0x8004 la variable de fase
-C 0x800F la variable de fase
-C 0x8039 el contador de cuadros
 C 0x8082 la variable de fase
-C 0x80E2 las teclas recien pulsadas
-C 0x8192 el contador de cuadros
-C 0x81CC el modo en el que esta el juego
+C 0x8192 el contador de cuadros, a cero
+C 0x81CC el modo en el que esta el juego; y con el modo distinto de cero, tampoco
 C 0x81D2 las teclas recien pulsadas
-C 0x81DA la marca de silencio general
-C 0x82C3 el valor 1-2-3 de la fase
+C 0x81DA la marca de silencio general; y con el se calla o se descalla el sonido
+C 0x82C3 el valor 1-2-3 de la fase; el 1-2-3 del decorado
 C 0x82CA la FASE, de 1 a 24
-C 0x836B el valor 1-2-3 de la fase
+C 0x836B el valor 1-2-3 de la fase; el 1-2-3 del decorado
 C 0x8378 el DECORADO, de 0 a 9
-C 0x839B por donde va la rotacion de los sprites
-C 0x83B4 por donde va la rotacion de los sprites
+C 0x839B por donde va la rotacion de los sprites; por que hueco se parte la tabla de sprites
+C 0x83B4 por donde va la rotacion de los sprites; por que hueco se parte la tabla de sprites
 C 0x844E el contador de cuadros
-C 0x847D por donde va la rotacion de los sprites
+C 0x847D por donde va la rotacion de los sprites; por que hueco se parte la tabla de sprites
 C 0x8484 el largo de la fase
-C 0x84C8 por donde va la rotacion de los sprites
-C 0x84EF por donde va la rotacion de los sprites
-C 0x85A1 por donde va la rotacion de los sprites
-C 0x85C7 por donde va la rotacion de los sprites
-C 0x85DA por donde va la rotacion de los sprites
-C 0x862B por donde va la rotacion de los sprites
-C 0x8653 por donde va la rotacion de los sprites
-C 0x8699 por donde va la rotacion de los sprites
-C 0x86CE por donde va la rotacion de los sprites
-C 0x86F8 por donde va la rotacion de los sprites
+C 0x84C8 por donde va la rotacion de los sprites; por que hueco se parte la tabla de sprites
+C 0x84EF por donde va la rotacion de los sprites; el paso de la transicion
+C 0x85A1 por donde va la rotacion de los sprites; el paso de la transicion
+C 0x85C7 por donde va la rotacion de los sprites; el paso de la transicion, a 0x1A
+C 0x85DA por donde va la rotacion de los sprites; el paso de la transicion
+C 0x862B por donde va la rotacion de los sprites; el paso de la transicion
+C 0x8653 por donde va la rotacion de los sprites; el paso de la transicion
+C 0x8699 por donde va la rotacion de los sprites; el paso de la transicion, a 0x1B
+C 0x86CE por donde va la rotacion de los sprites; el paso de la transicion
+C 0x86F8 por donde va la rotacion de los sprites; el paso de la transicion
 C 0x8702 el modo en el que esta el juego
-C 0x878E el modo en el que esta el juego
-C 0x87E4 por donde va la rotacion de los sprites
+C 0x878E el modo en el que esta el juego; el modo, otra vez con sus tres efectos
+C 0x87E4 por donde va la rotacion de los sprites; el paso de la transicion
 C 0x8825 el modo en el que esta el juego
 C 0x88BC el valor 1-2-3 de la fase
-C 0x88F7 la variable de fase
+C 0x88F7 la variable de fase; al estado 7...
 C 0x8966 el numero de fase tal como se pinta
 C 0x896A la FASE, de 1 a 24
 C 0x896E el valor 1-2-3 de la fase
@@ -226,7 +223,6 @@ C 0x8176 los del de en medio
 C 0x8179 y los del de abajo
 C 0x8185 el mapa del decorado
 C 0x818B subir la zona de juego
-C 0x8192 el contador de cuadros, a cero
 L 0x8198 pasa_al_estado_siguiente
 C 0x8198 el estado
 C 0x819B uno mas
@@ -238,12 +234,9 @@ B 0x81C5 ESTADO 5: JUGAR. Y aqui esta LA PAUSA. El bit 7 de las teclas recien pu
 L 0x81C5 estado_5_jugar
 C 0x81C5 el modo del juego
 C 0x81C8 con 2 o mas no se admite pausa
-C 0x81CC y con el modo distinto de cero, tampoco
-C 0x81D2 las teclas recien pulsadas
 C 0x81D5 el bit 7: la tecla de parar
 C 0x81D7 si no esta, a jugar
 C 0x81D9 el bit sube al acarreo y baja al 0
-C 0x81DA y con el se calla o se descalla el sonido
 C 0x81DD la bandera de pausa
 C 0x81E0 se le da la vuelta
 C 0x81E4 ¿ha quedado en pausa o ha salido de ella?
@@ -301,101 +294,101 @@ C 0x81F4 banco 0: pide_sonido_si_esta_activo
 C 0x822C banco 0: borra_el_area_de_juego
 C 0x82FA banco 0: sube_el_area_de_juego
 C 0x82FD banco 0: sube_los_sprites
-C 0x830D banco 0: esconde_los_sprites
-C 0x8310 banco 0: borra_el_area_de_juego
-C 0x832D banco 0: monta_la_fase
-C 0x8337 banco 0: borra_la_pantalla_entera
+C 0x830D banco 0: esconde_los_sprites; esconder los sprites
+C 0x8310 banco 0: borra_el_area_de_juego; y borrar la zona de juego
+C 0x832D banco 0: monta_la_fase; montar la fase siguiente
+C 0x8337 banco 0: borra_la_pantalla_entera; borrar la pantalla entera
 C 0x8349 banco 0: pide_sonido_si_esta_activo
-C 0x8351 banco 0: sube_el_area_de_juego
-C 0x8354 banco 0: rotulos_que_suben
-C 0x8368 banco 0: sube_el_area_de_juego
-C 0x8392 banco 0: pide_sonido_si_esta_activo
+C 0x8351 banco 0: sube_el_area_de_juego; subir la zona de juego
+C 0x8354 banco 0: rotulos_que_suben; y el texto que sube
+C 0x8368 banco 0: sube_el_area_de_juego; subir la zona de juego
+C 0x8392 banco 0: pide_sonido_si_esta_activo; el efecto que toque
 C 0x83AB banco 0: sube_los_sprites
 C 0x83C2 banco 0: sube_el_area_de_juego
-C 0x83C5 banco 0: sube_los_sprites_desde_arriba
+C 0x83C5 banco 0: sube_los_sprites_desde_arriba; subir la mitad de arriba de los sprites
 C 0x83D9 banco 0: a_mas_hl
-C 0x83E6 banco 0: sube_la_mitad_de_abajo
+C 0x83E6 banco 0: sube_la_mitad_de_abajo; subir la mitad de abajo
 C 0x83E9 banco 0: sube_los_sprites
 C 0x8439 banco 0: pide_sonido_si_esta_activo
-C 0x8458 banco 0: escribe_el_registro_7
+C 0x8458 banco 0: escribe_el_registro_7; el registro 7 del VDP, que es el del borde
 C 0x845B banco 0: sube_el_area_de_juego
 C 0x845E banco 0: sube_los_sprites
 C 0x846E banco 0: escribe_el_registro_7
 C 0x84B5 banco 0: sube_el_area_de_juego
 C 0x84D2 banco 0: pide_sonido_si_esta_activo
 C 0x84E3 banco 0: sube_los_sprites_desde_arriba
-C 0x84FA banco 0: esconde_los_sprites
-C 0x84FD banco 0: borra_el_area_de_juego
-C 0x8503 banco 0: empieza_una_vida
-C 0x851F banco 0: sube_el_area_de_juego
+C 0x84FA banco 0: esconde_los_sprites; esconder los sprites
+C 0x84FD banco 0: borra_el_area_de_juego; borrar la zona de juego
+C 0x8503 banco 0: empieza_una_vida; empezar una vida
+C 0x851F banco 0: sube_el_area_de_juego; subir la zona de juego
 C 0x8532 banco 0: pide_sonido_si_esta_activo
-C 0x853A banco 0: sube_los_sprites
-C 0x854F banco 0: borra_el_area_de_juego
-C 0x8567 banco 0: borra_el_area_de_juego
-C 0x856D banco 0: empieza_una_vida
-C 0x858B banco 0: sube_el_area_de_juego
+C 0x853A banco 0: sube_los_sprites; subir los sprites
+C 0x854F banco 0: borra_el_area_de_juego; borrar la zona de juego
+C 0x8567 banco 0: borra_el_area_de_juego; borrar la zona de juego
+C 0x856D banco 0: empieza_una_vida; empezar una vida
+C 0x858B banco 0: sube_el_area_de_juego; subir la zona de juego
 C 0x8590 banco 0: pide_sonido_si_esta_activo
 C 0x8598 banco 0: sube_los_sprites_desde_arriba
 C 0x85AF banco 0: pide_sonido_si_esta_activo
 C 0x85BF banco 0: pide_sonido_si_esta_activo
-C 0x85C2 banco 0: sube_el_area_de_juego
+C 0x85C2 banco 0: sube_el_area_de_juego; subir la zona de juego
 C 0x85D4 banco 0: sube_los_sprites_desde_arriba
-C 0x85E5 banco 0: esconde_los_sprites
-C 0x85E8 banco 0: borra_el_area_de_juego
-C 0x85EE banco 0: empieza_una_vida
-C 0x8612 banco 0: sube_el_area_de_juego
+C 0x85E5 banco 0: esconde_los_sprites; esconder los sprites
+C 0x85E8 banco 0: borra_el_area_de_juego; borrar la zona de juego
+C 0x85EE banco 0: empieza_una_vida; empezar una vida
+C 0x8612 banco 0: sube_el_area_de_juego; subir la zona de juego
 C 0x861A banco 0: pide_sonido_si_esta_activo
 C 0x8622 banco 0: sube_los_sprites_desde_arriba
 C 0x8632 banco 0: pide_sonido_si_esta_activo
 C 0x8642 banco 0: pide_sonido_si_esta_activo
 C 0x864A banco 0: sube_los_sprites_desde_arriba
-C 0x865D banco 0: esconde_los_sprites
-C 0x8660 banco 0: borra_el_area_de_juego
-C 0x8666 banco 0: empieza_una_vida
-C 0x8684 banco 0: sube_el_area_de_juego
+C 0x865D banco 0: esconde_los_sprites; esconder los sprites
+C 0x8660 banco 0: borra_el_area_de_juego; borrar la zona de juego
+C 0x8666 banco 0: empieza_una_vida; empezar una vida
+C 0x8684 banco 0: sube_el_area_de_juego; subir la zona de juego
 C 0x86BC banco 0: pide_sonido_si_esta_activo
 C 0x86C8 banco 0: sube_los_sprites_desde_arriba
-C 0x86D9 banco 0: esconde_los_sprites
-C 0x86DC banco 0: borra_el_area_de_juego
+C 0x86D9 banco 0: esconde_los_sprites; esconder los sprites
+C 0x86DC banco 0: borra_el_area_de_juego; borrar la zona de juego
 C 0x86E7 banco 0: pide_sonido_si_esta_activo
 C 0x86EF banco 0: sube_los_sprites_desde_arriba
 C 0x86FF banco 0: pide_sonido_si_esta_activo
 C 0x8713 banco 0: pide_sonido_si_esta_activo
-C 0x872B banco 0: sube_los_sprites
-C 0x875B banco 0: borra_el_area_de_juego
+C 0x872B banco 0: sube_los_sprites; subir los sprites
+C 0x875B banco 0: borra_el_area_de_juego; borrar la zona de juego
 C 0x8763 banco 0: pide_sonido_si_esta_activo
-C 0x8785 banco 0: borra_el_area_de_juego
-C 0x878B banco 0: sube_los_sprites
+C 0x8785 banco 0: borra_el_area_de_juego; borrar la zona de juego
+C 0x878B banco 0: sube_los_sprites; subir los sprites
 C 0x879F banco 0: pide_sonido_si_esta_activo
-C 0x87B0 banco 0: esconde_los_sprites
-C 0x87B3 banco 0: borra_el_area_de_juego
-C 0x87B9 banco 0: empieza_una_vida
+C 0x87B0 banco 0: esconde_los_sprites; esconder los sprites
+C 0x87B3 banco 0: borra_el_area_de_juego; borrar la zona de juego
+C 0x87B9 banco 0: empieza_una_vida; empezar una vida
 C 0x87D1 banco 0: sube_el_area_de_juego
 C 0x87D6 banco 0: pide_sonido_si_esta_activo
 C 0x87DE banco 0: sube_los_sprites_desde_arriba
-C 0x87F5 banco 0: sube_el_area_de_juego
+C 0x87F5 banco 0: sube_el_area_de_juego; subir la zona de juego
 C 0x87FA banco 0: pide_sonido_si_esta_activo
 C 0x8808 banco 0: sube_los_sprites_desde_arriba
-C 0x881F banco 0: esconde_los_sprites
-C 0x8822 banco 0: borra_el_area_de_juego
-C 0x883F banco 0: reempieza
-C 0x8842 banco 0: empieza_una_vida
-C 0x8891 banco 0: borra_el_area_de_juego
-C 0x88B1 banco 0: sube_el_area_de_juego
-C 0x88CF banco 0: sube_el_area_de_juego
+C 0x881F banco 0: esconde_los_sprites; esconder los sprites
+C 0x8822 banco 0: borra_el_area_de_juego; borrar la zona de juego
+C 0x883F banco 0: reempieza; rehacer sin perder la cuenta
+C 0x8842 banco 0: empieza_una_vida; empezar una vida
+C 0x8891 banco 0: borra_el_area_de_juego; borrar la zona de juego
+C 0x88B1 banco 0: sube_el_area_de_juego; subir la zona de juego
+C 0x88CF banco 0: sube_el_area_de_juego; subir la zona de juego
 C 0x88F2 banco 0: pide_sonido_si_esta_activo
-C 0x88FF banco 0: sube_el_area_de_juego
-C 0x890E banco 0: sube_el_area_de_juego
+C 0x88FF banco 0: sube_el_area_de_juego; subir la zona de juego
+C 0x890E banco 0: sube_el_area_de_juego; subir la zona de juego
 C 0x891C banco 0: sube_el_area_de_juego
-C 0x89F6 banco 0: monta_la_fase_desde_el_decorado
-C 0x89F9 banco 0: borra_el_area_de_juego
-C 0x8A0F banco 0: borra_la_pantalla_entera
+C 0x89F6 banco 0: monta_la_fase_desde_el_decorado; montar la fase desde el decorado
+C 0x89F9 banco 0: borra_el_area_de_juego; borrar la zona de juego
+C 0x8A0F banco 0: borra_la_pantalla_entera; borrar la pantalla entera
 C 0x8A14 banco 0: pide_sonido_si_esta_activo
-C 0x8A1D banco 0: pinta_guion_con_mascara
+C 0x8A1D banco 0: pinta_guion_con_mascara; pintado
 C 0x8A3C banco 0: pinta_guion_con_mascara
 C 0x8A52 banco 0: pinta_guion_lee_destino
-C 0x8A93 banco 0: pinta_del_banco_6
-C 0x8ACD banco 0: a_mas_hl
+C 0x8A93 banco 0: pinta_del_banco_6; el guion del banco 6
+C 0x8ACD banco 0: a_mas_hl; y la columna que toca
 C 0x8B29 banco 0: a_mas_hl
 C 0x8CA3 banco 0: copia_a_vram
 C 0x8CD3 banco 0: dos_por_a_mas_hl
@@ -466,15 +459,15 @@ C 0x82B1 el contador de espera del estado
 C 0x82F2 los avisos que deja el cuadro
 C 0x8303 los avisos que deja el cuadro
 C 0x8357 los avisos que deja el cuadro
-C 0x83A3 los avisos que deja el cuadro
+C 0x83A3 los avisos que deja el cuadro; un aviso
 C 0x8421 la bandera de que la fase se ha acabado
-C 0x84CD por que vuelta de la fase va
+C 0x84CD por que vuelta de la fase va; la vuelta 3
 C 0x8540 los avisos que deja el cuadro
 C 0x8549 los avisos que deja el cuadro
 C 0x855D los avisos que deja el cuadro
-C 0x85CC los avisos que deja el cuadro
-C 0x872F los avisos que deja el cuadro
-C 0x873A los avisos que deja el cuadro
+C 0x85CC los avisos que deja el cuadro; y un aviso
+C 0x872F los avisos que deja el cuadro; y los avisos, a cero
+C 0x873A los avisos que deja el cuadro; lo que ha devuelto
 C 0x8742 los avisos que deja el cuadro
 C 0x876E los avisos que deja el cuadro
 C 0x8776 los avisos que deja el cuadro
@@ -482,10 +475,10 @@ C 0x87A3 los avisos que deja el cuadro
 C 0x87A8 el SUBESTADO
 C 0x8811 los avisos que deja el cuadro
 C 0x88A0 por que vuelta de la fase va
-C 0x88FC el SUBESTADO
+C 0x88FC ...y al subestado 3
 C 0x892A los avisos que deja el cuadro
 C 0x892D la bandera de que la fase se ha acabado
-C 0x8A09 uno o dos jugadores
+C 0x8A09 y uno o dos jugadores, a cero
 C 0x8B0D el contador de espera del estado
 C 0x8CEB el contador de espera del estado
 C 0x9207 uno o dos jugadores
@@ -528,9 +521,7 @@ C 0x829C una bandera
 L 0x82A5 estado_6_subestado_2
 L 0x82B7 estado_6_subestado_3
 L 0x82C1 estado_6_mira_si_toca_bonus
-C 0x82C3 el 1-2-3 del decorado
 C 0x82C6 solo en el 3 puede tocar
-C 0x82CA la fase
 C 0x82CD la 12...
 C 0x82D3 ...o la 24
 L 0x82D7 estado_6_sin_bonus
@@ -542,8 +533,6 @@ L 0x82E9 estado_6_apunta_el_bonus
 C 0x82EA que clase de bonus toca
 L 0x82F8 estado_6_subestado_5
 L 0x830B estado_6_pasa_de_fase
-C 0x830D esconder los sprites
-C 0x8310 y borrar la zona de juego
 C 0x8313 el numero de fase que se pinta
 C 0x8317 uno mas, EN BCD
 C 0x831B dos bytes mas alla: el 1-2-3 del decorado
@@ -553,41 +542,29 @@ C 0x8323 ...vuelve a 1
 L 0x8325 estado_6_sube_la_fase
 C 0x8326 la FASE, una mas
 C 0x8328 y en la 25 se acabo: son VEINTICUATRO
-C 0x832D montar la fase siguiente
 C 0x8330 y al estado 3
 L 0x8335 estado_6_se_acabo_el_juego
-C 0x8337 borrar la pantalla entera
 C 0x833A el espejo de pantalla, entero
 C 0x8340 767 bytes
 C 0x8347 el efecto 0xC2
 L 0x834F estado_6_los_rotulos_del_final
-C 0x8351 subir la zona de juego
-C 0x8354 y el texto que sube
 C 0x835C las banderas de la partida, a cero
 C 0x835F y a empezar de nuevo
 L 0x8362 estado_6_entre_fases
-C 0x8368 subir la zona de juego
-C 0x836B el 1-2-3 del decorado
 C 0x836E en el 3 se pasa de largo
 C 0x8373 0xE0: un sprite fuera de la pantalla
-C 0x8378 el decorado
 C 0x837B el 4 y el 5 llevan un efecto...
 C 0x8387 ...el 7 otro...
 C 0x838D ...y los demas, el de siempre
 L 0x8391 estado_6_suena_el_paso_de_fase
-C 0x8392 el efecto que toque
 C 0x8396 y la clase de paso de fase
-C 0x839B por que hueco se parte la tabla de sprites
 L 0x83A1 estado_6_avisa_y_avanza
-C 0x83A3 un aviso
 
 B 0x83A9 ESTADO 7: LA META. Los subestados que rematan una fase cuando se llega al final, con la comprobacion de las cuatro ranuras de 0xE550 y el parpadeo del borde de la pantalla.
 L 0x83A9 estado_7
-C 0x83B4 por que hueco se parte la tabla de sprites
 C 0x83B7 hasta el 12 no se sigue
 C 0x83BA lo que sea, en el banco 1
 L 0x83C0 estado_7_subestado_1
-C 0x83C5 subir la mitad de arriba de los sprites
 C 0x83CE las cuatro ranuras de 0xE550
 C 0x83D1 cuatro
 L 0x83D3 estado_7_mira_las_ranuras
@@ -595,9 +572,7 @@ C 0x83D3 lo que hay en la ranura
 C 0x83D6 si alguna esta por debajo de 2, no se sigue
 C 0x83D7 ocho bytes de una a la siguiente
 L 0x83E4 estado_7_la_tanda_larga
-C 0x83E6 subir la mitad de abajo
 C 0x841C una bandera
-C 0x8421 la bandera de que la fase se ha acabado
 C 0x8425 si no se ha acabado, al estado 13
 C 0x842E una ranura
 C 0x8431 y solo con un 2 se sigue
@@ -605,19 +580,15 @@ C 0x8437 el efecto 0x7A
 L 0x8445 estado_7_parpadea_el_borde
 C 0x8447 una ranura
 C 0x844A por debajo de 3 no parpadea
-C 0x844E el contador de cuadros
 C 0x8451 el bit 0 al acarreo
 C 0x8452 un cuadro el borde negro...
 C 0x8456 ...y el otro gris
-C 0x8458 el registro 7 del VDP, que es el del borde
 L 0x845B estado_7_sigue
 C 0x8467 la ranura
 C 0x846B mientras no llegue a cero, se sigue parpadeando
 C 0x846C y al acabar, borde negro
 L 0x8474 estado_7_prepara_la_siguiente
 C 0x8478 la clase de paso de fase
-C 0x847D por que hueco se parte la tabla de sprites
-C 0x8484 el largo de la fase
 C 0x8487 los cuatro bits de abajo
 C 0x8489 y de ahi salen cinco posiciones distintas
 C 0x84A1 y la de por defecto
@@ -626,43 +597,28 @@ C 0x84A4 apuntada
 C 0x84AD y al estado 5, o sea a jugar
 L 0x84B5 estado_7_ultimo
 C 0x84B8 color 1 en los cuatro primeros sprites
-C 0x84C8 por que hueco se parte la tabla de sprites
-C 0x84CD la vuelta 3
 
 B 0x84E1 LOS ESTADOS 8 A 11: LAS TRANSICIONES. Cuatro estados que se parecen mucho y que hacen lo mismo con distintos motivos -perder una vida, entrar al bonus, salir de el, empezar la vuelta siguiente-. El patron es siempre el mismo: subir los sprites y esperar a que (0xE203) llegue a cierto numero, y cuando llega, esconder los sprites, borrar la zona de juego, montar la escena otra vez con las tres cargas de caracteres y volver al estado 4.
 L 0x84E1 estado_8
-C 0x84EF el paso de la transicion
 C 0x84F2 en el 0x19 se acaba
 L 0x84F8 estado_8_monta_otra_vez
-C 0x84FA esconder los sprites
-C 0x84FD borrar la zona de juego
 C 0x8500 montar la fase de bonus, en el banco 3
-C 0x8503 empezar una vida
 C 0x8506 los caracteres del tercio de arriba
 C 0x8509 los del de en medio
 C 0x850C y los del de abajo
-C 0x851F subir la zona de juego
 C 0x8525 y al estado 4
 L 0x852A estado_8_ultimo
 C 0x8530 el efecto 0xC5
 L 0x8538 estado_9
-C 0x853A subir los sprites
-C 0x8540 los avisos
 C 0x8544 mientras haya alguno, se espera
 C 0x8545 el paso de la cuenta del bonus, a cero
-C 0x854F borrar la zona de juego
 L 0x8558 estado_9_la_cuenta_del_bonus
 C 0x855A la cuenta del bonus, en el banco 3
-C 0x855D los avisos
 C 0x8561 mientras dure, se espera
 L 0x8565 estado_9_monta_otra_vez
-C 0x8567 borrar la zona de juego
-C 0x856D empezar una vida
 C 0x8570 los tres tercios de caracteres
-C 0x858B subir la zona de juego
 C 0x858E el efecto 0x1F
 L 0x8596 estado_9_espera_la_transicion
-C 0x85A1 el paso de la transicion
 C 0x85A5 con cero, un efecto...
 C 0x85A9 ...y con cinco, otro
 C 0x85B8 y al estado 4
@@ -670,20 +626,11 @@ L 0x85AE estado_9_suena_y_vuelve
 L 0x85BD estado_9_ultimo
 C 0x85BD el efecto 0x56
 L 0x85C2 avisa_y_avanza_con_paso
-C 0x85C2 subir la zona de juego
-C 0x85C7 el paso de la transicion, a 0x1A
-C 0x85CC y un aviso
 L 0x85D2 estado_10
-C 0x85DA el paso de la transicion
 C 0x85DD en el 0x11 se acaba
 L 0x85E3 estado_10_monta_otra_vez
-C 0x85E5 esconder los sprites
-C 0x85E8 borrar la zona de juego
-C 0x85EE empezar una vida
-C 0x8612 subir la zona de juego
 C 0x8618 el efecto 0x1F
 L 0x8620 estado_10_espera
-C 0x862B el paso de la transicion
 C 0x862F hasta cero no se sigue
 C 0x8630 el efecto 0x20
 C 0x8638 y al estado 4
@@ -744,12 +691,12 @@ C 0x86E2 banco 1
 C 0x86F5 banco 3
 C 0x8716 banco 3
 C 0x871A banco 3
-C 0x8737 banco 1
+C 0x8737 la escena, en el banco 1
 C 0x875E banco 1
 C 0x876B banco 1
 C 0x8788 banco 1
 C 0x87B6 banco 1
-C 0x8803 banco 3
+C 0x8803 y lo del banco 3
 C 0x880E banco 3
 C 0x8854 banco 1
 C 0x88ED banco 3
@@ -841,18 +788,12 @@ C 0x9FB7 banco 3
 C 0x9FFC banco 3
 
 L 0x8648 estado_11_espera
-C 0x8653 el paso de la transicion
 C 0x8656 hasta cero no se sigue
 L 0x865B estado_11_monta_otra_vez
-C 0x865D esconder los sprites
-C 0x8660 borrar la zona de juego
-C 0x8666 empezar una vida
 C 0x8669 los tres tercios de caracteres
-C 0x8684 subir la zona de juego
 C 0x868A y al estado 4
 L 0x868F estado_11_ultimo
 C 0x8692 la clase de paso de fase
-C 0x8699 el paso de la transicion, a 0x1B
 C 0x869F un valor de trabajo
 C 0x86A4 catorce sprites
 C 0x86A6 desde el hueco 4
@@ -866,76 +807,50 @@ D 0x86C2 0x86C6 sprite_de_relleno  Los cuatro bytes -Y 0xE0, X 0x78, patron 0x34
 F 0x86C2 4
 B 0x86C6 ESTADO 12: LA ESCENA LARGA. El estado con mas subestados de todos -nueve-, y el unico que se salta subestados a proposito: 0x8748 sube 0xE001 tres veces de golpe y 0x877C una, segun lo que devuelva la rutina del banco 1 en 0xE096. O sea que la escena tiene ramas.
 L 0x86C6 estado_12
-C 0x86CE el paso de la transicion
 C 0x86D1 en el 0x11 se sigue
 L 0x86D7 estado_12_subestado_1
-C 0x86D9 esconder los sprites
-C 0x86DC borrar la zona de juego
 C 0x86E5 el efecto 0x1F
 L 0x86ED estado_12_subestado_2
-C 0x86F8 el paso de la transicion
 C 0x86FB hasta cero no se sigue
 C 0x86FD el efecto 0x20
-C 0x8702 el modo
 C 0x8705 el 3 lleva un efecto...
 C 0x870B ...el 4 otro...
 C 0x8710 ...y los demas el de siempre
 L 0x8712 estado_12_suena
 C 0x871F color 4 en los cuatro primeros sprites
-C 0x872B subir los sprites
-C 0x872F y los avisos, a cero
 L 0x8735 estado_12_la_rama
-C 0x8737 la escena, en el banco 1
-C 0x873A lo que ha devuelto
 C 0x873E sin aviso, se sigue esperando
 C 0x873F con un 1 se avanza uno...
 C 0x8748 ...y con otra cosa se saltan TRES subestados de golpe
 L 0x8751 estado_12_subestado_4
 C 0x8753 el sprite 0
 C 0x8756 a la fila 0xD0
-C 0x875B borrar la zona de juego
 C 0x8761 el efecto 0x74
 L 0x8769 estado_12_subestado_5
-C 0x876E los avisos
 C 0x8772 sin aviso, se espera
 C 0x877C y aqui se salta UN subestado
 L 0x8783 estado_12_subestado_6
-C 0x8785 borrar la zona de juego
-C 0x878B subir los sprites
-C 0x878E el modo, otra vez con sus tres efectos
 C 0x87A6 y el subestado vuelve al 3: la escena da la vuelta
 L 0x87AE estado_12_subestado_7
-C 0x87B0 esconder los sprites
-C 0x87B3 borrar la zona de juego
-C 0x87B9 empezar una vida
 C 0x87BC los tres tercios de caracteres
 
 L 0x87DC estado_12_subestado_8
-C 0x87E4 el paso de la transicion
 C 0x87E7 en el 4 se acaba
 C 0x87ED y al estado 4
 L 0x87F2 estado_12_ultimo
-C 0x87F5 subir la zona de juego
 C 0x87F8 el efecto 0x92
 L 0x8800 estado_13_la_pausa
 B 0x8800 ESTADO 13: PARADO. Dos llamadas y ya esta. Es donde se queda el juego mientras la pausa este puesta, y de aqui solo se sale por el estado 5, que es quien mira la tecla.
 C 0x8800 lo que hay que hacer aunque este parado
-C 0x8803 y lo del banco 3
 B 0x8806 ESTADO 14: PERDER UNA VIDA. Aqui esta la cuenta: 0x8833 baja 0xE090 EN BCD y, si ya estaba a cero, se pasa al estado siguiente -que es el de fin de partida-. Si quedaba alguna, se rehace la escena y se vuelve al 4.
 L 0x8806 estado_14
-C 0x8811 los avisos
 C 0x8815 mientras haya alguno, se espera
 L 0x881D estado_14_quita_una_vida
-C 0x881F esconder los sprites
-C 0x8822 borrar la zona de juego
-C 0x8825 el modo
 C 0x8828 en el modo 1 se va al estado 8
 C 0x8833 LAS VIDAS
 C 0x8837 si no queda ninguna, se acabo la partida
 C 0x883B una menos...
 C 0x883D ...EN BCD
-C 0x883F rehacer sin perder la cuenta
-C 0x8842 empezar una vida
 C 0x8866 y sin espera
 L 0x8869 estado_14_espera_y_rehace
 C 0x8869 este subestado se mira con `dec b`, no con `djnz`
@@ -943,25 +858,16 @@ C 0x8870 la espera
 C 0x8874 mientras dure, nada
 C 0x8879 los tres sprites de arriba...
 C 0x887C ...fuera de la pantalla
-C 0x8891 borrar la zona de juego
 C 0x8894 los tres tercios de caracteres
-C 0x88A0 por que vuelta va
 C 0x88A3 la 2 y la 3 tienen su propia carga
-C 0x88B1 subir la zona de juego
 C 0x88B7 y al estado 4
 L 0x88BC estado_14_vuelta_2
-C 0x88BC el 1-2-3 de la fase
 C 0x88BF solo el 3 lleva la carga especial
-C 0x88CF subir la zona de juego
 C 0x88D5 y al estado 4
 L 0x88DA estado_14_vuelta_3
 C 0x88EA una bandera a cero
 C 0x88F0 el efecto 0x65
-C 0x88F7 al estado 7...
-C 0x88FC ...y al subestado 3
-C 0x88FF subir la zona de juego
 L 0x8902 estado_14_vuelta_2_normal
-C 0x890E subir la zona de juego
 
 B 0x8933 ESTADO 15: FIN DE PARTIDA, Y EL CONTINUE. Lo interesante esta en como se hace el continue: no hay ninguna rutina que "guarde la partida". Lo que hay es un borrado de RAM con las seis cosas que importan a salvo en la PILA -0xE0C6 a 0xE0CB, y por otro lado el numero de fase, la fase, el 1-2-3 y lo de uno o dos jugadores-, y despues de borrar se vuelven a poner. Y las vidas se dejan en DOS, no en las que hubiera al empezar.
 L 0x8933 estado_15
@@ -973,9 +879,6 @@ C 0x8944 ¿se puede continuar?
 C 0x8948 si no, se acabo del todo
 C 0x894B las seis cosas de 0xE0C6...
 C 0x8963 ...a la pila
-C 0x8966 el numero de fase que se pinta
-C 0x896A la fase
-C 0x896E el 1-2-3
 C 0x8972 uno o dos jugadores
 C 0x8976 y tambien a la pila
 C 0x8978 y ahora se borra la RAM
@@ -995,19 +898,14 @@ C 0x89CC el 1-2-3
 C 0x89CF y un cinco cuatro bytes mas alla
 C 0x89D8 uno o dos jugadores
 C 0x89DB y las seis de 0xE0C6, de vuelta
-C 0x89F6 montar la fase desde el decorado
-C 0x89F9 borrar la zona de juego
 C 0x89FC y al estado 3
 L 0x8A01 estado_15_se_acabo_del_todo
 C 0x8A01 las banderas de la partida
 C 0x8A05 se le quita el bit 6
-C 0x8A09 y uno o dos jugadores, a cero
 C 0x8A0C y vuelta a la presentacion
 L 0x8A0F estado_15_pinta_el_fin
-C 0x8A0F borrar la pantalla entera
 C 0x8A12 el efecto 0xC8
 C 0x8A1A el rotulo del final
-C 0x8A1D pintado
 
 C 0x8A20 el marcador
 C 0x8A23 donde va en la pantalla
@@ -1018,7 +916,6 @@ C 0x8A39 ...se pinta el rotulo de continuar
 L 0x8A3F estado_15_avanza
 B 0x8A42 ¿QUIERE CONTINUAR? Mira el bit 6 de las teclas recien pulsadas y, si esta, enciende 0xE0DF y repinta el rotulo con la mascara a cero -o sea, lo borra-. Lo llama el propio estado 15 desde 0x893C, y solo mientras la bandera de 0xF0F7 lo permita.
 L 0x8A42 mira_si_quiere_continuar
-C 0x8A42 las teclas recien pulsadas
 C 0x8A45 el bit 6
 C 0x8A47 si no se ha pulsado, nada
 C 0x8A4A se apunta que si
@@ -1047,7 +944,6 @@ C 0x8A85 el efecto 0xCB
 C 0x8A8A y a montar la presentacion
 B 0x8A8D LA REJILLA DE LA PANTALLA DE FIN. Llena 0x0A00 de la VRAM con ceros y luego escribe en la tabla de nombres una rejilla de seis filas por veintiuna casillas con caracteres consecutivos desde 0x40: cada casilla su propio dibujo, que es como se hace un cartel grande sin repetir nada.
 L 0x8A8D monta_la_rejilla
-C 0x8A93 el guion del banco 6
 C 0x8A96 0x0A00 de la VRAM
 C 0x8A99 1008 bytes
 C 0x8A9D a cero
@@ -1069,7 +965,6 @@ C 0x8ABF veintiuna casillas por fila
 L 0x8ABF destapa_calcula_la_fila
 C 0x8AC5 por ocho: cada caracter son ocho bytes
 C 0x8AC8 la base de los patrones del cartel
-C 0x8ACD y la columna que toca
 C 0x8AD0 veintiuna filas
 C 0x8AD2 ocho bytes de una a la siguiente
 C 0x8AD5 0xF0: media casilla encendida

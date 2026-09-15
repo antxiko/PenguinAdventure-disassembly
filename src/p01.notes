@@ -16,9 +16,9 @@
 #     uno segun se avanza. Ese es el terreno.
 B 0x66DA EL SEGUNDO GUION: LO QUE PASA A CADA DISTANCIA. Igual que el de los enemigos pero en el banco 13, y con entradas de tres bytes en vez de dos. Se dispara comparando la distancia andada con la apuntada, y al dispararse deja la siguiente ya preparada.
 L 0x66DA el_segundo_guion
-C 0x66DA el modo del juego
+C 0x66DA el modo del juego; el modo en el que esta el juego
 C 0x66DE fuera del de jugar, nada
-C 0x66DF lo andado
+C 0x66DF lo andado; la distancia a la que sale el objeto siguiente
 C 0x66E2 y la distancia a la que toca
 C 0x66E6 DCOMPR: ¿hemos llegado?
 C 0x66E8 por que entrada del guion va
@@ -28,34 +28,34 @@ C 0x66ED C se queda con el numero de entrada
 C 0x66EF el banco 12
 C 0x66F9 y el 13, que es donde esta el guion
 C 0x6702 la tabla, un puntero por fase
-C 0x6705 la fase
-C 0x6709 dos bytes por entrada
+C 0x6705 la FASE, de 1 a 24
+C 0x6709 dos bytes por entrada; banco 0: dos_por_a_mas_hl
 C 0x670C y ahi esta el guion de esta fase
 C 0x6710 tres bytes por entrada: por tres
-C 0x6713 HL = guion + 3*entrada
+C 0x6713 HL = guion + 3*entrada; banco 0: a_mas_hl
 C 0x6716 la distancia de la entrada
 C 0x6719 apuntada para la proxima
 C 0x671E y el byte que dice que pasa
 C 0x6723 el 2 y el 3, de vuelta
 B 0x6737 EL TERCER GUION: EL TERRENO. Se lee de un tiron distinto: aqui no hay distancias, hay una TIRA de bytes que se va gastando de uno en uno segun se avanza (0xE404 es por donde va y 0xE402 el byte de ahora). Y hay TRES tiras por fase, en el banco 10: 0x8000, 0x80F9 y 0x8490, y cual se coge depende del modo y de 0xE08F -que es lo que se eligio en el menu-.
 L 0x6737 el_guion_del_terreno
-C 0x6737 el modo del juego
+C 0x6737 el modo del juego; el modo en el que esta el juego
 C 0x673B en el modo 1 no hay terreno que leer
 C 0x673D el banco 10
 C 0x6747 y el 11
-C 0x6750 el modo otra vez
+C 0x6750 el modo otra vez; el modo en el que esta el juego
 C 0x6756 con modo distinto de cero, la tercera tira
 C 0x675B uno o dos jugadores
 C 0x675F la primera tira...
 C 0x6764 ...o la segunda
 L 0x6767 el_terreno_de_esta_fase
-C 0x6767 la fase
+C 0x6767 la FASE, de 1 a 24
 C 0x676E dos bytes por entrada
 C 0x6770 y ese es el puntero a la tira de esta fase
 L 0x6773 coge_el_byte_de_terreno
 C 0x6773 por donde va la tira
 C 0x6777 y se avanza uno
-C 0x6779 HL = tira + lo andado
+C 0x6779 HL = tira + lo andado; banco 0: a_mas_hl
 C 0x677C el byte que toca
 C 0x677D que queda de byte de terreno de ahora
 C 0x6781 y la marca de que ya se ha usado, a cero
@@ -683,12 +683,6 @@ C 0x663E el valor 1-2-3 de la fase
 C 0x6659 el valor 1-2-3 de la fase
 C 0x6674 el valor 1-2-3 de la fase
 C 0x66AB el valor 1-2-3 de la fase
-C 0x66DA el modo en el que esta el juego
-C 0x66DF la distancia a la que sale el objeto siguiente
-C 0x6705 la FASE, de 1 a 24
-C 0x6737 el modo en el que esta el juego
-C 0x6750 el modo en el que esta el juego
-C 0x6767 la FASE, de 1 a 24
 C 0x67C1 el modo en el que esta el juego
 C 0x68CA por donde va la rotacion de los sprites
 C 0x69D2 la tabla de cambio de color, nibble alto
@@ -795,12 +789,9 @@ C 0x6588 banco 0: dos_por_a_mas_hl
 C 0x658F banco 0: copia_bloques
 C 0x66B9 banco 0: a_mas_hl
 C 0x66C0 banco 0: copia_bloques
-C 0x6709 banco 0: dos_por_a_mas_hl
-C 0x6713 banco 0: a_mas_hl
-C 0x6779 banco 0: a_mas_hl
-C 0x67CD banco 0: dos_por_a_mas_hl
-C 0x67D8 banco 0: a_mas_de
-C 0x6806 banco 0: a_mas_hl
+C 0x67CD banco 0: dos_por_a_mas_hl; dos bytes por entrada
+C 0x67D8 banco 0: a_mas_de; DE = lista + indice
+C 0x6806 banco 0: a_mas_hl; HL = tramo + la que toca
 C 0x688D banco 0: dos_por_a_mas_hl
 C 0x68C0 banco 0: dos_por_a_mas_hl
 C 0x6913 banco 0: dos_por_a_mas_hl
@@ -1019,7 +1010,6 @@ C 0x7EEB banco 11
 
 B 0x6799 LO QUE SALE DEL TERRENO. La rutina que convierte el byte de terreno en cosas puestas en las cinco ranuras de 0xE440. Tiene dos fuentes segun el modo: en el modo 1 lee una lista de 0x81F2 -banco 10-, y en el de jugar coge el byte de terreno de ahora (0xE402), lo multiplica por OCHO y con eso indexa la tabla de 0x84EA: ocho cosas por cada tramo de terreno, y 0xE403 dice por cual va.
 L 0x6799 lo_que_sale_del_terreno
-C 0x6799 por que vuelta va
 C 0x679E y otra bandera
 C 0x67A3 la marca de que ya se ha usado el byte
 C 0x67A8 si sigue puesta, no toca
@@ -1028,13 +1018,10 @@ C 0x67AC que pasa a ser el de ahora
 C 0x67AE el banco 10
 C 0x67B8 y el 11
 L 0x67C1 lee_lo_que_toca_del_terreno
-C 0x67C1 el modo
 C 0x67C5 en el modo 1, otra tabla
 C 0x67CA cual de ellas
-C 0x67CD dos bytes por entrada
 C 0x67D3 por donde va la lista
 C 0x67D6 uno mas
-C 0x67D8 DE = lista + indice
 C 0x67DB lo que hay
 C 0x67DC 0xFF cierra la lista
 C 0x67E0 y se vuelve a empezar
@@ -1050,7 +1037,6 @@ C 0x67FC la siguiente
 C 0x67FE a las ocho...
 C 0x6802 ...vuelta a empezar
 L 0x6804 coge_la_cosa_del_tramo
-C 0x6806 HL = tramo + la que toca
 C 0x6809 y lo que sale
 C 0x680A un cero es "aqui no sale nada"
 C 0x680E una bandera que cambia lo que sale

@@ -954,10 +954,10 @@ L_66C6:
 ; EL SEGUNDO GUION: LO QUE PASA A CADA DISTANCIA. Igual que el de los enemigos pero en el banco 13, y con entradas de tres bytes en vez de dos. Se dispara comparando la distancia andada con la apuntada, y al dispararse deja la siguiente ya preparada.
 ; ----------------------------------------------------------------------
 el_segundo_guion:
-	ld a,(0e0a2h)		;66da   ; el modo en el que esta el juego
+	ld a,(0e0a2h)		;66da   ; el modo del juego; el modo en el que esta el juego
 	and a			;66dd
 	ret nz			;66de   ; fuera del de jugar, nada
-	ld hl,(0e08dh)		;66df   ; la distancia a la que sale el objeto siguiente
+	ld hl,(0e08dh)		;66df   ; lo andado; la distancia a la que sale el objeto siguiente
 	ld de,(0e0a7h)		;66e2   ; y la distancia a la que toca
 	rst 20h			;66e6   ; DCOMPR: ¿hemos llegado?
 	ret nz			;66e7
@@ -979,7 +979,7 @@ lee_la_entrada_del_segundo_guion:
 	ld hl,0ade8h		;6702   ; la tabla, un puntero por fase
 	ld a,(0e092h)		;6705   ; la FASE, de 1 a 24
 	dec a			;6708
-	call 04055h		;6709   ; banco 0: dos_por_a_mas_hl
+	call 04055h		;6709   ; dos bytes por entrada; banco 0: dos_por_a_mas_hl
 	ld e,(hl)			;670c   ; y ahi esta el guion de esta fase
 	inc hl			;670d
 	ld d,(hl)			;670e
@@ -987,7 +987,7 @@ lee_la_entrada_del_segundo_guion:
 	add a,a			;6710   ; tres bytes por entrada: por tres
 	add a,c			;6711
 	ex de,hl			;6712
-	call 04056h		;6713   ; banco 0: a_mas_hl
+	call 04056h		;6713   ; HL = guion + 3*entrada; banco 0: a_mas_hl
 	ld e,(hl)			;6716   ; la distancia de la entrada
 	inc hl			;6717
 	ld d,(hl)			;6718
@@ -1011,7 +1011,7 @@ lee_la_entrada_del_segundo_guion:
 ; EL TERCER GUION: EL TERRENO. Se lee de un tiron distinto: aqui no hay distancias, hay una TIRA de bytes que se va gastando de uno en uno segun se avanza (0xE404 es por donde va y 0xE402 el byte de ahora). Y hay TRES tiras por fase, en el banco 10: 0x8000, 0x80F9 y 0x8490, y cual se coge depende del modo y de 0xE08F -que es lo que se eligio en el menu-.
 ; ----------------------------------------------------------------------
 el_guion_del_terreno:
-	ld a,(0e0a2h)		;6737   ; el modo en el que esta el juego
+	ld a,(0e0a2h)		;6737   ; el modo del juego; el modo en el que esta el juego
 	dec a			;673a
 	ret z			;673b   ; en el modo 1 no hay terreno que leer
 	di			;673c   ; sin interrupciones mientras cambia el mapa
@@ -1024,7 +1024,7 @@ el_guion_del_terreno:
 	ld (0a000h),a		;6749   ; el banco 11 a 0xA000
 	ld (0f0f3h),a		;674c   ; y en su copia de RAM
 	ei			;674f   ; el mapa ya esta entero
-	ld a,(0e0a2h)		;6750   ; el modo en el que esta el juego
+	ld a,(0e0a2h)		;6750   ; el modo otra vez; el modo en el que esta el juego
 	and a			;6753
 	jr z,L_675B		;6754
 	ld de,08490h		;6756   ; con modo distinto de cero, la tercera tira
@@ -1050,7 +1050,7 @@ coge_el_byte_de_terreno:
 	ld a,(hl)			;6776
 	inc (hl)			;6777   ; y se avanza uno
 	ex de,hl			;6778
-	call 04056h		;6779   ; banco 0: a_mas_hl
+	call 04056h		;6779   ; HL = tira + lo andado; banco 0: a_mas_hl
 	ld a,(hl)			;677c   ; el byte que toca
 	ld (0e402h),a		;677d   ; que queda de byte de terreno de ahora
 	xor a			;6780
@@ -1071,7 +1071,7 @@ coge_el_byte_de_terreno:
 ; LO QUE SALE DEL TERRENO. La rutina que convierte el byte de terreno en cosas puestas en las cinco ranuras de 0xE440. Tiene dos fuentes segun el modo: en el modo 1 lee una lista de 0x81F2 -banco 10-, y en el de jugar coge el byte de terreno de ahora (0xE402), lo multiplica por OCHO y con eso indexa la tabla de 0x84EA: ocho cosas por cada tramo de terreno, y 0xE403 dice por cual va.
 ; ----------------------------------------------------------------------
 lo_que_sale_del_terreno:
-	ld a,(0e0a5h)		;6799   ; por que vuelta va
+	ld a,(0e0a5h)		;6799   ; por que vuelta de la fase va
 	and a			;679c
 	ret nz			;679d
 	ld a,(0e0a4h)		;679e   ; y otra bandera
@@ -1096,19 +1096,19 @@ lo_que_sale_del_terreno:
 	ld (0f0f3h),a		;67bd   ; y en su copia de RAM
 	ei			;67c0   ; el mapa ya esta entero
 lee_lo_que_toca_del_terreno:
-	ld a,(0e0a2h)		;67c1   ; el modo
+	ld a,(0e0a2h)		;67c1   ; el modo en el que esta el juego
 	dec a			;67c4
 	ld hl,081f2h		;67c5   ; en el modo 1, otra tabla
 	jr nz,lo_que_sale_en_el_juego		;67c8
 	ld a,(0e0a3h)		;67ca   ; cual de ellas
-	call 04055h		;67cd   ; dos bytes por entrada
+	call 04055h		;67cd   ; banco 0: dos_por_a_mas_hl; dos bytes por entrada
 	ld e,(hl)			;67d0
 	inc hl			;67d1
 	ld d,(hl)			;67d2
 	ld hl,0e403h		;67d3   ; por donde va la lista
 	inc (hl)			;67d6   ; uno mas
 	ld a,(hl)			;67d7
-	call 0405bh		;67d8   ; DE = lista + indice
+	call 0405bh		;67d8   ; banco 0: a_mas_de; DE = lista + indice
 	ld a,(de)			;67db   ; lo que hay
 	cp 0ffh		;67dc   ; 0xFF cierra la lista
 	jr nz,lo_del_terreno_encontrado		;67de
@@ -1139,7 +1139,7 @@ lo_que_sale_en_el_juego:
 coge_la_cosa_del_tramo:
 	ld a,c			;6804
 	ex de,hl			;6805
-	call 04056h		;6806   ; HL = tramo + la que toca
+	call 04056h		;6806   ; banco 0: a_mas_hl; HL = tramo + la que toca
 	ld a,(hl)			;6809   ; y lo que sale
 	and a			;680a   ; un cero es "aqui no sale nada"
 	jr z,devuelve_el_2_y_el_3		;680b
