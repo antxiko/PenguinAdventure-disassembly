@@ -1054,7 +1054,7 @@ el_guion_del_terreno:
 	ld de,08490h		;6756   ; con modo distinto de cero, la tercera tira
 	jr coge_el_byte_de_terreno		;6759
 L_675B:
-	ld a,(0e08fh)		;675b   ; uno o dos jugadores
+	ld a,(0e08fh)		;675b   ; el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2
 	and a			;675e
 	ld de,08000h		;675f   ; la primera tira...
 	jr z,el_terreno_de_esta_fase		;6762

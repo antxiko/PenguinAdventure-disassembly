@@ -118,8 +118,8 @@ painted on the machine itself says the same.
 
 Thirteen is what the cartridge declares to the Konami Game Master in the header
 at 0x4010. p02:8328 compares the stage with 0x19, and the three script tables
-close at exactly twenty-four entries. The two-player game is a whole different
-design.
+close at exactly twenty-four entries. And LEVEL 2 from the title menu is a
+whole different design: not one section matches the LEVEL 1 ones byte for byte.
 
 ## The clock runs whether you move or not
 

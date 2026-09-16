@@ -634,7 +634,7 @@ def banco_10_terreno(rom, bloques):
     """El banco 10 entero de 0x8000 a 0x8682: el terreno y lo que sale de el.
 
     p01:6737 (el_guion_del_terreno), con 10/11 puestos: en el modo 0, DE =
-    0x8000 con un jugador o 0x80F9 con dos (0xE08F), y la palabra (0xE092)-1
+    0x8000 del LEVEL 1 o 0x80F9 con dos (0xE08F), y la palabra (0xE092)-1
     es la tira de la fase; en otro modo, DE = 0x8490 directamente. La tira se
     lee con el contador (0xE404) de uno en uno y NO lleva marca de fin: acaba
     donde empieza la siguiente, y los 24 punteros van en orden con la primera
@@ -649,7 +649,7 @@ def banco_10_terreno(rom, bloques):
     """
     s = (1, 10, 11)
     fijas = []
-    for base, fin_bloque, jug in ((0x8000, 0x80F9, "un jugador"), (0x80F9, 0x81F2, "dos jugadores")):
+    for base, fin_bloque, jug in ((0x8000, 0x80F9, "LEVEL 1"), (0x80F9, 0x81F2, "LEVEL 2")):
         ps = [palabra(rom, s, base + 2 * i) for i in range(N_FASES)]
         if ps[0] != base + 2 * N_FASES or any(ps[i] > ps[i + 1] for i in range(N_FASES - 1)):
             raise FueraDelBanco("las tiras de %04X no van seguidas" % base)

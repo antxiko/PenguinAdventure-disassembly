@@ -116,7 +116,7 @@ avanza_el_subestado:
 	ret			;8098
 
 ; ----------------------------------------------------------------------
-; ESTADO 3: EL MENU. El que espera a que se pulse algo, hace parpadear el rotulo y deja elegir entre uno y dos jugadores. La eleccion vive en 0xE082 y los dos rotulos que se intercambian son los guiones 0x8E0A y 0x8E14.
+; ESTADO 3: EL MENU. El que espera a que se pulse algo, hace parpadear el rotulo y deja elegir entre LEVEL 1 y LEVEL 2. La eleccion vive en 0xE082 y los dos rotulos que se intercambian son los guiones 0x8E0A y 0x8E14.
 ; ----------------------------------------------------------------------
 estado_3:
 	djnz estado_3_subestado_2		;8099   ; el subestado
@@ -149,7 +149,7 @@ estado_3_espera_a_que_pulsen:
 	djnz estado_3_parpadeo_final		;80d6
 	ld hl,0e004h		;80d8   ; el contador
 	dec (hl)			;80db
-	call uno_o_dos_jugadores		;80dc
+	call cambia_de_nivel		;80dc
 	call L_91F7		;80df
 	ld a,(0e006h)		;80e2   ; las teclas recien pulsadas
 	and 010h		;80e5   ; el bit 4: la barra o el disparo
@@ -159,7 +159,7 @@ estado_3_espera_a_que_pulsen:
 	ld c,000h		;80ed
 	call L_9201		;80ef
 	call mira_si_es_una_de_las_dos_claves		;80f2
-	ld a,(0e082h)		;80f5   ; uno o dos jugadores
+	ld a,(0e082h)		;80f5   ; el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2
 	and a			;80f8
 	ld de,08e14h		;80f9   ; el rotulo de uno...
 	jr z,L_8101		;80fc
@@ -196,7 +196,7 @@ estado_3_arranca_la_partida:
 	djnz estado_3_ultimo		;8133
 	call 04224h		;8135   ; borrar la pantalla
 	call borra_la_partida		;8138
-	ld a,(0e082h)		;813b   ; uno o dos jugadores
+	ld a,(0e082h)		;813b   ; el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2
 	ld (0e08fh),a		;813e   ; queda apuntado para la partida
 	call 046e3h		;8141   ; y a montar la fase
 	jr pasa_al_estado_siguiente		;8144
@@ -1169,7 +1169,7 @@ L_8919:
 	jp avanza_el_subestado		;8930
 
 ; ----------------------------------------------------------------------
-; ESTADO 15: FIN DE PARTIDA, Y EL CONTINUE. Lo interesante esta en como se hace el continue: no hay ninguna rutina que "guarde la partida". Lo que hay es un borrado de RAM con las seis cosas que importan a salvo en la PILA -0xE0C6 a 0xE0CB, y por otro lado el numero de fase, la fase, el 1-2-3 y lo de uno o dos jugadores-, y despues de borrar se vuelven a poner. Y las vidas se dejan en DOS, no en las que hubiera al empezar.
+; ESTADO 15: FIN DE PARTIDA, Y EL CONTINUE. Lo interesante esta en como se hace el continue: no hay ninguna rutina que "guarde la partida". Lo que hay es un borrado de RAM con las seis cosas que importan a salvo en la PILA -0xE0C6 a 0xE0CB, y por otro lado el numero de fase, la fase, el 1-2-3 y lo de el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2-, y despues de borrar se vuelven a poner. Y las vidas se dejan en DOS, no en las que hubiera al empezar.
 ; ----------------------------------------------------------------------
 estado_15:
 	dec b			;8933   ; este se mira con `dec b`, no con `djnz`
@@ -1204,7 +1204,7 @@ estado_15:
 	ld b,a			;896d
 	ld a,(0e093h)		;896e   ; el valor 1-2-3 de la fase
 	ld e,a			;8971
-	ld a,(0e08fh)		;8972   ; uno o dos jugadores
+	ld a,(0e08fh)		;8972   ; el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2
 	ld d,a			;8975
 	push de			;8976   ; y tambien a la pila
 	push bc			;8977
@@ -1255,7 +1255,7 @@ estado_15_borra_lo_demas:
 	inc l			;89d4
 	ld (hl),001h		;89d5
 	ld a,d			;89d7
-	ld (0e08fh),a		;89d8   ; uno o dos jugadores
+	ld (0e08fh),a		;89d8   ; el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2
 	pop hl			;89db   ; y las seis de 0xE0C6, de vuelta
 	pop de			;89dc
 	pop bc			;89dd
@@ -1281,7 +1281,7 @@ estado_15_se_acabo_del_todo:
 	and 0bfh		;8a05   ; se le quita el bit 6
 	ld (hl),a			;8a07
 	xor a			;8a08
-	ld (0e082h),a		;8a09   ; y uno o dos jugadores, a cero
+	ld (0e082h),a		;8a09   ; y el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2, a cero
 	jp estado_a_0xFF		;8a0c   ; y vuelta a la presentacion
 estado_15_pinta_el_fin:
 	call 04224h		;8a0f   ; banco 0: borra_la_pantalla_entera; borrar la pantalla entera
@@ -2033,7 +2033,7 @@ L_91F7:
 L_9201:
 	ld hl,0398ah		;9201
 	ld de,039eah		;9204
-	ld a,(0e082h)		;9207   ; uno o dos jugadores
+	ld a,(0e082h)		;9207   ; el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2
 	or a			;920a
 	jr z,L_920E		;920b
 	ex de,hl			;920d
@@ -2509,7 +2509,7 @@ L_9500:
 ; ----------------------------------------------------------------------
 ; UNO O DOS JUGADORES, Y DE PASO LAS CLAVES. Los bits 0 y 1 de las teclas recien pulsadas dan la vuelta a 0xE082 con el efecto 0x23. Pero antes llama a 0x9522, que es donde esta lo bueno: el vigilante de las dos claves secretas.
 ; ----------------------------------------------------------------------
-uno_o_dos_jugadores:
+cambia_de_nivel:
 	call vigila_las_claves		;9505   ; primero, el vigilante de las claves
 	ld a,(0e006h)		;9508   ; las teclas
 	ld c,a			;950b
@@ -2519,10 +2519,10 @@ uno_o_dos_jugadores:
 	and 002h		;9511   ; ...o el bit 1
 	ret z			;9513   ; sin ninguno, nada
 cambia_de_uno_a_dos:
-	ld a,(0e082h)		;9514   ; uno o dos jugadores
+	ld a,(0e082h)		;9514   ; el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2
 	cpl			;9517   ; se le da la vuelta
 	and 001h		;9518
-	ld (0e082h),a		;951a   ; uno o dos jugadores
+	ld (0e082h),a		;951a   ; el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2
 	ld a,023h		;951d   ; y el efecto 0x23
 	jp 0413ah		;951f   ; banco 0: pide_sonido_si_esta_activo
 

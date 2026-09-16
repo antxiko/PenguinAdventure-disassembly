@@ -553,7 +553,13 @@ def hoja_de_sprites_de(cart, guion):
 #   p01:66DA  el tercero, en el banco 13 (0xADE8), con entradas de tres bytes.
 # Cada juego de guiones son 24 punteros seguidos de sus 24 tiras, todas
 # pegadas: el final de la ultima es donde empieza lo siguiente.
-TERRENO = {"1 jugador": (0x8000, 0x80F9), "2 jugadores": (0x80F9, 0x81F2)}
+# Las DOS tablas de terreno, una por nivel. El menu del titulo deja elegir
+# entre LEVEL 1 y LEVEL 2 -asi, con esas dos palabras, comprobado en pantalla-,
+# la eleccion vive en 0xE082, se copia a 0xE08F al empezar la partida y p01:675B
+# escoge con ella: con cero la tabla de 0x8000 y si no la de 0x80F9. O sea que
+# el nivel no cambia la dificultad de un tramo: cambia los VEINTICUATRO
+# recorridos enteros.
+TERRENO = {"LEVEL 1": (0x8000, 0x80F9), "LEVEL 2": (0x80F9, 0x81F2)}
 GUION_DE_ENEMIGOS = 0xA8FB
 N_FASES = 24
 
@@ -623,9 +629,9 @@ def enemigos_de_las_fases(cart):
     return fuera
 
 
-def mapa_de_fases(cart, jugadores="1 jugador"):
+def mapa_de_fases(cart, nivel="LEVEL 1"):
     """Las trece fases, una fila cada una: los tramos y donde sale cada bicho."""
-    terreno = terreno_de_las_fases(cart, TERRENO[jugadores])
+    terreno = terreno_de_las_fases(cart, TERRENO[nivel])
     enemigos = enemigos_de_las_fases(cart)
     mas_tramos = max(len(t) for t in terreno)
     ancho, alto_fila = 30 + mas_tramos * 20, 22
@@ -681,7 +687,7 @@ def main():
     for jug in sorted(TERRENO):
         img = mapa_de_fases(cart, jug)
         hechas.append(guarda_png(img, os.path.join(
-            IMAGENES, "fases_%s.png" % jug.replace(" ", "_")), escala=2))
+            IMAGENES, "fases_%s.png" % jug.lower().replace(" ", "_")), escala=2))
     for guion in GUIONES_DE_SPRITE:
         _li, img = hoja_de_sprites_de(cart, guion)
         hechas.append(guarda_png(img, os.path.join(

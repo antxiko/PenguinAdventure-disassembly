@@ -18,16 +18,19 @@ header, the one at 0x4010. The game says otherwise: p02:8328 compares the stage
 with 0x19 and the three script tables —terrain, creatures and the third one—
 close at exactly twenty-four entries.
 
-![The twenty-four one-player stages](imagenes/fases_1_jugador.png)
+![The twenty-four LEVEL 1 stages](imagenes/fases_level_1.png)
 
 Each row is a stage. The coloured blocks are its terrain sections in the order
 they come, and the marks below are the creatures the script spawns. The first
 three stages spawn none: their script is a bare `0xFF`.
 
-And the two-player game is a **whole different design**, not a variation: not one
-section matches the one-player table byte for byte.
+The title menu lets you pick between **LEVEL 1** and **LEVEL 2**, and that
+choice does not change how hard a section is: it changes **all twenty-four
+routes**. They are two different terrain tables in bank 10 —0x8000 and 0x80F9—
+and p01:675B picks with 0xE08F, which is the copy p02:813B makes of 0xE082 when
+the game starts. Not one section matches byte for byte between them.
 
-![The twenty-four two-player ones](imagenes/fases_2_jugadores.png)
+![The twenty-four LEVEL 2 ones](imagenes/fases_level_2.png)
 
 ## Ten backdrops
 

@@ -83,20 +83,22 @@ GALERIA = [
      "The six reel symbols, with how many of the sixteen slots in the table at "
      "0x7B34 fall to each. The cherry gets five: it is the most likely symbol "
      "and the only one that counts on its own."),
-    ("fases_1_jugador.png",
-     "Las veinticuatro fases de un jugador: cada fila es una fase, los bloques "
+    ("fases_level_1.png",
+     "Las veinticuatro fases del LEVEL 1: cada fila es una fase, los bloques "
      "de color son los tramos de terreno en orden y las marcas de debajo, los "
      "bichos que salen. Son 24 y no 13: los trece son lo que el cartucho le "
      "declara al Konami Game Master en su cabecera de 0x4010.",
-     "The twenty-four one-player stages: each row is a stage, the coloured "
+     "The twenty-four LEVEL 1 stages: each row is a stage, the coloured "
      "blocks are its terrain sections in order and the marks below are the "
      "creatures it spawns. There are 24 and not 13: thirteen is what the "
      "cartridge declares to the Konami Game Master in its 0x4010 header."),
-    ("fases_2_jugadores.png",
-     "Y las de dos jugadores, que son OTRO diseño: ni un solo tramo coincide "
-     "byte a byte con el de un jugador.",
-     "And the two-player ones, which are a DIFFERENT design: not one section "
-     "matches the one-player table byte for byte."),
+    ("fases_level_2.png",
+     "Y las del LEVEL 2, que son OTRO diseño: ni un solo tramo coincide byte "
+     "a byte con los del LEVEL 1. El menú del título no cambia lo dificil que "
+     "es un tramo: cambia los veinticuatro recorridos enteros.",
+     "And the LEVEL 2 ones, which are a DIFFERENT design: not one section "
+     "matches the LEVEL 1 table byte for byte. The title menu does not change "
+     "how hard a section is: it changes all twenty-four routes."),
     ("sprites_9846.png",
      "Una de las diecinueve hojas de sprites, la del título. Los dos colores "
      "son blanco y gris a propósito: en el MSX1 un sprite es de un solo color "
@@ -150,7 +152,7 @@ HALLAZGOS = {
          f"Game Master en su segunda cabecera, la de 0x4010. El juego dice "
          f"otra cosa: p02:8328 compara la fase con 0x19 y las tres tablas de "
          f"guion —terreno, enemigos y el tercero— cierran en <b>{FASES}</b> "
-         f"entradas justas. Y la partida de dos jugadores es otro diseño "
+         f"entradas justas. Y la partida del LEVEL 2 es otro diseño "
          f"entero, sin un solo tramo igual.</p>"),
         ("El tiempo corre aunque no se ande",
          "<p>0xE08B no es el largo de la fase: es el <b>tiempo</b>. p02:922D "
@@ -216,8 +218,8 @@ HALLAZGOS = {
          f"Game Master in its second header, the one at 0x4010. The game says "
          f"otherwise: p02:8328 compares the stage with 0x19 and the three "
          f"script tables —terrain, creatures and the third one— close at "
-         f"exactly <b>{FASES}</b> entries. And the two-player game is a whole "
-         f"different design, without a single matching section.</p>"),
+         f"exactly <b>{FASES}</b> entries. And LEVEL 2 is a whole different "
+         f"design, without a single matching section.</p>"),
         ("The clock runs whether you move or not",
          "<p>0xE08B is not the stage length: it is the <b>time</b>. p02:922D "
          "takes one off it every 32 frames whether you move or not, below 0x15 "

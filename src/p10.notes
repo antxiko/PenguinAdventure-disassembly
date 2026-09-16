@@ -2,105 +2,105 @@
 # linea, B cabecera de bloque, D rango de datos, F anchura de fila.
 
 # --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
-D 0x8000 0x8030 tiras_de_terreno_un  24 punteros, uno por fase (0xE092 - 1), a las tiras de terreno con un jugador; los lee p01:6767. Van en orden y la primera tira empieza donde acaba la tabla
+D 0x8000 0x8030 tiras_de_terreno_nivel1  24 punteros, uno por fase (0xE092 - 1), a las tiras de terreno del LEVEL 1; los lee p01:6767. Van en orden y la primera tira empieza donde acaba la tabla
 F 0x8000 2
-D 0x8030 0x8036 terreno_fase_1_un  la tira de terreno de la fase 1 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8030 0x8036 terreno_fase_1_nivel1  la tira de terreno de la fase 1 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8030 16
-D 0x8036 0x803C terreno_fase_2_un  la tira de terreno de la fase 2 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8036 0x803C terreno_fase_2_nivel1  la tira de terreno de la fase 2 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8036 16
-D 0x803C 0x8044 terreno_fase_3_un  la tira de terreno de la fase 3 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x803C 0x8044 terreno_fase_3_nivel1  la tira de terreno de la fase 3 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x803C 16
-D 0x8044 0x8049 terreno_fase_4_un  la tira de terreno de la fase 4 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8044 0x8049 terreno_fase_4_nivel1  la tira de terreno de la fase 4 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8044 16
-D 0x8049 0x804E terreno_fase_5_un  la tira de terreno de la fase 5 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8049 0x804E terreno_fase_5_nivel1  la tira de terreno de la fase 5 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8049 16
-D 0x804E 0x8054 terreno_fase_6_un  la tira de terreno de la fase 6 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x804E 0x8054 terreno_fase_6_nivel1  la tira de terreno de la fase 6 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x804E 16
-D 0x8054 0x805C terreno_fase_7_un  la tira de terreno de la fase 7 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8054 0x805C terreno_fase_7_nivel1  la tira de terreno de la fase 7 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8054 16
-D 0x805C 0x8062 terreno_fase_8_un  la tira de terreno de la fase 8 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x805C 0x8062 terreno_fase_8_nivel1  la tira de terreno de la fase 8 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x805C 16
-D 0x8062 0x8069 terreno_fase_9_un  la tira de terreno de la fase 9 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8062 0x8069 terreno_fase_9_nivel1  la tira de terreno de la fase 9 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8062 16
-D 0x8069 0x8070 terreno_fase_10_un  la tira de terreno de la fase 10 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8069 0x8070 terreno_fase_10_nivel1  la tira de terreno de la fase 10 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8069 16
-D 0x8070 0x8077 terreno_fase_11_un  la tira de terreno de la fase 11 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8070 0x8077 terreno_fase_11_nivel1  la tira de terreno de la fase 11 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8070 16
-D 0x8077 0x8080 terreno_fase_12_un  la tira de terreno de la fase 12 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8077 0x8080 terreno_fase_12_nivel1  la tira de terreno de la fase 12 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8077 16
-D 0x8080 0x8087 terreno_fase_13_un  la tira de terreno de la fase 13 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8080 0x8087 terreno_fase_13_nivel1  la tira de terreno de la fase 13 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8080 16
-D 0x8087 0x808D terreno_fase_14_un  la tira de terreno de la fase 14 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8087 0x808D terreno_fase_14_nivel1  la tira de terreno de la fase 14 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8087 16
-D 0x808D 0x8095 terreno_fase_15_un  la tira de terreno de la fase 15 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x808D 0x8095 terreno_fase_15_nivel1  la tira de terreno de la fase 15 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x808D 16
-D 0x8095 0x80A0 terreno_fase_16_un  la tira de terreno de la fase 16 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8095 0x80A0 terreno_fase_16_nivel1  la tira de terreno de la fase 16 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8095 16
-D 0x80A0 0x80A7 terreno_fase_17_un  la tira de terreno de la fase 17 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x80A0 0x80A7 terreno_fase_17_nivel1  la tira de terreno de la fase 17 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x80A0 16
-D 0x80A7 0x80B2 terreno_fase_18_un  la tira de terreno de la fase 18 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x80A7 0x80B2 terreno_fase_18_nivel1  la tira de terreno de la fase 18 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x80A7 16
-D 0x80B2 0x80BE terreno_fase_19_un  la tira de terreno de la fase 19 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x80B2 0x80BE terreno_fase_19_nivel1  la tira de terreno de la fase 19 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x80B2 16
-D 0x80BE 0x80C6 terreno_fase_20_un  la tira de terreno de la fase 20 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x80BE 0x80C6 terreno_fase_20_nivel1  la tira de terreno de la fase 20 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x80BE 16
-D 0x80C6 0x80D4 terreno_fase_21_un  la tira de terreno de la fase 21 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x80C6 0x80D4 terreno_fase_21_nivel1  la tira de terreno de la fase 21 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x80C6 16
-D 0x80D4 0x80E1 terreno_fase_22_un  la tira de terreno de la fase 22 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x80D4 0x80E1 terreno_fase_22_nivel1  la tira de terreno de la fase 22 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x80D4 16
-D 0x80E1 0x80EB terreno_fase_23_un  la tira de terreno de la fase 23 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x80E1 0x80EB terreno_fase_23_nivel1  la tira de terreno de la fase 23 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x80E1 16
-D 0x80EB 0x80F9 terreno_fase_24_un  la tira de terreno de la fase 24 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la tabla de 0x80F9
+D 0x80EB 0x80F9 terreno_fase_24_nivel1  la tira de terreno de la fase 24 del LEVEL 1: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la tabla de 0x80F9
 F 0x80EB 16
-D 0x80F9 0x8129 tiras_de_terreno_dos  24 punteros, uno por fase (0xE092 - 1), a las tiras de terreno con dos jugadores; los lee p01:6767. Van en orden y la primera tira empieza donde acaba la tabla
+D 0x80F9 0x8129 tiras_de_terreno_nivel2  24 punteros, uno por fase (0xE092 - 1), a las tiras de terreno del LEVEL 2; los lee p01:6767. Van en orden y la primera tira empieza donde acaba la tabla
 F 0x80F9 2
-D 0x8129 0x812F terreno_fase_1_dos  la tira de terreno de la fase 1 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8129 0x812F terreno_fase_1_nivel2  la tira de terreno de la fase 1 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8129 16
-D 0x812F 0x8135 terreno_fase_2_dos  la tira de terreno de la fase 2 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x812F 0x8135 terreno_fase_2_nivel2  la tira de terreno de la fase 2 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x812F 16
-D 0x8135 0x813D terreno_fase_3_dos  la tira de terreno de la fase 3 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8135 0x813D terreno_fase_3_nivel2  la tira de terreno de la fase 3 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8135 16
-D 0x813D 0x8142 terreno_fase_4_dos  la tira de terreno de la fase 4 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x813D 0x8142 terreno_fase_4_nivel2  la tira de terreno de la fase 4 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x813D 16
-D 0x8142 0x8147 terreno_fase_5_dos  la tira de terreno de la fase 5 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8142 0x8147 terreno_fase_5_nivel2  la tira de terreno de la fase 5 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8142 16
-D 0x8147 0x814D terreno_fase_6_dos  la tira de terreno de la fase 6 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8147 0x814D terreno_fase_6_nivel2  la tira de terreno de la fase 6 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8147 16
-D 0x814D 0x8155 terreno_fase_7_dos  la tira de terreno de la fase 7 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x814D 0x8155 terreno_fase_7_nivel2  la tira de terreno de la fase 7 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x814D 16
-D 0x8155 0x815B terreno_fase_8_dos  la tira de terreno de la fase 8 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8155 0x815B terreno_fase_8_nivel2  la tira de terreno de la fase 8 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8155 16
-D 0x815B 0x8162 terreno_fase_9_dos  la tira de terreno de la fase 9 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x815B 0x8162 terreno_fase_9_nivel2  la tira de terreno de la fase 9 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x815B 16
-D 0x8162 0x8169 terreno_fase_10_dos  la tira de terreno de la fase 10 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8162 0x8169 terreno_fase_10_nivel2  la tira de terreno de la fase 10 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8162 16
-D 0x8169 0x8170 terreno_fase_11_dos  la tira de terreno de la fase 11 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8169 0x8170 terreno_fase_11_nivel2  la tira de terreno de la fase 11 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8169 16
-D 0x8170 0x8179 terreno_fase_12_dos  la tira de terreno de la fase 12 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8170 0x8179 terreno_fase_12_nivel2  la tira de terreno de la fase 12 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8170 16
-D 0x8179 0x8180 terreno_fase_13_dos  la tira de terreno de la fase 13 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8179 0x8180 terreno_fase_13_nivel2  la tira de terreno de la fase 13 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8179 16
-D 0x8180 0x8186 terreno_fase_14_dos  la tira de terreno de la fase 14 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8180 0x8186 terreno_fase_14_nivel2  la tira de terreno de la fase 14 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8180 16
-D 0x8186 0x818E terreno_fase_15_dos  la tira de terreno de la fase 15 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8186 0x818E terreno_fase_15_nivel2  la tira de terreno de la fase 15 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8186 16
-D 0x818E 0x8199 terreno_fase_16_dos  la tira de terreno de la fase 16 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x818E 0x8199 terreno_fase_16_nivel2  la tira de terreno de la fase 16 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x818E 16
-D 0x8199 0x81A0 terreno_fase_17_dos  la tira de terreno de la fase 17 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x8199 0x81A0 terreno_fase_17_nivel2  la tira de terreno de la fase 17 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x8199 16
-D 0x81A0 0x81AB terreno_fase_18_dos  la tira de terreno de la fase 18 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x81A0 0x81AB terreno_fase_18_nivel2  la tira de terreno de la fase 18 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x81A0 16
-D 0x81AB 0x81B7 terreno_fase_19_dos  la tira de terreno de la fase 19 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x81AB 0x81B7 terreno_fase_19_nivel2  la tira de terreno de la fase 19 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x81AB 16
-D 0x81B7 0x81BF terreno_fase_20_dos  la tira de terreno de la fase 20 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x81B7 0x81BF terreno_fase_20_nivel2  la tira de terreno de la fase 20 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x81B7 16
-D 0x81BF 0x81CD terreno_fase_21_dos  la tira de terreno de la fase 21 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x81BF 0x81CD terreno_fase_21_nivel2  la tira de terreno de la fase 21 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x81BF 16
-D 0x81CD 0x81DA terreno_fase_22_dos  la tira de terreno de la fase 22 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x81CD 0x81DA terreno_fase_22_nivel2  la tira de terreno de la fase 22 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x81CD 16
-D 0x81DA 0x81E4 terreno_fase_23_dos  la tira de terreno de la fase 23 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+D 0x81DA 0x81E4 terreno_fase_23_nivel2  la tira de terreno de la fase 23 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
 F 0x81DA 16
-D 0x81E4 0x81F2 terreno_fase_24_dos  la tira de terreno de la fase 24 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la tabla de 0x81F2
+D 0x81E4 0x81F2 terreno_fase_24_nivel2  la tira de terreno de la fase 24 del LEVEL 2: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la tabla de 0x81F2
 F 0x81E4 16
 D 0x81F2 0x8206 listas_del_modo_1  10 punteros a las listas de lo que sale en el modo 1 (0xE0A2 = 1); p01:67C5 escoge una con (0xE0A3)
 F 0x81F2 2

@@ -122,8 +122,8 @@ tabla de premios pintada en la propia máquina dice lo mismo.
 
 Los trece son lo que el cartucho le declara al Konami Game Master en la cabecera
 de 0x4010. p02:8328 compara la fase con 0x19, y las tres tablas de guion cierran
-en veinticuatro entradas justas. La partida de dos jugadores es otro diseño
-entero.
+en veinticuatro entradas justas. Y el LEVEL 2 del menu del titulo es otro
+diseño entero: ni un solo tramo coincide byte a byte con los del LEVEL 1.
 
 ## El tiempo corre aunque no se ande
 

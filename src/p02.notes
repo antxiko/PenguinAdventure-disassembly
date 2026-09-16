@@ -48,7 +48,7 @@ C 0x8091 lo que haya en A pasa a ser la espera
 L 0x8094 avanza_el_subestado
 C 0x8094 el subestado
 C 0x8097 uno mas
-B 0x8099 ESTADO 3: EL MENU. El que espera a que se pulse algo, hace parpadear el rotulo y deja elegir entre uno y dos jugadores. La eleccion vive en 0xE082 y los dos rotulos que se intercambian son los guiones 0x8E0A y 0x8E14.
+B 0x8099 ESTADO 3: EL MENU. El que espera a que se pulse algo, hace parpadear el rotulo y deja elegir entre LEVEL 1 y LEVEL 2. La eleccion vive en 0xE082 y los dos rotulos que se intercambian son los guiones 0x8E0A y 0x8E14.
 L 0x8099 estado_3
 C 0x8099 el subestado
 C 0x809B el contador
@@ -69,7 +69,7 @@ C 0x80E2 las teclas recien pulsadas
 C 0x80E5 el bit 4: la barra o el disparo
 C 0x80E7 si no se ha pulsado, a esperar
 C 0x80E8 el efecto 0xAA
-C 0x80F5 uno o dos jugadores
+C 0x80F5 el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2
 C 0x80F9 el rotulo de uno...
 C 0x80FE ...o el de dos
 C 0x8106 y 0x50 cuadros de espera
@@ -203,7 +203,7 @@ C 0x9FF1 el ESTADO de lo que se maneja
 
 L 0x8133 estado_3_arranca_la_partida
 C 0x8135 borrar la pantalla
-C 0x813B uno o dos jugadores
+C 0x813B el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2
 C 0x813E queda apuntado para la partida
 C 0x8141 y a montar la fase
 L 0x8146 estado_3_ultimo
@@ -478,16 +478,16 @@ C 0x88A0 por que vuelta de la fase va
 C 0x88FC ...y al subestado 3
 C 0x892A los avisos que deja el cuadro
 C 0x892D la bandera de que la fase se ha acabado
-C 0x8A09 y uno o dos jugadores, a cero
+C 0x8A09 y el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2, a cero
 C 0x8B0D el contador de espera del estado
 C 0x8CEB el contador de espera del estado
-C 0x9207 uno o dos jugadores
+C 0x9207 el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2
 C 0x925A la bandera de que la fase se ha acabado
 C 0x929B los avisos que deja el cuadro
 C 0x92C2 por que vuelta de la fase va
 C 0x9501 los avisos que deja el cuadro
-C 0x9514 uno o dos jugadores
-C 0x951A uno o dos jugadores
+C 0x9514 el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2
+C 0x951A el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2
 C 0x973A por que vuelta de la fase va
 C 0x98CA la Y en la pantalla de lo que se maneja
 C 0x9977 la Y en la pantalla de lo que se maneja
@@ -876,7 +876,7 @@ C 0x88EA una bandera a cero
 C 0x88F0 el efecto 0x65
 L 0x8902 estado_14_vuelta_2_normal
 
-B 0x8933 ESTADO 15: FIN DE PARTIDA, Y EL CONTINUE. Lo interesante esta en como se hace el continue: no hay ninguna rutina que "guarde la partida". Lo que hay es un borrado de RAM con las seis cosas que importan a salvo en la PILA -0xE0C6 a 0xE0CB, y por otro lado el numero de fase, la fase, el 1-2-3 y lo de uno o dos jugadores-, y despues de borrar se vuelven a poner. Y las vidas se dejan en DOS, no en las que hubiera al empezar.
+B 0x8933 ESTADO 15: FIN DE PARTIDA, Y EL CONTINUE. Lo interesante esta en como se hace el continue: no hay ninguna rutina que "guarde la partida". Lo que hay es un borrado de RAM con las seis cosas que importan a salvo en la PILA -0xE0C6 a 0xE0CB, y por otro lado el numero de fase, la fase, el 1-2-3 y lo de el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2-, y despues de borrar se vuelven a poner. Y las vidas se dejan en DOS, no en las que hubiera al empezar.
 L 0x8933 estado_15
 C 0x8933 este se mira con `dec b`, no con `djnz`
 C 0x8937 una bandera que INIT deja a cero
@@ -886,7 +886,7 @@ C 0x8944 ¿se puede continuar?
 C 0x8948 si no, se acabo del todo
 C 0x894B las seis cosas de 0xE0C6...
 C 0x8963 ...a la pila
-C 0x8972 uno o dos jugadores
+C 0x8972 el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2
 C 0x8976 y tambien a la pila
 C 0x8978 y ahora se borra la RAM
 C 0x897E 217 bytes desde 0xE086
@@ -903,7 +903,7 @@ C 0x89C8 el numero de fase
 C 0x89CA la fase
 C 0x89CC el 1-2-3
 C 0x89CF y un cinco cuatro bytes mas alla
-C 0x89D8 uno o dos jugadores
+C 0x89D8 el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2
 C 0x89DB y las seis de 0xE0C6, de vuelta
 C 0x89FC y al estado 3
 L 0x8A01 estado_15_se_acabo_del_todo
@@ -1188,7 +1188,7 @@ C 0x9D38 la cuenta de cuadros del paso de la caida
 
 # --- LAS DOS CLAVES DE TECLADO (2026-09-16). Descubiertas leyendo p02:9522.
 B 0x9505 UNO O DOS JUGADORES, Y DE PASO LAS CLAVES. Los bits 0 y 1 de las teclas recien pulsadas dan la vuelta a 0xE082 con el efecto 0x23. Pero antes llama a 0x9522, que es donde esta lo bueno: el vigilante de las dos claves secretas.
-L 0x9505 uno_o_dos_jugadores
+L 0x9505 cambia_de_nivel
 C 0x9505 primero, el vigilante de las claves
 C 0x9508 las teclas
 C 0x950C el bit 0...

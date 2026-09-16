@@ -45,7 +45,7 @@ C 0x673D el banco 10
 C 0x6747 y el 11
 C 0x6750 el modo otra vez; el modo en el que esta el juego
 C 0x6756 con modo distinto de cero, la tercera tira
-C 0x675B uno o dos jugadores
+C 0x675B el NIVEL elegido: 0 es LEVEL 1 y 1 es LEVEL 2
 C 0x675F la primera tira...
 C 0x6764 ...o la segunda
 L 0x6767 el_terreno_de_esta_fase

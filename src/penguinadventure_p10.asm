@@ -10,11 +10,11 @@
 
 
 ; ----------------------------------------------------------------------
-; DATOS tiras_de_terreno_un: 24 punteros, uno por fase (0xE092 - 1), a las
-;   tiras de terreno con un jugador; los lee p01:6767. Van en orden y la
-;   primera tira empieza donde acaba la tabla
+; DATOS tiras_de_terreno_nivel1: 24 punteros, uno por fase (0xE092 - 1), a las
+;   tiras de terreno del LEVEL 1; los lee p01:6767. Van en orden y la primera
+;   tira empieza donde acaba la tabla
 ;   0x8000..0x8030  (48 bytes)
-DATA_tiras_de_terreno_un:
+DATA_tiras_de_terreno_nivel1:
 	defb 030h,080h	; 8000
 	defb 036h,080h	; 8002
 	defb 03ch,080h	; 8004
@@ -41,203 +41,203 @@ DATA_tiras_de_terreno_un:
 	defb 0ebh,080h	; 802e
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_1_un: la tira de terreno de la fase 1 con un jugador: un
+; DATOS terreno_fase_1_nivel1: la tira de terreno de la fase 1 del LEVEL 1: un
 ;   byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba
 ;   donde empieza la de la fase siguiente
 ;   0x8030..0x8036  (6 bytes)
-DATA_terreno_fase_1_un:
+DATA_terreno_fase_1_nivel1:
 	defb 001h,004h,007h,007h,001h,004h	; 8030
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_2_un: la tira de terreno de la fase 2 con un jugador: un
+; DATOS terreno_fase_2_nivel1: la tira de terreno de la fase 2 del LEVEL 1: un
 ;   byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba
 ;   donde empieza la de la fase siguiente
 ;   0x8036..0x803c  (6 bytes)
-DATA_terreno_fase_2_un:
+DATA_terreno_fase_2_nivel1:
 	defb 007h,001h,028h,001h,028h,007h	; 8036
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_3_un: la tira de terreno de la fase 3 con un jugador: un
+; DATOS terreno_fase_3_nivel1: la tira de terreno de la fase 3 del LEVEL 1: un
 ;   byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba
 ;   donde empieza la de la fase siguiente
 ;   0x803c..0x8044  (8 bytes)
-DATA_terreno_fase_3_un:
+DATA_terreno_fase_3_nivel1:
 	defb 031h,027h,000h,028h,000h,028h,031h,027h	; 803c  1'.(.(1'
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_4_un: la tira de terreno de la fase 4 con un jugador: un
+; DATOS terreno_fase_4_nivel1: la tira de terreno de la fase 4 del LEVEL 1: un
 ;   byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba
 ;   donde empieza la de la fase siguiente
 ;   0x8044..0x8049  (5 bytes)
-DATA_terreno_fase_4_un:
+DATA_terreno_fase_4_nivel1:
 	defb 001h,013h,012h,001h,013h	; 8044
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_5_un: la tira de terreno de la fase 5 con un jugador: un
+; DATOS terreno_fase_5_nivel1: la tira de terreno de la fase 5 del LEVEL 1: un
 ;   byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba
 ;   donde empieza la de la fase siguiente
 ;   0x8049..0x804e  (5 bytes)
-DATA_terreno_fase_5_un:
+DATA_terreno_fase_5_nivel1:
 	defb 020h,000h,000h,023h,025h	; 8049
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_6_un: la tira de terreno de la fase 6 con un jugador: un
+; DATOS terreno_fase_6_nivel1: la tira de terreno de la fase 6 del LEVEL 1: un
 ;   byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba
 ;   donde empieza la de la fase siguiente
 ;   0x804e..0x8054  (6 bytes)
-DATA_terreno_fase_6_un:
+DATA_terreno_fase_6_nivel1:
 	defb 000h,000h,028h,031h,028h,031h	; 804e
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_7_un: la tira de terreno de la fase 7 con un jugador: un
+; DATOS terreno_fase_7_nivel1: la tira de terreno de la fase 7 del LEVEL 1: un
 ;   byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba
 ;   donde empieza la de la fase siguiente
 ;   0x8054..0x805c  (8 bytes)
-DATA_terreno_fase_7_un:
+DATA_terreno_fase_7_nivel1:
 	defb 028h,029h,028h,001h,02ch,029h,02ch,029h	; 8054  ()(.,),)
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_8_un: la tira de terreno de la fase 8 con un jugador: un
+; DATOS terreno_fase_8_nivel1: la tira de terreno de la fase 8 del LEVEL 1: un
 ;   byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba
 ;   donde empieza la de la fase siguiente
 ;   0x805c..0x8062  (6 bytes)
-DATA_terreno_fase_8_un:
+DATA_terreno_fase_8_nivel1:
 	defb 013h,019h,000h,000h,001h,019h	; 805c
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_9_un: la tira de terreno de la fase 9 con un jugador: un
+; DATOS terreno_fase_9_nivel1: la tira de terreno de la fase 9 del LEVEL 1: un
 ;   byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba
 ;   donde empieza la de la fase siguiente
 ;   0x8062..0x8069  (7 bytes)
-DATA_terreno_fase_9_un:
+DATA_terreno_fase_9_nivel1:
 	defb 02ah,000h,02bh,02ah,02ch,01dh,01ch	; 8062
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_10_un: la tira de terreno de la fase 10 con un jugador:
+; DATOS terreno_fase_10_nivel1: la tira de terreno de la fase 10 del LEVEL 1:
 ;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
 ;   acaba donde empieza la de la fase siguiente
 ;   0x8069..0x8070  (7 bytes)
-DATA_terreno_fase_10_un:
+DATA_terreno_fase_10_nivel1:
 	defb 000h,022h,021h,024h,021h,022h,024h	; 8069
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_11_un: la tira de terreno de la fase 11 con un jugador:
+; DATOS terreno_fase_11_nivel1: la tira de terreno de la fase 11 del LEVEL 1:
 ;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
 ;   acaba donde empieza la de la fase siguiente
 ;   0x8070..0x8077  (7 bytes)
-DATA_terreno_fase_11_un:
+DATA_terreno_fase_11_nivel1:
 	defb 000h,013h,014h,000h,014h,015h,017h	; 8070
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_12_un: la tira de terreno de la fase 12 con un jugador:
+; DATOS terreno_fase_12_nivel1: la tira de terreno de la fase 12 del LEVEL 1:
 ;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
 ;   acaba donde empieza la de la fase siguiente
 ;   0x8077..0x8080  (9 bytes)
-DATA_terreno_fase_12_un:
+DATA_terreno_fase_12_nivel1:
 	defb 02bh,02ch,000h,02ah,02dh,01ah,01bh,01ch,003h	; 8077  +,.*-....
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_13_un: la tira de terreno de la fase 13 con un jugador:
+; DATOS terreno_fase_13_nivel1: la tira de terreno de la fase 13 del LEVEL 1:
 ;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
 ;   acaba donde empieza la de la fase siguiente
 ;   0x8080..0x8087  (7 bytes)
-DATA_terreno_fase_13_un:
+DATA_terreno_fase_13_nivel1:
 	defb 001h,02fh,000h,02eh,00ah,02fh,00ah	; 8080
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_14_un: la tira de terreno de la fase 14 con un jugador:
+; DATOS terreno_fase_14_nivel1: la tira de terreno de la fase 14 del LEVEL 1:
 ;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
 ;   acaba donde empieza la de la fase siguiente
 ;   0x8087..0x808d  (6 bytes)
-DATA_terreno_fase_14_un:
+DATA_terreno_fase_14_nivel1:
 	defb 000h,000h,000h,000h,007h,006h	; 8087
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_15_un: la tira de terreno de la fase 15 con un jugador:
+; DATOS terreno_fase_15_nivel1: la tira de terreno de la fase 15 del LEVEL 1:
 ;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
 ;   acaba donde empieza la de la fase siguiente
 ;   0x808d..0x8095  (8 bytes)
-DATA_terreno_fase_15_un:
+DATA_terreno_fase_15_nivel1:
 	defb 02ah,02bh,000h,02ch,00eh,000h,000h,00fh	; 808d  *+.,....
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_16_un: la tira de terreno de la fase 16 con un jugador:
+; DATOS terreno_fase_16_nivel1: la tira de terreno de la fase 16 del LEVEL 1:
 ;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
 ;   acaba donde empieza la de la fase siguiente
 ;   0x8095..0x80a0  (11 bytes)
-DATA_terreno_fase_16_un:
+DATA_terreno_fase_16_nivel1:
 	defb 000h,000h,000h,00eh,01bh,01ah,000h,01eh,031h,00eh,030h	; 8095  ........1.0
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_17_un: la tira de terreno de la fase 17 con un jugador:
+; DATOS terreno_fase_17_nivel1: la tira de terreno de la fase 17 del LEVEL 1:
 ;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
 ;   acaba donde empieza la de la fase siguiente
 ;   0x80a0..0x80a7  (7 bytes)
-DATA_terreno_fase_17_un:
+DATA_terreno_fase_17_nivel1:
 	defb 019h,018h,017h,019h,000h,000h,018h	; 80a0
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_18_un: la tira de terreno de la fase 18 con un jugador:
+; DATOS terreno_fase_18_nivel1: la tira de terreno de la fase 18 del LEVEL 1:
 ;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
 ;   acaba donde empieza la de la fase siguiente
 ;   0x80a7..0x80b2  (11 bytes)
-DATA_terreno_fase_18_un:
+DATA_terreno_fase_18_nivel1:
 	defb 00fh,000h,00eh,000h,00dh,000h,030h,000h,031h,000h,00dh	; 80a7  ......0.1..
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_19_un: la tira de terreno de la fase 19 con un jugador:
+; DATOS terreno_fase_19_nivel1: la tira de terreno de la fase 19 del LEVEL 1:
 ;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
 ;   acaba donde empieza la de la fase siguiente
 ;   0x80b2..0x80be  (12 bytes)
-DATA_terreno_fase_19_un:
+DATA_terreno_fase_19_nivel1:
 	defb 023h,024h,023h,026h,000h,000h,000h,000h,025h,024h,025h,026h	; 80b2  #$#&....%$%&
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_20_un: la tira de terreno de la fase 20 con un jugador:
+; DATOS terreno_fase_20_nivel1: la tira de terreno de la fase 20 del LEVEL 1:
 ;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
 ;   acaba donde empieza la de la fase siguiente
 ;   0x80be..0x80c6  (8 bytes)
-DATA_terreno_fase_20_un:
+DATA_terreno_fase_20_nivel1:
 	defb 000h,000h,001h,017h,018h,019h,000h,000h	; 80be  ........
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_21_un: la tira de terreno de la fase 21 con un jugador:
+; DATOS terreno_fase_21_nivel1: la tira de terreno de la fase 21 del LEVEL 1:
 ;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
 ;   acaba donde empieza la de la fase siguiente
 ;   0x80c6..0x80d4  (14 bytes)
-DATA_terreno_fase_21_un:
+DATA_terreno_fase_21_nivel1:
 	defb 031h,030h,032h,00fh,00ch,00eh,00dh,00bh,032h,00fh,031h,030h,00eh,00dh	; 80c6  102.....2.10..
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_22_un: la tira de terreno de la fase 22 con un jugador:
+; DATOS terreno_fase_22_nivel1: la tira de terreno de la fase 22 del LEVEL 1:
 ;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
 ;   acaba donde empieza la de la fase siguiente
 ;   0x80d4..0x80e1  (13 bytes)
-DATA_terreno_fase_22_un:
+DATA_terreno_fase_22_nivel1:
 	defb 01fh,01dh,01ch,01eh,01ah,01bh,00eh,031h,01ch,030h,01eh,00eh,01dh	; 80d4  .......1.0...
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_23_un: la tira de terreno de la fase 23 con un jugador:
+; DATOS terreno_fase_23_nivel1: la tira de terreno de la fase 23 del LEVEL 1:
 ;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
 ;   acaba donde empieza la de la fase siguiente
 ;   0x80e1..0x80eb  (10 bytes)
-DATA_terreno_fase_23_un:
+DATA_terreno_fase_23_nivel1:
 	defb 023h,024h,022h,026h,025h,024h,020h,021h,026h,025h	; 80e1  #$"&%$ !&%
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_24_un: la tira de terreno de la fase 24 con un jugador:
+; DATOS terreno_fase_24_nivel1: la tira de terreno de la fase 24 del LEVEL 1:
 ;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
 ;   acaba donde empieza la tabla de 0x80F9
 ;   0x80eb..0x80f9  (14 bytes)
-DATA_terreno_fase_24_un:
+DATA_terreno_fase_24_nivel1:
 	defb 005h,003h,00bh,007h,00fh,031h,00dh,032h,00eh,030h,00ch,00ah,009h,00fh	; 80eb  .....1.2.0....
 
 ; ----------------------------------------------------------------------
-; DATOS tiras_de_terreno_dos: 24 punteros, uno por fase (0xE092 - 1), a las
-;   tiras de terreno con dos jugadores; los lee p01:6767. Van en orden y la
-;   primera tira empieza donde acaba la tabla
+; DATOS tiras_de_terreno_nivel2: 24 punteros, uno por fase (0xE092 - 1), a las
+;   tiras de terreno del LEVEL 2; los lee p01:6767. Van en orden y la primera
+;   tira empieza donde acaba la tabla
 ;   0x80f9..0x8129  (48 bytes)
-DATA_tiras_de_terreno_dos:
+DATA_tiras_de_terreno_nivel2:
 	defb 029h,081h	; 80f9
 	defb 02fh,081h	; 80fb
 	defb 035h,081h	; 80fd
@@ -264,195 +264,195 @@ DATA_tiras_de_terreno_dos:
 	defb 0e4h,081h	; 8127
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_1_dos: la tira de terreno de la fase 1 con dos jugadores:
-;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
-;   acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_1_nivel2: la tira de terreno de la fase 1 del LEVEL 2: un
+;   byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba
+;   donde empieza la de la fase siguiente
 ;   0x8129..0x812f  (6 bytes)
-DATA_terreno_fase_1_dos:
+DATA_terreno_fase_1_nivel2:
 	defb 004h,031h,02ah,004h,031h,02ah	; 8129
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_2_dos: la tira de terreno de la fase 2 con dos jugadores:
-;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
-;   acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_2_nivel2: la tira de terreno de la fase 2 del LEVEL 2: un
+;   byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba
+;   donde empieza la de la fase siguiente
 ;   0x812f..0x8135  (6 bytes)
-DATA_terreno_fase_2_dos:
+DATA_terreno_fase_2_nivel2:
 	defb 028h,007h,031h,028h,006h,027h	; 812f
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_3_dos: la tira de terreno de la fase 3 con dos jugadores:
-;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
-;   acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_3_nivel2: la tira de terreno de la fase 3 del LEVEL 2: un
+;   byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba
+;   donde empieza la de la fase siguiente
 ;   0x8135..0x813d  (8 bytes)
-DATA_terreno_fase_3_dos:
+DATA_terreno_fase_3_nivel2:
 	defb 027h,028h,000h,031h,001h,027h,028h,027h	; 8135  '(.1.'('
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_4_dos: la tira de terreno de la fase 4 con dos jugadores:
-;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
-;   acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_4_nivel2: la tira de terreno de la fase 4 del LEVEL 2: un
+;   byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba
+;   donde empieza la de la fase siguiente
 ;   0x813d..0x8142  (5 bytes)
-DATA_terreno_fase_4_dos:
+DATA_terreno_fase_4_nivel2:
 	defb 013h,012h,015h,002h,013h	; 813d
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_5_dos: la tira de terreno de la fase 5 con dos jugadores:
-;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
-;   acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_5_nivel2: la tira de terreno de la fase 5 del LEVEL 2: un
+;   byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba
+;   donde empieza la de la fase siguiente
 ;   0x8142..0x8147  (5 bytes)
-DATA_terreno_fase_5_dos:
+DATA_terreno_fase_5_nivel2:
 	defb 022h,023h,020h,022h,023h	; 8142
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_6_dos: la tira de terreno de la fase 6 con dos jugadores:
-;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
-;   acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_6_nivel2: la tira de terreno de la fase 6 del LEVEL 2: un
+;   byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba
+;   donde empieza la de la fase siguiente
 ;   0x8147..0x814d  (6 bytes)
-DATA_terreno_fase_6_dos:
+DATA_terreno_fase_6_nivel2:
 	defb 031h,028h,02ch,031h,028h,02ch	; 8147
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_7_dos: la tira de terreno de la fase 7 con dos jugadores:
-;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
-;   acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_7_nivel2: la tira de terreno de la fase 7 del LEVEL 2: un
+;   byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba
+;   donde empieza la de la fase siguiente
 ;   0x814d..0x8155  (8 bytes)
-DATA_terreno_fase_7_dos:
+DATA_terreno_fase_7_nivel2:
 	defb 029h,02ch,028h,02ah,02bh,029h,028h,02ch	; 814d  ),(*+)(,
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_8_dos: la tira de terreno de la fase 8 con dos jugadores:
-;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
-;   acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_8_nivel2: la tira de terreno de la fase 8 del LEVEL 2: un
+;   byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba
+;   donde empieza la de la fase siguiente
 ;   0x8155..0x815b  (6 bytes)
-DATA_terreno_fase_8_dos:
+DATA_terreno_fase_8_nivel2:
 	defb 019h,017h,014h,013h,012h,017h	; 8155
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_9_dos: la tira de terreno de la fase 9 con dos jugadores:
-;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
-;   acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_9_nivel2: la tira de terreno de la fase 9 del LEVEL 2: un
+;   byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba
+;   donde empieza la de la fase siguiente
 ;   0x815b..0x8162  (7 bytes)
-DATA_terreno_fase_9_dos:
+DATA_terreno_fase_9_nivel2:
 	defb 01ch,007h,02ch,02ah,02ch,01ch,01dh	; 815b
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_10_dos: la tira de terreno de la fase 10 con dos
-;   jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No
-;   lleva fin: acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_10_nivel2: la tira de terreno de la fase 10 del LEVEL 2:
+;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
+;   acaba donde empieza la de la fase siguiente
 ;   0x8162..0x8169  (7 bytes)
-DATA_terreno_fase_10_dos:
+DATA_terreno_fase_10_nivel2:
 	defb 020h,025h,021h,024h,021h,020h,025h	; 8162
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_11_dos: la tira de terreno de la fase 11 con dos
-;   jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No
-;   lleva fin: acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_11_nivel2: la tira de terreno de la fase 11 del LEVEL 2:
+;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
+;   acaba donde empieza la de la fase siguiente
 ;   0x8169..0x8170  (7 bytes)
-DATA_terreno_fase_11_dos:
+DATA_terreno_fase_11_nivel2:
 	defb 014h,012h,013h,012h,016h,017h,018h	; 8169
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_12_dos: la tira de terreno de la fase 12 con dos
-;   jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No
-;   lleva fin: acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_12_nivel2: la tira de terreno de la fase 12 del LEVEL 2:
+;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
+;   acaba donde empieza la de la fase siguiente
 ;   0x8170..0x8179  (9 bytes)
-DATA_terreno_fase_12_dos:
+DATA_terreno_fase_12_nivel2:
 	defb 02fh,02bh,01ah,029h,02fh,01ah,01bh,029h,02bh	; 8170  /+.)/..)+
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_13_dos: la tira de terreno de la fase 13 con dos
-;   jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No
-;   lleva fin: acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_13_nivel2: la tira de terreno de la fase 13 del LEVEL 2:
+;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
+;   acaba donde empieza la de la fase siguiente
 ;   0x8179..0x8180  (7 bytes)
-DATA_terreno_fase_13_dos:
+DATA_terreno_fase_13_nivel2:
 	defb 002h,02eh,006h,02fh,00bh,002h,009h	; 8179
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_14_dos: la tira de terreno de la fase 14 con dos
-;   jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No
-;   lleva fin: acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_14_nivel2: la tira de terreno de la fase 14 del LEVEL 2:
+;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
+;   acaba donde empieza la de la fase siguiente
 ;   0x8180..0x8186  (6 bytes)
-DATA_terreno_fase_14_dos:
+DATA_terreno_fase_14_nivel2:
 	defb 01fh,007h,000h,002h,007h,006h	; 8180
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_15_dos: la tira de terreno de la fase 15 con dos
-;   jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No
-;   lleva fin: acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_15_nivel2: la tira de terreno de la fase 15 del LEVEL 2:
+;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
+;   acaba donde empieza la de la fase siguiente
 ;   0x8186..0x818e  (8 bytes)
-DATA_terreno_fase_15_dos:
+DATA_terreno_fase_15_nivel2:
 	defb 000h,02bh,02eh,01eh,00eh,006h,01ch,01dh	; 8186  .+......
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_16_dos: la tira de terreno de la fase 16 con dos
-;   jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No
-;   lleva fin: acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_16_nivel2: la tira de terreno de la fase 16 del LEVEL 2:
+;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
+;   acaba donde empieza la de la fase siguiente
 ;   0x818e..0x8199  (11 bytes)
-DATA_terreno_fase_16_dos:
+DATA_terreno_fase_16_nivel2:
 	defb 030h,002h,006h,031h,01ch,01dh,007h,028h,01fh,027h,028h	; 818e  0..1...(.'(
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_17_dos: la tira de terreno de la fase 17 con dos
-;   jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No
-;   lleva fin: acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_17_nivel2: la tira de terreno de la fase 17 del LEVEL 2:
+;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
+;   acaba donde empieza la de la fase siguiente
 ;   0x8199..0x81a0  (7 bytes)
-DATA_terreno_fase_17_dos:
+DATA_terreno_fase_17_nivel2:
 	defb 017h,019h,018h,013h,017h,015h,016h	; 8199
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_18_dos: la tira de terreno de la fase 18 con dos
-;   jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No
-;   lleva fin: acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_18_nivel2: la tira de terreno de la fase 18 del LEVEL 2:
+;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
+;   acaba donde empieza la de la fase siguiente
 ;   0x81a0..0x81ab  (11 bytes)
-DATA_terreno_fase_18_dos:
+DATA_terreno_fase_18_nivel2:
 	defb 01ah,032h,00ch,007h,00dh,001h,00bh,006h,009h,00ah,00bh	; 81a0  .2.........
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_19_dos: la tira de terreno de la fase 19 con dos
-;   jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No
-;   lleva fin: acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_19_nivel2: la tira de terreno de la fase 19 del LEVEL 2:
+;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
+;   acaba donde empieza la de la fase siguiente
 ;   0x81ab..0x81b7  (12 bytes)
-DATA_terreno_fase_19_dos:
+DATA_terreno_fase_19_nivel2:
 	defb 023h,026h,023h,025h,026h,024h,023h,025h,026h,024h,025h,023h	; 81ab  #&#%&$#%&$%#
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_20_dos: la tira de terreno de la fase 20 con dos
-;   jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No
-;   lleva fin: acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_20_nivel2: la tira de terreno de la fase 20 del LEVEL 2:
+;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
+;   acaba donde empieza la de la fase siguiente
 ;   0x81b7..0x81bf  (8 bytes)
-DATA_terreno_fase_20_dos:
+DATA_terreno_fase_20_nivel2:
 	defb 016h,015h,002h,018h,010h,014h,013h,010h	; 81b7  ........
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_21_dos: la tira de terreno de la fase 21 con dos
-;   jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No
-;   lleva fin: acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_21_nivel2: la tira de terreno de la fase 21 del LEVEL 2:
+;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
+;   acaba donde empieza la de la fase siguiente
 ;   0x81bf..0x81cd  (14 bytes)
-DATA_terreno_fase_21_dos:
+DATA_terreno_fase_21_nivel2:
 	defb 009h,00ah,00bh,00fh,00eh,00ch,031h,030h,032h,00fh,01bh,01ah,01eh,00bh	; 81bf  ......102.....
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_22_dos: la tira de terreno de la fase 22 con dos
-;   jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No
-;   lleva fin: acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_22_nivel2: la tira de terreno de la fase 22 del LEVEL 2:
+;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
+;   acaba donde empieza la de la fase siguiente
 ;   0x81cd..0x81da  (13 bytes)
-DATA_terreno_fase_22_dos:
+DATA_terreno_fase_22_nivel2:
 	defb 01ch,01eh,01dh,01bh,01ch,031h,030h,00eh,030h,01eh,01ch,01dh,00eh	; 81cd  .....10.0....
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_23_dos: la tira de terreno de la fase 23 con dos
-;   jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No
-;   lleva fin: acaba donde empieza la de la fase siguiente
+; DATOS terreno_fase_23_nivel2: la tira de terreno de la fase 23 del LEVEL 2:
+;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
+;   acaba donde empieza la de la fase siguiente
 ;   0x81da..0x81e4  (10 bytes)
-DATA_terreno_fase_23_dos:
+DATA_terreno_fase_23_nivel2:
 	defb 025h,023h,022h,026h,025h,026h,025h,021h,022h,026h	; 81da  %#"&%&%!"&
 
 ; ----------------------------------------------------------------------
-; DATOS terreno_fase_24_dos: la tira de terreno de la fase 24 con dos
-;   jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No
-;   lleva fin: acaba donde empieza la tabla de 0x81F2
+; DATOS terreno_fase_24_nivel2: la tira de terreno de la fase 24 del LEVEL 2:
+;   un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin:
+;   acaba donde empieza la tabla de 0x81F2
 ;   0x81e4..0x81f2  (14 bytes)
-DATA_terreno_fase_24_dos:
+DATA_terreno_fase_24_nivel2:
 	defb 006h,003h,008h,00ah,01ch,031h,01eh,02ch,028h,030h,00dh,00fh,00bh,009h	; 81e4  .....1.,(0....
 
 ; ----------------------------------------------------------------------

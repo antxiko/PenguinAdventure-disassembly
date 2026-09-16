@@ -89,10 +89,10 @@ audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
 <p>There are <b>two title screens</b> and the cartridge picks one from the BIOS country byte (0x002B). The difference is one extra script, 0xA463, and it only touches the lettering: the background picture is the same.</p>
 <h2 id="twenty-four-stages-not-thirteen">Twenty-four stages, not thirteen</h2>
 <p>The cartridge <em>declares</em> thirteen to the Konami Game Master in its second header, the one at 0x4010. The game says otherwise: p02:8328 compares the stage with 0x19 and the three script tables —terrain, creatures and the third one— close at exactly twenty-four entries.</p>
-<p><img src="imagenes/fases_1_jugador.png" alt="The twenty-four one-player stages"></p>
+<p><img src="imagenes/fases_level_1.png" alt="The twenty-four LEVEL 1 stages"></p>
 <p>Each row is a stage. The coloured blocks are its terrain sections in the order they come, and the marks below are the creatures the script spawns. The first three stages spawn none: their script is a bare <code>0xFF</code>.</p>
-<p>And the two-player game is a <b>whole different design</b>, not a variation: not one section matches the one-player table byte for byte.</p>
-<p><img src="imagenes/fases_2_jugadores.png" alt="The twenty-four two-player ones"></p>
+<p>The title menu lets you pick between <b>LEVEL 1</b> and <b>LEVEL 2</b>, and that choice does not change how hard a section is: it changes <b>all twenty-four routes</b>. They are two different terrain tables in bank 10 —0x8000 and 0x80F9— and p01:675B picks with 0xE08F, which is the copy p02:813B makes of 0xE082 when the game starts. Not one section matches byte for byte between them.</p>
+<p><img src="imagenes/fases_level_2.png" alt="The twenty-four LEVEL 2 ones"></p>
 <h2 id="ten-backdrops">Ten backdrops</h2>
 <p>The terrain is built from ten backdrops, each with its characters —three loads, one per third of the screen— and 672 bytes of name table that p01:6000 decompresses at 0xEBE0.</p>
 <p><img src="imagenes/decorado_0.png" alt="The first backdrop"></p>

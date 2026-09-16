@@ -96,7 +96,13 @@ RAM = {
              "p02:8257 salta tantos estados como diga cada bit"),
     0xE097: ("la bandera de que la fase se ha acabado", "p02:824D y p00:4622"),
     0xE0A5: ("por que vuelta de la fase va", "p00:45E2 y p02:81C5"),
-    0xE082: ("uno o dos jugadores", "p02:80F5 elige el rotulo con ella"),
+    0xE082: ("el NIVEL que se elige en el menu: 0 es LEVEL 1 y 1 es LEVEL 2",
+             "p02:80F5 borra con ella uno de los dos rotulos -0x8E0A dice "
+             "LEVEL 1 y 0x8E14 LEVEL 2- y p02:951A la cambia con dos teclas"),
+    0xE08F: ("el NIVEL de la partida en curso",
+             "p02:813B copia aqui 0xE082 al empezar, y p01:675B elige con ella "
+             "la tabla de terreno: con cero la de 0x8000 y si no la de 0x80F9, "
+             "que son DOS juegos completos de 24 tiras"),
     0xE0A0: ("la bandera de PAUSA",
              "p02:81DD le da la vuelta con la tecla de parar y p02:820B manda "
              "al estado 13 mientras este puesta"),

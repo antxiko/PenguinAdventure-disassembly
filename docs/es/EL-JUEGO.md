@@ -18,16 +18,19 @@ de 0x4010. El juego dice otra cosa: p02:8328 compara la fase con 0x19 y las
 tres tablas de guion —terreno, enemigos y la tercera— cierran en veinticuatro
 entradas justas.
 
-![Las veinticuatro fases de un jugador](../imagenes/fases_1_jugador.png)
+![Las veinticuatro fases del LEVEL 1](../imagenes/fases_level_1.png)
 
 Cada fila es una fase. Los bloques de color son los tramos de terreno en el
 orden en que salen, y las marcas de debajo, los bichos que el guion suelta. Las
 tres primeras fases no sueltan ninguno: su guion es un `0xFF` pelado.
 
-Y la partida de dos jugadores es **otro diseño entero**, no una variación: ni un
-solo tramo coincide byte a byte con el de un jugador.
+El menú del título deja elegir entre **LEVEL 1** y **LEVEL 2**, y esa elección
+no cambia lo difícil que es un tramo: cambia **los veinticuatro recorridos
+enteros**. Son dos tablas de terreno distintas del banco 10 —0x8000 y 0x80F9— y
+p01:675B escoge con 0xE08F, que es la copia que p02:813B hace de 0xE082 al
+empezar la partida. Ni un solo tramo coincide byte a byte entre las dos.
 
-![Las veinticuatro de dos jugadores](../imagenes/fases_2_jugadores.png)
+![Las veinticuatro del LEVEL 2](../imagenes/fases_level_2.png)
 
 ## Diez decorados
 

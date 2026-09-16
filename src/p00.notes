@@ -23,7 +23,7 @@ F 0x4000 2,w1,w1,w1,w1,6
 # banderas, en el que cada bit CLARO quiere decir "este campo viene".
 #
 # Aqui el byte de banderas es 0x60 = 0110 0000, asi que vienen los campos 1, 2,
-# 3, 4, 5 y 8, y faltan el 6 y el 7 -las dos puntuaciones de dos jugadores, que
+# 3, 4, 5 y 8, y faltan el 6 y el 7 -las dos puntuaciones del LEVEL 2, que
 # este juego no tiene-. La cuenta cierra exactamente en 0x4022, justo delante
 # del `call RDVDP` con el que empieza el codigo.
 D 0x4010 0x4012 gm_marca  La marca del formato: "CD" en ASCII (43 44). Es lo que el Game Master busca para saber que este cartucho trae la cabecera larga; los de 1985 traen "AB", que son 19 bytes y sin banderas.

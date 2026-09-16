@@ -213,7 +213,7 @@ class Imagenes(unittest.TestCase):
         p01:627A. Los trece que la cabecera de 0x4010 le declara al Game Master
         son otra cosa.
 
-        El terreno esta en el banco 10 -0x8000 para un jugador y 0x80F9 para
+        El terreno esta en el banco 10 -0x8000 para el LEVEL 1 y 0x80F9 para
         dos- con un puntero por fase y detras de cinco a nueve bytes, un tramo
         cada uno. Los enemigos estan en el banco 9 (0xA8FB) con parejas de
         (clase, distancia).
@@ -231,10 +231,10 @@ class Imagenes(unittest.TestCase):
         e = graficos.enemigos_de_las_fases(self.cart)
         self.assertEqual(len(e), 24)
 
-    def test_la_partida_de_dos_es_OTRO_diseno(self):
+    def test_el_LEVEL_2_es_OTRO_diseno(self):
         """No es la misma fase con mas bichos: el terreno cambia entero."""
-        uno = graficos.terreno_de_las_fases(self.cart, graficos.TERRENO["1 jugador"])
-        dos = graficos.terreno_de_las_fases(self.cart, graficos.TERRENO["2 jugadores"])
+        uno = graficos.terreno_de_las_fases(self.cart, graficos.TERRENO["LEVEL 1"])
+        dos = graficos.terreno_de_las_fases(self.cart, graficos.TERRENO["LEVEL 2"])
         iguales = sum(1 for a, b in zip(uno, dos) if a == b)
         self.assertEqual(iguales, 0,
                          "%d fases tienen el mismo terreno en las dos partidas"
