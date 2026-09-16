@@ -8,7 +8,7 @@
 # EL GUION DE LA FASE
 # ======================================================================
 B 0xA83F EL GUION DE LA FASE: QUE SALE Y CUANDO. Aqui esta escrito lo que uno se encuentra al avanzar. La tabla de 0xA8FB lleva un puntero por fase y detras va una lista de PAREJAS -que objeto y cuanto hay que andar hasta el siguiente-, cerrada con 0xFF. La distancia va en BCD, y de ahi el `daa` de 0xA88B: se resta en decimal, no en binario.
-B 0xA83F Lo que dispara todo es la comparacion de 0xA84B: (0xE08D) es la distancia a la que toca el objeto siguiente y (0xE301) lo andado; cuando coinciden, sale. Y hay tres huecos de objeto, de 0x20 bytes cada uno, a partir de 0xE310: si los tres estan ocupados, el objeto sencillamente no aparece.
+B 0xA83F Lo que dispara todo es la comparacion de 0xA84B: (0xE08D) es lo que queda de fase, que va bajando, y (0xE301) la distancia a la que toca el objeto siguiente; cuando coinciden, sale. Y hay tres huecos de objeto, de 0x20 bytes cada uno, a partir de 0xE310: si los tres estan ocupados, el objeto sencillamente no aparece.
 L 0xA83F saca_lo_que_toque
 C 0xA83F el modo en el que esta el juego
 C 0xA843 si no es el de jugar, no sale nada
@@ -239,7 +239,7 @@ L 0xB60F atiende_clase_4
 # --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
 # tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
 # se sabe lo que dice.
-C 0xA894 lo andado en la fase
+C 0xA894 la distancia a la que toca el objeto siguiente
 C 0xAA9E el contador de cuadros
 C 0xAB3E la tabla de cambio de color, nibble alto
 C 0xAC14 la pausa que se hace al perder o al cambiar de fase
@@ -258,15 +258,15 @@ C 0xBE36 banco 0: pide_sonido_si_esta_activo
 # --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
 # tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
 # se sabe lo que dice.
-C 0xAB4A la X en la pantalla de lo que se maneja
-C 0xAB9E la X en la pantalla de lo que se maneja
-C 0xABA9 la Y en la pantalla de lo que se maneja
-C 0xAC75 la X en la pantalla de lo que se maneja
-C 0xAC79 la Y en la pantalla de lo que se maneja
-C 0xB882 la Y en la pantalla de lo que se maneja
-C 0xBCCE la X en la pantalla de lo que se maneja
-C 0xBE23 la Y en la pantalla de lo que se maneja
-C 0xBE94 la Y en la pantalla de lo que se maneja
+C 0xAB4A la Y en la pantalla de lo que se maneja
+C 0xAB9E la Y en la pantalla de lo que se maneja
+C 0xABA9 la X en la pantalla de lo que se maneja
+C 0xAC75 la Y en la pantalla de lo que se maneja
+C 0xAC79 la X en la pantalla de lo que se maneja
+C 0xB882 la X en la pantalla de lo que se maneja
+C 0xBCCE la Y en la pantalla de lo que se maneja
+C 0xBE23 la X en la pantalla de lo que se maneja
+C 0xBE94 la X en la pantalla de lo que se maneja
 
 L 0xB610 monta_clase_5
 C 0xB610 la bandera de que hay uno pedido
@@ -672,3 +672,328 @@ C 0xBE34 el efecto 0x15
 # siguiendo el estado real de HL y de A; la explicacion de por que se hace asi
 # esta en el banco 0.
 
+# --- Las tablas pequenas que quedaban sin declarar (2026-09-15). Los punteros
+# de p03 a estas mismas direcciones NO son de este banco: p03 tambien va en 0xA000.
+D 0xAB15 0xAB1E empujones_al_azar  nueve bytes: p09:AAF5 salta a uno de los ocho primeros con `ld a,r / and 7` y lleva ese byte a (ix+11) y el siguiente, cambiado de signo si (ix+1E), a (ix+0F)
+F 0xAB15 9
+D 0xABB4 0xABC3 quince_bytes_sin_lector  quince bytes (01 00 00 02 00 00 00 00 03 00 04 00 05 00 06) entre el `ret` de 0xABB3 y la rutina de 0xABC3, sin instruccion que los lea ni salto que llegue: como codigo no tienen sentido
+F 0xABB4 15
+D 0xABDD 0xABF5 cuatro_bytes_por_tipo  seis entradas de 4 bytes, tipos 1 a 6: p09:ABFA salta a 0xABD9 + 4*(ix+0) y lleva a (ix+5) el primer byte o, si (ix+6) >= 0x80, el tercero
+F 0xABDD 4
+D 0xAD77 0xADB8 curva_de_65  65 valores de una curva: p09:AD48 lee el de B y p09:AD5F el de 0x40 - B, y los cambia de signo segun el cuadrante (C). Asi se sacan las dos componentes sin calcular nada
+F 0xAD77 16
+D 0xADB8 0xADC8 tangentes_ADB8  LA TABLA DE TANGENTES de la arcotangente de p09:ACBA: ocho palabras en formato 8.8 -0x04F6, 0x0266, 0x017D, 0x00FF, 0x00AA, 0x0069, 0x0032 y 0- que son las tangentes de 78,75, 67,5, 56,25, 45, 33,75, 22,5, 11,25 y 0 grados. Se recorren con B bajando de 8 en 8 desde 0x40, o sea 11,25 grados por escalon en las 256 unidades de circunferencia que usa el cartucho. El 0x00FF es el de 45 grados, donde la tangente vale 1
+F 0xADB8 2
+D 0xB5AB 0xB5AD dos_ceros_sin_lector  dos ceros detras de la plantilla de 15 bytes de 0xB59C (p09:B588); no los lee nadie
+F 0xB5AB 2
+D 0xB9A7 0xB9C0 plantilla_de_25  la plantilla de 25 bytes que p09:B933 y p09:B970 copian con ldir al hueco del objeto, cuatro bytes mas alla de su tipo y posicion
+F 0xB9A7 16
+D 0xBB05 0xBB16 plantilla_de_17  la plantilla de 17 bytes que p09:BAE7 copia con ldir al hueco del objeto
+F 0xBB05 16
+D 0xBB16 0xBB1E cuatro_empujones  cuatro palabras que p09:BAF6 elige con un contador que gira (0xE286) & 3 y pasa en DE a p09:AA78, el empujon
+F 0xBB16 2
+D 0xBE3A 0xBE49 plantilla_de_15  la plantilla de 15 bytes que p09:BE08 copia con ldir al hueco del objeto
+F 0xBE3A 15
+D 0xBE49 0xBE51 ocho_alturas  ocho alturas que p09:BE15 elige con (0xE284) & 7 y pone en (ix+9); p09:BE26 decide con ellas si el objeto sube o baja
+F 0xBE49 8
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0xA000 0xA463 cola_9846  la cola del guion comprimido de 0x9846 del banco 8, que pasa de ranura sin cambiar de banco; lo cargan p00:5C41 (1123 bytes)
+F 0xA000 16
+D 0xA463 0xA83F guion_A463  guion comprimido que lee pinta_sin_color; lo cargan p00:5C4E (988 bytes)
+F 0xA463 16
+D 0xA8EF 0xA8FB codigo_muerto_A8EF  doce bytes que se leen limpios como codigo -`ld hl,0E30Fh / ld a,(hl) / and a / ret z / ld (hl),0 / ld c,a / jp 0A86Ah`, la mitad de meter un objeto- pero a los que no salta nadie
+F 0xA8EF 12
+D 0xA8FB 0xA92B guion_de_enemigos_por_fase  24 punteros, uno por fase (0xE092 - 1), a los guiones de enemigos que lee p09:A854
+F 0xA8FB 2
+D 0xADC8 0xADCA enemigos_fase_1  el guion de enemigos de la fase 1 y 2: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte; las fases que apuntan a un 0xFF no sacan nada
+F 0xADC8 2
+D 0xADCA 0xADFF enemigos_fase_3  el guion de enemigos de la fase 3 y 4: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte; las fases que apuntan a un 0xFF no sacan nada
+F 0xADCA 2
+D 0xADFF 0xAE23 enemigos_fase_5  el guion de enemigos de la fase 5: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xADFF 2
+D 0xAE23 0xAE5F enemigos_fase_6  el guion de enemigos de la fase 6: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xAE23 2
+D 0xAE5F 0xAE95 enemigos_fase_7  el guion de enemigos de la fase 7: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xAE5F 2
+D 0xAE95 0xAECF enemigos_fase_8  el guion de enemigos de la fase 8: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xAE95 2
+D 0xAECF 0xAF0D enemigos_fase_9  el guion de enemigos de la fase 9: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xAECF 2
+D 0xAF0D 0xAF51 enemigos_fase_10  el guion de enemigos de la fase 10: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xAF0D 2
+D 0xAF51 0xAF8D enemigos_fase_11  el guion de enemigos de la fase 11: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xAF51 2
+D 0xAF8D 0xAFE9 enemigos_fase_12  el guion de enemigos de la fase 12: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xAF8D 2
+D 0xAFE9 0xB00F enemigos_fase_13  el guion de enemigos de la fase 13: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xAFE9 2
+D 0xB00F 0xB05D enemigos_fase_14  el guion de enemigos de la fase 14: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xB00F 2
+D 0xB05D 0xB0C9 enemigos_fase_15  el guion de enemigos de la fase 15: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xB05D 2
+D 0xB0C9 0xB14F enemigos_fase_16  el guion de enemigos de la fase 16: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xB0C9 2
+D 0xB14F 0xB193 enemigos_fase_17  el guion de enemigos de la fase 17: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xB14F 2
+D 0xB193 0xB1F7 enemigos_fase_18  el guion de enemigos de la fase 18: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xB193 2
+D 0xB1F7 0xB2A1 enemigos_fase_19  el guion de enemigos de la fase 19: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xB1F7 2
+D 0xB2A1 0xB2FD enemigos_fase_20  el guion de enemigos de la fase 20: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xB2A1 2
+D 0xB2FD 0xB39F enemigos_fase_21  el guion de enemigos de la fase 21: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xB2FD 2
+D 0xB39F 0xB449 enemigos_fase_22  el guion de enemigos de la fase 22: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xB39F 2
+D 0xB449 0xB4C1 enemigos_fase_23  el guion de enemigos de la fase 23: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xB449 2
+D 0xB4C1 0xB581 enemigos_fase_24  el guion de enemigos de la fase 24: parejas (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+F 0xB4C1 2
+D 0xBEBF 0xC000 relleno_del_banco_9  321 bytes a 0xFF hasta el final de los 8 KB del banco: espacio libre
+F 0xBEBF 16
+# --- fin de los bloques de bloques.py ---
+
+# --- Los dibujos por distancia y el arranque al azar (2026-09-16).
+B 0xAA86 EL DIBUJO SEGUN LO LEJOS QUE ESTE, CON ANIMACION. La misma perspectiva que 0xAA18: el byte alto de la X (ix+7) dice a que distancia esta, y hay cuatro franjas -por debajo de 0x60 no se dibuja, y luego 0x60, 0x78, 0x90 y 0xA8-. Pero aqui cada franja se lleva DOS dibujos, no uno: se entra con el numero de partida en C, se le suman dos por franja y se le suma uno mas medio cuadro de cada ocho, y el resultado por cuatro es el dibujo. Ese uno que va y viene es el aleteo.
+L 0xAA86 el_dibujo_por_distancia_con_aleteo
+C 0xAA86 lo lejos que esta
+C 0xAA89 por debajo de 0x60 no se dibuja
+C 0xAA8C la primera franja
+C 0xAA90 dos dibujos por franja
+C 0xAA92 la segunda
+C 0xAA98 y la tercera
+L 0xAA9E y_el_aleteo
+C 0xAAA1 su bit 2: cuatro cuadros si y cuatro no
+C 0xAAA5 y ese es el otro dibujo del par
+L 0xAAA6 guarda_el_dibujo_con_aleteo
+C 0xAAA7 por cuatro, que es lo que ocupa un sprite de 16 por 16
+C 0xAAA9 al byte del dibujo
+B 0xAAAD EL DIBUJO SEGUN LO LEJOS QUE ESTE, SIN ANIMACION. La misma cuenta de arriba con las mismas cuatro franjas, pero de uno en uno y sin mirar el contador de cuadros: un solo dibujo por franja.
+L 0xAAAD el_dibujo_por_distancia
+C 0xAAAD lo lejos que esta
+C 0xAAB0 por debajo de 0x60 no se dibuja
+C 0xAAB3 la primera franja
+C 0xAAB8 la segunda
+C 0xAABD y la tercera
+L 0xAAC2 guarda_el_dibujo_sin_aleteo
+C 0xAAC3 por cuatro
+B 0xAAC9 ARRANCAR EL BICHO, UNA SOLA VEZ. (ix+0x1F) es la marca de que ya ha arrancado: si esta puesta, no se vuelve a arrancar.
+L 0xAAC9 arranca_el_bicho_si_no_lo_esta
+C 0xAAC9 ¿ya ha arrancado?
+L 0xAAD0 mira_si_se_le_pone_el_estado_5
+C 0xAAD0 y si (ix+0x1D) esta puesto...
+C 0xAAD6 ...arranca con el estado 5
+B 0xAADA ARRANCAR EL BICHO. Y aqui el AZAR, que en este cartucho sale siempre del registro R -el de refresco de la memoria, que va cambiando solo-: el bit 0 decide hacia que lado va y los tres bits bajos escogen uno de los ocho empujones de 0xAB15. El segundo byte del empujon se cambia de signo si el lado es el otro, que es como el mismo par de numeros sirve para los dos sentidos.
+L 0xAADA arranca_el_bicho
+C 0xAADA el registro R: el azar de la casa
+C 0xAADC su bit 0 dice hacia que lado
+C 0xAAE1 las tres velocidades, a cero
+C 0xAAEE y se mueve solo
+C 0xAAF2 marcado como arrancado
+C 0xAAF5 los ocho empujones
+C 0xAAF8 otra vez el registro R...
+C 0xAAFA ...y sus tres bits bajos escogen uno de los ocho
+L 0xAB01 coge_el_empujon
+C 0xAB01 el primer byte del empujon
+C 0xAB06 y el segundo
+C 0xAB08 hacia que lado iba
+C 0xAB0F al otro lado, cambiado de signo
+L 0xAB11 guarda_el_empujon
+
+# --- El angulo hacia el jugador: aqui SI se calcula (2026-09-16). Las
+# componentes se leen de curva_de_65, pero el angulo sale de una arcotangente
+# de verdad: una division de 16 entre 8 bits y una busqueda en la tabla de
+# ocho tangentes de 0xADB8.
+B 0xAC1E MOVER EL DE 0xE370. Dos coordenadas de 16 bits, cada una con su velocidad de 16 bits: (ix+1) con (ix+7) y (ix+3) con (ix+9). Y dos topes: pasarse de 0xC000 en la primera o de 0xF000 en la segunda deja el hueco libre.
+L 0xAC1E mueve_el_de_0xE370
+C 0xAC1E la primera coordenada
+C 0xAC24 y su velocidad
+C 0xAC2A sumadas, en 16 bits
+C 0xAC32 y el tope, 0xC000
+C 0xAC36 la segunda coordenada
+C 0xAC3C y su velocidad
+C 0xAC4A su tope es 0xF000
+L 0xAC4D el_de_0xE370_se_ha_ido
+C 0xAC4D el hueco, libre
+B 0xAC52 LOS TRES DE 0xE370, A SUS SPRITES. A partir del sprite 29 (0xEEF4), cuatro bytes por objeto. Los que no esten puestos se van de la pantalla con 0xE0 en la fila.
+L 0xAC52 los_de_0xE370_a_sus_sprites
+C 0xAC52 los tres huecos
+C 0xAC55 desde el sprite 29
+C 0xAC58 tres
+L 0xAC5B uno_de_0xE370_a_su_sprite
+C 0xAC5B ¿esta puesto?
+C 0xAC62 si no lo esta, 0xE0: fuera de la pantalla
+L 0xAC64 copia_los_cuatro_bytes_del_sprite
+C 0xAC68 fila, columna y dibujo
+C 0xAC6E y al hueco siguiente
+B 0xAC75 EL ANGULO HACIA EL JUGADOR. Saca las dos diferencias -la del jugador contra (ix+2) y (ix+3)- en valor absoluto, y de paso se queda con el cuadrante en D segun de que lado caiga cada una. Luego divide una entre otra para tener la tangente y busca ese valor en la tabla de ocho de 0xADB8, que son las tangentes de 11,25 en 11,25 grados. El angulo sale en las 256 unidades de circunferencia de la casa: 0x40 es un cuarto de vuelta.
+L 0xAC75 el_angulo_hacia_el_jugador
+C 0xAC75 la fila del jugador
+C 0xAC79 y su columna, corrida dieciseis
+C 0xAC82 menos la fila del objeto
+C 0xAC87 iguales: diferencia cero
+C 0xAC8C si sale negativa, al otro lado y en valor absoluto
+L 0xAC90 y_ahora_la_columna
+C 0xAC91 menos la columna del objeto
+C 0xAC9D lo mismo: al otro lado y en valor absoluto
+L 0xACA1 junta_el_cuadrante
+C 0xACA1 los dos lados hacen el cuadrante
+C 0xACAC el cuadrante
+C 0xACAD las dos diferencias, a dividir
+C 0xACB2 la tangente
+C 0xACB5 y las ocho tangentes de la tabla
+L 0xACBA busca_el_angulo_en_la_tabla
+C 0xACBA la tangente que toca comparar
+C 0xACC0 contra la calculada
+C 0xACC3 la primera que se pasa manda
+C 0xACC6 y si no, 11,25 grados menos
+L 0xACCC pon_el_angulo_en_su_cuadrante
+C 0xACCD el cuadrante
+C 0xACD0 el primero se mide al reves
+L 0xACD6 el_tercer_cuadrante
+C 0xACD9 media vuelta mas
+L 0xACDD el_segundo_y_el_cuarto
+C 0xACE0 y el cuarto, cambiado de signo
+B 0xACE3 DIVIDIR 16 ENTRE 8. La division de restar y desplazar de toda la vida, ocho vueltas: HL es el dividendo, B el divisor y el cociente sale por L. No hay `div` en el Z80 y esto es lo que se hace en su lugar.
+L 0xACE3 divide_16_entre_8
+C 0xACE3 ocho vueltas
+L 0xACE6 divide_una_vuelta
+C 0xACE6 un bit mas
+C 0xACEB ¿cabe el divisor?
+C 0xACEE pues se resta
+C 0xACF1 y el bit del cociente
+C 0xACF5 el ultimo bit
+B 0xACF8 LA TANGENTE DE LAS DOS DIFERENCIAS. Dos divisiones seguidas para sacar 16 bits de cociente: la parte entera y la fraccion, que es lo que hace falta para poder comparar contra la tabla de 0xADB8, que esta en ese mismo formato. Con el divisor a cero devuelve 0xFFFF, que es "infinito".
+L 0xACF8 la_tangente
+C 0xACF8 ¿el divisor es cero?
+C 0xACFC la parte entera
+C 0xAD02 guardada
+C 0xAD03 y ahora la fraccion
+L 0xAD0A tangente_infinita
+C 0xAD0A 0xFFFF: recto
+B 0xAD0E DOBLAR CON SIGNO. Si DE es negativo lo cambia de signo, lo dobla y lo vuelve a cambiar; si no, lo dobla y ya. Hace falta porque `add hl,de` no entiende de signos.
+L 0xAD0E dobla_con_signo
+C 0xAD0E ¿es negativo?
+C 0xAD13 pues cambiado de signo
+C 0xAD1C doblado
+C 0xAD1E y si era positivo, ya esta
+C 0xAD1F y si era negativo, se le devuelve el signo
+
+B 0xAD27 DESCOMPONER UN ANGULO. La pareja del de 0xAC75: entra un angulo de 0 a 255 y salen sus dos componentes, cada una con su signo. Primero lo mete en el primer cuadrante, apuntando en C cual era, y luego lee la curva de 65 de 0xAD77 dos veces -en B y en 0x40 - B, que es el complemento- y le pone a cada una el signo que le toque. Eso son un seno y un coseno LEIDOS, sin calcular nada.
+L 0xAD27 descompon_el_angulo
+C 0xAD27 el angulo
+C 0xAD28 y el cuadrante, de momento el 0
+C 0xAD2A hasta 0x40, el primer cuadrante
+C 0xAD2F hasta 0x80, el segundo...
+C 0xAD33 ...y se mide desde el otro lado
+C 0xAD39 hasta 0xC0, el tercero...
+C 0xAD3D ...y se le quita media vuelta
+L 0xAD41 el_cuarto_cuadrante
+C 0xAD42 y el cuarto, cambiado de signo
+L 0xAD44 lee_las_dos_componentes
+C 0xAD45 el angulo del cuadrante, guardado
+C 0xAD48 la curva de 65
+L 0xAD50 la_primera_componente
+C 0xAD52 la que toca
+C 0xAD53 el cuadrante
+C 0xAD56 en el 1 y en el 2 va como esta...
+C 0xAD5B ...y en los otros dos, cambiada de signo
+L 0xAD5E la_segunda_componente
+C 0xAD5F la misma curva
+C 0xAD62 pero en el complemento: eso es el coseno
+L 0xAD6A y_su_signo
+C 0xAD6D del 2 en adelante va como esta...
+C 0xAD72 ...y antes, cambiada de signo
+B 0xAB1E ¿HAY SITIO PARA OTRO? Los tres huecos de 0xE370 -0xE370, 0xE380 y 0xE390-, y basta con que uno este libre. Si los tres estan cogidos, se vuelve sin hacer nada.
+L 0xAB1E hay_sitio_en_0xE370
+C 0xAB1E el primer hueco
+C 0xAB25 el segundo
+C 0xAB2B y el tercero
+C 0xAB2F con los tres cogidos, no cabe otro
+L 0xAB30 coge_la_rutina_de_su_clase
+C 0xAB30 la clase del objeto
+C 0xAB33 la tabla de rutinas
+B 0xABF5 EL DIBUJO Y EL CONTADOR, POR TIPO. Cuatro bytes por tipo en la tabla de 0xABDD: los dos primeros si (ix+6) ha llegado a 0x80 y los dos ultimos si no. El primero va al dibujo (ix+5) y el segundo al contador (ix+6). Y si el juego esta en pausa, el contador se queda clavado en 4.
+L 0xABF5 el_dibujo_y_el_contador_por_tipo
+C 0xABF5 el tipo
+C 0xABF8 cuatro bytes por tipo
+C 0xABFA la tabla
+C 0xAC02 el contador de ahora
+C 0xAC05 por debajo de 0x80, la otra pareja
+C 0xAC0B el dibujo
+C 0xAC10 y el contador
+C 0xAC14 en pausa...
+C 0xAC19 ...el contador se queda en 4
+B 0xB7AF MULTIPLICAR EL PASO POR SU FACTOR. Coge el paso de 16 bits que apunte HL, lo cambia de signo si (ix+0x18) esta a cero, y lo suma (ix+0x1A) veces: eso es multiplicar a base de sumar, que en el Z80 es lo que hay. El resultado se le suma a la profundidad.
+L 0xB7AF multiplica_el_paso
+C 0xB7AF el paso, 16 bits
+C 0xB7B2 ¿va hacia el otro lado?
+C 0xB7B8 pues cambiado de signo, en 16 bits
+C 0xB7BF cuantas veces
+C 0xB7C2 desde cero
+B 0xBE52 ARRANCAR EL QUE VA DE UN LADO A OTRO. Le clava el dibujo, las dos coordenadas y una cuenta de 0x80, y de 0xE303 saca hacia que lado sale ESTE: los pares a un lado, con velocidad 0x0100, y los impares al otro, con 0xFF00. Asi van alternandose sin necesidad de azar.
+L 0xBE52 arranca_el_que_cruza
+C 0xBE52 el dibujo 0x0F
+C 0xBE56 la fila 0xA4
+C 0xBE5A y la columna 0x70
+C 0xBE5E se mueve solo
+C 0xBE62 y una cuenta de 0x80
+C 0xBE66 cuantos van ya
+C 0xBE69 uno mas
+C 0xBE6A y su bit 0 dice el lado
+C 0xBE6C los impares, hacia delante...
+C 0xBE73 ...y los pares, hacia atras
+L 0xBE78 arranca_el_que_cruza_con_su_paso
+B 0xBEA9 LA CUENTA DEL QUE CRUZA. Baja de 0x80 a cero y, justo a la mitad -en 0x40-, mira si hay sitio en los huecos de 0xE370 para soltar otra cosa. Al llegar a cero, al paso siguiente.
+L 0xBEA9 la_cuenta_del_que_cruza
+C 0xBEA9 un cuadro menos
+C 0xBEAE la cuenta
+C 0xBEB1 justo a la mitad...
+C 0xBEB4 ...se mira si hay sitio para otro
+L 0xBEB7 el_que_cruza_al_paso_siguiente
+B 0xB98D LOS TRES PASOS DE LADO. Con C a 0 no se mueve, con 1 va hacia un lado (-0x10) y con cualquier otro hacia el otro (+0x10). El valor de C queda apuntado en (iy+0x1A) para lo que venga despues.
+L 0xB98D los_tres_pasos_de_lado
+C 0xB98D cual de los tres
+C 0xB991 el 0 se queda quieto
+C 0xB997 el 1 va hacia atras...
+C 0xB99D ...y el resto hacia delante
+L 0xB9A0 guarda_el_paso_de_lado
+
+B 0xAB3B SOLTAR UNO APUNTANDO AL JUGADOR. Aqui se juntan todas las piezas de arriba. Llena el hueco de 0xE370 con la clase que traiga la tabla, lo pone en la misma fila y columna que el que lo suelta, y CALCULA el rumbo: el angulo hacia el jugador con 0xAC75, sus dos componentes con 0xAD27 y las dos dobladas con 0xAD0E, que es lo que acaba en las velocidades de (ix+7) y (ix+9). Antes de todo eso hay dos plantes: si el jugador esta por encima del que dispara, no se suelta nada, y si esta a menos de 0x20 en las dos coordenadas, tampoco. Y al final, el efecto 0x13 si la clase es la 6 y el 0x0F si es la 4.
+L 0xAB3B suelta_uno_apuntando
+C 0xAB3B la clase que toca
+C 0xAB3C al hueco
+C 0xAB3E y la tabla de color, a cero
+C 0xAB42 la fraccion de la fila, a cero
+C 0xAB45 la fila del que lo suelta
+C 0xAB4A la fila del jugador
+C 0xAB4E si esta por encima, no se suelta nada
+C 0xAB51 la fraccion de la columna, a cero
+C 0xAB54 y la columna del que lo suelta
+C 0xAB59 ¿esta ya encima?
+C 0xAB5C si lo esta, tampoco
+C 0xAB5E adelante, a las velocidades
+C 0xAB62 el angulo hacia el jugador
+C 0xAB65 y sus dos componentes
+C 0xAB6B la primera, doblada
+C 0xAB72 a la velocidad de la fila
+C 0xAB77 y la segunda, tambien doblada
+C 0xAB7C a la velocidad de la columna
+C 0xAB80 atras, a la clase
+C 0xAB84 la clase 6...
+C 0xAB88 ...suena el efecto 0x13
+L 0xAB8E la_clase_4_suena_distinto
+C 0xAB8E la clase 4...
+C 0xAB91 ...suena el efecto 0x0F
+L 0xAB97 no_se_suelta_por_estar_encima
+L 0xAB99 no_se_suelta
+C 0xAB9B el hueco se queda libre
+B 0xAB9E ¿ESTA YA ENCIMA? Las dos diferencias contra el jugador, en valor absoluto, contra 0x20 cada una. Vuelve con el acarreo puesto si las dos caben, que es como se dice "demasiado cerca para disparar".
+L 0xAB9E esta_ya_encima
+C 0xAB9E la fila del jugador
+C 0xABA1 contra la del que dispara
+C 0xABA4 en valor absoluto
+C 0xABA6 ¿a menos de 0x20?
+C 0xABA9 y ahora la columna
+C 0xABB1 con el mismo 0x20

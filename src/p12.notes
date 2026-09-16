@@ -1,2 +1,99 @@
 # Banco 12 (se ejecuta en 0x8000). Directivas: L etiqueta, C comentario de
 # linea, B cabecera de bloque, D rango de datos, F anchura de fila.
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x8000 0x8014 animacion_por_decorado_8000  un puntero por decorado (0xE0A1) a una tabla de cuatro cuadros de animacion; la lee p01:655A y el cuadro lo da (0xE4C2) & 3
+F 0x8000 2
+D 0x8014 0x8033 guion_8014  guion comprimido que lee descomprime; lo cargan p01:6041 (31 bytes)
+F 0x8014 16
+D 0x8033 0x803B cuadros_8033  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0x8033 2
+D 0x803B 0x80AD tira_803B  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x8033[0] (114 bytes)
+F 0x803B 16
+D 0x80AD 0x8110 tira_80AD  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x8033[1] (99 bytes)
+F 0x80AD 16
+D 0x8110 0x817A tira_8110  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x8033[2] (106 bytes)
+F 0x8110 16
+D 0x817A 0x81EC tira_817A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x8033[3] (114 bytes)
+F 0x817A 16
+D 0x81EC 0x81FF guion_81EC  guion comprimido que lee descomprime; lo cargan p01:6073 (19 bytes)
+F 0x81EC 16
+D 0x81FF 0x8207 cuadros_81FF  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0x81FF 2
+D 0x8207 0x834C tira_8207  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x81FF[0] (325 bytes)
+F 0x8207 16
+D 0x834C 0x8495 tira_834C  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x81FF[1] (329 bytes)
+F 0x834C 16
+D 0x8495 0x85DC tira_8495  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x81FF[2] (327 bytes)
+F 0x8495 16
+D 0x85DC 0x8725 tira_85DC  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x81FF[3] (329 bytes)
+F 0x85DC 16
+D 0x8725 0x8738 guion_8725  guion comprimido que lee descomprime; lo cargan p01:60A2 (19 bytes)
+F 0x8725 16
+D 0x8738 0x8740 cuadros_8738  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0x8738 2
+D 0x8740 0x87DC tira_8740  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x8738[0] (156 bytes)
+F 0x8740 16
+D 0x87DC 0x8878 tira_87DC  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x8738[1] (156 bytes)
+F 0x87DC 16
+D 0x8878 0x8914 tira_8878  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x8738[2] (156 bytes)
+F 0x8878 16
+D 0x8914 0x89B0 tira_8914  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x8738[3] (156 bytes)
+F 0x8914 16
+D 0x89B0 0x89C3 guion_89B0  guion comprimido que lee descomprime; lo cargan p01:60D4 (19 bytes)
+F 0x89B0 16
+D 0x89C3 0x89CB cuadros_89C3  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0x89C3 2
+D 0x89CB 0x8B10 tira_89CB  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x89C3[0] (325 bytes)
+F 0x89CB 16
+D 0x8B10 0x8C59 tira_8B10  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x89C3[1] (329 bytes)
+F 0x8B10 16
+D 0x8C59 0x8DA0 tira_8C59  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x89C3[2] (327 bytes)
+F 0x8C59 16
+D 0x8DA0 0x8EE9 tira_8DA0  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x89C3[3] (329 bytes)
+F 0x8DA0 16
+D 0x8EE9 0x8EFF guion_8EE9  guion comprimido que lee descomprime; lo cargan p01:6103 (22 bytes)
+F 0x8EE9 16
+D 0x8EFF 0x8F07 cuadros_8EFF  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0x8EFF 2
+D 0x8F07 0x8F7E tira_8F07  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x8EFF[0] (119 bytes)
+F 0x8F07 16
+D 0x8F7E 0x8FF5 tira_8F7E  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x8EFF[1] (119 bytes)
+F 0x8F7E 16
+D 0x8FF5 0x9075 tira_8FF5  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x8EFF[2] (128 bytes)
+F 0x8FF5 16
+D 0x9075 0x90EF tira_9075  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x8EFF[3] (122 bytes)
+F 0x9075 16
+D 0x90EF 0x9102 guion_90EF  guion comprimido que lee descomprime; lo cargan p01:6135 (19 bytes)
+F 0x90EF 16
+D 0x9102 0x910A cuadros_9102  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0x9102 2
+D 0x910A 0x9296 tira_910A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x9102[0] (396 bytes)
+F 0x910A 16
+D 0x9296 0x9420 tira_9296  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x9102[1] (394 bytes)
+F 0x9296 16
+D 0x9420 0x95AB tira_9420  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x9102[2] (395 bytes)
+F 0x9420 16
+D 0x95AB 0x9735 tira_95AB  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x9102[3] (394 bytes)
+F 0x95AB 16
+D 0x9735 0x9756 guion_9735  guion comprimido que lee descomprime; lo cargan p01:6164 (33 bytes)
+F 0x9735 16
+D 0x9756 0x975E cuadros_9756  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0x9756 2
+D 0x975E 0x98E5 tira_975E  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x9756[0] (391 bytes)
+F 0x975E 16
+D 0x98E5 0x9A68 tira_98E5  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x9756[1] (387 bytes)
+F 0x98E5 16
+D 0x9A68 0x9BEB tira_9A68  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x9756[2] (387 bytes)
+F 0x9A68 16
+D 0x9BEB 0x9D72 tira_9BEB  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x9756[3] (391 bytes)
+F 0x9BEB 16
+D 0x9D72 0x9D85 guion_9D72  guion comprimido que lee descomprime; lo cargan p01:6193 (19 bytes)
+F 0x9D72 16
+D 0x9D85 0x9D8D cuadros_9D85  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0x9D85 2
+D 0x9D8D 0x9EE9 tira_9D8D  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x9D85[0] (348 bytes)
+F 0x9D8D 16
+D 0x9EE9 0xA000 tira_9EE9  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x9D85[1]; sigue en el banco 13, en la ranura de al lado (279 bytes)
+F 0x9EE9 16
+# --- fin de los bloques de bloques.py ---

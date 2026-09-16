@@ -1,2 +1,31 @@
 # Banco 05 (se ejecuta en 0x8000). Directivas: L etiqueta, C comentario de
 # linea, B cabecera de bloque, D rango de datos, F anchura de fila.
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x8000 0x85FE cola_7F2D  la cola del guion comprimido (patrones con espejo del tercio de abajo; patrones del tercio de abajo) de 0x7F2D del banco 4, que pasa de ranura sin cambiar de banco; se entra por 0x8000, 0x85CC; lo cargan tercio de abajo[8] (1534 bytes)
+F 0x8000 16
+D 0x85FE 0x878C guion_85FE  guion comprimido (colores con espejo del tercio de abajo; colores del tercio de abajo) que lee pinta; se entra por 0x85FE, 0x877F; lo cargan tercio de abajo[8] (398 bytes)
+F 0x85FE 16
+D 0x878C 0x8826 guion_878C  guion comprimido (colores con espejo del tercio de arriba; colores del tercio de arriba) que lee pinta; se entra por 0x878C, 0x87A9; lo cargan tercio de arriba[9] (154 bytes)
+F 0x878C 16
+D 0x8826 0x889C guion_8826  guion comprimido (colores con espejo del tercio del medio; colores del tercio del medio) que lee pinta; se entra por 0x8826, 0x882A; lo cargan tercio del medio[9] (118 bytes)
+F 0x8826 16
+D 0x889C 0x88CA guion_889C  guion comprimido (colores con espejo del tercio de abajo; colores del tercio de abajo) que lee pinta; se entra por 0x889C, 0x889E; lo cargan tercio de abajo[9] (46 bytes)
+F 0x889C 16
+D 0x88CA 0x89FD guion_88CA  guion comprimido que lee pinta_en_los_tres y pinta_en_los_tres_con_color; se entra por 0x88CA, 0x898A; lo cargan p00:4BDE, p00:4BE7 (307 bytes)
+F 0x88CA 16
+D 0x89FD 0x8ABB guion_89FD  guion comprimido que lee pinta_en_los_tres; se entra por 0x89FD, 0x8A6C; lo cargan p00:4BF0, p00:4BF9 (190 bytes)
+F 0x89FD 16
+D 0x8ABB 0x8AF0 guion_8ABB  guion comprimido que lee pinta_en_los_tres; lo cargan p00:4C09 (53 bytes)
+F 0x8ABB 16
+D 0x8AF0 0x8AFB guion_8AF0  guion comprimido que lee pinta_en_los_tres; lo cargan p00:4C12, p00:4C1B (11 bytes)
+F 0x8AF0 16
+D 0x8AFB 0x9BB6 guion_8AFB  guion comprimido que lee pinta_sin_color; lo cargan p00:48DF (4283 bytes)
+F 0x8AFB 16
+D 0x9BB6 0x9DE5 guion_9BB6  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x9BB6, 0x9D25; lo cargan p00:4918, p00:4923 (559 bytes)
+F 0x9BB6 16
+D 0x9DE5 0x9DFA guion_9DE5  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x9DE5, 0x9DF1; lo cargan p00:494B, p00:4956 (21 bytes)
+F 0x9DE5 16
+D 0x9DFA 0xA000 guion_9DFA  guion comprimido que lee pinta_sin_color; lo cargan p00:4929; sigue en el banco 6, en la ranura de al lado (518 bytes)
+F 0x9DFA 16
+# --- fin de los bloques de bloques.py ---

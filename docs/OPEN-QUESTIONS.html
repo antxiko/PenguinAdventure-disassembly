@@ -1,0 +1,106 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Open questions — Penguin Adventure (Konami, 1986)</title>
+<style>
+:root{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;--linea:#23262e;
+  --rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+@media (prefers-color-scheme:light){:root{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;
+  --panel:#f7f6f2;--linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}}
+:root[data-theme="dark"]{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;
+  --linea:#23262e;--rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+:root[data-theme="light"]{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;--panel:#f7f6f2;
+  --linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--tinta);padding:0 1.25rem 6rem;
+  font:15px/1.7 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.w{max-width:1120px;margin:0 auto}
+.n{max-width:68ch}
+h1,h2,h3,h4{font-weight:400;text-wrap:balance}
+a{color:var(--cyan)}
+img{image-rendering:pixelated;max-width:100%;height:auto;display:block}
+header.top{display:flex;flex-direction:column;align-items:center;gap:1.5rem;
+  padding:4rem 0 2rem;text-align:center}
+header.top img{width:min(100%,642px)}
+.claim{max-width:60ch;color:var(--suave);font-size:1.05rem}
+.claim b{color:var(--tinta);font-weight:400}
+.ficha{display:flex;flex-wrap:wrap;justify-content:center;gap:0 1.5rem;width:100%;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);
+  border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);padding:.85rem 0}
+.ficha b{color:var(--rojo);font-weight:400}
+nav{display:flex;flex-wrap:wrap;gap:1.25rem;justify-content:center;padding:1.25rem 0;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+nav a{color:var(--suave);text-decoration:none;border-bottom:1px solid transparent}
+nav a:hover,nav a:focus{color:var(--tinta);border-bottom-color:var(--rojo)}
+nav.docs{border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);
+  margin-bottom:1rem}
+section{margin-top:4.5rem;scroll-margin-top:1rem}
+section>h2{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;
+  border-left:3px solid var(--rojo);padding-left:.9rem;margin:0 0 1.5rem}
+.cifras{display:grid;gap:1px;background:var(--linea);border:1px solid var(--linea);
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.cifra{background:var(--panel);padding:1.1rem}
+.cifra b{display:block;font-size:1.7rem;color:var(--oro);font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.cifra span{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--suave)}
+.hall{border-top:1px solid var(--linea);padding-top:1.75rem;margin-top:2.5rem}
+.hall:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.hall h3{margin:0 0 .75rem;font-size:1.15rem;color:var(--rojo)}
+.hall h4{color:var(--oro);margin:1.5rem 0 .5rem;font-size:.95rem}
+.hall p{margin:0 0 1rem}
+pre.asm{background:var(--panel);border-left:2px solid var(--verde);margin:1.25rem 0;
+  padding:1rem 1.1rem;overflow-x:auto;font-size:13px;line-height:1.6;color:var(--tinta)}
+.par{display:grid;gap:1.25rem;grid-template-columns:1fr}
+@media(min-width:820px){.par{grid-template-columns:1fr 1fr}}
+.par figure{margin:0}
+table{border-collapse:collapse;width:100%;margin:1.25rem 0;font-size:13px;display:block;
+  overflow-x:auto}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--linea)}
+th{color:var(--suave);font-weight:400;font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+td.num{font-variant-numeric:tabular-nums;color:var(--oro)}
+.nivel{margin-top:2rem}
+.nivel h3{margin:0 0 .9rem;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase}
+.nivel em{color:var(--cyan);font-style:normal}
+.sep{color:var(--suave);margin:0 .6rem}
+.rejilla{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.rejilla figure{margin:0;background:var(--panel);box-shadow:0 0 0 1px var(--linea)}
+.rejilla figcaption{display:flex;justify-content:space-between;padding:.45rem .65rem;
+  font-size:11px;color:var(--suave);border-top:1px solid var(--linea)}
+.dir{font-variant-numeric:tabular-nums;color:var(--verde)}
+footer{margin-top:5rem;padding-top:1.5rem;border-top:1px solid var(--linea);
+  color:var(--suave);font-size:12px}
+
+/* Aviso de trabajo en curso: tiene que verse antes que las cifras, porque un
+   100% mal leido hace mas dano que no ponerlo. */
+.aviso{background:#3a2a10;border-left:3px solid var(--oro);margin:1.5rem auto;
+  padding:1rem 1.2rem;max-width:900px;border-radius:4px}
+.aviso p{margin:0;color:var(--tinta);font-size:15px;line-height:1.65}
+.galeria{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;margin:1.5rem 0}
+.galeria figure{margin:0}
+.galeria img{width:100%;height:auto;image-rendering:pixelated;
+  border:1px solid var(--linea);border-radius:3px}
+.galeria figcaption{color:var(--suave);font-size:13px;margin-top:.5rem}
+audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
+</style>
+<div class="w"><nav class="top"><a href="index.html">Home</a><a href="GETTING-STARTED.html">Start</a><a href="THE-GAME.html">The game</a><a href="THE-CARTRIDGE.html">The cartridge</a><a href="THE-CODE.html">The code</a><a href="FINDINGS.html">Findings</a><a href="IN-THE-EMULATOR.html">In the emulator</a><a href="OPEN-QUESTIONS.html" style=color:var(--tinta)>Open questions</a><a href="es/PREGUNTAS-ABIERTAS.html" style="margin-left:auto;color:var(--oro)">Castellano</a></nav>
+<h1 id="open-questions">Open questions</h1>
+<p>What is not known, said as what it is. Every byte of the cartridge is assigned to code or data and the listing reassembles byte for byte, but that does not mean everything is <b>understood</b>.</p>
+<h2 id="nobody-loads-sprite-patterns-0x00-to-0x0c">Nobody loads sprite patterns 0x00 to 0x0C</h2>
+<p>Eight of the thirteen poses in the table at 0xA91D ask for sprite patterns 0x00, 0x04, 0x08 and 0x0C. And that area of VRAM —0x1800 to 0x187F— <b>is written by none</b> of the nineteen known sprite scripts, nor by any of the masked scripts the bank 1 bridges emit.</p>
+<p>The two explanations that fit:</p>
+<ol><li>there is a load the script sweep does not see, for instance an uncompressed copy with a computed destination;</li><li>the sprite pattern base —VDP register 6— changes in some scene, and then those numbers point somewhere else.</li></ol>
+<p>It has not been settled. And until it is, drawing the thirteen poses together means nothing: the pattern numbers are <b>relative to whichever sprite sheet each scene has loaded</b>, so the same pose is a different thing depending on what was dropped into 0x1800 beforehand.</p>
+<h2 id="the-game-master-header-puts-the-stage-where-the-game-master-expects-lives">The Game Master header puts the stage where the Game Master expects lives</h2>
+<p>The second header, the one at 0x4010, declares thirteen stages and gives the addresses of the things the Konami Game Master knows how to touch. One of them lands where the Game Master expects the lives counter, and what is there is the stage. It may be deliberate —so that the Game Master lets you change the stage from its MODIFY MODE— or it may be a slip by Konami. There is no way to decide from this binary alone.</p>
+<h2 id="what-four-of-the-machine-s-six-symbols-are">What four of the machine&#x27;s six symbols are</h2>
+<p>The cherry and the bunch of grapes are unmistakable in the drawing taken from the ROM. The other four are not: there is one in tan tones with green underneath, a red one, a blue one and the jackpot, which is white on transparent. They are published as they come out and readers can make up their own minds.</p>
+<h2 id="the-exact-rhythm-of-the-slot-machine-trick">The exact rhythm of the slot machine trick</h2>
+<p>The three reels are drawn in the same loop in the same frame, with an identical piece of code between one and the next, so their indices are <em>r</em>, <em>r+k</em> and <em>r+2k</em> with <b>k fixed</b>. And stopping a reel makes the loop do one turn fewer, so the frame takes slightly less and R advances differently.</p>
+<p>Which is why pressing at a fixed rhythm gives you not randomness but always the same pattern. What is <b>not</b> measured is what that k is modulo 16, because it depends on how many instructions the CPU fetches inside the loop, counting the BIOS <code>WRTVRM</code> routine, and that differs between MSX models. In other words: the trick could work on one machine and not on another.</p>
+<h2 id="why-it-does-not-start-on-a-philips-vg-8020">Why it does not start on a Philips VG-8020</h2>
+<p>It is measured that on that machine the cartridge sits on the BASIC boot screen —0xE003 does not move and 0xF0F7 does not go to zero— and that with <code>C-BIOS_MSX1_EU</code> it starts without trouble. <b>Why</b> has not been worked out. The header is correct, the <code>AB</code> and the INIT at 0x406A read back fine at 0x4000 from the emulator&#x27;s own console, and even so the BIOS never calls it.</p>
+<h2 id="the-tables-that-only-cover-thirteen-stages">The tables that only cover thirteen stages</h2>
+<p>p00:4105 and p00:4113 index two tables with the stage number, and both have thirteen entries when there are twenty-four stages. With a stage from 14 onwards they read bytes past the end of the table. It has not been checked in motion what comes out of there, nor whether the game ever reaches that path.</p>
+<h2 id="the-sound-from-the-inside">The sound, from the inside</h2>
+<p>The scores are fully declared and the language is understood —<code>FE 00</code> changes the +0x0E marker and the score switches from the effect language to the music language— but no player has been written to get them out of the cartridge. Until there is one, what there is is a description, not a proof.</p>
+<footer><p><em>Penguin Adventure / Yume Tairiku Adventure</em> was published by Konami for the MSX in 1986; its catalogue number is RC-743 and it is 128 KB. All rights in the game remain with their holders. This is preservation, study and documentation work, and the cartridge image is not distributed.</p></footer></div>

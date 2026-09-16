@@ -32,10 +32,10 @@ B 0x8000 ARRANCAR UNA VOZ. Copia los 21 bytes de una plantilla a la voz y la dej
 L 0x8000 arranca_una_voz
 C 0x8000 los 21 bytes de una voz
 C 0x8007 y la marca de efecto, a cero
-B 0x800B REPETIR UN TROZO. El mando 0xFE de la partitura: detras lleva cuantas vueltas hay que dar y adonde volver. El contador vive en la propia voz (+0x0B), asi que cada voz lleva su cuenta.
+B 0x800B REPETIR UN TROZO. El mando 0xFE de la partitura: detras lleva cuantas vueltas hay que dar y adonde volver. El contador vive en la propia voz (+0x0B), asi que cada voz lleva su cuenta. PERO CON UN CERO DETRAS NO REPITE NADA: `FE 00` son dos bytes que cambian de lenguaje (0x8039).
 L 0x800B repite_un_trozo
 C 0x800B el byte de detras del 0xFE
-C 0x800D un cero quiere decir vueltas SIN FIN
+C 0x800D un cero no son vueltas: es el cambio de lenguaje de 0x8039
 C 0x8010 por que vuelta va
 C 0x8014 contra las que pide la partitura
 C 0x8015 si ya estan dadas, se sigue de largo
@@ -46,10 +46,11 @@ C 0x8025 y byte alto
 L 0x802A repite_se_acabaron_las_vueltas
 C 0x802A se saltan los dos bytes del destino
 C 0x802C y la cuenta a cero, por si se vuelve a pasar por aqui
-L 0x8039 repite_sin_fin
+B 0x8039 CAMBIAR DE LENGUAJE. `FE 00` le da la vuelta a la marca +0x0E de la voz y sigue en el byte de detras (0x8030). Con la marca puesta la partitura se lee con mando_de_efecto (0x820C: notas de un byte, prefijos D0, F0 y E0) y sin ella con mando_de_musica (0x80F8: instrumento, ruido y notas de dos bytes), y una misma partitura salta de uno a otro. Comprobado recorriendo las 206 partituras de la tabla de 0x873A: con esta lectura cierran todas en su 0xFF y cubren los bancos 14 y 15 sin un solo hueco de mas; leyendo `FE 00` como vueltas sin fin salian destinos imposibles como 0x0228.
+L 0x8039 cambia_de_lenguaje
 C 0x8039 la marca de efecto
-C 0x803F si hay efecto, se le baja
-C 0x8044 y si no, se le sube
+C 0x803F si estaba puesta, se quita
+C 0x8044 y si no, se pone
 B 0x8049 EL REGISTRO 7 DEL PSG, EL DE LA MEZCLA. Es el unico registro del PSG que comparten las tres voces -tres bits para el tono y tres para el ruido-, asi que no se puede escribir a lo bruto: hay que respetar lo que hayan puesto las otras. Por eso se guarda una copia en 0xE079 y aqui se le encienden o se le apagan solo los bits de esta voz.
 L 0x8049 pon_la_mezcla
 C 0x8049 la copia de lo que hay ahora en el registro 7
@@ -237,7 +238,7 @@ C 0x82E4 la bandera de silencio
 C 0x82E8 el numero de voz
 D 0x834E 0x835A los_doce_semitonos  Los doce semitonos de una octava, en periodos del PSG y de un solo byte: 0x6B, 0x65, 0x5F, 0x5A, 0x55, 0x50, 0x4C, 0x47, 0x43, 0x40, 0x3C y 0x39. Que sean doce y que el primero valga casi el doble que el ultimo -107 contra 57- es lo que dice que son una octava entera. La octava en la que suena la pone 0x82DB doblando el periodo tantas veces como diga el desplazamiento, que es lo mismo que bajar octavas.
 F 0x834E 12
-D 0x835A 0x8372 guiones_de_efecto  Los punteros a los guiones de los efectos, en parejas y dentro de este mismo banco. 0x8287 los indexa con la bandera de 0x10 de la voz, DESDE UNO -por eso la tabla se direcciona como si empezara en 0x8358-.
+D 0x835A 0x8360 guiones_de_efecto  Los punteros a las TRES tablas de sub-efectos, dentro de este mismo banco: 0x8360, 0x84DD y 0x85D6. 0x8287 los indexa con la bandera de 0x10 de la voz, DESDE UNO -por eso la tabla se direcciona como si empezara en 0x8358-. Son tres y no mas porque la primera tabla empieza justo detras, en 0x8360 (antes aqui se leian doce punteros "en parejas", y los nueve de mas eran la tabla de al lado)
 F 0x835A w1
 
 C 0x82E9 la 5 y las de arriba tienen reglas propias
@@ -322,3 +323,224 @@ C 0x80CD y se escribe directamente
 # tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
 # se sabe lo que dice.
 C 0x86DF la prioridad del efecto que suena
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x8360 0x837A sub_efecto_1  13 punteros a los guiones de musica del sub-efecto 1: p14:8287 la saca de 0x8358 + 2*1 y la indexa con el nibble alto de la nota. Acaba donde empieza su primer guion
+F 0x8360 2
+D 0x837A 0x8380 tira_837A  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 1, nota 0) que lee p14:8287; lo cargan sub-efecto 1 nota 0 (6 bytes)
+F 0x837A 16
+D 0x8380 0x838E tira_8380  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 1, nota 1) que lee p14:8287; lo cargan sub-efecto 1 nota 1 (14 bytes)
+F 0x8380 16
+D 0x838E 0x83A1 tira_838E  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 1, nota 2) que lee p14:8287; lo cargan sub-efecto 1 nota 2 (19 bytes)
+F 0x838E 16
+D 0x83A1 0x83AF tira_83A1  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 1, nota 3) que lee p14:8287; lo cargan sub-efecto 1 nota 3 (14 bytes)
+F 0x83A1 16
+D 0x83AF 0x83BD tira_83AF  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 1, nota 4) que lee p14:8287; lo cargan sub-efecto 1 nota 4 (14 bytes)
+F 0x83AF 16
+D 0x83BD 0x83E6 tira_83BD  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 1, nota 5) que lee p14:8287; lo cargan sub-efecto 1 nota 5 (41 bytes)
+F 0x83BD 16
+D 0x83E6 0x840F tira_83E6  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 1, nota 6) que lee p14:8287; lo cargan sub-efecto 1 nota 6 (41 bytes)
+F 0x83E6 16
+D 0x840F 0x8438 tira_840F  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 1, nota 7) que lee p14:8287; lo cargan sub-efecto 1 nota 7 (41 bytes)
+F 0x840F 16
+D 0x8438 0x8467 tira_8438  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 1, nota 8) que lee p14:8287; lo cargan sub-efecto 1 nota 8 (47 bytes)
+F 0x8438 16
+D 0x8467 0x8496 tira_8467  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 1, nota 9) que lee p14:8287; lo cargan sub-efecto 1 nota 9 (47 bytes)
+F 0x8467 16
+D 0x8496 0x84C1 tira_8496  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 1, nota 10) que lee p14:8287; lo cargan sub-efecto 1 nota 10 (43 bytes)
+F 0x8496 16
+D 0x84C1 0x84CF tira_84C1  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 1, nota 11) que lee p14:8287; lo cargan sub-efecto 1 nota 11 (14 bytes)
+F 0x84C1 16
+D 0x84CF 0x84DD tira_84CF  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 1, nota 12) que lee p14:8287; lo cargan sub-efecto 1 nota 12 (14 bytes)
+F 0x84CF 16
+D 0x84DD 0x84F7 sub_efecto_2  13 punteros a los guiones de musica del sub-efecto 2: p14:8287 la saca de 0x8358 + 2*2 y la indexa con el nibble alto de la nota. Acaba donde empieza su primer guion
+F 0x84DD 2
+D 0x84F7 0x8508 tira_84F7  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 2, nota 0) que lee p14:8287; lo cargan sub-efecto 2 nota 0 (17 bytes)
+F 0x84F7 16
+D 0x8508 0x8519 tira_8508  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 2, nota 1) que lee p14:8287; lo cargan sub-efecto 2 nota 1 (17 bytes)
+F 0x8508 16
+D 0x8519 0x852A tira_8519  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 2, nota 2) que lee p14:8287; lo cargan sub-efecto 2 nota 2 (17 bytes)
+F 0x8519 16
+D 0x852A 0x853D tira_852A  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 2, nota 3) que lee p14:8287; lo cargan sub-efecto 2 nota 3 (19 bytes)
+F 0x852A 16
+D 0x853D 0x854E tira_853D  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 2, nota 4) que lee p14:8287; lo cargan sub-efecto 2 nota 4 (17 bytes)
+F 0x853D 16
+D 0x854E 0x855F tira_854E  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 2, nota 5) que lee p14:8287; lo cargan sub-efecto 2 nota 5 (17 bytes)
+F 0x854E 16
+D 0x855F 0x8570 tira_855F  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 2, nota 6) que lee p14:8287; lo cargan sub-efecto 2 nota 6 (17 bytes)
+F 0x855F 16
+D 0x8570 0x8581 tira_8570  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 2, nota 7) que lee p14:8287; lo cargan sub-efecto 2 nota 7 (17 bytes)
+F 0x8570 16
+D 0x8581 0x8592 tira_8581  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 2, nota 8) que lee p14:8287; lo cargan sub-efecto 2 nota 8 (17 bytes)
+F 0x8581 16
+D 0x8592 0x85A3 tira_8592  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 2, nota 9) que lee p14:8287; lo cargan sub-efecto 2 nota 9 (17 bytes)
+F 0x8592 16
+D 0x85A3 0x85B4 tira_85A3  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 2, nota 10) que lee p14:8287; lo cargan sub-efecto 2 nota 10 (17 bytes)
+F 0x85A3 16
+D 0x85B4 0x85C5 tira_85B4  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 2, nota 11) que lee p14:8287; lo cargan sub-efecto 2 nota 11 (17 bytes)
+F 0x85B4 16
+D 0x85C5 0x85D6 tira_85C5  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 2, nota 12) que lee p14:8287; lo cargan sub-efecto 2 nota 12 (17 bytes)
+F 0x85C5 16
+D 0x85D6 0x85EE sub_efecto_3  12 punteros a los guiones de musica del sub-efecto 3: p14:8287 la saca de 0x8358 + 2*3 y la indexa con el nibble alto de la nota. Acaba donde empieza su primer guion
+F 0x85D6 2
+D 0x85EE 0x85FF tira_85EE  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 3, nota 0) que lee p14:8287; lo cargan sub-efecto 3 nota 0 (17 bytes)
+F 0x85EE 16
+D 0x85FF 0x8610 tira_85FF  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 3, nota 1) que lee p14:8287; lo cargan sub-efecto 3 nota 1 (17 bytes)
+F 0x85FF 16
+D 0x8610 0x8621 tira_8610  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 3, nota 2) que lee p14:8287; lo cargan sub-efecto 3 nota 2 (17 bytes)
+F 0x8610 16
+D 0x8621 0x8632 tira_8621  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 3, nota 3) que lee p14:8287; lo cargan sub-efecto 3 nota 3 (17 bytes)
+F 0x8621 16
+D 0x8632 0x8643 tira_8632  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 3, nota 4) que lee p14:8287; lo cargan sub-efecto 3 nota 4 (17 bytes)
+F 0x8632 16
+D 0x8643 0x8654 tira_8643  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 3, nota 5) que lee p14:8287; lo cargan sub-efecto 3 nota 5 (17 bytes)
+F 0x8643 16
+D 0x8654 0x8665 tira_8654  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 3, nota 6) que lee p14:8287; lo cargan sub-efecto 3 nota 6 (17 bytes)
+F 0x8654 16
+D 0x8665 0x8676 tira_8665  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 3, nota 7) que lee p14:8287; lo cargan sub-efecto 3 nota 7 (17 bytes)
+F 0x8665 16
+D 0x8676 0x8687 tira_8676  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 3, nota 8) que lee p14:8287; lo cargan sub-efecto 3 nota 8 (17 bytes)
+F 0x8676 16
+D 0x8687 0x8698 tira_8687  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 3, nota 9) que lee p14:8287; lo cargan sub-efecto 3 nota 9 (17 bytes)
+F 0x8687 16
+D 0x8698 0x86A9 tira_8698  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 3, nota 10) que lee p14:8287; lo cargan sub-efecto 3 nota 10 (17 bytes)
+F 0x8698 16
+D 0x86A9 0x86BA tira_86A9  guion de musica de un sub-efecto (hasta un 0xFF) (sub-efecto 3, nota 11) que lee p14:8287; lo cargan sub-efecto 3 nota 11 (17 bytes)
+F 0x86A9 16
+D 0x873A 0x88D6 partituras_de_cada_sonido  206 punteros, desde el sonido 1: p14:8706 hace DE = 0x8738 + 2*A y cada voz del sonido coge la palabra siguiente (una voz por debajo de 0x3B, tres por encima y cuatro el 0xCB). La tabla acaba donde empieza la primera partitura
+F 0x873A 2
+D 0x88D6 0x8949 tira_88D6  partitura de sonido (voz del sonido 0xBC) que lee pide_un_efecto; lo cargan 0x873A[187] (115 bytes)
+F 0x88D6 16
+D 0x8949 0x89FE tira_8949  partitura de sonido (voz del sonido 0xBD) que lee pide_un_efecto; lo cargan 0x873A[188] (181 bytes)
+F 0x8949 16
+D 0x89FE 0x8A94 tira_89FE  partitura de sonido (voz del sonido 0xBE) que lee pide_un_efecto; lo cargan 0x873A[189] (150 bytes)
+F 0x89FE 16
+D 0x8A94 0x8AA3 tira_8A94  partitura de sonido (voz del sonido 0x7D) que lee pide_un_efecto; lo cargan 0x873A[124] (15 bytes)
+F 0x8A94 16
+D 0x8AA3 0x8AC4 tira_8AA3  partitura de sonido (voz del sonido 0x7E) que lee pide_un_efecto; lo cargan 0x873A[125] (33 bytes)
+F 0x8AA3 16
+D 0x8AC4 0x8AFA tira_8AC4  partitura de sonido (voz del sonido 0x7F; voz del sonido 0x80; voz del sonido 0x81) que lee pide_un_efecto; se entra por 0x8AC4, 0x8ACB, 0x8AD1; lo cargan 0x873A[126], 0x873A[127], 0x873A[128] (54 bytes)
+F 0x8AC4 16
+D 0x8AFA 0x8B31 tira_8AFA  partitura de sonido (voz del sonido 0x01; voz del sonido 0x57; voz del sonido 0x58) que lee pide_un_efecto; se entra por 0x8AFA, 0x8B06, 0x8B1A; lo cargan 0x873A[0], 0x873A[86], 0x873A[87] (55 bytes)
+F 0x8AFA 16
+D 0x8B31 0x8B50 tira_8B31  partitura de sonido (voz del sonido 0x2D) que lee pide_un_efecto; lo cargan 0x873A[44] (31 bytes)
+F 0x8B31 16
+D 0x8B50 0x8B7B tira_8B50  partitura de sonido (voz del sonido 0x02; voz del sonido 0x2E) que lee pide_un_efecto; se entra por 0x8B50, 0x8B60; lo cargan 0x873A[1], 0x873A[45] (43 bytes)
+F 0x8B50 16
+D 0x8B7B 0x8B93 tira_8B7B  partitura de sonido (voz del sonido 0xA7; voz del sonido 0xA9) que lee pide_un_efecto; se entra por 0x8B7B, 0x8B7D; lo cargan 0x873A[166], 0x873A[168] (24 bytes)
+F 0x8B7B 16
+D 0x8B93 0x8BAD tira_8B93  partitura de sonido (voz del sonido 0xA8) que lee pide_un_efecto; lo cargan 0x873A[167] (26 bytes)
+F 0x8B93 16
+D 0x8BAD 0x8BBC tira_8BAD  partitura de sonido (voz del sonido 0x33) que lee pide_un_efecto; lo cargan 0x873A[50] (15 bytes)
+F 0x8BAD 16
+D 0x8BBC 0x8BCB tira_8BBC  partitura de sonido (voz del sonido 0x34) que lee pide_un_efecto; lo cargan 0x873A[51] (15 bytes)
+F 0x8BBC 16
+D 0x8BCB 0x8BDA tira_8BCB  partitura de sonido (voz del sonido 0x35) que lee pide_un_efecto; lo cargan 0x873A[52] (15 bytes)
+F 0x8BCB 16
+D 0x8BDA 0x8BE9 tira_8BDA  partitura de sonido (voz del sonido 0x36) que lee pide_un_efecto; lo cargan 0x873A[53] (15 bytes)
+F 0x8BDA 16
+D 0x8BE9 0x8C70 tira_8BE9  partitura de sonido (voz del sonido 0x38) que lee pide_un_efecto; lo cargan 0x873A[55] (135 bytes)
+F 0x8BE9 16
+D 0x8C70 0x8CB1 tira_8C70  partitura de sonido (voz del sonido 0x21; voz del sonido 0x86) que lee pide_un_efecto; se entra por 0x8C70, 0x8C86; lo cargan 0x873A[133], 0x873A[32] (65 bytes)
+F 0x8C70 16
+D 0x8CB1 0x8CF0 tira_8CB1  partitura de sonido (voz del sonido 0x1F) que lee pide_un_efecto; lo cargan 0x873A[30] (63 bytes)
+F 0x8CB1 16
+D 0x8CF0 0x8CFF tira_8CF0  partitura de sonido (voz del sonido 0x20) que lee pide_un_efecto; lo cargan 0x873A[31] (15 bytes)
+F 0x8CF0 16
+D 0x8CFF 0x8D3E tira_8CFF  partitura de sonido (voz del sonido 0x12) que lee pide_un_efecto; lo cargan 0x873A[17] (63 bytes)
+F 0x8CFF 16
+D 0x8D3E 0x8D5C tira_8D3E  partitura de sonido (voz del sonido 0x13) que lee pide_un_efecto; lo cargan 0x873A[18] (30 bytes)
+F 0x8D3E 16
+D 0x8D5C 0x8D7F tira_8D5C  partitura de sonido (voz del sonido 0x17) que lee pide_un_efecto; lo cargan 0x873A[22] (35 bytes)
+F 0x8D5C 16
+D 0x8D7F 0x8DA7 tira_8D7F  partitura de sonido (voz del sonido 0x14) que lee pide_un_efecto; lo cargan 0x873A[19] (40 bytes)
+F 0x8D7F 16
+D 0x8DA7 0x8DCC tira_8DA7  partitura de sonido (voz del sonido 0x1E) que lee pide_un_efecto; lo cargan 0x873A[29] (37 bytes)
+F 0x8DA7 16
+D 0x8DCC 0x8E23 tira_8DCC  partitura de sonido (voz del sonido 0x83) que lee pide_un_efecto; lo cargan 0x873A[130] (87 bytes)
+F 0x8DCC 16
+D 0x8E23 0x8E4A tira_8E23  partitura de sonido (voz del sonido 0x37) que lee pide_un_efecto; lo cargan 0x873A[54] (39 bytes)
+F 0x8E23 16
+D 0x8E4A 0x8E9B tira_8E4A  partitura de sonido (voz del sonido 0x11) que lee pide_un_efecto; lo cargan 0x873A[16] (81 bytes)
+F 0x8E4A 16
+D 0x8E9B 0x8EE8 tira_8E9B  partitura de sonido (voz del sonido 0x0E) que lee pide_un_efecto; lo cargan 0x873A[13] (77 bytes)
+F 0x8E9B 16
+D 0x8EE8 0x8F1D tira_8EE8  partitura de sonido (voz del sonido 0x27) que lee pide_un_efecto; lo cargan 0x873A[38] (53 bytes)
+F 0x8EE8 16
+D 0x8F1D 0x8F40 tira_8F1D  partitura de sonido (voz del sonido 0x26) que lee pide_un_efecto; lo cargan 0x873A[37] (35 bytes)
+F 0x8F1D 16
+D 0x8F40 0x8F4F tira_8F40  partitura de sonido (voz del sonido 0x0D) que lee pide_un_efecto; lo cargan 0x873A[12] (15 bytes)
+F 0x8F40 16
+D 0x8F4F 0x8F89 tira_8F4F  partitura de sonido (voz del sonido 0x29) que lee pide_un_efecto; lo cargan 0x873A[40] (58 bytes)
+F 0x8F4F 16
+D 0x8F89 0x8FF2 tira_8F89  partitura de sonido (voz del sonido 0x2A; voz del sonido 0x2B) que lee pide_un_efecto; se entra por 0x8F89, 0x8FA4; lo cargan 0x873A[41], 0x873A[42] (105 bytes)
+F 0x8F89 16
+D 0x8FF2 0x9023 tira_8FF2  partitura de sonido (voz del sonido 0x59) que lee pide_un_efecto; lo cargan 0x873A[88] (49 bytes)
+F 0x8FF2 16
+D 0x9023 0x9054 tira_9023  partitura de sonido (voz del sonido 0x5A) que lee pide_un_efecto; lo cargan 0x873A[89] (49 bytes)
+F 0x9023 16
+D 0x9054 0x905F tira_9054  partitura de sonido (voz del sonido 0x2C) que lee pide_un_efecto; lo cargan 0x873A[43] (11 bytes)
+F 0x9054 16
+D 0x905F 0x9102 tira_905F  partitura de sonido (voz del sonido 0x2F) que lee pide_un_efecto; lo cargan 0x873A[46] (163 bytes)
+F 0x905F 16
+D 0x9102 0x9125 tira_9102  partitura de sonido (voz del sonido 0x30) que lee pide_un_efecto; lo cargan 0x873A[47] (35 bytes)
+F 0x9102 16
+D 0x9125 0x912E tira_9125  partitura de sonido (voz del sonido 0x18) que lee pide_un_efecto; lo cargan 0x873A[23] (9 bytes)
+F 0x9125 16
+D 0x912E 0x9177 tira_912E  partitura de sonido (voz del sonido 0x1A) que lee pide_un_efecto; lo cargan 0x873A[25] (73 bytes)
+F 0x912E 16
+D 0x9177 0x91B6 tira_9177  partitura de sonido (voz del sonido 0x16) que lee pide_un_efecto; lo cargan 0x873A[21] (63 bytes)
+F 0x9177 16
+D 0x91B6 0x91D7 tira_91B6  partitura de sonido (voz del sonido 0x31) que lee pide_un_efecto; lo cargan 0x873A[48] (33 bytes)
+F 0x91B6 16
+D 0x91D7 0x91E8 tira_91D7  partitura de sonido (voz del sonido 0x0F) que lee pide_un_efecto; lo cargan 0x873A[14] (17 bytes)
+F 0x91D7 16
+D 0x91E8 0x9228 tira_91E8  partitura de sonido (voz del sonido 0x10) que lee pide_un_efecto; lo cargan 0x873A[15] (64 bytes)
+F 0x91E8 16
+D 0x9228 0x9245 tira_9228  partitura de sonido (voz del sonido 0x03) que lee pide_un_efecto; lo cargan 0x873A[2] (29 bytes)
+F 0x9228 16
+D 0x9245 0x929A tira_9245  partitura de sonido (voz del sonido 0x05) que lee pide_un_efecto; lo cargan 0x873A[4] (85 bytes)
+F 0x9245 16
+D 0x929A 0x92AF tira_929A  partitura de sonido (voz del sonido 0x0C) que lee pide_un_efecto; lo cargan 0x873A[11] (21 bytes)
+F 0x929A 16
+D 0x92AF 0x92CA tira_92AF  partitura de sonido (voz del sonido 0x07) que lee pide_un_efecto; lo cargan 0x873A[6] (27 bytes)
+F 0x92AF 16
+D 0x92CA 0x92D5 tira_92CA  partitura de sonido (voz del sonido 0x08) que lee pide_un_efecto; lo cargan 0x873A[7] (11 bytes)
+F 0x92CA 16
+D 0x92D5 0x92E0 tira_92D5  partitura de sonido (voz del sonido 0x09) que lee pide_un_efecto; lo cargan 0x873A[8] (11 bytes)
+F 0x92D5 16
+D 0x92E0 0x9316 tira_92E0  partitura de sonido (voz del sonido 0x0A) que lee pide_un_efecto; lo cargan 0x873A[9] (54 bytes)
+F 0x92E0 16
+D 0x9316 0x9331 tira_9316  partitura de sonido (voz del sonido 0x0B) que lee pide_un_efecto; lo cargan 0x873A[10] (27 bytes)
+F 0x9316 16
+D 0x9331 0x936A tira_9331  partitura de sonido (voz del sonido 0x15) que lee pide_un_efecto; lo cargan 0x873A[20] (57 bytes)
+F 0x9331 16
+D 0x936A 0x938E tira_936A  partitura de sonido (voz del sonido 0x1D) que lee pide_un_efecto; lo cargan 0x873A[28] (36 bytes)
+F 0x936A 16
+D 0x938E 0x93C7 tira_938E  partitura de sonido (voz del sonido 0x1C) que lee pide_un_efecto; lo cargan 0x873A[27] (57 bytes)
+F 0x938E 16
+D 0x93C7 0x93D4 tira_93C7  partitura de sonido (voz del sonido 0x23) que lee pide_un_efecto; lo cargan 0x873A[34] (13 bytes)
+F 0x93C7 16
+D 0x93D4 0x944B tira_93D4  partitura de sonido (voz del sonido 0x28) que lee pide_un_efecto; lo cargan 0x873A[39] (119 bytes)
+F 0x93D4 16
+D 0x944B 0x9454 tira_944B  partitura de sonido (voz del sonido 0x25) que lee pide_un_efecto; lo cargan 0x873A[36] (9 bytes)
+F 0x944B 16
+D 0x9454 0x9489 tira_9454  partitura de sonido (voz del sonido 0x24) que lee pide_un_efecto; lo cargan 0x873A[35] (53 bytes)
+F 0x9454 16
+D 0x9489 0x94A0 tira_9489  partitura de sonido (voz del sonido 0x1B) que lee pide_un_efecto; lo cargan 0x873A[26] (23 bytes)
+F 0x9489 16
+D 0x94A0 0x94AF tira_94A0  partitura de sonido (voz del sonido 0x19) que lee pide_un_efecto; lo cargan 0x873A[24] (15 bytes)
+F 0x94A0 16
+D 0x94AF 0x94BA tira_94AF  partitura de sonido (voz del sonido 0x39) que lee pide_un_efecto; lo cargan 0x873A[56] (11 bytes)
+F 0x94AF 16
+D 0x94BA 0x94ED tira_94BA  partitura de sonido (voz del sonido 0x04) que lee pide_un_efecto; lo cargan 0x873A[3] (51 bytes)
+F 0x94BA 16
+D 0x94ED 0x9542 tira_94ED  partitura de sonido (voz del sonido 0x06) que lee pide_un_efecto; lo cargan 0x873A[5] (85 bytes)
+F 0x94ED 16
+D 0x9542 0x95B3 tira_9542  partitura de sonido (voz del sonido 0x22) que lee pide_un_efecto; lo cargan 0x873A[33] (113 bytes)
+F 0x9542 16
+D 0x95B3 0x95C1 tira_95B3  partitura de sonido (voz del sonido 0x3A) que lee pide_un_efecto; lo cargan 0x873A[57] (14 bytes)
+F 0x95B3 16
+D 0x95C1 0xA000 tira_95C1  partitura de sonido (voz del sonido 0x3B; voz del sonido 0x3C; voz del sonido 0x3D; voz del sonido 0x3E; ...) que lee pide_un_efecto; se entra por 0x95C1, 0x965D, 0x972D, 0x9823, 0x9976, 0x9A83, 0x9B69, 0x9C02, 0x9CB3, 0x9CFD, 0x9E40, 0x9F11; lo cargan 0x873A[58], 0x873A[59], 0x873A[60], 0x873A[61], 0x873A[62], 0x873A[63] y 6 sitios mas; sigue en el banco 15, en la ranura de al lado (2623 bytes)
+F 0x95C1 16
+# --- fin de los bloques de bloques.py ---

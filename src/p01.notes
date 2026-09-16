@@ -18,7 +18,7 @@ B 0x66DA EL SEGUNDO GUION: LO QUE PASA A CADA DISTANCIA. Igual que el de los ene
 L 0x66DA el_segundo_guion
 C 0x66DA el modo del juego; el modo en el que esta el juego
 C 0x66DE fuera del de jugar, nada
-C 0x66DF lo andado; la distancia a la que sale el objeto siguiente
+C 0x66DF lo que queda de fase
 C 0x66E2 y la distancia a la que toca
 C 0x66E6 DCOMPR: ¿hemos llegado?
 C 0x66E8 por que entrada del guion va
@@ -662,19 +662,19 @@ C 0x7F5B el mapa ya esta entero
 # se sabe lo que dice.
 C 0x6000 el DECORADO, de 0 a 9
 C 0x61DD el DECORADO, de 0 a 9
-C 0x6221 el largo de la fase
+C 0x6221 el TIEMPO que queda
 C 0x622C el DECORADO. Aqui solo salen del 0 al 7: los decorados 8 y 9 no los usa ninguna de las veinticuatro fases, los ponen a mano p03:B602 y p03:B932 para dos escenas de por medio
-C 0x6233 la distancia a la que sale el objeto siguiente
+C 0x6233 lo que queda de fase
 C 0x6267 el valor 1-2-3 de la fase
 C 0x6277 el DECORADO, de 0 a 9
-C 0x628C por donde va la rotacion de los sprites
+C 0x628C el ESTADO de lo que se maneja
 C 0x6342 el DECORADO, de 0 a 9
-C 0x645D lo andado en la fase
-C 0x6488 la distancia a la que sale el objeto siguiente
-C 0x64AB lo andado en la fase
+C 0x645D la distancia a la que toca el objeto siguiente
+C 0x6488 lo que queda de fase
+C 0x64AB la distancia a la que toca el objeto siguiente
 C 0x64B1 por que pareja del guion de la fase va
 C 0x64E7 la FASE, de 1 a 24
-C 0x64F0 por donde va la rotacion de los sprites
+C 0x64F0 el ESTADO de lo que se maneja
 C 0x6525 el modo en el que esta el juego
 C 0x6555 el DECORADO, de 0 a 9
 C 0x65A7 la FASE, de 1 a 24
@@ -684,20 +684,20 @@ C 0x6659 el valor 1-2-3 de la fase
 C 0x6674 el valor 1-2-3 de la fase
 C 0x66AB el valor 1-2-3 de la fase
 C 0x67C1 el modo en el que esta el juego
-C 0x68CA por donde va la rotacion de los sprites
+C 0x68CA el ESTADO de lo que se maneja
 C 0x69D2 la tabla de cambio de color, nibble alto
 C 0x69FD la tabla de cambio de color, nibble alto
 C 0x6A04 el contador de cuadros
 C 0x6A41 la tabla de cambio de color, nibble alto
 C 0x6A61 la tabla de cambio de color, nibble alto
 C 0x6A8A la tabla de cambio de color, nibble alto
-C 0x6AA8 por donde va la rotacion de los sprites
+C 0x6AA8 el ESTADO de lo que se maneja
 C 0x6AB7 el DECORADO, de 0 a 9
 C 0x6AD1 la tabla de cambio de color, nibble alto
 C 0x6AFB la tabla de cambio de color, nibble alto
 C 0x6B57 la tabla de cambio de color, nibble alto
 C 0x6B92 el modo en el que esta el juego
-C 0x6C0B por donde va la rotacion de los sprites
+C 0x6C0B el ESTADO de lo que se maneja
 C 0x6C51 el modo en el que esta el juego
 C 0x6CCD el modo en el que esta el juego
 C 0x6CDF la FASE, de 1 a 24
@@ -705,51 +705,51 @@ C 0x6E2C el modo en el que esta el juego
 C 0x6E68 las teclas recien pulsadas
 C 0x6F09 el modo en el que esta el juego
 C 0x6F29 la prioridad del efecto que suena
-C 0x7015 lo andado en la fase
+C 0x7015 la distancia a la que toca el objeto siguiente
 C 0x7018 por que pareja del guion de la fase va
-C 0x702A lo andado en la fase
+C 0x702A la distancia a la que toca el objeto siguiente
 C 0x702D por que pareja del guion de la fase va
-C 0x7035 por donde va la rotacion de los sprites
+C 0x7035 el ESTADO de lo que se maneja
 C 0x7050 el modo en el que esta el juego
-C 0x7059 por donde va la rotacion de los sprites
+C 0x7059 el ESTADO de lo que se maneja
 C 0x70D7 el DECORADO, de 0 a 9
-C 0x70E3 por donde va la rotacion de los sprites
-C 0x7114 por donde va la rotacion de los sprites
-C 0x712D por donde va la rotacion de los sprites
+C 0x70E3 el ESTADO de lo que se maneja
+C 0x7114 el ESTADO de lo que se maneja
+C 0x712D el ESTADO de lo que se maneja
 C 0x7183 el DECORADO, de 0 a 9
-C 0x7193 por donde va la rotacion de los sprites
+C 0x7193 el ESTADO de lo que se maneja
 C 0x71BB el DECORADO, de 0 a 9
-C 0x71DB por donde va la rotacion de los sprites
-C 0x720B por donde va la rotacion de los sprites
-C 0x7238 por donde va la rotacion de los sprites
-C 0x7248 por donde va la rotacion de los sprites
-C 0x7280 por donde va la rotacion de los sprites
-C 0x729D por donde va la rotacion de los sprites
-C 0x72CA por donde va la rotacion de los sprites
-C 0x72F4 por donde va la rotacion de los sprites
+C 0x71DB el ESTADO de lo que se maneja
+C 0x720B el ESTADO de lo que se maneja
+C 0x7238 el ESTADO de lo que se maneja
+C 0x7248 el ESTADO de lo que se maneja
+C 0x7280 el ESTADO de lo que se maneja
+C 0x729D el ESTADO de lo que se maneja
+C 0x72CA el ESTADO de lo que se maneja
+C 0x72F4 el ESTADO de lo que se maneja
 C 0x72FA el modo en el que esta el juego
-C 0x731D por donde va la rotacion de los sprites
-C 0x7345 por donde va la rotacion de los sprites
+C 0x731D el ESTADO de lo que se maneja
+C 0x7345 el ESTADO de lo que se maneja
 C 0x7371 el DECORADO, de 0 a 9
-C 0x7397 por donde va la rotacion de los sprites
-C 0x73AA por donde va la rotacion de los sprites
-C 0x73DA por donde va la rotacion de los sprites
+C 0x7397 el ESTADO de lo que se maneja
+C 0x73AA el ESTADO de lo que se maneja
+C 0x73DA el ESTADO de lo que se maneja
 C 0x7401 el DECORADO, de 0 a 9
-C 0x7407 por donde va la rotacion de los sprites
-C 0x743E por donde va la rotacion de los sprites
-C 0x7489 por donde va la rotacion de los sprites
-C 0x7531 por donde va la rotacion de los sprites
+C 0x7407 el ESTADO de lo que se maneja
+C 0x743E el ESTADO de lo que se maneja
+C 0x7489 el ESTADO de lo que se maneja
+C 0x7531 el ESTADO de lo que se maneja
 C 0x755D el DECORADO, de 0 a 9
 C 0x75C5 el DECORADO, de 0 a 9
-C 0x75D2 por donde va la rotacion de los sprites
-C 0x75DC por donde va la rotacion de los sprites
-C 0x7625 por donde va la rotacion de los sprites
+C 0x75D2 el ESTADO de lo que se maneja
+C 0x75DC el ESTADO de lo que se maneja
+C 0x7625 el ESTADO de lo que se maneja
 C 0x763E el DECORADO, de 0 a 9
 C 0x769E el DECORADO, de 0 a 9
-C 0x76AB por donde va la rotacion de los sprites
-C 0x76B5 por donde va la rotacion de los sprites
+C 0x76AB el ESTADO de lo que se maneja
+C 0x76B5 el ESTADO de lo que se maneja
 C 0x76D6 la pausa que se hace al perder o al cambiar de fase
-C 0x7728 por donde va la rotacion de los sprites
+C 0x7728 el ESTADO de lo que se maneja
 C 0x7854 las teclas recien pulsadas
 C 0x785B las teclas recien pulsadas
 C 0x78C2 las teclas recien pulsadas
@@ -759,11 +759,11 @@ C 0x7AA0 la prioridad del efecto que suena
 C 0x7E47 el DECORADO, de 0 a 9
 C 0x7E4D el contador de cuadros
 C 0x7E9A la FASE, de 1 a 24
-C 0x7EA8 la distancia a la que sale el objeto siguiente
-C 0x7EB2 la distancia a la que sale el objeto siguiente
-C 0x7EB5 el largo de la fase
-C 0x7EBF la distancia a la que sale el objeto siguiente
-C 0x7EC5 el largo de la fase
+C 0x7EA8 lo que queda de fase
+C 0x7EB2 lo que queda de fase
+C 0x7EB5 el TIEMPO que queda
+C 0x7EBF lo que queda de fase
+C 0x7EC5 el TIEMPO que queda
 C 0x7EF2 el contador de cuadros
 
 # --- Las llamadas al banco 0, que esta fijo en 0x4000-0x5FFF. Los nombres los
@@ -903,14 +903,14 @@ C 0x7F45 banco 0: guarda_lo_que_se_acaba_de_pulsar
 # tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
 # se sabe lo que dice.
 C 0x626E por que vuelta de la fase va
-C 0x6286 la X en la pantalla de lo que se maneja
+C 0x6286 la Y en la pantalla de lo que se maneja
 C 0x65BC por que vuelta de la fase va
 C 0x6614 los avisos que deja el cuadro
 C 0x661C por que vuelta de la fase va
 C 0x66D4 los avisos que deja el cuadro
 C 0x6799 por que vuelta de la fase va
-C 0x689C la Y en la pantalla de lo que se maneja
-C 0x68A9 la Y en la pantalla de lo que se maneja
+C 0x689C la X en la pantalla de lo que se maneja
+C 0x68A9 la X en la pantalla de lo que se maneja
 C 0x68FC que hueco de sprite toca
 C 0x6971 que hueco de sprite toca
 C 0x6A21 que hueco de sprite toca
@@ -918,58 +918,58 @@ C 0x6A2D que hueco de sprite toca
 C 0x6A4A que hueco de sprite toca
 C 0x6A73 que hueco de sprite toca
 C 0x6A9A que hueco de sprite toca
-C 0x6BFC la Y en la pantalla de lo que se maneja
-C 0x6C10 la X en la pantalla de lo que se maneja
-C 0x6C15 la Y en la pantalla de lo que se maneja
+C 0x6BFC la X en la pantalla de lo que se maneja
+C 0x6C10 la Y en la pantalla de lo que se maneja
+C 0x6C15 la X en la pantalla de lo que se maneja
 C 0x6F53 los avisos que deja el cuadro
 C 0x6FB4 los avisos que deja el cuadro
-C 0x703A la X en la pantalla de lo que se maneja
-C 0x7043 la Y en la pantalla de lo que se maneja
+C 0x703A la Y en la pantalla de lo que se maneja
+C 0x7043 la X en la pantalla de lo que se maneja
 C 0x7065 que hueco de sprite toca
-C 0x70F5 la Y en la pantalla de lo que se maneja
-C 0x70FE la X en la pantalla de lo que se maneja
-C 0x7104 la Y en la pantalla de lo que se maneja
-C 0x714C la Y en la pantalla de lo que se maneja
-C 0x716B la X en la pantalla de lo que se maneja
+C 0x70F5 la X en la pantalla de lo que se maneja
+C 0x70FE la Y en la pantalla de lo que se maneja
+C 0x7104 la X en la pantalla de lo que se maneja
+C 0x714C la X en la pantalla de lo que se maneja
+C 0x716B la Y en la pantalla de lo que se maneja
 C 0x7180 la bandera de que la fase se ha acabado
-C 0x71AE la Y en la pantalla de lo que se maneja
-C 0x7223 la Y en la pantalla de lo que se maneja
-C 0x725B la Y en la pantalla de lo que se maneja
-C 0x7266 la X en la pantalla de lo que se maneja
+C 0x71AE la X en la pantalla de lo que se maneja
+C 0x7223 la X en la pantalla de lo que se maneja
+C 0x725B la X en la pantalla de lo que se maneja
+C 0x7266 la Y en la pantalla de lo que se maneja
 C 0x727B la bandera de que la fase se ha acabado
-C 0x7288 la Y en la pantalla de lo que se maneja
-C 0x72DC la Y en la pantalla de lo que se maneja
-C 0x72FF la Y en la pantalla de lo que se maneja
-C 0x7303 la X en la pantalla de lo que se maneja
+C 0x7288 la X en la pantalla de lo que se maneja
+C 0x72DC la X en la pantalla de lo que se maneja
+C 0x72FF la X en la pantalla de lo que se maneja
+C 0x7303 la Y en la pantalla de lo que se maneja
 C 0x730B los avisos que deja el cuadro
-C 0x732F la Y en la pantalla de lo que se maneja
-C 0x7356 la Y en la pantalla de lo que se maneja
-C 0x735A la X en la pantalla de lo que se maneja
-C 0x7362 la Y en la pantalla de lo que se maneja
-C 0x73BD la Y en la pantalla de lo que se maneja
-C 0x73C6 la X en la pantalla de lo que se maneja
+C 0x732F la X en la pantalla de lo que se maneja
+C 0x7356 la X en la pantalla de lo que se maneja
+C 0x735A la Y en la pantalla de lo que se maneja
+C 0x7362 la X en la pantalla de lo que se maneja
+C 0x73BD la X en la pantalla de lo que se maneja
+C 0x73C6 la Y en la pantalla de lo que se maneja
 C 0x73D5 la bandera de que la fase se ha acabado
-C 0x741F la Y en la pantalla de lo que se maneja
-C 0x742A la X en la pantalla de lo que se maneja
-C 0x742F la Y en la pantalla de lo que se maneja
-C 0x746F la Y en la pantalla de lo que se maneja
-C 0x7478 la X en la pantalla de lo que se maneja
+C 0x741F la X en la pantalla de lo que se maneja
+C 0x742A la Y en la pantalla de lo que se maneja
+C 0x742F la X en la pantalla de lo que se maneja
+C 0x746F la X en la pantalla de lo que se maneja
+C 0x7478 la Y en la pantalla de lo que se maneja
 C 0x7484 la bandera de que la fase se ha acabado
-C 0x74C4 la Y en la pantalla de lo que se maneja
-C 0x74CD la X en la pantalla de lo que se maneja
+C 0x74C4 la X en la pantalla de lo que se maneja
+C 0x74CD la Y en la pantalla de lo que se maneja
 C 0x750C que hueco de sprite toca
-C 0x7564 la X en la pantalla de lo que se maneja
-C 0x756E la Y en la pantalla de lo que se maneja
-C 0x757A la X en la pantalla de lo que se maneja
-C 0x7584 la Y en la pantalla de lo que se maneja
+C 0x7564 la Y en la pantalla de lo que se maneja
+C 0x756E la X en la pantalla de lo que se maneja
+C 0x757A la Y en la pantalla de lo que se maneja
+C 0x7584 la X en la pantalla de lo que se maneja
 C 0x75C2 la bandera de que la fase se ha acabado
-C 0x7645 la X en la pantalla de lo que se maneja
-C 0x764F la Y en la pantalla de lo que se maneja
-C 0x765B la X en la pantalla de lo que se maneja
-C 0x7665 la Y en la pantalla de lo que se maneja
+C 0x7645 la Y en la pantalla de lo que se maneja
+C 0x764F la X en la pantalla de lo que se maneja
+C 0x765B la Y en la pantalla de lo que se maneja
+C 0x7665 la X en la pantalla de lo que se maneja
 C 0x7690 la bandera de que la fase se ha acabado
-C 0x7702 la X en la pantalla de lo que se maneja
-C 0x770B la Y en la pantalla de lo que se maneja
+C 0x7702 la Y en la pantalla de lo que se maneja
+C 0x770B la X en la pantalla de lo que se maneja
 C 0x7718 la bandera de que la fase se ha acabado
 C 0x7849 los avisos que deja el cuadro
 C 0x7892 los avisos que deja el cuadro
@@ -979,34 +979,6 @@ C 0x7F5D la bandera de que la fase se ha acabado
 # --- Las llamadas al banco 0, que esta fijo en 0x4000-0x5FFF. Los nombres los
 # saca tools/anota_llamadas.py de las directivas L de src/p00.notes.
 C 0x6536 banco 2
-C 0x6DF5 banco 12
-C 0x6EED banco 13
-C 0x6F00 banco 12
-C 0x71AB banco 10
-C 0x71D1 banco 10
-C 0x71D6 banco 10
-C 0x7295 banco 10
-C 0x7298 banco 10
-C 0x72B9 banco 10
-C 0x7306 banco 11
-C 0x735D banco 11
-C 0x7392 banco 10
-C 0x73F2 banco 10
-C 0x75F7 banco 11
-C 0x760D banco 11
-C 0x7622 banco 10
-C 0x76ED banco 11
-C 0x7785 banco 10
-C 0x77FE banco 11
-C 0x7806 banco 10
-C 0x78BB banco 10
-C 0x793F banco 10
-C 0x7A9D banco 10
-C 0x7E86 banco 10
-C 0x7EBB banco 10
-C 0x7ED7 banco 10
-C 0x7EDD banco 10
-C 0x7EEB banco 11
 
 B 0x6799 LO QUE SALE DEL TERRENO. La rutina que convierte el byte de terreno en cosas puestas en las cinco ranuras de 0xE440. Tiene dos fuentes segun el modo: en el modo 1 lee una lista de 0x81F2 -banco 10-, y en el de jugar coge el byte de terreno de ahora (0xE402), lo multiplica por OCHO y con eso indexa la tabla de 0x84EA: ocho cosas por cada tramo de terreno, y 0xE403 dice por cual va.
 L 0x6799 lo_que_sale_del_terreno
@@ -1081,3 +1053,1096 @@ C 0x74F3 lo que queda de bonus por pasar al marcador
 C 0x74F9 lo que queda de bonus por pasar al marcador
 C 0x7AC2 el marcador, cifras bajas (BCD)
 C 0x7EAF el marcador, cifras bajas (BCD)
+
+# --- Las tablas pequenas que quedaban sin declarar, cada una con la instruccion
+# que la carga (2026-09-15). Los punteros del banco 0 que caen en estas mismas
+# direcciones (p00:4E4A, 4E70, 4E7B, 50DA, 50F1, 586D, 5769) NO son de este
+# banco: se ejecutan con otro trio puesto en 0x6000.
+D 0x62EC 0x62EF tres_bytes_a_E40A  tres bytes que p01:62E0 copia con ldir a 0xE40A
+F 0x62EC 3
+D 0x64C6 0x64E7 tres_registros_de_11  tres registros de 11 bytes: p01:6477 escoge 0x64C6, 0x64D1 o 0x64DC segun A (0, 1 u otro) y p01:6485 empieza por llevar la primera palabra a 0xE08D, lo que queda de fase
+F 0x64C6 11
+D 0x6CC0 0x6CC3 salida_de_lo_que_se_maneja  tres bytes que p01:6C07 reparte: el estado de lo que se maneja (0xE203), la Y (0xE204) y la X (0xE205) de lo que se maneja
+F 0x6CC0 3
+D 0x6DC5 0x6DD1 seis_direcciones_de_nombres  seis palabras, direcciones de la tabla de nombres (0x3987, 0x398A...): p01:6D2B coge la de B y p01:6DD6 las recorre las seis
+F 0x6DC5 2
+D 0x6FD5 0x7005 tablas_de_IX_por_modo  tres tablas de 16 bytes, una por modo (0xE0A2 = 3, 4 u otro): p01:6CC9, 6CD4 y 6CDB ponen IX en 0x6FD5, 0x6FE5 o 0x6FF5, y p01:6D04 lee de IX con los indices de las listas del banco 11 (0xAF90)
+F 0x6FD5 16
+D 0x7005 0x7015 ocho_punteros_E10C  ocho palabras que p01:6E73 y p01:6EA3 indexan con (0xE10C)
+F 0x7005 2
+D 0x7085 0x70D1 despacho_de_7082  38 punteros pegados detras del `call despacha` de p01:7082: la rutina de cada clase de objeto, indexada con (ix+1) - 1. Varias clases comparten rutina
+F 0x7085 2
+D 0x711F 0x7127 ventanas_711F  dos entradas de 4 bytes que p01:70ED escoge con (ix+1): la X de lo que se maneja (0xE205) tiene que caer entre las dos primeras (`cp (hl) / ret c / inc hl / cp (hl) / ret nc`) y el resto se sigue comparando
+F 0x711F 4
+D 0x71E1 0x7205 ventanas_71E1  tres entradas de 12 bytes que p01:713E escoge con (ix+1) - 3; empiezan por la ventana de X contra (0xE205), como las de 0x711F
+F 0x71E1 12
+D 0x723C 0x7242 ventanas_723C  dos entradas de 3 bytes que p01:721B escoge con (ix+1) - 6, contra la X (0xE205)
+F 0x723C 3
+D 0x72BC 0x72C4 ventanas_72BC  dos entradas de 4 bytes que p01:7253 escoge con (ix+1) - 8, contra la X (0xE205)
+F 0x72BC 4
+D 0x730F 0x7317 ventanas_730F  dos entradas de 4 bytes que p01:72D4 escoge con (ix+1) - 0x0A, contra la X (0xE205)
+F 0x730F 4
+D 0x739B 0x73A3 ventanas_739B  dos entradas de 4 bytes que p01:7327 escoge con (ix+1) - 0x0C, contra la X (0xE205)
+F 0x739B 4
+D 0x73F5 0x73FB ventanas_73F5  dos entradas de 3 bytes que p01:73B5 escoge con (ix+1) - 0x11, contra la X (0xE205)
+F 0x73F5 3
+D 0x7442 0x744A ventanas_7442  dos entradas de 4 bytes que p01:7417 escoge con (ix+1) - 0x13, contra la X (0xE205)
+F 0x7442 4
+D 0x7491 0x74A5 ventanas_7491  cinco entradas de 4 bytes que p01:7455 escoge con (ix+1) - 0x15, contra la X (0xE205)
+F 0x7491 4
+D 0x7524 0x7530 ventanas_7524  tres entradas de 4 bytes que p01:74B6 escoge con (ix+1) - 0x1D, contra la X (0xE205)
+F 0x7524 4
+D 0x7B23 0x7B2A cuentas_7B23  siete bytes que p01:7A09 indexa con A - 1 y lleva a B, una cuenta
+F 0x7B23 7
+D 0x7B2A 0x7B2E dos_punteros_7B2A  dos palabras que p01:786E y p01:787E eligen con (0xE12B), que va y viene entre 0 y 1
+F 0x7B2A 2
+D 0x7B2E 0x7B34 bytes_7B2E  seis bytes que p01:79AE indexa y lleva a C
+F 0x7B2E 6
+D 0x7B34 0x7B44 dieciseis_bytes_7B34  dieciseis bytes que p01:79A6 indexa con el nibble bajo de A y escribe en (DE)
+F 0x7B34 16
+D 0x7B50 0x7B5E codigo_muerto_7B50  catorce bytes que se leen limpios como codigo -`ld a,(0E0C5h) / and a / ret nz / ld a,(0E115h) / and a / ret z`...- pero a los que no salta nadie
+F 0x7B50 14
+D 0x7CEE 0x7CF8 cinco_bases_E538  cinco direcciones de RAM (0xED2B a 0xED2F) que p01:7C18 y p01:7CB6 indexan con (0xE537) y dejan en 0xE538, la base de las tiras del banco 11
+F 0x7CEE 2
+D 0x7D6C 0x7D74 cuatro_bases_7D6C  cuatro direcciones de RAM (0xEE3A, 0xEE33, 0xEE2C, 0xEE25) que p01:7D1C indexa con B - 1: la base DE de las tiras largas del banco 11
+F 0x7D6C 2
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x7EF6 0x7F0E escenas_de_la_demo  ocho entradas de 3 bytes que p01:7E93 elige con (0xF0F6) & 7: la fase (0xE092) y el puntero a su partida grabada (0xE13A). Las fases son 13, 14, 15, 17, 18, 19, 20, 24
+F 0x7EF6 3
+D 0x7F62 0x8000 relleno_del_banco_1  158 bytes a 0xFF hasta el final de los 8 KB del banco: espacio libre
+F 0x7F62 16
+# --- fin de los bloques de bloques.py ---
+
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0x6497 el arrastre de lado que se lleva solo
+C 0x6570 el arrastre de lado que se lleva solo
+C 0x671F el arrastre de lado que se lleva solo
+C 0x72A2 el hueco de sprite 4
+C 0x72A5 el hueco de sprite 5
+C 0x7366 el hueco de sprite 4
+C 0x736C el hueco de sprite 5
+
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0x62A6 el nivel de la barra de nueve
+C 0x68D9 el nivel de la barra de nueve
+C 0x6AD4 el nivel de la barra de nueve
+C 0x717D por que paso va la secuencia
+C 0x7278 por que paso va la secuencia
+C 0x73D2 por que paso va la secuencia
+C 0x7481 por que paso va la secuencia
+C 0x75BF por que paso va la secuencia
+C 0x768D por que paso va la secuencia
+C 0x7715 por que paso va la secuencia
+
+# --- Las llamadas al banco 0, que esta fijo en 0x4000-0x5FFF. Los nombres los
+# saca tools/anota_llamadas.py de las directivas L de src/p00.notes.
+C 0x6DF5 banco 2
+C 0x6F00 banco 2
+C 0x71AB banco 2
+C 0x71D1 banco 2
+C 0x71D6 banco 2
+C 0x7295 banco 2
+C 0x7298 banco 2
+C 0x72B9 banco 2
+C 0x7306 banco 3
+C 0x735D banco 3
+C 0x7392 banco 2
+C 0x73F2 banco 2
+C 0x75F7 banco 3
+C 0x760D banco 3
+C 0x7622 banco 2
+C 0x76ED banco 3
+C 0x7785 banco 2
+C 0x77FE banco 3
+C 0x7806 banco 2
+C 0x78BB banco 2
+C 0x793F banco 2
+C 0x7A9D banco 2
+C 0x7E86 banco 2
+C 0x7EBB banco 2
+C 0x7ED7 banco 2
+C 0x7EDD banco 2
+
+# --- La familia de los huecos: los objetos de clase 14 (2026-09-16). Todas
+# estas rutinas tienen la misma forma: miran que (ix+2) valga 14, filtran por
+# el estado de lo que se maneja, escogen una ventana con (ix+1) menos una base
+# y comparan la columna del jugador contra ella. Si cae dentro, se cae.
+B 0x70D1 CAERSE POR UN HUECO (LAS VARIANTES 3, 4 Y 5). Es la mas larga de la familia porque tiene tres salidas distintas: si no se lleva nada, se pierde la vida -estado 0x15, o 0x16 en los decorados 4 y 5, y el efecto 0x8C-; si 0xE1F1 esta puesto, se salva, la variante del hueco sube 0x1D y caen 768 puntos; y si lo que esta puesto es 0xE171, se entra al hueco de verdad, que es lo que lleva al estado 3, 8 o 10 segun el decorado. En los decorados 4, 5 y 7 esta rutina no cuenta.
+L 0x70D1 caerse_por_un_hueco
+C 0x70D1 la clase del objeto
+C 0x70D4 la 14 son los huecos
+C 0x70DA en el decorado 4...
+C 0x70DD ...en el 5...
+C 0x70E0 ...y en el 7 no hay nada de esto
+C 0x70E6 y en el estado 3 tampoco
+C 0x70E9 la variante del hueco
+C 0x70ED la primera ventana...
+C 0x70F2 ...o la segunda
+C 0x70F8 por debajo de la ventana, fuera
+C 0x70FB y por encima, tambien
+C 0x70FE la tercera medida es el punto medio
+C 0x7104 y de que lado cae decide el bit 7
+C 0x710E por que lado se ha entrado
+C 0x7117 en el estado 0x11...
+C 0x7119 ...hay que avisar al banco 2
+L 0x714C mira_la_ventana_de_doce
+C 0x714C la columna del jugador
+C 0x714F por debajo de la ventana, fuera
+C 0x7152 y por encima, tambien
+C 0x7155 el punto medio, guardado para luego
+C 0x7157 y ahora cuatro cortes seguidos, que van dando la fila que hace falta...
+C 0x7159 ...y el primero que se pase manda
+C 0x716B la fila del jugador
+C 0x716E si no llega, no ha caido
+C 0x7170 ¿lleva lo de 0xE1F1?
+C 0x7176 ¿y lo de 0xE171?
+C 0x717C sin nada de eso, se acabo la fase
+C 0x7183 el decorado
+C 0x7186 en el 4 y en el 5 se pierde con el estado 0x16...
+C 0x7190 ...y en el resto con el 0x15
+C 0x7196 y el efecto 0x8C, el de perder
+L 0x719B con_lo_de_0xE1F1_se_salva
+C 0x719B la variante del hueco
+C 0x719E sube 0x1D: el hueco pasa a ser otra cosa
+C 0x71A3 el efecto 0x1A
+C 0x71A8 y 768 puntos
+L 0x71AE con_lo_de_0xE171_se_entra
+C 0x71AE la columna del jugador
+C 0x71B1 contra el punto medio de antes
+C 0x71B2 por la izquierda...
+C 0x71B6 ...o por la derecha
+C 0x71BB el decorado
+C 0x71C0 en el 7 se va al estado 10...
+C 0x71C6 ...en el 4 y en el 5 al 8...
+C 0x71CE ...y en el resto al 3
+C 0x71D1 banco 2: aviso
+C 0x71D6 banco 2: y el otro aviso
+C 0x71DB el estado que toque
+B 0x7205 CAERSE POR UN HUECO (LAS VARIANTES 6 Y 7). La version corta: una ventana de tres bytes -principio, final y punto medio-, sin fila que valga y sin salvarse de ninguna manera. Cae dentro y al estado 3. Y solo cuenta si el estado es cero: aqui no se entra ni saltando ni cayendo.
+L 0x7205 caerse_por_un_hueco_6_y_7
+C 0x7205 la clase del objeto
+C 0x7208 la 14 son los huecos
+C 0x720E en el 3 ya se esta dentro
+C 0x7211 y en el 15 tampoco
+C 0x7214 solo con el estado a cero
+C 0x7216 la variante
+C 0x721B la ventana de la 6...
+C 0x7220 ...o la de la 7
+L 0x7223 mira_la_ventana_de_tres
+C 0x7223 la columna del jugador
+C 0x7226 por debajo, fuera
+C 0x7229 por encima, fuera
+C 0x722C y contra el punto medio...
+C 0x722D ...a la izquierda...
+C 0x7231 ...o a la derecha
+C 0x7233 por que lado se ha entrado
+C 0x7236 y dentro: el estado 3
+
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0x71B8 por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
+C 0x7292 por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
+C 0x738F por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
+C 0x7439 por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
+
+B 0x7242 CAERSE POR UN HUECO (LAS VARIANTES 8 Y 9). Como la de 0x70D1 pero con una ventana de cuatro bytes: principio, final, punto medio y la fila a partir de la cual cuenta. Aqui la salvacion es 0xE1F1 -que sube la variante 0x1B y da 768 puntos- y la entrada de verdad es 0xE172. Perder es siempre el estado 0x15.
+L 0x7242 caerse_por_un_hueco_8_y_9
+C 0x7242 la clase del objeto
+C 0x7245 la 14 son los huecos
+C 0x724B en el 3 ya se esta dentro
+C 0x724E la variante
+C 0x7253 la ventana de la 8...
+C 0x7258 ...o la de la 9
+L 0x725B mira_la_ventana_de_cuatro
+C 0x725B la columna del jugador
+C 0x725E por debajo, fuera
+C 0x7261 por encima, fuera
+C 0x7264 el punto medio, guardado
+C 0x7266 y la fila
+C 0x7269 si no llega, no ha caido
+C 0x726B ¿lleva lo de 0xE1F1?
+C 0x7271 ¿y lo de 0xE172?
+C 0x7277 sin nada de eso, se acabo la fase
+C 0x727E el estado 0x15: perder
+C 0x7283 y el efecto 0x8C
+L 0x7288 con_lo_de_0xE172_se_entra
+C 0x7288 la columna del jugador
+C 0x728B contra el punto medio
+C 0x728C por la izquierda...
+C 0x7290 ...o por la derecha
+C 0x729B y dentro: el estado 3
+L 0x72A0 esconde_los_sprites_4_y_5
+C 0x72A0 0xE0 en la fila: fuera de la pantalla
+L 0x72A9 con_lo_de_0xE1F1_se_salva_8_y_9
+C 0x72A9 la variante del hueco
+C 0x72AC sube 0x1B: el hueco pasa a ser otra cosa
+C 0x72B1 el efecto 0x1A
+C 0x72B6 y 768 puntos
+B 0x72C4 SUBIRSE A ALGO (LAS VARIANTES 10 Y 11). Otra cosa de la clase 14, y esta no es un hueco: la ventana lleva DOS cortes, y por fuera de ellos se entra de lado -al estado 3- y por dentro se sube encima, que es el estado 0x12. Al subirse se planta en la fila 0x98, el modo del juego pasa a ser el que traiga (ix+4) y se deja el aviso 0x20.
+L 0x72C4 subirse_a_algo
+C 0x72C4 la clase del objeto
+C 0x72CD solo con el estado a cero
+C 0x72CF la variante
+C 0x72D4 la ventana de la 10...
+C 0x72D9 ...o la de la 11
+C 0x72DC la columna del jugador
+C 0x72DF por debajo, fuera
+C 0x72E2 por encima, fuera
+C 0x72E5 por delante del primer corte se entra de lado...
+C 0x72EC ...y por detras del segundo, tambien
+C 0x72F2 en medio: el estado 0x12, encima
+C 0x72F7 el modo del juego lo trae el objeto
+C 0x72FD la fila 0x98, clavada
+C 0x72FF y la columna, la que hubiera
+C 0x7306 banco 3: y a colocar los cuatro sprites
+C 0x7309 el aviso 0x20
+B 0x7317 MONTARSE (LAS VARIANTES 12 Y 13). La misma ventana de dos cortes que la de 0x72C4, pero lo que sale de dentro es el estado 4, el que reparte la tabla de sprites de otra manera (p00:42FB). Coloca la figura en la fila 0x98 y le pone debajo los sprites 4 y 5, en la 0xB4, con el color 0x0F o el 9 segun el decorado; suena el efecto 0x0B y se arranca la cuenta de 0xE20E con 0x20.
+L 0x7317 montarse
+C 0x7317 la clase del objeto
+C 0x7320 solo con el estado a cero
+C 0x7322 la variante
+C 0x7327 la ventana de la 12...
+C 0x732C ...o la de la 13
+C 0x7332 por debajo, fuera
+C 0x7335 por encima, fuera
+C 0x7338 por delante del primer corte se entra de lado...
+C 0x733E ...y por detras del segundo, tambien
+C 0x7343 en medio: el estado 4
+C 0x7348 dos bytes mas que trae el objeto
+C 0x7354 la fila 0x98
+C 0x735D banco 3: los cuatro sprites, colocados
+C 0x7360 y debajo, en la fila 0xB4...
+C 0x7366 ...los sprites 4...
+C 0x736C ...y 5, este dieciseis columnas mas alla
+C 0x736F el dibujo 0x4C para los dos
+C 0x7374 hasta el decorado 2 en blanco...
+C 0x737A ...y de ahi en adelante en rojo
+C 0x737D a los dos sprites
+C 0x7383 el efecto 0x0B
+C 0x738A y la cuenta de 0xE20E, a 0x20
+L 0x738E entra_de_lado
+C 0x738E por que lado
+L 0x7392 y_al_estado_3
+C 0x7392 banco 2: aviso
+C 0x7395 el estado 3
+B 0x73A4 CAERSE POR UN HUECO (LAS VARIANTES 0x11 Y 0x12). Ventana de tres bytes con fila, una sola salvacion -0xE1F1, que sube la variante 0x14- y perder con el estado 0x16. En el estado 8 esta rutina no cuenta.
+L 0x73A4 caerse_por_un_hueco_11_y_12
+C 0x73A4 la clase del objeto
+C 0x73AD en el 8 no cuenta
+C 0x73B0 la variante
+C 0x73B5 la ventana de la 0x11...
+C 0x73BA ...o la de la 0x12
+C 0x73BD la columna del jugador
+C 0x73C0 por debajo, fuera
+C 0x73C3 por encima, fuera
+C 0x73C6 y la fila
+C 0x73C9 si no llega, no ha caido
+C 0x73CB ¿lleva lo de 0xE1F1?
+C 0x73D1 si no, se acabo la fase
+C 0x73D8 el estado 0x16: perder
+C 0x73DD y el efecto 0x8C
+L 0x73E2 con_lo_de_0xE1F1_se_salva_11_y_12
+C 0x73E2 la variante del hueco
+C 0x73E5 sube 0x14
+C 0x73EA el efecto 0x1A
+C 0x73EF y 768 puntos
+B 0x73FB ENTRAR (LAS VARIANTES 0x13 Y 0x14), SOLO EN EL DECORADO 7. Ventana de cuatro bytes, y ni se pierde ni se salva: se entra y ya, al estado 10. Ademas de estar en el decorado 7 hace falta que 0xE168 este a cero.
+L 0x73FB entrar_en_el_decorado_7
+C 0x73FB la clase del objeto
+C 0x7404 solo en el decorado 7
+C 0x740A en el 10 ya se esta dentro
+C 0x740D y 0xE168 lo impide
+C 0x7412 la variante
+C 0x7417 la ventana de la 0x13...
+C 0x741C ...o la de la 0x14
+C 0x7422 por debajo, fuera
+C 0x7425 por encima, fuera
+C 0x7428 el punto medio, guardado
+C 0x742A y la fila
+C 0x742D si no llega, no se entra
+C 0x7432 contra el punto medio
+C 0x7433 por la izquierda...
+C 0x7437 ...o por la derecha
+C 0x743C y dentro: el estado 10
+
+B 0x744A CAERSE (LAS VARIANTES 0x15 A 0x19). Cinco ventanas y ninguna salida: la ventana es un rectangulo entero -dos cortes en columna y dos en fila- y quien caiga dentro pierde la vida, con el estado 0x15 y el efecto 0x8C. No hay nada que se pueda llevar que salve de estas.
+L 0x744A caerse_15_a_19
+C 0x744A la clase del objeto
+C 0x7450 la variante
+C 0x7455 la ventana de la 0x15...
+C 0x745B ...la de la 0x16...
+C 0x7461 ...la de la 0x17...
+C 0x7467 ...la de la 0x18...
+C 0x746C ...o la de la 0x19
+L 0x746F mira_el_rectangulo_entero
+C 0x746F la columna del jugador
+C 0x7472 por la izquierda, fuera
+C 0x7475 por la derecha, fuera
+C 0x7478 y ahora la fila
+C 0x747B por arriba, fuera
+C 0x747E por abajo, fuera
+C 0x7480 dentro: se acabo la fase
+C 0x7487 el estado 0x15: perder
+C 0x748C y el efecto 0x8C
+B 0x74A5 COGER ALGO (LAS VARIANTES 0x1A A 0x1F). Las dos mitades de la tabla comparten ventana -0x74B2 le resta 3 a las de arriba para que caigan en las mismas tres- y lo que cambia es el premio: de la 0x1A a la 0x1C suman uno al bonus con el efecto 0x0E, y de la 0x1D a la 0x1F suman UNA VIDA en BCD con el efecto 0x38. Las vidas topan en 0x99: si el `daa` se desborda, se quedan en 99. Y en las dos, el objeto se borra y sus dos sprites se van de la pantalla.
+L 0x74A5 coger_algo
+C 0x74A5 la clase del objeto
+C 0x74AB la variante
+C 0x74AE de la 0x1D para arriba...
+C 0x74B2 ...se le quitan 3 y comparte ventana
+C 0x74B4 la ventana de la primera...
+C 0x74BB ...la de la segunda...
+C 0x74C1 ...o la de la tercera
+C 0x74C4 la columna del jugador
+C 0x74C7 por la izquierda, fuera
+C 0x74CA por la derecha, fuera
+C 0x74CD y ahora la fila
+C 0x74D0 por arriba, fuera
+C 0x74D3 por abajo, fuera
+C 0x74D5 la variante otra vez
+C 0x74D8 ¿de las que dan vida?
+C 0x74DC las vidas, en BCD
+C 0x74DF una mas
+C 0x74E5 y si se desbordan...
+C 0x74E7 ...se quedan en 99
+C 0x74EC el efecto 0x38, el de la vida
+L 0x74F3 coger_algo_da_bonus
+C 0x74F3 el bonus
+C 0x74F6 uno mas, en BCD
+C 0x74FC y el efecto 0x0E
+L 0x7501 borra_el_objeto_cogido
+C 0x7501 el registro del objeto
+C 0x7504 sus dieciseis bytes
+L 0x7506 borra_el_objeto_vuelta
+C 0x750C que hueco de sprite tenia
+C 0x750F por cuatro, que es lo que ocupa un sprite
+C 0x7518 0xE0 en la fila: fuera de la pantalla
+C 0x751B y su companero de 0xEEA4, tambien
+
+B 0x7531 CHOCAR CON LOS TRES DE 0xE310. Los tres huecos de objeto, de 0x20 bytes cada uno. Solo cuentan los que esten puestos y no marcados con 0x10 -que es "ya chocado"- y que ademas tengan su byte 7 entre 0xA8 y 0xB0, o sea a la altura del jugador. El rectangulo es de 0x28 de alto por 0x20 de ancho, y en el decorado 7 de 0x20 por 0x20. En el estado 0x10 no se choca con nada.
+L 0x7531 choca_con_los_tres_de_0xE310
+C 0x7534 en el 0x10 no se choca
+C 0x7537 los tres huecos
+L 0x753C choca_con_uno_de_los_tres
+C 0x753D de entrada, 0x20 al hueco siguiente
+C 0x753F ¿esta puesto?
+C 0x7543 y el 0x10 es el que ya ha chocado
+C 0x7548 su byte 7
+C 0x754B y este salta 0x19 + 0x07: tambien 0x20
+C 0x754E por encima de la 0xA8...
+C 0x7552 ...y por debajo de la 0xB0: fuera
+C 0x7557 atras, a su fila y su columna
+C 0x755D el decorado
+C 0x7560 el 7 tiene su propia medida
+C 0x7564 la fila del jugador
+C 0x7567 el margen en fila
+C 0x756A 0x28 de alto
+C 0x756E y la columna
+C 0x7571 su margen
+C 0x7574 y 0x20 de ancho
+L 0x757A choca_en_el_decorado_7
+C 0x757A la fila del jugador
+C 0x757D aqui el margen es 0x14...
+C 0x7580 ...y el alto 0x20
+C 0x7584 la columna, igual que antes
+C 0x758F han chocado
+L 0x7593 choca_no_le_ha_dado
+C 0x7593 0x1D + 0x03: el hueco siguiente
+L 0x7595 choca_al_hueco_siguiente
+B 0x759C QUE PASA AL CHOCAR. Depende de la clase del bicho, y de lo que se lleve encima: las clases 6 y 12 las para lo que cuente 0xE164, las clases 1 y 13 lo que cuente 0xE165, y las clases 5 y 14 la marca de 0xE170. Cada vez que uno de esos para un golpe se GASTA una unidad, el bicho se marca con 0x10 y suena el efecto 0x17. Con 0xE1F1 puesto no hace falta nada de eso: se para cualquier golpe. Y si no hay con que pararlo, se pierde la vida.
+L 0x759C que_pasa_al_chocar
+C 0x759C atras, a la clase del bicho
+C 0x759F ¿lleva lo de 0xE1F1?
+C 0x75A3 con eso se para cualquier golpe
+C 0x75A5 la clase
+C 0x75A6 la 6...
+C 0x75AA ...y la 12 las para lo de 0xE164
+C 0x75AE la 1...
+C 0x75B2 ...y la 13 las para lo de 0xE165
+C 0x75B6 la 5...
+C 0x75BA ...y la 14 las para lo de 0xE170
+L 0x75BE chocar_cuesta_la_vida
+C 0x75BE se acabo la fase
+C 0x75C5 el decorado
+C 0x75C8 en el 4 y en el 5 se pierde con el estado 0x16...
+C 0x75D2 ...y tambien si se iba en el estado 4...
+C 0x75D9 ...y en el resto con el 0x15
+C 0x75DF y el efecto 0x8C
+L 0x75E4 lo_de_0xE164_para_el_golpe
+C 0x75E4 ¿queda?
+C 0x75E8 si no queda, se pierde
+C 0x75EA se gasta uno
+C 0x75EE el bicho, marcado como ya chocado
+C 0x75F0 el efecto 0x17, el de pararlo
+C 0x75F5 banco 3: y a soltar el objeto 4
+L 0x75FA lo_de_0xE165_para_el_golpe
+C 0x75FA ¿queda?
+C 0x75FE si no queda, se pierde
+C 0x7600 se gasta uno
+C 0x7604 el bicho, marcado
+C 0x7606 el efecto 0x17
+C 0x760B banco 3: y el objeto 5
+L 0x7610 lo_de_0xE170_para_el_golpe
+C 0x7610 esta no se gasta: o esta o no esta
+C 0x7616 y si no esta, se pierde
+L 0x7618 parado_y_256_puntos
+C 0x7618 el bicho, marcado
+C 0x761A el efecto 0x17
+C 0x761F y 256 puntos por pararlo
+
+B 0x7625 CHOCAR CON LOS TRES DE 0xE370. Los otros tres huecos, estos de 0x10 bytes. El primer byte es la clase y ademas la marca de que este puesto. El rectangulo es mas pequeno que el de los de 0xE310 -0x1C de alto por 0x14 de ancho, y 0x14 por 0x14 en el decorado 7-, que es lo que cabe esperar de bichos mas pequenos.
+L 0x7625 choca_con_los_tres_de_0xE370
+C 0x7628 en el 0x10 no se choca
+C 0x762B los tres huecos
+L 0x7630 choca_con_uno_de_los_de_0xE370
+C 0x7631 de entrada, 0x10 al hueco siguiente
+C 0x7633 ¿esta puesto?
+C 0x7637 la clase, guardada
+C 0x763A su fila...
+C 0x763D ...y su columna
+C 0x7641 el 7 tiene su propia medida
+C 0x7645 la fila del jugador
+C 0x7648 el margen en fila
+C 0x764B 0x1C de alto
+C 0x764F y la columna
+C 0x7652 su margen
+C 0x7655 y 0x14 de ancho
+L 0x765B choca_con_los_de_0xE370_en_el_decorado_7
+C 0x765B la fila del jugador
+C 0x765E aqui el margen es 8...
+C 0x7661 ...y el alto 0x14
+C 0x7670 han chocado
+L 0x7674 no_le_ha_dado_ninguno_de_0xE370
+C 0x7674 0x0C + 0x04: el hueco siguiente
+L 0x7676 al_hueco_siguiente_de_0xE370
+B 0x767D QUE PASA AL CHOCAR CON UNO DE 0xE370. Otra vez por la clase: la 4 no mata -si 0xE16B esta puesto no hace nada, y si no, para el juego 0x80 cuadros con el efecto 0x10- y la 6 la para lo que cuente 0xE163, gastando uno. Con 0xE1F1 puesto se para cualquiera, con el efecto 0x18. En todos los casos en que se para, el bicho se borra entero.
+L 0x767D que_pasa_al_chocar_con_uno_de_0xE370
+C 0x767D ¿lleva lo de 0xE1F1?
+C 0x7683 la clase
+C 0x7684 la 4 no mata...
+C 0x7688 ...y la 6 la para lo de 0xE163
+L 0x768C chocar_con_uno_de_0xE370_cuesta_la_vida
+C 0x768C se acabo la fase
+C 0x7694 atras, al principio del hueco
+C 0x7697 y sus dieciseis bytes...
+L 0x769A borra_el_de_0xE370_vuelta
+C 0x769E el decorado
+C 0x76A1 en el 4 y en el 5 se pierde con el estado 0x16...
+C 0x76AB ...y tambien si se iba en el estado 4...
+C 0x76B2 ...y en el resto con el 0x15
+C 0x76B8 y el efecto 0x8C
+L 0x76BD lo_de_0xE1F1_para_cualquiera
+C 0x76BD el efecto 0x18
+L 0x76C2 borra_el_de_0xE370
+C 0x76C3 atras, al principio del hueco
+C 0x76C6 sus dieciseis bytes
+L 0x76C9 borra_el_de_0xE370_bucle
+L 0x76CE la_clase_4_no_mata
+C 0x76CE ¿esta puesto 0xE16B?
+C 0x76D2 si lo esta, no pasa nada de nada
+C 0x76D4 y si no, 0x80 cuadros de pausa...
+C 0x76D9 ...con el efecto 0x10
+L 0x76E0 lo_de_0xE163_para_la_clase_6
+C 0x76E0 ¿queda?
+C 0x76E4 si no queda, se pierde
+C 0x76E6 se gasta uno
+C 0x76EB banco 3: y a soltar el objeto 3
+B 0x76F3 CHOCAR CON LO QUE SE HA LANZADO. El registro de 0xE540, el del banco 3, y solo en su tiempo 4, que es el ultimo tramo de la bajada. Rectangulo de 0x28 de alto por 0x20 de ancho, y aqui no hay nada que salve: se pierde la vida y punto.
+L 0x76F3 choca_con_lo_que_se_lanza
+C 0x76F3 el registro de lo que se lanza
+C 0x76F7 solo en el tiempo 4
+C 0x76FA su fila...
+C 0x7701 ...y su columna
+C 0x7702 la fila del jugador
+C 0x7705 el margen
+C 0x7708 0x28 de alto
+C 0x770B y la columna
+C 0x770E su margen
+C 0x7711 y 0x20 de ancho
+C 0x7714 se acabo la fase
+C 0x771C atras, al principio del registro
+C 0x771F y sus dieciseis bytes, borrados
+L 0x7722 borra_lo_que_se_lanza_vuelta
+C 0x7726 el estado 0x15: perder
+C 0x772B y el efecto 0x8C
+
+B 0x7730 LO QUE SE DISPARA, CONTRA LOS TRES DE 0xE310. El mismo recorrido que el de 0x7531, pero quien choca no es el jugador sino lo que ha salido del segundo boton (0xE502 y 0xE503). La franja de altura es otra -de la 0x88 a la 0xA8, mas arriba que la del jugador- y el rectangulo, de 0x18 por 0x18.
+L 0x7730 lo_disparado_contra_los_de_0xE310
+C 0x7730 los tres huecos
+L 0x7735 lo_disparado_contra_uno
+C 0x7736 de entrada, 0x20 al hueco siguiente
+C 0x7738 ¿esta puesto?
+C 0x773C y el 0x10 es el que ya ha chocado
+C 0x7741 su byte 7
+C 0x7747 por encima de la 0x88...
+C 0x774B ...y por debajo de la 0xA8: fuera
+C 0x7750 atras, a su fila y su columna
+C 0x7756 la fila de lo disparado
+C 0x7759 el margen
+C 0x775C 0x18 de alto
+C 0x7760 y su columna
+C 0x7763 su margen
+C 0x7766 y 0x18 de ancho
+C 0x776B le ha dado
+L 0x776F lo_disparado_no_le_ha_dado
+L 0x7771 lo_disparado_al_hueco_siguiente
+B 0x7778 LE HA DADO. El bicho se marca con 0x10, suena el efecto 0x17, caen 256 puntos y lo disparado se borra: los dieciseis bytes de 0xE500 a cero y 0xE0 en la fila de su sprite, que es lo que lo saca de la pantalla.
+L 0x7778 lo_disparado_le_ha_dado
+C 0x7778 atras, a la clase del bicho
+C 0x777B marcado como ya chocado
+C 0x777D el efecto 0x17
+C 0x7782 y 256 puntos
+C 0x7788 los dieciseis bytes de lo disparado
+L 0x778D borra_lo_disparado_vuelta
+C 0x7793 atras, a la fila de su sprite
+C 0x7796 0xE0: fuera de la pantalla
+B 0x7799 LO QUE SE DISPARA, CONTRA EL BLANCO DE 0xE535. Un solo blanco, y este NO se muere de un tiro: cada acierto suma uno a 0xE53C y hace falta llegar a VEINTE. El vigesimo es el que arranca la otra cosa: los cuatro registros de 0xE550 se ponen a 5, se llama a dos rutinas de preparacion, 0xE53A apunta a 0xAE0A y 0xE530 pasa a 2. Los diecinueve anteriores solo suenan.
+L 0x7799 lo_disparado_contra_el_blanco
+C 0x7799 la fila del blanco
+C 0x779C menos ocho: el margen va restado aqui
+C 0x779F y su columna
+C 0x77A5 la fila de lo disparado
+C 0x77A8 su margen
+C 0x77AB 0x20 de alto
+C 0x77AE y su columna
+C 0x77B1 su margen
+C 0x77B4 y 0x20 de ancho
+C 0x77B7 los dieciseis bytes de lo disparado
+L 0x77BC borra_lo_disparado_del_blanco
+C 0x77C2 atras, a la fila de su sprite
+C 0x77C5 0xE0: fuera de la pantalla
+C 0x77C7 el efecto 0x21
+C 0x77CC la cuenta de aciertos
+C 0x77CF uno mas
+C 0x77D1 y hasta el VEINTE no pasa nada
+C 0x77D4 los cuatro registros de 0xE550...
+L 0x77D9 pone_los_cuatro_de_0xE550
+C 0x77D9 ...a 5
+C 0x77DB de ocho en ocho
+C 0x77E8 y el guion de 0xAE0A
+C 0x77EE 0xE530 a 2
+C 0x77F4 y lo demas a cero
+C 0x77FD la pose 0
+
+B 0x6507 LO QUE QUEDA DE FASE, CUADRO A CUADRO. Descuenta uno EN BCD de los dos bytes de 0xE08D, y cuando el byte bajo llega a cero pide el trozo siguiente del terreno. De ahi salen las dos cuentas atras que llevan la fase: a 0x50 de la meta empieza el final, y de 0x30 para abajo van cayendo los pasos uno a uno. Ojo: esto NO es el tiempo, que corre aparte en 0xE08B y no mira lo que se ande.
+L 0x6507 lo_que_queda_de_fase
+C 0x6507 lo que queda
+C 0x650B uno menos, EN BCD
+C 0x6510 y el byte alto, con su acarreo
+C 0x6518 ¿el byte bajo ha llegado a cero?
+C 0x651A entonces toca trozo nuevo de terreno
+C 0x6521 y un paso menos de 0xE401
+C 0x6525 fuera del modo de jugar, por otro lado
+C 0x652C ¿quedan 0x50 justos?
+C 0x6530 pues ahi empieza el final
+C 0x6533 y por debajo de 0x50, la cuenta atras
+L 0x6536 sigue_la_fase
+C 0x6536 banco 2: lo de cada cuadro
+L 0x6539 anima_el_fondo
+C 0x654D el paso de la animacion
+C 0x6552 de cuatro en cuatro, en circulo
+C 0x6555 y el decorado
+C 0x655A la tabla de dos niveles de 0x8000
+C 0x6564 el paso de dentro
+C 0x656C banco 0: y a soltar sus bloques
+C 0x6570 ¿hay arrastre?
+C 0x6576 con el 1, la tabla de 0xA613...
+C 0x657C ...y con los demas, la de 0xA627
+C 0x658F banco 0: y los bloques de esa
+B 0x65A7 A 0x50 DE LA META. Aqui se mira si la fase es la 12, la 18 o la 24 -las tres que cierran vuelta- y, si ademas 0xE16C esta a cero, se llama a 0x6476 con 0, 1 o 2: una cosa distinta para cada una de las tres. En las otras veintiuna fases lo unico que pasa es que 0xE0A5 se pone a 1.
+L 0x65A7 a_0x50_de_la_meta
+C 0x65A7 la fase
+C 0x65AA ¿la 12?
+C 0x65B1 ¿la 18?
+C 0x65B6 ¿o la 24?
+L 0x65BA el_final_de_siempre
+C 0x65BA la vuelta, a 1
+L 0x65C2 el_final_de_las_tres_fases
+C 0x65C2 y 0xE16C lo puede impedir
+C 0x65C8 0, 1 o 2 segun cual de las tres sea
+B 0x65CF LA CUENTA ATRAS DEL FINAL. Nueve cortes: a 0x30, 0x25, 0x20, 0x15, 0x10, 8, 5, 2 y 0 de la meta, cada uno con su rutina. Es una escalera de `rst 20h`, que en el MSX es DCOMPR: compara HL con DE y pone Z si son iguales. Entre corte y corte no pasa nada, se sigue la fase por 0x6536.
+L 0x65CF cuenta_atras_del_final
+C 0x65CF ¿quedan 0x30?
+C 0x65D2 DCOMPR: compara HL con DE
+C 0x65D5 ¿0x25?
+C 0x65DC ¿0x20?
+C 0x65E3 ¿0x15?
+C 0x65EA ¿0x10?
+C 0x65F1 ¿8?
+C 0x65F8 ¿5?
+C 0x65FF ¿2?
+C 0x6606 ¿y cero?
+C 0x660A si no es ninguno, la fase sigue
+C 0x660D y en cero, el paso 8
+
+# --- El cartel de lo que se lleva: seis casillas de dos por dos caracteres
+# (2026-09-16). Las direcciones de la tabla de nombres estan en 0x6DC5.
+B 0x6D2A PINTAR UNA CASILLA DE LO QUE SE LLEVA. Cada casilla son cuatro caracteres en cuadro -dos seguidos y otros dos justo debajo, que es lo que significa el salto de 0x1F mas el `inc`-, y el primero de los cuatro sale de 0xB2 mas el valor por cuatro. Con 0xFF en el valor se pintan cuatro ceros: la casilla vacia. Se escribe con WRTVRM de la BIOS, uno a uno.
+L 0x6D2A pinta_una_casilla
+C 0x6D2A que casilla
+C 0x6D2B las seis direcciones de la tabla de nombres
+C 0x6D31 la suya
+C 0x6D37 y su valor, de dos en dos
+C 0x6D3B los valores van desde 1
+C 0x6D3E el 0xFF es la casilla vacia
+C 0x6D43 los dibujos empiezan en el 0xB2...
+C 0x6D45 ...y van de cuatro en cuatro
+L 0x6D4B pinta_los_cuatro_caracteres
+C 0x6D4C el de arriba a la izquierda
+C 0x6D52 el de arriba a la derecha
+C 0x6D55 0x1F mas el `inc hl`: una fila entera
+C 0x6D5C el de abajo a la izquierda
+C 0x6D62 y el de abajo a la derecha
+L 0x6D65 borra_una_casilla
+C 0x6D66 cuatro ceros en cuadro: casilla vacia
+C 0x6D6E la fila de abajo
+L 0x6D7C pinta_una_casilla_traducida
+C 0x6D7D la misma cuenta, pero cada caracter pasa antes por 0x6FB8
+L 0x6DA2 borra_una_casilla_traducida
+B 0x6DD1 REPASAR LAS SEIS CASILLAS. Los seis valores estan en 0xE101 y siguientes, de dos en dos, y las seis direcciones de pantalla en 0x6DC5. Lo que se pinta cae dos filas por debajo de la direccion de la tabla, que es lo que suma el 0x40 de 0x6DE9.
+L 0x6DD1 repasa_las_seis_casillas
+C 0x6DD1 los seis valores
+C 0x6DD4 seis
+C 0x6DD6 y las seis direcciones
+L 0x6DD9 repasa_una_casilla_vuelta
+C 0x6DDE los valores van de dos en dos
+L 0x6DE4 pinta_una_de_las_seis
+C 0x6DE4 su direccion de pantalla
+C 0x6DE9 dos filas mas abajo
+C 0x6DEE su valor
+C 0x6DEF a cero, casilla vacia
+C 0x6DF5 banco 2: y si no, a pintarlo
+L 0x6DFB deja_la_casilla_vacia
+C 0x6DFC dos ceros arriba...
+C 0x6E01 ...y el segundo
+L 0x6E06 el_marcador_por_uno_de_los_dos_puentes
+C 0x6E09 segun 0xE134, por un puente o por el otro
+L 0x6E13 si_el_marcador_esta_a_cero
+C 0x6E13 el marcador
+C 0x6E18 si no esta a cero, nada
+C 0x6E1A y si lo esta, 0xE134 tambien
+
+# --- LA TIENDA (2026-09-16). Seis casillas de dos bytes a partir de 0xE100:
+# el primero dice QUE es y el segundo lo que cuesta. El cursor es 0xE10C y el
+# dinero es el marcador (0xE089), que se resta en BCD con 0x6F86.
+B 0x6E1E LA TIENDA. Tres juegos de guiones distintos segun el modo del juego (0xE0A2 = 3, 4 u otro), y cada uno con su efecto de fondo. Monta la pantalla con los bancos 10 y 11 puestos, pinta el guion de 0xB12E y devuelve los bancos 2 y 3. A partir de ahi, izquierda y derecha mueven el cursor y el disparo compra.
+L 0x6E1E la_tienda
+C 0x6E1E ¿ya se esta cerrando?
+C 0x6E25 ¿o ya se ha comprado?
+C 0x6E2C el modo del juego
+C 0x6E2F los dos guiones y el efecto del modo 3...
+C 0x6E3B ...los del 4...
+C 0x6E46 ...y los de los demas
+C 0x6E4E guardados los dos guiones...
+C 0x6E56 ...y el efecto
+C 0x6E5F el guion de la tienda
+C 0x6E62 banco 0: y a pintarlo
+C 0x6E65 devueltos los bancos 2 y 3
+C 0x6E68 las teclas
+C 0x6E6C el disparo compra
+B 0x6E70 MOVER EL CURSOR. El bit 3 del mando lo lleva a la derecha y el bit 2 a la izquierda; si de verdad ha cambiado de casilla suena el efecto 0x23. Borra los dos caracteres de donde estaba y pinta el 0x44 y el 0x45 donde esta ahora.
+L 0x6E70 mueve_el_cursor_de_la_tienda
+C 0x6E70 en que casilla esta
+C 0x6E73 las seis posiciones del cursor
+C 0x6E7C la casilla otra vez
+C 0x6E82 el bit 3: a la derecha
+C 0x6E88 el bit 2: a la izquierda
+C 0x6E8A y sin ninguno de los dos, no se mueve
+C 0x6E97 ¿ha cambiado de casilla?
+C 0x6E9B si ha cambiado, el efecto 0x23
+L 0x6EA0 pinta_el_cursor
+C 0x6EA0 la casilla de ahora
+C 0x6EA3 y su posicion
+L 0x6EAD borra_y_pinta_el_cursor
+C 0x6EAF dos ceros donde estaba
+C 0x6EB8 y el 0x44 y el 0x45 donde esta
+B 0x6EC4 COMPRAR. La casilla 6 deja el aviso 2 y la 7 cierra la tienda; las demas cuestan lo que diga su segundo byte, restado EN BCD del marcador. Si no llega el dinero suena el efecto 0x25 y no pasa nada mas. Si llega, la casilla se borra -sus dos bytes a cero-, se repinta vacia y el banco 3 se queda con el objeto.
+L 0x6EC4 comprar
+C 0x6EC4 en que casilla esta
+C 0x6EC7 la 6 solo deja el aviso 2...
+C 0x6ECC ...y la 7 cierra la tienda
+C 0x6ED1 las seis casillas, de dos en dos
+C 0x6ED7 lo que cuesta
+C 0x6ED8 y el 1 que se lleva al byte alto si hay que pedir prestado
+C 0x6EDA el dinero es el marcador
+C 0x6EDE a ver si llega
+C 0x6EE1 si no llega, nada
+C 0x6EE3 atras, a que es
+C 0x6EE8 lo que se lleva
+C 0x6EED banco 3: y ahi se apunta
+C 0x6EF1 la casilla, vacia
+C 0x6EFA y repintada
+L 0x6F29 la_tienda_se_cierra
+C 0x6F29 se espera a que se calle el efecto
+C 0x6F2E el primero de los dos guiones
+C 0x6F35 y el segundo
+C 0x6F3C con el efecto del modo
+C 0x6F44 ya se esta cerrando
+C 0x6F47 y 0x80 cuadros de espera
+L 0x6F4C la_tienda_espera_a_cerrarse
+C 0x6F4F se descuenta la espera
+C 0x6F53 y al acabarse, el aviso 1
+L 0x6F57 no_llega_el_dinero
+C 0x6F57 el efecto 0x25 y ya
+L 0x6F5C pon_los_bancos_2_y_3
+L 0x6F71 pon_los_bancos_10_y_11
+B 0x6F86 RESTAR EN BCD DE DOS BYTES. IX apunta al numero y C es lo que se le quita. OJO CON LA D: no es el byte alto del importe, es lo que se le resta al byte alto CUANDO HAY QUE PEDIR PRESTADO, y vale 1 en todas las llamadas -o sea que es el acarreo a mano, que es lo que hace falta porque `daa` no se lleva bien con `sbc`-. Si el resultado sale negativo vuelve con el acarreo puesto y SIN tocar nada, que es como se sabe que no llega el dinero.
+L 0x6F86 resta_en_bcd_de_dos_bytes
+C 0x6F86 el numero
+C 0x6F8A EN BCD: por eso el `daa`
+C 0x6F8C ¿hizo falta pedir prestado?
+C 0x6F8E entonces se le quita la D al byte alto
+C 0x6F93 y si tampoco llega, se vuelve sin tocar nada
+L 0x6F97 guarda_el_byte_bajo
+B 0x6F9C SUMAR EN BCD DE DOS BYTES. La pareja de la anterior, con la misma D de acarreo a mano: si se desborda, vuelve con el acarreo puesto y sin guardar.
+L 0x6F9C suma_en_bcd_de_dos_bytes
+C 0x6F9C el numero
+C 0x6FA0 EN BCD
+C 0x6FA2 ¿se ha llevado una?
+C 0x6FA4 entonces se le suma la D al byte alto
+C 0x6FA9 y si se desborda, no se guarda
+L 0x6FB2 deja_el_aviso_2
+L 0x6FB8 apunta_el_caracter_en_0xB380
+C 0x6FBA la tabla de 0xB380
+C 0x6FBE el caracter que sea...
+C 0x6FC0 ...apuntado en su casilla
+L 0x6FC4 borra_las_seis_casillas
+C 0x6FC7 los doce bytes de las seis casillas
+C 0x6FCF a cero
+
+B 0x6000 EL DECORADO MANDA. Una escalera de `dec a` con los diez decorados: cada uno tiene su rutina de montaje y el 9 comparte la del 6. Esta es la puerta por la que el juego entra a armar la pantalla, y de aqui salen los cambios de banco que llevan a los decorados de los bancos 12 y 13.
+L 0x6000 monta_el_decorado
+C 0x6000 que decorado toca
+C 0x6004 el 0
+C 0x6007 el 1
+C 0x600A el 2
+C 0x600E el 3
+C 0x6012 el 4
+C 0x6016 el 5
+C 0x601A el 6
+C 0x601E el 7
+C 0x6022 el 8
+C 0x6026 y el 9, que comparte rutina con el 6
+C 0x6029 y de un decadecimo no hay nada
+B 0x64F0 CADA CUANTO SE ANDA. Aqui esta el paso del juego: 0xE4C1 baja un cuadro cada vez y, cuando llega a cero, se recarga con (0xE4C0) y SE CAE dentro de la rutina de abajo, la que descuenta lo que queda de fase. O sea que el terreno avanza un paso cada (0xE4C0) cuadros, que es el mismo numero que pinta la barra de nueve. En los estados 3, 4, 8 y 10 no se anda.
+L 0x64F0 cada_cuanto_se_anda
+C 0x64F3 en el 3...
+C 0x64F6 ...en el 4...
+C 0x64F9 ...en el 8...
+C 0x64FC ...y en el 10 no se anda
+C 0x64FF el nivel de la barra, que es el periodo
+C 0x6502 guardado
+C 0x6504 un cuadro menos
+C 0x6505 y hasta cero, nada
+C 0x6506 recargado, y se cae en la rutina de abajo
+B 0x6AA8 LOS COLORES QUE DAN VUELTAS. Solo en cinco de los diez decorados, y con dos anchos distintos: cuatro tablas en los decorados 0, 2 y 4, y dos en el 1 y el 3. Cuando la barra de nueve esta clavada -0xE4C0 y 0xE4C1 iguales- cuenta cuadros en 0xE405 y, uno de cada dos, gira las tablas de color de 0xA420 (banco 10) por 0xE409: cada una sube una posicion y vuelve a cero al llegar a diez. Eso es lo que hace que el decorado parezca moverse sin mover un solo byte de la pantalla.
+L 0x6AA8 los_colores_que_dan_vueltas
+C 0x6AB7 el decorado
+C 0x6ABB el 0, el 2 y el 4 giran cuatro tablas...
+C 0x6AC7 ...y el 1 y el 3, dos
+C 0x6ACF en los demas no gira nada
+C 0x6AD1 cuantas tablas
+C 0x6AD4 el nivel de la barra
+C 0x6AD8 contra su contador
+C 0x6ADC si no esta clavada, no se gira nada
+C 0x6AE0 un cuadro mas
+C 0x6AE2 y solo uno de cada dos
+C 0x6AF8 los pasos de cada tabla
+C 0x6AFB cuantas tablas
+L 0x6AFF gira_una_tabla_de_color
+C 0x6B02 las tablas de color del banco 10
+C 0x6B08 la que toca
+C 0x6B0C su paso de ahora
+C 0x6B0E uno mas
+C 0x6B0F y al llegar a diez...
+C 0x6B13 ...vuelta a empezar
+C 0x6B14 apuntado
+C 0x6B16 con el paso a cero no se pinta nada
+
+B 0x78F3 CAMBIAR DINERO DE UN SITIO A OTRO. Dos bolsas: el marcador (0xE089) y la de 0xE135, y los cuatro sentidos del mando mueven de una a otra. Arriba y abajo -bits 3 y 2- mueven de UNO en uno, y derecha e izquierda -bits 1 y 0- de DIEZ en diez. Lo que no cabe no se mueve: las dos rutinas de BCD vuelven con el acarreo puesto y nada cambia, y entonces suena el 0x25 en vez del 0x23.
+L 0x78F3 cambia_dinero
+C 0x78F3 las teclas
+C 0x78F4 la bolsa de 0xE135
+C 0x78F8 el 1 que se lleva al byte alto
+C 0x78FA de uno en uno
+C 0x78FC el bit 3 saca de la bolsa
+C 0x7901 el bit 2 mete en la bolsa
+C 0x7905 y los otros dos, de diez en diez
+C 0x7908 el bit 1 saca...
+C 0x790D ...y el bit 0 mete
+C 0x790F sin ninguno de los cuatro, nada
+L 0x7910 mete_en_la_bolsa
+C 0x7910 del marcador...
+C 0x7915 ...se resta
+C 0x7919 si no llega, no se mueve nada
+C 0x791B y a la bolsa...
+C 0x791F ...se suma
+L 0x7924 saca_de_la_bolsa
+C 0x7924 de la bolsa...
+C 0x7929 ...se resta
+C 0x792D si no llega, no se mueve nada
+C 0x792F y al marcador...
+C 0x7933 ...se suma
+L 0x7936 suena_y_repinta_el_cambio
+C 0x7936 el efecto 0x23, el de que si ha entrado
+C 0x793F banco 2: y a repintar la cifra
+C 0x7942 en su sitio de la pantalla
+L 0x7948 cierra_el_cambio
+C 0x7948 la bolsa
+C 0x794E con la bolsa vacia solo suena el 0x25
+C 0x7953 y si lleva algo, LOS TRES RODILLOS a girar
+
+# --- LA MAQUINA DE APOSTAR (2026-09-16). Se apuesta con 0x78F3, los rodillos
+# giran al azar con el registro R y lo apostado se multiplica por lo que salga.
+L 0x789B apostar_paso_2
+C 0x789B ¿el paso 2?
+C 0x789E los dos guiones de la pantalla
+C 0x78AA la bolsa, a cero
+C 0x78AF y el cero, pintado en la pantalla
+L 0x78B8 pinta_la_bolsa
+C 0x78B8 la bolsa
+C 0x78BB banco 2: y a pintarla
+L 0x78E6 espera_entre_cambios
+C 0x78E7 un cuadro mas
+C 0x78E9 uno de cada cuatro
+C 0x78EC las teclas guardadas
+C 0x78F0 sin ninguna de las cuatro, nada
+L 0x7977 apostar_paso_4
+C 0x7977 ¿el paso 4?
+C 0x797D un cuadro mas
+C 0x797F los dieciseis primeros...
+C 0x7983 ...pintan un guion...
+C 0x7989 ...y de ahi en adelante, el otro
+B 0x7992 LOS RODILLOS. Cada rodillo saca su dibujo del registro R -`ld a,r / and 0x0F`, o sea uno de dieciseis- y con el lee dos tablas: 0x7B34 da el valor, que se guarda en 0xE12F hacia atras, y 0x7B2E el caracter que se pinta. Los rodillos se paran de uno en uno con el disparo, con el efecto 0x2A, y cuando cae el ultimo suena el 0x2B y se pasa a la cuenta.
+L 0x7992 los_rodillos
+C 0x7992 ¿el paso 5?
+C 0x7995 cuantos rodillos quedan por parar
+C 0x7999 donde se guardan los valores
+C 0x799C y donde se pintan
+L 0x799F gira_un_rodillo
+C 0x79A1 el registro R: el azar de la casa
+C 0x79A3 uno de dieciseis
+C 0x79A6 la tabla de valores
+C 0x79AD guardado
+C 0x79AE y la de caracteres
+C 0x79B6 pintado en su casilla
+C 0x79BA la casilla anterior
+C 0x79C2 las teclas
+C 0x79C5 ¿el disparo?
+C 0x79C8 el efecto 0x2A: un rodillo parado
+C 0x79CD uno menos
+C 0x79CE y si quedan, se sigue girando
+C 0x79D1 el efecto 0x2B: ya estan los tres
+C 0x79D9 y 0x80 cuadros de espera
+B 0x79E1 LA CUENTA DE LO APOSTADO. Segun lo que haya salido (0xE132): con 0xFF o con 0 se pierde todo -la bolsa a cero y el rotulo de 0xB1E5- y con cualquier otra cosa se busca el multiplicador en la tabla de 0x7B23 y se multiplica la apuesta a base de SUMARLA a si misma, que es como se multiplica en un Z80.
+L 0x79E1 la_cuenta_de_lo_apostado
+C 0x79E1 ¿el paso 6?
+C 0x79E8 la espera, un cuadro menos
+C 0x79EA el rotulo de siempre
+C 0x79F0 lo que ha salido
+C 0x79F3 el 0xFF...
+C 0x79F6 ...y el 0 pierden
+L 0x79F9 se_pierde_lo_apostado
+C 0x79FA la bolsa, a cero
+C 0x7A00 y el rotulo de perder
+L 0x7A08 se_gana_lo_apostado
+C 0x7A09 los multiplicadores
+C 0x7A0F el que toca
+C 0x7A10 la bolsa
+L 0x7A1A multiplica_sumando
+C 0x7A1A una vez menos
+C 0x7A1D el byte bajo de la bolsa
+C 0x7A1E el 1 que se lleva
+C 0x7A20 sumada a si misma, EN BCD
+C 0x7A25 y el byte alto
+C 0x7A2B ¿se ha pasado de 0x10?
+C 0x7A36 entonces, tope
+L 0x7A39 pinta_el_resultado
+C 0x7A39 los tres guiones del cartel...
+C 0x7A45 ...y el que diga lo que ha salido
+C 0x7A52 la bolsa, pintada
+C 0x7A58 y 0x20 cuadros de espera
+B 0x7ABD ¿OTRA VEZ? Al acabarse la espera mira tres cosas: si el marcador esta a cero se sale, si lo que salio fue 0xFF tambien, y si no, 0xE169 y la cuenta de 0xE134 deciden si se deja seguir apostando.
+L 0x7ABD se_puede_apostar_otra_vez
+C 0x7AC0 la espera, un cuadro menos
+C 0x7AC7 sin dinero no se sigue
+C 0x7ACB lo que salio
+C 0x7ACE con 0xFF tampoco
+C 0x7AD5 y esto dice cuantas veces se deja
+C 0x7ADF una menos
+L 0x7AE2 se_acabo_de_apostar
+C 0x7AE2 el aviso que toque
+
+B 0x7CF8 LAS CUATRO TIRAS DEL BANCO 11, A LA VRAM. Mete los bancos 10 y 11 y recorre los cuatro registros de 0xE550 con sus sprites a partir del 10. Cada registro, segun su primer byte, o copia dos bytes sueltos (el tipo 1) o descomprime una tira entera de las de 0xAD62.
+L 0x7CF8 las_cuatro_tiras_a_la_vram
+C 0x7D0C cuatro registros
+C 0x7D0E los registros
+C 0x7D11 y sus sprites, desde el 10
+L 0x7D14 una_tira_a_la_vram
+C 0x7D14 el tipo del registro
+C 0x7D15 el 1 va aparte
+C 0x7D1C las cuatro bases de destino
+C 0x7D21 la que toca a este registro
+C 0x7D28 las tiras del banco 11
+C 0x7D2E la que toca
+C 0x7D34 y atras uno, que el bucle empieza adelantando
+L 0x7D35 lee_el_desplazamiento_de_la_tira
+C 0x7D36 el desplazamiento, 16 bits
+C 0x7D3B sumado a la base
+L 0x7D3F copia_los_bytes_de_la_tira
+C 0x7D3F el byte
+C 0x7D40 el 0xFF cierra la tira...
+C 0x7D43 ...y el 0xFE abre el trozo siguiente
+C 0x7D46 y lo demas, se copia tal cual
+L 0x7D4A al_registro_siguiente_de_las_tiras
+C 0x7D4C ocho bytes el registro...
+C 0x7D51 ...y cuatro el sprite
+L 0x7D58 dos_bytes_sueltos
+C 0x7D59 el primer byte...
+C 0x7D5D ...y el segundo
+C 0x7D5F seis mas hasta el registro siguiente
+L 0x7D67 a_la_tira_siguiente
+L 0x7CDD llena_de_unos_hasta_el_0xFF
+C 0x7CDD el byte
+C 0x7CDE el 0xFF cierra...
+C 0x7CE1 ...y el 0xFE abre el trozo siguiente
+C 0x7CE4 y lo demas se marca con un 1
+L 0x7E58 la_cuenta_y_el_paso_del_centelleo
+C 0x7E58 un cuadro menos
+C 0x7E5B al llegar a 1...
+C 0x7E5E ...o a cero, se cambia de paso
+C 0x7E62 por debajo de 8, un paso...
+C 0x7E68 ...y por encima, el otro
+L 0x7068 repasa_las_cinco_ranuras_de_0xE440
+C 0x7068 ¿lleva algo esta ranura?
+C 0x706C si lleva, se atiende
+L 0x7127 caerse_por_un_hueco_variantes_del_medio
+C 0x7127 la clase del objeto
+C 0x712A la 14 son los huecos
+C 0x7130 en el 3 ya se esta dentro
+C 0x7133 en el 8...
+C 0x7136 ...y en el 10, tampoco
+C 0x7139 la variante
+C 0x713E la ventana de la primera...
+C 0x7144 ...la de la segunda...
+C 0x7149 ...o la de la tercera
+
+L 0x781E apostar_paso_1
+C 0x781E ¿el paso 1?
+C 0x7824 lo que salga, a cero
+C 0x7829 los cuatro guiones del cartel
+C 0x7841 la cuenta, a cero
+C 0x7849 y sin avisos
+L 0x7809 apostar_entrada
+C 0x780C los dos guiones del cartel
+C 0x7818 y al paso 1
+L 0x68FF lee_el_guion_del_decorado
+C 0x68FF el byte del guion
+C 0x6902 el cero lo cierra
+C 0x6906 por debajo de 0x1A va por un lado...
+C 0x690A ...y del 0x1A al 0x1F, por otro
+C 0x6910 la tabla de dos niveles de 0x8682
+L 0x6974 lee_el_otro_guion_del_decorado
+C 0x6974 el byte del guion
+C 0x6977 el cero lo cierra
+C 0x697B por debajo de 0x1A va por un lado...
+C 0x697F ...y del 0x1A al 0x1F, por otro
+C 0x6985 la tabla de dos niveles de 0x8682
+L 0x6C85 mueve_el_cursor_por_las_casillas
+C 0x6C85 a que casilla se quiere ir
+C 0x6C86 las seis casillas
+C 0x6C89 y hacia que lado se va
+C 0x6C8F sin lado, se mira el tope de arriba
+C 0x6C91 y con el, el de abajo
+L 0x7B00 compara_con_lo_que_salio
+C 0x7B00 ¿queda alguno?
+C 0x7B04 el byte siguiente
+C 0x7B06 contra lo que llevaba
+C 0x7B09 si es el mismo, sigue valiendo
+C 0x7B0C y si no, se borra: ya no hay racha
+L 0x62CB los_cuatro_pasos_de_color_de_partida
+C 0x62CB la primera tabla empieza en el 8...
+C 0x62D0 ...la segunda en el 4...
+C 0x62D5 ...la tercera en el 2...
+C 0x62DA ...y la cuarta en el 6
+L 0x7E75 escribe_los_tres_bytes_del_centelleo
+C 0x7E75 el byte
+C 0x7E77 y donde va
+C 0x7E7A escrito
+C 0x7E7B tres bytes por entrada
+L 0x6F15 la_tienda_se_cierra_del_todo
+C 0x6F16 sin marcador que pintar
+C 0x6F19 las seis casillas, vacias
+C 0x6F1C el cursor, a la casilla 8
+C 0x6F24 y marcada como comprada
+L 0x6476 escoge_el_registro_de_once
+C 0x6476 el 0...
+C 0x647C ...el 1...
+C 0x6482 ...o los demas
+L 0x6485 lee_el_registro_de_once
+C 0x6485 la primera palabra
+L 0x6BD8 gira_los_cuatro_bytes_de_la_tabla
+C 0x6BD9 un paso mas
+C 0x6BDB al llegar a 16...
+C 0x6BDF ...vuelta a cero
+C 0x6BE1 dos bytes por entrada
+C 0x6BE7 y cuatro bytes copiados
+L 0x6C6A repinta_la_tienda_entera
+C 0x6C6D el marcador
+C 0x6C70 las seis casillas
+C 0x6C76 donde queda el cursor
+C 0x6C79 y su sitio en la pantalla
+L 0x6D1D pinta_las_seis_casillas
+C 0x6D1D las seis casillas
+C 0x6D25 hasta la sexta
+
+L 0x7B13 lo_que_salio_al_final
+C 0x7B13 lo que llevaba
+C 0x7B17 con cero, nada
+C 0x7B18 el 5 es el premio gordo...
+C 0x7B1C ...y se marca con 0xFF
+C 0x7B1F y los demas, tres mas
+L 0x7C7F copia_hasta_el_0xFF
+C 0x7C7F el byte
+C 0x7C80 el 0xFF cierra...
+C 0x7C83 ...y el 0xFE abre el trozo siguiente
+C 0x7C86 y lo demas se copia tal cual
+L 0x62BE los_cuatro_contadores_de_partida
+C 0x62BE el primero, el que venga
+C 0x62C1 el segundo, a 6
+C 0x62C6 y el tercero, a cero
+L 0x69C5 borra_y_sigue_el_guion
+C 0x69C5 a cero
+C 0x69CB y el byte 0x10 del guion
+L 0x6A16 borra_el_hueco_y_su_sprite
+C 0x6A16 atras, al principio del hueco
+C 0x6A1A sus dieciseis bytes
+L 0x6A1D borra_el_hueco_vuelta_de_0xE440
+C 0x6A21 que hueco de sprite tenia
+C 0x6A24 por cuatro
+L 0x6CA9 el_cursor_arriba_o_abajo
+C 0x6CA9 hacia que lado
+C 0x6CAE hacia atras...
+C 0x6CB1 ...o hacia delante
+L 0x6CB4 el_cursor_a_la_casilla_7
+C 0x6CB4 la 7 es la de cerrar
+L 0x78DD la_espera_entre_cambios
+C 0x78DD la espera
+C 0x78E1 si no hay espera, se atiende al mando
+C 0x78E4 y si la hay, se descuenta
+L 0x7A6B apostar_paso_7
+C 0x7A6B ¿el paso 7?
+C 0x7A71 la espera, un cuadro menos
+C 0x7A72 y hasta cero, nada
+L 0x7A76 apostar_paso_8
+C 0x7A76 ¿el paso 8?
+C 0x7A79 el sitio del cartel en la pantalla
+C 0x7595 el salto hasta el hueco siguiente
+C 0x7676 el salto hasta el hueco siguiente
+C 0x7771 el salto hasta el hueco siguiente

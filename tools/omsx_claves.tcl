@@ -1,77 +1,118 @@
-# Comprueba EN MARCHA las claves que se escriben con el teclado.
+# Comprueba EN MARCHA las dos claves de teclado que el listado dice que existen.
 #
-# El listado dice que 0x44E7 mira la tecla GRAPH -fila 6, bit 5- y que, con el
-# juego EN PAUSA, 0x50C9 lee el teclado, va guardando letras en 0xE1E8 y, al
-# pulsar RETURN, compara lo escrito contra las palabras de 0x51BF. Esto lo
-# prueba de verdad: arranca la partida, pausa, escribe la palabra letra a
-# letra, pulsa RETURN y apunta las casillas de la nave que el listado dice que
-# cambian, ademas de fotografiar antes y despues.
+# Lo que dice el listado: p02:9522 vigila NUEVE teclas -A, I, K, M, N, O, R, U
+# y Z- con SNSMAT de la BIOS, guarda en la cola de 0xF0F8 el numero de la
+# ultima que acaba de pulsarse, y p02:9634 compara esas seis con dos patrones
+# de 0x965F. NORIKO deja 0xFE en 0xF0F7 y KAZUMI 0xFF, y con eso aparece el
+# CONTINUE al acabarse la partida (p02:8937 y p02:8A32).
 #
-# Trampas ya pagadas en esta serie:
-#   - con -script el emulador arranca con el renderer en `uninitialized` y
-#     `screenshot` devuelve un PNG negro con rc=0: hay que encenderlo a mano.
-#   - las capturas se piden con el acelerador PUESTO y con `after realtime`.
-#   - `type` de una tacada va demasiado rapido: el juego solo apunta la tecla
-#     cuando CAMBIA, asi que se escribe letra a letra.
+# Esto lo prueba de verdad: arranca, espera a la pantalla del titulo, pulsa las
+# seis teclas UNA A UNA sobre la matriz y lee 0xF0F7 y la cola de 0xF0F8.
 #
-#   NEM_OUT=<dir> [NEM_CLAVE=option] openmsx -machine Philips_VG_8020 \
+# Trampas ya pagadas, y estas cuatro han costado una tarde:
+#   - LA MAQUINA IMPORTA. Con Philips_VG_8020 este cartucho se queda en la
+#     pantalla de arranque del BASIC y no llega a correr nunca. Con
+#     C-BIOS_MSX1_EU arranca: se nota en que 0xE003 -el contador de cuadros- se
+#     mueve y en que 0xF0F7 se pone a 0, que es lo que hace el INIT de p00:40BD.
+#   - con `throttle off` la captura sale RANCIA -el render no se refresca- y se
+#     ve la pantalla de hace varios segundos. Se corre a velocidad real.
+#   - `type` no sirve: manda la tecla demasiado poco tiempo y el vigilante, que
+#     solo apunta la tecla cuando CAMBIA de suelta a pulsada, no llega a verla.
+#     Se pulsa la matriz a mano con keymatrixdown/keymatrixup.
+#   - y las teclas hay que soltarlas: dos pulsaciones seguidas sin soltar en
+#     medio son UNA sola para el vigilante.
+#
+#   PA_OUT=<dir> [PA_CLAVE=NORIKO] openmsx -machine C-BIOS_MSX1_EU \
 #       -carta penguinadventure.rom -script este.tcl
-set OUT $::env(NEM_OUT)
+set OUT $::env(PA_OUT)
+set CLAVE [expr {[info exists ::env(PA_CLAVE)] ? $::env(PA_CLAVE) : "NORIKO"}]
 file mkdir $OUT
 set LOG [open "$OUT/claves.log" w]
 proc say {m} { global LOG; puts $LOG "t=[format %8.2f [machine_info time]]  $m"; flush $LOG }
 
 catch {set renderer SDLGL-PP}
 set throttle on
-say "en marcha"
 
-set ::n 0
-proc foto {que} {
-    global OUT
-    incr ::n
-    set f [format "%s/nem_%02d_%s.png" $OUT $::n $que]
-    catch {screenshot -raw -doublesize $f} e
-    say "foto [file tail $f] rc=$e"
+# La matriz del MSX: fila y bit de cada una de las nueve teclas que vigila
+# p02:9522, en el mismo orden en que las mira -que es el que da su numero-.
+array set TECLA {
+    A {2 6}  I {3 6}  K {4 0}  M {4 2}  N {4 3}
+    O {4 4}  R {4 7}  U {5 2}  Z {5 7}
 }
 
-# Las casillas de la nave que, segun el listado, tocan las claves.
-proc estado {que} {
-    set l ""
-    foreach {n d} {naves 0xE060 aviso 0xE05F escudo 0xE200 vel 0xE202 opciones 0xE20B disparoA 0xE20C disparoB 0xE20D laser 0xE20E misil 0xE20F} {
-        append l [format "%s=%02X " $n [debug read memory $d]]
+proc lee {a} { return [debug read memory $a] }
+
+proc cola {} {
+    set s {}
+    for {set i 0} {$i < 6} {incr i} { lappend s [format %02X [lee [expr {0xF0F8 + $i}]]] }
+    return [join $s " "]
+}
+
+say "clave a probar: $CLAVE"
+
+# El vigilante de las claves solo corre en el ESTADO 3 (p02:80DC), asi que no
+# vale teclear a ojo: se espera a que 0xE000 llegue a 3.
+proc espera_al_estado_3 {} {
+    set e [lee 0xE000]
+    say "estado = [format %02X $e]"
+    # medio segundo de respiro: si la primera tecla se pulsa en el mismo
+    # instante de entrar en el estado 3, el vigilante se la pierde.
+    if {$e == 3} { after time 0.5 arranca_la_clave ; return }
+    if {[machine_info time] > 90} { say "ROJO: no se llega al estado 3" ; exit 1 }
+    after time 1 espera_al_estado_3
+}
+
+# Al estado 3 no se llega solo: el ciclo de atraccion va 0 -> 1 -> 2 -> 0 y
+# hay que PULSAR para entrar. Medido en openMSX: el estado 1 empieza sobre el
+# segundo 11.
+after time 12 {
+    say "espacio para entrar en el titulo"
+    keymatrixdown 8 1
+    after time 0.25 { keymatrixup 8 1 ; after time 1 espera_al_estado_3 }
+}
+
+proc arranca_la_clave {} {
+    say "0xE003 = [format %02X [lee 0xE003]]  (si se mueve, el cartucho corre)"
+    say "estado = [format %02X [lee 0xE000]]  subestado = [format %02X [lee 0xE001]]"
+    say "0xF0F7 antes = [format %02X [lee 0xF0F7]]"
+    say "cola  antes  = [cola]"
+    set ::i 0
+    proc siguiente {} {
+        global CLAVE TECLA
+        if {$::i >= [string length $CLAVE]} {
+            # y ahora ESPACIO, que es lo unico que dispara la comparacion:
+            # p02:80F2 llama a mira_si_es_una_de_las_dos_claves justo despues
+            # de ver el bit 4 de las teclas recien pulsadas.
+            after time 0.4 {
+                say "estado al pulsar = [format %02X [lee 0xE000]]  cola = [cola]"
+                keymatrixdown 8 1
+                after time 0.20 { keymatrixup 8 1 }
+            }
+            after time 2 {
+                say "0xF0F7 DESPUES = [format %02X [lee 0xF0F7]]"
+                say "cola  despues  = [cola]"
+                set v [lee 0xF0F7]
+                if {$v == 0xFE} { say "VERDE: 0xFE, o sea NORIKO" } \
+                elseif {$v == 0xFF} { say "VERDE: 0xFF, o sea KAZUMI" } \
+                else { say "ROJO: 0xF0F7 se ha quedado en [format %02X $v]" }
+                after realtime 0.5 {
+                    catch {screenshot -raw $::env(PA_OUT)/tras_la_clave.png}
+                    exit 0
+                }
+            }
+            return
+        }
+        set c [string index $CLAVE $::i]
+        incr ::i
+        set fb $TECLA($c)
+        set fila [lindex $fb 0]
+        set mascara [expr {1 << [lindex $fb 1]}]
+        keymatrixdown $fila $mascara
+        after time 0.20 [list apply {{fila mascara c} {
+            keymatrixup $fila $mascara
+            say "pulsada $c (fila $fila mascara [format %02X $mascara]) -> cola [cola]"
+            after time 0.20 siguiente
+        }} $fila $mascara $c]
     }
-    say "$que  $l"
+    siguiente
 }
-
-proc buffer {que} {
-    set l ""
-    for {set i 0} {$i < 10} {incr i} {
-        append l [format "%02X " [debug read memory [expr {0xE1E6 + $i}]]]
-    }
-    say "$que  0xE1E6..: $l"
-}
-
-proc pulsa {fila mascara} {
-    keymatrixdown $fila $mascara
-    after realtime 0.25 [list keymatrixup $fila $mascara]
-}
-
-set CLAVE [expr {[info exists ::env(NEM_CLAVE)] ? $::env(NEM_CLAVE) : "option"}]
-
-after realtime 8  { say "arranque"; foto titulo }
-after realtime 10 { pulsa 8 0x01 }
-after realtime 14 { pulsa 8 0x01 }
-after realtime 19 { estado "en juego"; foto enjuego }
-after realtime 20 { say "GRAPH: pausa"; pulsa 6 0x20 }
-after realtime 21 { buffer "recien pausado" }
-
-set ::t 22.0
-foreach c [split $CLAVE ""] {
-    after realtime $::t [list apply {{c} { say "tecla '$c'"; type $c }} $c]
-    set ::t [expr {$::t + 0.6}]
-}
-after realtime [expr {$::t + 0.4}] { buffer "escrito" }
-after realtime [expr {$::t + 1.0}] { say "RETURN"; type "\r" }
-after realtime [expr {$::t + 2.0}] { estado "despues de la clave"; buffer "despues"; foto despues }
-after realtime [expr {$::t + 2.5}] { say "GRAPH: seguir"; pulsa 6 0x20 }
-after realtime [expr {$::t + 4.0}] { foto siguiendo; say "FIN"; exit 0 }

@@ -18,8 +18,10 @@
 labb3h:	equ 0x0abb3
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa000..0xa83f  (2111 bytes)
-DATA_A000:
+; DATOS cola_9846: la cola del guion comprimido de 0x9846 del banco 8, que
+;   pasa de ranura sin cambiar de banco; lo cargan p00:5C41 (1123 bytes)
+;   0xa000..0xa463  (1123 bytes)
+DATA_cola_9846:
 	defb 080h,005h,000h,084h,0ffh,0f8h,0e0h,0e0h,003h,0c0h,086h,080h,0fch,0f0h,0e0h,0c0h	; a000  ................
 	defb 0c0h,003h,080h,081h,001h,007h,000h,081h,080h,00ch,000h,084h,042h,000h,040h,080h	; a010  ............B.@.
 	defb 007h,000h,081h,010h,007h,000h,010h,0ffh,080h,008h,00ah,008h,041h,010h,046h,008h	; a020  ............A.F.
@@ -90,68 +92,75 @@ DATA_A000:
 	defb 0fch,0fdh,0fdh,07ah,03fh,01fh,00fh,007h,003h,001h,008h,000h,086h,080h,0c0h,0e0h	; a430  ...z?...........
 	defb 0f0h,0fch,0feh,003h,0ffh,082h,07fh,03fh,006h,000h,002h,001h,003h,003h,003h,007h	; a440  .......?........
 	defb 002h,00fh,083h,060h,07ch,07fh,004h,0ffh,089h,0f9h,0f3h,0f3h,0f7h,0e7h,0efh,0ffh	; a450  ...`|...........
-	defb 0ffh,0beh,000h,008h,022h,088h,07eh,03dh,01eh,01eh,01fh,01bh,01bh,019h,080h,0a0h	; a460  ....".~=........
-	defb 022h,088h,0a5h,01ah,052h,048h,000h,0bdh,01ah,094h,080h,0e8h,022h,004h,000h,084h	; a470  "...RH......"...
-	defb 048h,000h,0c0h,000h,008h,034h,002h,040h,006h,000h,008h,034h,008h,028h,082h,083h	; a480  H....4.@...4.(..
-	defb 003h,004h,083h,002h,003h,089h,0d2h,0eah,06ah,072h,032h,03ah,05eh,05eh,001h,004h	; a490  ........jr2:^^..
-	defb 000h,083h,0a3h,04eh,09ch,005h,000h,08bh,0f8h,01dh,0eah,00ah,004h,080h,0fdh,01ah	; a4a0  ...N............
-	defb 07ah,01ah,01ah,010h,000h,002h,0d0h,091h,0d2h,0feh,0c2h,0dch,0d0h,0d0h,0fdh,01ah	; a4b0  z...............
-	defb 0eah,084h,080h,094h,0f4h,014h,01eh,00dh,00dh,003h,016h,08fh,023h,0a3h,0d1h,0d3h	; a4c0  ............#...
-	defb 0ffh,000h,0feh,000h,001h,007h,034h,07ah,0fdh,001h,07fh,003h,000h,08ch,01eh,01fh	; a4d0  ......4z........
-	defb 01bh,01bh,019h,019h,01ah,01ah,0fdh,01ah,06ah,044h,004h,040h,084h,0ffh,063h,05fh	; a4e0  ........jD.@..c_
-	defb 023h,004h,003h,008h,000h,088h,05fh,08eh,086h,086h,006h,006h,00fh,016h,008h,000h	; a4f0  #....._.........
-	defb 085h,034h,07ah,0fdh,001h,07fh,004h,000h,084h,001h,003h,000h,001h,003h,000h,083h	; a500  .4z.............
-	defb 083h,001h,000h,003h,080h,085h,060h,0d0h,0fch,0c7h,0d9h,005h,0d0h,084h,01fh,00eh	; a510  ......`.........
-	defb 0a6h,0d7h,003h,0d3h,089h,0d1h,043h,082h,082h,046h,045h,045h,0adh,0aah,008h,000h	; a520  ......C..FEE....
-	defb 002h,074h,083h,034h,004h,01ch,003h,000h,082h,081h,0d0h,003h,0e8h,095h,0d0h,0a0h	; a530  .t.4............
-	defb 041h,0ffh,0e1h,06eh,068h,068h,069h,0ffh,061h,03fh,0f1h,06eh,068h,068h,069h,067h	; a540  A..nhhi.a?.nhhig
-	defb 0ffh,07ah,034h,006h,028h,080h,000h,024h,082h,0fah,074h,006h,034h,002h,04eh,083h	; a550  .z4.(..$..t.4.N.
-	defb 0a6h,020h,0e3h,003h,000h,085h,01ah,0ddh,0feh,000h,0ffh,003h,000h,085h,09dh,08eh	; a560  . ..............
-	defb 083h,084h,083h,003h,000h,004h,034h,084h,07fh,0b8h,077h,034h,003h,068h,084h,0c9h	; a570  ......4...w4.h..
-	defb 012h,061h,080h,011h,000h,081h,099h,006h,0bah,08eh,09ah,043h,047h,0afh,020h,007h	; a580  .a.........CG. .
-	defb 0a0h,0a0h,040h,028h,050h,090h,060h,080h,003h,000h,088h,094h,054h,054h,094h,094h	; a590  ..@(P.`.....TT..
-	defb 0d4h,0f4h,0f4h,008h,000h,085h,0c0h,0a0h,0a0h,040h,000h,003h,040h,080h,0a8h,025h	; a5a0  .........@..@..%
-	defb 005h,000h,093h,07ah,034h,028h,000h,000h,042h,000h,000h,0fdh,07ah,034h,057h,0a9h	; a5b0  ...z4(..B...z4W.
-	defb 080h,052h,000h,07eh,03dh,01eh,005h,000h,083h,0ffh,070h,036h,005h,000h,083h,023h	; a5c0  .R.~=.....p6...#
-	defb 0d1h,068h,005h,000h,083h,0ffh,0c3h,0ddh,005h,000h,083h,0afh,047h,043h,005h,000h	; a5d0  .h..........GC..
-	defb 088h,0d7h,0a3h,0d2h,014h,01ah,08fh,080h,087h,003h,000h,085h,01ah,03ah,07dh,001h	; a5e0  .............:}.
-	defb 03fh,003h,000h,088h,0bdh,01ah,094h,094h,054h,054h,094h,094h,005h,000h,083h,07ah	; a5f0  ?.......TT.....z
-	defb 074h,034h,080h,008h,002h,008h,0a0h,080h,0a0h,002h,004h,040h,004h,0a0h,080h,0e8h	; a600  t4.........@....
-	defb 002h,008h,040h,008h,0a0h,008h,040h,020h,0a0h,004h,0f0h,07fh,0a0h,05dh,0a0h,080h	; a610  ..@...@ .....]..
-	defb 000h,004h,070h,0a0h,080h,0a8h,005h,008h,0a0h,004h,040h,004h,0a0h,004h,040h,04ch	; a620  ..p.......@...@L
-	defb 0a0h,080h,018h,02ah,088h,0e4h,080h,080h,08ah,09ah,0fdh,001h,0ffh,080h,030h,02ah	; a630  ...*..........0*
-	defb 084h,040h,0a0h,020h,0c0h,004h,000h,088h,061h,057h,04dh,0cah,084h,0a1h,0a0h,040h	; a640  .@. ....aWM....@
-	defb 080h,078h,02ah,008h,000h,080h,0e0h,02ah,003h,034h,086h,014h,01ah,00fh,000h,007h	; a650  .x*....*.4......
-	defb 029h,003h,028h,094h,050h,091h,060h,080h,063h,0edh,069h,068h,0e8h,0f4h,004h,0fch	; a660  ).(.P.`.c.ih....
-	defb 040h,0a0h,0a0h,0d0h,0d0h,0e9h,068h,074h,003h,0a0h,085h,0d0h,0d1h,0ebh,008h,0f9h	; a670  @.....ht........
-	defb 003h,0d0h,095h,0d1h,0d7h,0fch,001h,0feh,0d1h,0d1h,0d0h,0a0h,020h,041h,080h,000h	; a680  ............ A..
-	defb 0aah,0dah,0d4h,0d4h,0f4h,0fah,002h,0feh,010h,000h,081h,00eh,003h,006h,084h,00eh	; a690  ................
-	defb 01fh,000h,00fh,018h,000h,085h,03ah,034h,028h,010h,020h,003h,000h,004h,040h,08dh	; a6a0  ......:4(. ...@.
-	defb 0a0h,0d0h,010h,0f0h,0d4h,0f4h,0f4h,074h,074h,034h,004h,01ch,019h,003h,01ah,084h	; a6b0  .......tt4......
-	defb 03ah,07dh,001h,01fh,006h,000h,085h,01ch,07eh,090h,0f8h,0fch,005h,0ffh,005h,000h	; a6c0  :}......~.......
-	defb 002h,00fh,081h,01fh,080h,0d0h,02bh,01fh,0ffh,081h,0f8h,006h,0ffh,082h,0efh,0f3h	; a6d0  ......+.........
-	defb 007h,0ffh,081h,08fh,007h,0ffh,081h,0c1h,004h,0ffh,084h,0cfh,0f3h,0c9h,007h,007h	; a6e0  ................
-	defb 0ffh,081h,08eh,007h,0ffh,089h,003h,0e0h,0f0h,0fah,07bh,03bh,077h,0ffh,0ffh,004h	; a6f0  ..........{;w...
-	defb 000h,084h,080h,0c0h,0e0h,0f9h,006h,000h,082h,080h,0c0h,007h,000h,082h,003h,0eeh	; a700  ................
-	defb 003h,068h,084h,0e9h,0ffh,000h,0ffh,00ah,000h,002h,0c0h,088h,0f0h,0f8h,0fch,0feh	; a710  .h..............
-	defb 01fh,01fh,08eh,0dfh,004h,0ffh,09bh,003h,00fh,03fh,007h,007h,0d1h,0ffh,0ffh,007h	; a720  .........?......
-	defb 00fh,0f1h,0e1h,0c3h,0ceh,019h,0ffh,00fh,00fh,01fh,03fh,006h,01ch,0bch,071h,0e6h	; a730  ..........?...q.
-	defb 0f7h,0efh,004h,0ffh,081h,0feh,080h,010h,02dh,007h,0ffh,081h,091h,050h,0ffh,088h	; a740  ........-....P..
-	defb 00fh,01fh,007h,003h,003h,001h,000h,000h,080h,080h,02dh,005h,000h,083h,01fh,03fh	; a750  ..........-....?
-	defb 017h,004h,000h,082h,00fh,007h,002h,0ffh,002h,000h,086h,003h,01fh,005h,08fh,0dfh	; a760  ................
-	defb 0ffh,080h,058h,02eh,005h,000h,002h,001h,002h,003h,085h,007h,006h,008h,003h,00ch	; a770  ..X.............
-	defb 002h,000h,081h,040h,002h,000h,002h,0a0h,083h,0d0h,010h,0f0h,004h,003h,084h,007h	; a780  ...@............
-	defb 00fh,000h,00fh,008h,000h,080h,018h,00ah,008h,0a0h,080h,030h,00ah,010h,0a0h,080h	; a790  ...........0....
-	defb 078h,00ah,008h,0a0h,080h,0e0h,00ah,070h,0a0h,020h,0a0h,018h,0f0h,080h,0d0h,00bh	; a7a0  x......p. ......
-	defb 002h,0ffh,081h,044h,03ch,075h,009h,074h,008h,075h,003h,0f0h,005h,0f5h,010h,0f0h	; a7b0  ...D<u.t.u......
-	defb 008h,050h,010h,0a0h,008h,0f0h,002h,050h,006h,0f5h,003h,050h,005h,0f5h,002h,050h	; a7c0  .P.....P...P...P
-	defb 006h,0f5h,004h,050h,004h,0f5h,081h,0f0h,007h,0f5h,080h,010h,00dh,002h,0ffh,081h	; a7d0  ...P............
-	defb 044h,005h,075h,002h,0ffh,081h,044h,005h,077h,002h,0ffh,081h,044h,005h,077h,002h	; a7e0  D.u...D.w...D.w.
-	defb 0ffh,081h,044h,005h,077h,002h,0ffh,081h,044h,005h,077h,002h,0ffh,081h,044h,005h	; a7f0  ..D.w...D.w...D.
-	defb 077h,002h,0ffh,081h,044h,005h,077h,002h,0ffh,081h,044h,005h,077h,002h,0ffh,081h	; a800  w...D.w...D.w...
-	defb 044h,005h,077h,002h,0ffh,081h,044h,005h,077h,002h,0ffh,081h,044h,005h,077h,081h	; a810  D.w...D.w...D.w.
-	defb 075h,007h,074h,080h,080h,00dh,007h,050h,081h,0f5h,005h,050h,003h,0f5h,004h,050h	; a820  u.t....P...P...P
-	defb 004h,0f5h,080h,058h,00eh,028h,0a0h,080h,080h,019h,060h,000h,040h,000h,000h	; a830  ...X.(....`.@..
+	defb 0ffh,0beh,000h	; a460
+
+; ----------------------------------------------------------------------
+; DATOS guion_A463: guion comprimido que lee pinta_sin_color; lo cargan
+;   p00:5C4E (988 bytes)
+;   0xa463..0xa83f  (988 bytes)
+DATA_guion_A463:
+	defb 008h,022h,088h,07eh,03dh,01eh,01eh,01fh,01bh,01bh,019h,080h,0a0h,022h,088h,0a5h	; a463  .".~=........"..
+	defb 01ah,052h,048h,000h,0bdh,01ah,094h,080h,0e8h,022h,004h,000h,084h,048h,000h,0c0h	; a473  .RH......"...H..
+	defb 000h,008h,034h,002h,040h,006h,000h,008h,034h,008h,028h,082h,083h,003h,004h,083h	; a483  ..4.@...4.(.....
+	defb 002h,003h,089h,0d2h,0eah,06ah,072h,032h,03ah,05eh,05eh,001h,004h,000h,083h,0a3h	; a493  .....jr2:^^.....
+	defb 04eh,09ch,005h,000h,08bh,0f8h,01dh,0eah,00ah,004h,080h,0fdh,01ah,07ah,01ah,01ah	; a4a3  N............z..
+	defb 010h,000h,002h,0d0h,091h,0d2h,0feh,0c2h,0dch,0d0h,0d0h,0fdh,01ah,0eah,084h,080h	; a4b3  ................
+	defb 094h,0f4h,014h,01eh,00dh,00dh,003h,016h,08fh,023h,0a3h,0d1h,0d3h,0ffh,000h,0feh	; a4c3  .........#......
+	defb 000h,001h,007h,034h,07ah,0fdh,001h,07fh,003h,000h,08ch,01eh,01fh,01bh,01bh,019h	; a4d3  ...4z...........
+	defb 019h,01ah,01ah,0fdh,01ah,06ah,044h,004h,040h,084h,0ffh,063h,05fh,023h,004h,003h	; a4e3  .....jD.@..c_#..
+	defb 008h,000h,088h,05fh,08eh,086h,086h,006h,006h,00fh,016h,008h,000h,085h,034h,07ah	; a4f3  ..._..........4z
+	defb 0fdh,001h,07fh,004h,000h,084h,001h,003h,000h,001h,003h,000h,083h,083h,001h,000h	; a503  ................
+	defb 003h,080h,085h,060h,0d0h,0fch,0c7h,0d9h,005h,0d0h,084h,01fh,00eh,0a6h,0d7h,003h	; a513  ...`............
+	defb 0d3h,089h,0d1h,043h,082h,082h,046h,045h,045h,0adh,0aah,008h,000h,002h,074h,083h	; a523  ...C..FEE.....t.
+	defb 034h,004h,01ch,003h,000h,082h,081h,0d0h,003h,0e8h,095h,0d0h,0a0h,041h,0ffh,0e1h	; a533  4............A..
+	defb 06eh,068h,068h,069h,0ffh,061h,03fh,0f1h,06eh,068h,068h,069h,067h,0ffh,07ah,034h	; a543  nhhi.a?.nhhig.z4
+	defb 006h,028h,080h,000h,024h,082h,0fah,074h,006h,034h,002h,04eh,083h,0a6h,020h,0e3h	; a553  .(..$..t.4.N.. .
+	defb 003h,000h,085h,01ah,0ddh,0feh,000h,0ffh,003h,000h,085h,09dh,08eh,083h,084h,083h	; a563  ................
+	defb 003h,000h,004h,034h,084h,07fh,0b8h,077h,034h,003h,068h,084h,0c9h,012h,061h,080h	; a573  ...4...w4.h...a.
+	defb 011h,000h,081h,099h,006h,0bah,08eh,09ah,043h,047h,0afh,020h,007h,0a0h,0a0h,040h	; a583  ........CG. ...@
+	defb 028h,050h,090h,060h,080h,003h,000h,088h,094h,054h,054h,094h,094h,0d4h,0f4h,0f4h	; a593  (P.`.....TT.....
+	defb 008h,000h,085h,0c0h,0a0h,0a0h,040h,000h,003h,040h,080h,0a8h,025h,005h,000h,093h	; a5a3  ......@..@..%...
+	defb 07ah,034h,028h,000h,000h,042h,000h,000h,0fdh,07ah,034h,057h,0a9h,080h,052h,000h	; a5b3  z4(..B...z4W..R.
+	defb 07eh,03dh,01eh,005h,000h,083h,0ffh,070h,036h,005h,000h,083h,023h,0d1h,068h,005h	; a5c3  ~=.....p6...#.h.
+	defb 000h,083h,0ffh,0c3h,0ddh,005h,000h,083h,0afh,047h,043h,005h,000h,088h,0d7h,0a3h	; a5d3  .........GC.....
+	defb 0d2h,014h,01ah,08fh,080h,087h,003h,000h,085h,01ah,03ah,07dh,001h,03fh,003h,000h	; a5e3  ..........:}.?..
+	defb 088h,0bdh,01ah,094h,094h,054h,054h,094h,094h,005h,000h,083h,07ah,074h,034h,080h	; a5f3  .....TT.....zt4.
+	defb 008h,002h,008h,0a0h,080h,0a0h,002h,004h,040h,004h,0a0h,080h,0e8h,002h,008h,040h	; a603  ........@......@
+	defb 008h,0a0h,008h,040h,020h,0a0h,004h,0f0h,07fh,0a0h,05dh,0a0h,080h,000h,004h,070h	; a613  ...@ .....]....p
+	defb 0a0h,080h,0a8h,005h,008h,0a0h,004h,040h,004h,0a0h,004h,040h,04ch,0a0h,080h,018h	; a623  .......@...@L...
+	defb 02ah,088h,0e4h,080h,080h,08ah,09ah,0fdh,001h,0ffh,080h,030h,02ah,084h,040h,0a0h	; a633  *..........0*.@.
+	defb 020h,0c0h,004h,000h,088h,061h,057h,04dh,0cah,084h,0a1h,0a0h,040h,080h,078h,02ah	; a643   ....aWM....@.x*
+	defb 008h,000h,080h,0e0h,02ah,003h,034h,086h,014h,01ah,00fh,000h,007h,029h,003h,028h	; a653  ....*.4......).(
+	defb 094h,050h,091h,060h,080h,063h,0edh,069h,068h,0e8h,0f4h,004h,0fch,040h,0a0h,0a0h	; a663  .P.`.c.ih....@..
+	defb 0d0h,0d0h,0e9h,068h,074h,003h,0a0h,085h,0d0h,0d1h,0ebh,008h,0f9h,003h,0d0h,095h	; a673  ...ht...........
+	defb 0d1h,0d7h,0fch,001h,0feh,0d1h,0d1h,0d0h,0a0h,020h,041h,080h,000h,0aah,0dah,0d4h	; a683  ......... A.....
+	defb 0d4h,0f4h,0fah,002h,0feh,010h,000h,081h,00eh,003h,006h,084h,00eh,01fh,000h,00fh	; a693  ................
+	defb 018h,000h,085h,03ah,034h,028h,010h,020h,003h,000h,004h,040h,08dh,0a0h,0d0h,010h	; a6a3  ...:4(. ...@....
+	defb 0f0h,0d4h,0f4h,0f4h,074h,074h,034h,004h,01ch,019h,003h,01ah,084h,03ah,07dh,001h	; a6b3  ....tt4......:}.
+	defb 01fh,006h,000h,085h,01ch,07eh,090h,0f8h,0fch,005h,0ffh,005h,000h,002h,00fh,081h	; a6c3  .....~..........
+	defb 01fh,080h,0d0h,02bh,01fh,0ffh,081h,0f8h,006h,0ffh,082h,0efh,0f3h,007h,0ffh,081h	; a6d3  ...+............
+	defb 08fh,007h,0ffh,081h,0c1h,004h,0ffh,084h,0cfh,0f3h,0c9h,007h,007h,0ffh,081h,08eh	; a6e3  ................
+	defb 007h,0ffh,089h,003h,0e0h,0f0h,0fah,07bh,03bh,077h,0ffh,0ffh,004h,000h,084h,080h	; a6f3  .......{;w......
+	defb 0c0h,0e0h,0f9h,006h,000h,082h,080h,0c0h,007h,000h,082h,003h,0eeh,003h,068h,084h	; a703  ..............h.
+	defb 0e9h,0ffh,000h,0ffh,00ah,000h,002h,0c0h,088h,0f0h,0f8h,0fch,0feh,01fh,01fh,08eh	; a713  ................
+	defb 0dfh,004h,0ffh,09bh,003h,00fh,03fh,007h,007h,0d1h,0ffh,0ffh,007h,00fh,0f1h,0e1h	; a723  ......?.........
+	defb 0c3h,0ceh,019h,0ffh,00fh,00fh,01fh,03fh,006h,01ch,0bch,071h,0e6h,0f7h,0efh,004h	; a733  .......?...q....
+	defb 0ffh,081h,0feh,080h,010h,02dh,007h,0ffh,081h,091h,050h,0ffh,088h,00fh,01fh,007h	; a743  .....-....P.....
+	defb 003h,003h,001h,000h,000h,080h,080h,02dh,005h,000h,083h,01fh,03fh,017h,004h,000h	; a753  .......-....?...
+	defb 082h,00fh,007h,002h,0ffh,002h,000h,086h,003h,01fh,005h,08fh,0dfh,0ffh,080h,058h	; a763  ...............X
+	defb 02eh,005h,000h,002h,001h,002h,003h,085h,007h,006h,008h,003h,00ch,002h,000h,081h	; a773  ................
+	defb 040h,002h,000h,002h,0a0h,083h,0d0h,010h,0f0h,004h,003h,084h,007h,00fh,000h,00fh	; a783  @...............
+	defb 008h,000h,080h,018h,00ah,008h,0a0h,080h,030h,00ah,010h,0a0h,080h,078h,00ah,008h	; a793  ........0....x..
+	defb 0a0h,080h,0e0h,00ah,070h,0a0h,020h,0a0h,018h,0f0h,080h,0d0h,00bh,002h,0ffh,081h	; a7a3  ....p. .........
+	defb 044h,03ch,075h,009h,074h,008h,075h,003h,0f0h,005h,0f5h,010h,0f0h,008h,050h,010h	; a7b3  D<u.t.u.......P.
+	defb 0a0h,008h,0f0h,002h,050h,006h,0f5h,003h,050h,005h,0f5h,002h,050h,006h,0f5h,004h	; a7c3  ....P...P...P...
+	defb 050h,004h,0f5h,081h,0f0h,007h,0f5h,080h,010h,00dh,002h,0ffh,081h,044h,005h,075h	; a7d3  P............D.u
+	defb 002h,0ffh,081h,044h,005h,077h,002h,0ffh,081h,044h,005h,077h,002h,0ffh,081h,044h	; a7e3  ...D.w...D.w...D
+	defb 005h,077h,002h,0ffh,081h,044h,005h,077h,002h,0ffh,081h,044h,005h,077h,002h,0ffh	; a7f3  .w...D.w...D.w..
+	defb 081h,044h,005h,077h,002h,0ffh,081h,044h,005h,077h,002h,0ffh,081h,044h,005h,077h	; a803  .D.w...D.w...D.w
+	defb 002h,0ffh,081h,044h,005h,077h,002h,0ffh,081h,044h,005h,077h,081h,075h,007h,074h	; a813  ...D.w...D.w.u.t
+	defb 080h,080h,00dh,007h,050h,081h,0f5h,005h,050h,003h,0f5h,004h,050h,004h,0f5h,080h	; a823  ....P...P...P...
+	defb 058h,00eh,028h,0a0h,080h,080h,019h,060h,000h,040h,000h,000h	; a833  X.(....`.@..
 
 ; ======================================================================
 ; CODIGO 0xa83f..0xa8d1  (146 bytes)
@@ -161,7 +170,7 @@ DATA_A000:
 
 ; ----------------------------------------------------------------------
 ; EL GUION DE LA FASE: QUE SALE Y CUANDO. Aqui esta escrito lo que uno se encuentra al avanzar. La tabla de 0xA8FB lleva un puntero por fase y detras va una lista de PAREJAS -que objeto y cuanto hay que andar hasta el siguiente-, cerrada con 0xFF. La distancia va en BCD, y de ahi el `daa` de 0xA88B: se resta en decimal, no en binario.
-; Lo que dispara todo es la comparacion de 0xA84B: (0xE08D) es la distancia a la que toca el objeto siguiente y (0xE301) lo andado; cuando coinciden, sale. Y hay tres huecos de objeto, de 0x20 bytes cada uno, a partir de 0xE310: si los tres estan ocupados, el objeto sencillamente no aparece.
+; Lo que dispara todo es la comparacion de 0xA84B: (0xE08D) es lo que queda de fase, que va bajando, y (0xE301) la distancia a la que toca el objeto siguiente; cuando coinciden, sale. Y hay tres huecos de objeto, de 0x20 bytes cada uno, a partir de 0xE310: si los tres estan ocupados, el objeto sencillamente no aparece.
 ; ----------------------------------------------------------------------
 saca_lo_que_toque:
 	ld a,(0e0a2h)		;a83f   ; el modo en el que esta el juego
@@ -223,7 +232,7 @@ lee_la_distancia_siguiente:
 	daa			;a892
 	ld h,a			;a893
 L_A894:
-	ld (0e301h),hl		;a894   ; lo andado en la fase
+	ld (0e301h),hl		;a894   ; la distancia a la que toca el objeto siguiente
 	ret			;a897
 se_acabo_el_guion:
 	ld hl,0ffffh		;a898   ; 0xFFFF: una distancia a la que no se llega nunca
@@ -299,15 +308,45 @@ DATA_tabla_de_objetos:
 	defw 0bcbfh	; a8e7  -> monta_clase_12
 	defw 0bd0fh	; a8e9  -> monta_clase_13
 	defw 0be01h	; a8eb  -> monta_clase_14
-	defw 0be52h	; a8ed  -> L_BE52
+	defw 0be52h	; a8ed  -> arranca_el_que_cruza
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xa8ef..0xa92b  (60 bytes)
-DATA_A8EF:
-	defb 021h,00fh,0e3h,07eh,0a7h,0c8h,036h,000h,04fh,0c3h,06ah,0a8h,0c8h,0adh,0c9h,0adh	; a8ef  !..~..6.O.j.....
-	defb 0cah,0adh,0feh,0adh,0ffh,0adh,023h,0aeh,05fh,0aeh,095h,0aeh,0cfh,0aeh,00dh,0afh	; a8ff  ......#._.......
-	defb 051h,0afh,08dh,0afh,0e9h,0afh,00fh,0b0h,05dh,0b0h,0c9h,0b0h,04fh,0b1h,093h,0b1h	; a90f  Q.......]...O...
-	defb 0f7h,0b1h,0a1h,0b2h,0fdh,0b2h,09fh,0b3h,049h,0b4h,0c1h,0b4h	; a91f  ........I...
+; DATOS codigo_muerto_A8EF: doce bytes que se leen limpios como codigo -`ld
+;   hl,0E30Fh / ld a,(hl) / and a / ret z / ld (hl),0 / ld c,a / jp 0A86Ah`,
+;   la mitad de meter un objeto- pero a los que no salta nadie
+;   0xa8ef..0xa8fb  (12 bytes)
+DATA_codigo_muerto_A8EF:
+	defb 021h,00fh,0e3h,07eh,0a7h,0c8h,036h,000h,04fh,0c3h,06ah,0a8h	; a8ef  !..~..6.O.j.
+
+; ----------------------------------------------------------------------
+; DATOS guion_de_enemigos_por_fase: 24 punteros, uno por fase (0xE092 - 1), a
+;   los guiones de enemigos que lee p09:A854
+;   0xa8fb..0xa92b  (48 bytes)
+DATA_guion_de_enemigos_por_fase:
+	defb 0c8h,0adh	; a8fb
+	defb 0c9h,0adh	; a8fd
+	defb 0cah,0adh	; a8ff
+	defb 0feh,0adh	; a901
+	defb 0ffh,0adh	; a903
+	defb 023h,0aeh	; a905
+	defb 05fh,0aeh	; a907
+	defb 095h,0aeh	; a909
+	defb 0cfh,0aeh	; a90b
+	defb 00dh,0afh	; a90d
+	defb 051h,0afh	; a90f
+	defb 08dh,0afh	; a911
+	defb 0e9h,0afh	; a913
+	defb 00fh,0b0h	; a915
+	defb 05dh,0b0h	; a917
+	defb 0c9h,0b0h	; a919
+	defb 04fh,0b1h	; a91b
+	defb 093h,0b1h	; a91d
+	defb 0f7h,0b1h	; a91f
+	defb 0a1h,0b2h	; a921
+	defb 0fdh,0b2h	; a923
+	defb 09fh,0b3h	; a925
+	defb 049h,0b4h	; a927
+	defb 0c1h,0b4h	; a929
 
 ; ======================================================================
 ; CODIGO 0xa92b..0xa98a  (95 bytes)
@@ -402,7 +441,7 @@ DATA_tabla_de_atender:
 	defw 0bd33h	; a9a2  -> atiende_clase_13
 	defw 0be51h	; a9a4  -> L_BE51
 	defw 0be7eh	; a9a6  -> L_BE7E
-	defw 0aac9h	; a9a8  -> L_AAC9
+	defw 0aac9h	; a9a8  -> arranca_el_bicho_si_no_lo_esta
 
 ; ======================================================================
 ; CODIGO 0xa9aa..0xab15  (363 bytes)
@@ -538,98 +577,117 @@ L_AA7F:
 	ld (ix+010h),e		;aa7f
 	ld (ix+011h),d		;aa82
 	ret			;aa85
-L_AA86:
-	ld a,(ix+007h)		;aa86
-	cp 060h		;aa89
+
+; ----------------------------------------------------------------------
+; EL DIBUJO SEGUN LO LEJOS QUE ESTE, CON ANIMACION. La misma perspectiva que 0xAA18: el byte alto de la X (ix+7) dice a que distancia esta, y hay cuatro franjas -por debajo de 0x60 no se dibuja, y luego 0x60, 0x78, 0x90 y 0xA8-. Pero aqui cada franja se lleva DOS dibujos, no uno: se entra con el numero de partida en C, se le suman dos por franja y se le suma uno mas medio cuadro de cada ocho, y el resultado por cuatro es el dibujo. Ese uno que va y viene es el aleteo.
+; ----------------------------------------------------------------------
+el_dibujo_por_distancia_con_aleteo:
+	ld a,(ix+007h)		;aa86   ; lo lejos que esta
+	cp 060h		;aa89   ; por debajo de 0x60 no se dibuja
 	ret c			;aa8b
-	cp 078h		;aa8c
-	jr c,L_AA9E		;aa8e
-	inc c			;aa90
+	cp 078h		;aa8c   ; la primera franja
+	jr c,y_el_aleteo		;aa8e
+	inc c			;aa90   ; dos dibujos por franja
 	inc c			;aa91
-	cp 090h		;aa92
-	jr c,L_AA9E		;aa94
+	cp 090h		;aa92   ; la segunda
+	jr c,y_el_aleteo		;aa94
 	inc c			;aa96
 	inc c			;aa97
-	cp 0a8h		;aa98
-	jr c,L_AA9E		;aa9a
+	cp 0a8h		;aa98   ; y la tercera
+	jr c,y_el_aleteo		;aa9a
 	inc c			;aa9c
 	inc c			;aa9d
-L_AA9E:
+y_el_aleteo:
 	ld a,(0e003h)		;aa9e   ; el contador de cuadros
-	and 004h		;aaa1
-	jr nz,L_AAA6		;aaa3
-	inc c			;aaa5
-L_AAA6:
+	and 004h		;aaa1   ; su bit 2: cuatro cuadros si y cuatro no
+	jr nz,guarda_el_dibujo_con_aleteo		;aaa3
+	inc c			;aaa5   ; y ese es el otro dibujo del par
+guarda_el_dibujo_con_aleteo:
 	ld a,c			;aaa6
-	add a,a			;aaa7
+	add a,a			;aaa7   ; por cuatro, que es lo que ocupa un sprite de 16 por 16
 	add a,a			;aaa8
-	ld (ix+004h),a		;aaa9
+	ld (ix+004h),a		;aaa9   ; al byte del dibujo
 	ret			;aaac
-L_AAAD:
-	ld a,(ix+007h)		;aaad
-	cp 060h		;aab0
+
+; ----------------------------------------------------------------------
+; EL DIBUJO SEGUN LO LEJOS QUE ESTE, SIN ANIMACION. La misma cuenta de arriba con las mismas cuatro franjas, pero de uno en uno y sin mirar el contador de cuadros: un solo dibujo por franja.
+; ----------------------------------------------------------------------
+el_dibujo_por_distancia:
+	ld a,(ix+007h)		;aaad   ; lo lejos que esta
+	cp 060h		;aab0   ; por debajo de 0x60 no se dibuja
 	ret c			;aab2
-	cp 078h		;aab3
-	jr c,L_AAC2		;aab5
+	cp 078h		;aab3   ; la primera franja
+	jr c,guarda_el_dibujo_sin_aleteo		;aab5
 	inc c			;aab7
-	cp 090h		;aab8
-	jr c,L_AAC2		;aaba
+	cp 090h		;aab8   ; la segunda
+	jr c,guarda_el_dibujo_sin_aleteo		;aaba
 	inc c			;aabc
-	cp 0a8h		;aabd
-	jr c,L_AAC2		;aabf
+	cp 0a8h		;aabd   ; y la tercera
+	jr c,guarda_el_dibujo_sin_aleteo		;aabf
 	inc c			;aac1
-L_AAC2:
+guarda_el_dibujo_sin_aleteo:
 	ld a,c			;aac2
-	add a,a			;aac3
+	add a,a			;aac3   ; por cuatro
 	add a,a			;aac4
 	ld (ix+004h),a		;aac5
 	ret			;aac8
-L_AAC9:
-	ld a,(ix+01fh)		;aac9
+
+; ----------------------------------------------------------------------
+; ARRANCAR EL BICHO, UNA SOLA VEZ. (ix+0x1F) es la marca de que ya ha arrancado: si esta puesta, no se vuelve a arrancar.
+; ----------------------------------------------------------------------
+arranca_el_bicho_si_no_lo_esta:
+	ld a,(ix+01fh)		;aac9   ; ¿ya ha arrancado?
 	and a			;aacc
-	jr z,L_AAD0		;aacd
+	jr z,mira_si_se_le_pone_el_estado_5		;aacd
 	ret			;aacf
-L_AAD0:
-	ld a,(ix+01dh)		;aad0
+mira_si_se_le_pone_el_estado_5:
+	ld a,(ix+01dh)		;aad0   ; y si (ix+0x1D) esta puesto...
 	and a			;aad3
-	jr z,L_AADA		;aad4
-	ld (ix+005h),005h		;aad6
-L_AADA:
-	ld a,r		;aada
-	and 001h		;aadc
+	jr z,arranca_el_bicho		;aad4
+	ld (ix+005h),005h		;aad6   ; ...arranca con el estado 5
+
+; ----------------------------------------------------------------------
+; ARRANCAR EL BICHO. Y aqui el AZAR, que en este cartucho sale siempre del registro R -el de refresco de la memoria, que va cambiando solo-: el bit 0 decide hacia que lado va y los tres bits bajos escogen uno de los ocho empujones de 0xAB15. El segundo byte del empujon se cambia de signo si el lado es el otro, que es como el mismo par de numeros sirve para los dos sentidos.
+; ----------------------------------------------------------------------
+arranca_el_bicho:
+	ld a,r		;aada   ; el registro R: el azar de la casa
+	and 001h		;aadc   ; su bit 0 dice hacia que lado
 	ld (ix+01eh),a		;aade
-	xor a			;aae1
+	xor a			;aae1   ; las tres velocidades, a cero
 	ld (ix+00ch),a		;aae2
 	ld (ix+00dh),a		;aae5
 	ld (ix+00eh),a		;aae8
 	ld (ix+010h),a		;aaeb
-	ld (ix+012h),001h		;aaee
-	inc (ix+01fh)		;aaf2
-	ld hl,0ab15h		;aaf5
-	ld a,r		;aaf8
-	and 007h		;aafa
+	ld (ix+012h),001h		;aaee   ; y se mueve solo
+	inc (ix+01fh)		;aaf2   ; marcado como arrancado
+	ld hl,0ab15h		;aaf5   ; los ocho empujones
+	ld a,r		;aaf8   ; otra vez el registro R...
+	and 007h		;aafa   ; ...y sus tres bits bajos escogen uno de los ocho
 	add a,l			;aafc
 	ld l,a			;aafd
-	jr nc,L_AB01		;aafe
+	jr nc,coge_el_empujon		;aafe
 	inc h			;ab00
-L_AB01:
-	ld a,(hl)			;ab01
+coge_el_empujon:
+	ld a,(hl)			;ab01   ; el primer byte del empujon
 	ld (ix+011h),a		;ab02
 	inc hl			;ab05
-	ld a,(hl)			;ab06
+	ld a,(hl)			;ab06   ; y el segundo
 	ld b,a			;ab07
-	ld a,(ix+01eh)		;ab08
+	ld a,(ix+01eh)		;ab08   ; hacia que lado iba
 	and a			;ab0b
 	ld a,b			;ab0c
-	jr z,L_AB11		;ab0d
-	neg		;ab0f
-L_AB11:
+	jr z,guarda_el_empujon		;ab0d
+	neg		;ab0f   ; al otro lado, cambiado de signo
+guarda_el_empujon:
 	ld (ix+00fh),a		;ab11
 	ret			;ab14
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xab15..0xab1e  (9 bytes)
-DATA_AB15:
+; DATOS empujones_al_azar: nueve bytes: p09:AAF5 salta a uno de los ocho
+;   primeros con `ld a,r / and 7` y lleva ese byte a (ix+11) y el siguiente,
+;   cambiado de signo si (ix+1E), a (ix+0F)
+;   0xab15..0xab1e  (9 bytes)
+DATA_empujones_al_azar:
 	defb 008h,004h,005h,005h,003h,006h,009h,002h,007h	; ab15  .........
 
 ; ======================================================================
@@ -637,116 +695,131 @@ DATA_AB15:
 ; ======================================================================
 
 
-L_AB1E:
-	ld hl,0e370h		;ab1e
+
+; ----------------------------------------------------------------------
+; ¿HAY SITIO PARA OTRO? Los tres huecos de 0xE370 -0xE370, 0xE380 y 0xE390-, y basta con que uno este libre. Si los tres estan cogidos, se vuelve sin hacer nada.
+; ----------------------------------------------------------------------
+hay_sitio_en_0xE370:
+	ld hl,0e370h		;ab1e   ; el primer hueco
 	ld a,(hl)			;ab21
 	and a			;ab22
-	jr z,L_AB30		;ab23
-	ld l,080h		;ab25
+	jr z,coge_la_rutina_de_su_clase		;ab23
+	ld l,080h		;ab25   ; el segundo
 	ld a,(hl)			;ab27
 	and a			;ab28
-	jr z,L_AB30		;ab29
-	ld l,090h		;ab2b
+	jr z,coge_la_rutina_de_su_clase		;ab29
+	ld l,090h		;ab2b   ; y el tercero
 	ld a,(hl)			;ab2d
 	and a			;ab2e
-	ret nz			;ab2f
-L_AB30:
-	ld a,(ix+000h)		;ab30
-	ld de,labb3h		;ab33
+	ret nz			;ab2f   ; con los tres cogidos, no cabe otro
+coge_la_rutina_de_su_clase:
+	ld a,(ix+000h)		;ab30   ; la clase del objeto
+	ld de,labb3h		;ab33   ; la tabla de rutinas
 	add a,e			;ab36
 	ld e,a			;ab37
-	jr nc,L_AB3B		;ab38
+	jr nc,suelta_uno_apuntando		;ab38
 	inc d			;ab3a
-L_AB3B:
-	ld a,(de)			;ab3b
-	ld (hl),a			;ab3c
+
+; ----------------------------------------------------------------------
+; SOLTAR UNO APUNTANDO AL JUGADOR. Aqui se juntan todas las piezas de arriba. Llena el hueco de 0xE370 con la clase que traiga la tabla, lo pone en la misma fila y columna que el que lo suelta, y CALCULA el rumbo: el angulo hacia el jugador con 0xAC75, sus dos componentes con 0xAD27 y las dos dobladas con 0xAD0E, que es lo que acaba en las velocidades de (ix+7) y (ix+9). Antes de todo eso hay dos plantes: si el jugador esta por encima del que dispara, no se suelta nada, y si esta a menos de 0x20 en las dos coordenadas, tampoco. Y al final, el efecto 0x13 si la clase es la 6 y el 0x0F si es la 4.
+; ----------------------------------------------------------------------
+suelta_uno_apuntando:
+	ld a,(de)			;ab3b   ; la clase que toca
+	ld (hl),a			;ab3c   ; al hueco
 	xor a			;ab3d
-	ld (0e4e0h),a		;ab3e   ; la tabla de cambio de color, nibble alto
+	ld (0e4e0h),a		;ab3e   ; y la tabla de color, a cero
 	inc l			;ab41
-	ld (hl),000h		;ab42
+	ld (hl),000h		;ab42   ; la fraccion de la fila, a cero
 	inc l			;ab44
-	ld a,(ix+002h)		;ab45
+	ld a,(ix+002h)		;ab45   ; la fila del que lo suelta
 	ld (hl),a			;ab48
 	ld c,a			;ab49
-	ld a,(0e204h)		;ab4a   ; la X en la pantalla de lo que se maneja
+	ld a,(0e204h)		;ab4a   ; la fila del jugador
 	cp (hl)			;ab4d
-	jr c,L_AB99		;ab4e
+	jr c,no_se_suelta		;ab4e   ; si esta por encima, no se suelta nada
 	inc l			;ab50
-	ld (hl),000h		;ab51
+	ld (hl),000h		;ab51   ; la fraccion de la columna, a cero
 	inc l			;ab53
-	ld a,(ix+003h)		;ab54
+	ld a,(ix+003h)		;ab54   ; y la columna del que lo suelta
 	ld (hl),a			;ab57
 	ld b,a			;ab58
-	call L_AB9E		;ab59
-	jr c,L_AB97		;ab5c
-	inc l			;ab5e
+	call esta_ya_encima		;ab59   ; ¿esta ya encima?
+	jr c,no_se_suelta_por_estar_encima		;ab5c   ; si lo esta, tampoco
+	inc l			;ab5e   ; adelante, a las velocidades
 	inc l			;ab5f
 	inc l			;ab60
 	push hl			;ab61
-	call L_AC75		;ab62
-	call L_AD27		;ab65
+	call el_angulo_hacia_el_jugador		;ab62   ; el angulo hacia el jugador
+	call descompon_el_angulo		;ab65   ; y sus dos componentes
 	push de			;ab68
 	ld e,c			;ab69
 	ld d,b			;ab6a
-	call L_AD0E		;ab6b
+	call dobla_con_signo		;ab6b   ; la primera, doblada
 	ld c,l			;ab6e
 	ld b,h			;ab6f
 	pop de			;ab70
 	pop hl			;ab71
-	ld (hl),c			;ab72
+	ld (hl),c			;ab72   ; a la velocidad de la fila
 	inc l			;ab73
 	ld (hl),b			;ab74
 	inc l			;ab75
 	push hl			;ab76
-	call L_AD0E		;ab77
+	call dobla_con_signo		;ab77   ; y la segunda, tambien doblada
 	ex de,hl			;ab7a
 	pop hl			;ab7b
-	ld (hl),e			;ab7c
+	ld (hl),e			;ab7c   ; a la velocidad de la columna
 	inc l			;ab7d
 	ld (hl),d			;ab7e
 	ld a,l			;ab7f
-	sub 00ah		;ab80
+	sub 00ah		;ab80   ; atras, a la clase
 	ld l,a			;ab82
 	ld a,(hl)			;ab83
-	cp 006h		;ab84
-	jr nz,L_AB8E		;ab86
-	ld a,013h		;ab88
+	cp 006h		;ab84   ; la clase 6...
+	jr nz,la_clase_4_suena_distinto		;ab86
+	ld a,013h		;ab88   ; ...suena el efecto 0x13
 	call 0413ah		;ab8a   ; banco 0: pide_sonido_si_esta_activo
 	ret			;ab8d
-L_AB8E:
-	cp 004h		;ab8e
+la_clase_4_suena_distinto:
+	cp 004h		;ab8e   ; la clase 4...
 	ret nz			;ab90
-	ld a,00fh		;ab91
+	ld a,00fh		;ab91   ; ...suena el efecto 0x0F
 	call 0413ah		;ab93   ; banco 0: pide_sonido_si_esta_activo
 	ret			;ab96
-L_AB97:
+no_se_suelta_por_estar_encima:
 	dec l			;ab97
 	dec l			;ab98
-L_AB99:
+no_se_suelta:
 	dec l			;ab99
 	dec l			;ab9a
-	ld (hl),000h		;ab9b
+	ld (hl),000h		;ab9b   ; el hueco se queda libre
 	ret			;ab9d
-L_AB9E:
-	ld a,(0e204h)		;ab9e   ; la X en la pantalla de lo que se maneja
-	cp c			;aba1
+
+; ----------------------------------------------------------------------
+; ¿ESTA YA ENCIMA? Las dos diferencias contra el jugador, en valor absoluto, contra 0x20 cada una. Vuelve con el acarreo puesto si las dos caben, que es como se dice "demasiado cerca para disparar".
+; ----------------------------------------------------------------------
+esta_ya_encima:
+	ld a,(0e204h)		;ab9e   ; la fila del jugador
+	cp c			;aba1   ; contra la del que dispara
 	jr nc,L_ABA6		;aba2
-	neg		;aba4
+	neg		;aba4   ; en valor absoluto
 L_ABA6:
-	cp 020h		;aba6
+	cp 020h		;aba6   ; ¿a menos de 0x20?
 	ret c			;aba8
-	ld a,(0e205h)		;aba9   ; la Y en la pantalla de lo que se maneja
+	ld a,(0e205h)		;aba9   ; y ahora la columna
 	cp b			;abac
 	jr nc,L_ABB1		;abad
 	neg		;abaf
 L_ABB1:
-	cp 020h		;abb1
+	cp 020h		;abb1   ; con el mismo 0x20
 L_ABB3:
 	ret			;abb3
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xabb4..0xabc3  (15 bytes)
-DATA_ABB4:
+; DATOS quince_bytes_sin_lector: quince bytes (01 00 00 02 00 00 00 00 03 00
+;   04 00 05 00 06) entre el `ret` de 0xABB3 y la rutina de 0xABC3, sin
+;   instruccion que los lea ni salto que llegue: como codigo no tienen sentido
+;   0xabb4..0xabc3  (15 bytes)
+DATA_quince_bytes_sin_lector:
 	defb 001h,000h,000h,002h,000h,000h,000h,000h,003h,000h,004h,000h,005h,000h,006h	; abb4  ...............
 
 ; ======================================================================
@@ -761,8 +834,8 @@ L_ABC9:
 	ld a,(ix+000h)		;abc9
 	and a			;abcc
 	jr z,L_ABD5		;abcd
-	call L_ABF5		;abcf
-	call L_AC1E		;abd2
+	call el_dibujo_y_el_contador_por_tipo		;abcf
+	call mueve_el_de_0xE370		;abd2
 L_ABD5:
 	ld de,00010h		;abd5
 	add ix,de		;abd8
@@ -770,120 +843,143 @@ L_ABD5:
 	ret			;abdc
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xabdd..0xabf5  (24 bytes)
-DATA_ABDD:
-	defb 09ch,001h,0a0h,001h,09ch,001h,0a0h,001h,09ch,001h,0a0h,001h,0ach,001h,0ach,001h	; abdd  ................
-	defb 09ch,001h,0a0h,001h,0ach,006h,0ach,006h	; abed  ........
+; DATOS cuatro_bytes_por_tipo: seis entradas de 4 bytes, tipos 1 a 6: p09:ABFA
+;   salta a 0xABD9 + 4*(ix+0) y lleva a (ix+5) el primer byte o, si (ix+6) >=
+;   0x80, el tercero
+;   0xabdd..0xabf5  (24 bytes)
+DATA_cuatro_bytes_por_tipo:
+	defb 09ch,001h,0a0h,001h	; abdd
+	defb 09ch,001h,0a0h,001h	; abe1
+	defb 09ch,001h,0a0h,001h	; abe5
+	defb 0ach,001h,0ach,001h	; abe9
+	defb 09ch,001h,0a0h,001h	; abed
+	defb 0ach,006h,0ach,006h	; abf1
 
 ; ======================================================================
 ; CODIGO 0xabf5..0xad77  (386 bytes)
 ; ======================================================================
 
 
-L_ABF5:
-	ld a,(ix+000h)		;abf5
-	add a,a			;abf8
+
+; ----------------------------------------------------------------------
+; EL DIBUJO Y EL CONTADOR, POR TIPO. Cuatro bytes por tipo en la tabla de 0xABDD: los dos primeros si (ix+6) ha llegado a 0x80 y los dos ultimos si no. El primero va al dibujo (ix+5) y el segundo al contador (ix+6). Y si el juego esta en pausa, el contador se queda clavado en 4.
+; ----------------------------------------------------------------------
+el_dibujo_y_el_contador_por_tipo:
+	ld a,(ix+000h)		;abf5   ; el tipo
+	add a,a			;abf8   ; cuatro bytes por tipo
 	add a,a			;abf9
-	ld hl,0abd9h		;abfa
+	ld hl,0abd9h		;abfa   ; la tabla
 	add a,l			;abfd
 	ld l,a			;abfe
 	jr nc,L_AC02		;abff
 	inc h			;ac01
 L_AC02:
-	ld a,(ix+006h)		;ac02
-	cp 080h		;ac05
+	ld a,(ix+006h)		;ac02   ; el contador de ahora
+	cp 080h		;ac05   ; por debajo de 0x80, la otra pareja
 	jr nc,L_AC0B		;ac07
 	inc hl			;ac09
 	inc hl			;ac0a
 L_AC0B:
-	ld a,(hl)			;ac0b
+	ld a,(hl)			;ac0b   ; el dibujo
 	ld (ix+005h),a		;ac0c
 	inc hl			;ac0f
-	ld a,(hl)			;ac10
+	ld a,(hl)			;ac10   ; y el contador
 	ld (ix+006h),a		;ac11
-	ld a,(0e0dch)		;ac14   ; la pausa que se hace al perder o al cambiar de fase
+	ld a,(0e0dch)		;ac14   ; en pausa...
 	and a			;ac17
 	ret z			;ac18
-	ld (ix+006h),004h		;ac19
+	ld (ix+006h),004h		;ac19   ; ...el contador se queda en 4
 	ret			;ac1d
-L_AC1E:
-	ld l,(ix+001h)		;ac1e
+
+; ----------------------------------------------------------------------
+; MOVER EL DE 0xE370. Dos coordenadas de 16 bits, cada una con su velocidad de 16 bits: (ix+1) con (ix+7) y (ix+3) con (ix+9). Y dos topes: pasarse de 0xC000 en la primera o de 0xF000 en la segunda deja el hueco libre.
+; ----------------------------------------------------------------------
+mueve_el_de_0xE370:
+	ld l,(ix+001h)		;ac1e   ; la primera coordenada
 	ld h,(ix+002h)		;ac21
-	ld e,(ix+007h)		;ac24
+	ld e,(ix+007h)		;ac24   ; y su velocidad
 	ld d,(ix+008h)		;ac27
-	add hl,de			;ac2a
+	add hl,de			;ac2a   ; sumadas, en 16 bits
 	ld (ix+001h),l		;ac2b
 	ld (ix+002h),h		;ac2e
 	ld a,h			;ac31
-	cp 0c0h		;ac32
-	jr nc,L_AC4D		;ac34
-	ld l,(ix+003h)		;ac36
+	cp 0c0h		;ac32   ; y el tope, 0xC000
+	jr nc,el_de_0xE370_se_ha_ido		;ac34
+	ld l,(ix+003h)		;ac36   ; la segunda coordenada
 	ld h,(ix+004h)		;ac39
-	ld e,(ix+009h)		;ac3c
+	ld e,(ix+009h)		;ac3c   ; y su velocidad
 	ld d,(ix+00ah)		;ac3f
 	add hl,de			;ac42
 	ld (ix+003h),l		;ac43
 	ld (ix+004h),h		;ac46
 	ld a,h			;ac49
-	cp 0f0h		;ac4a
+	cp 0f0h		;ac4a   ; su tope es 0xF000
 	ret c			;ac4c
-L_AC4D:
-	ld (ix+000h),000h		;ac4d
+el_de_0xE370_se_ha_ido:
+	ld (ix+000h),000h		;ac4d   ; el hueco, libre
 	ret			;ac51
-L_AC52:
-	ld hl,0e370h		;ac52
-	ld de,0eef4h		;ac55
-	ld bc,003ffh		;ac58
-L_AC5B:
-	ld a,(hl)			;ac5b
+
+; ----------------------------------------------------------------------
+; LOS TRES DE 0xE370, A SUS SPRITES. A partir del sprite 29 (0xEEF4), cuatro bytes por objeto. Los que no esten puestos se van de la pantalla con 0xE0 en la fila.
+; ----------------------------------------------------------------------
+los_de_0xE370_a_sus_sprites:
+	ld hl,0e370h		;ac52   ; los tres huecos
+	ld de,0eef4h		;ac55   ; desde el sprite 29
+	ld bc,003ffh		;ac58   ; tres
+uno_de_0xE370_a_su_sprite:
+	ld a,(hl)			;ac5b   ; ¿esta puesto?
 	inc l			;ac5c
 	inc l			;ac5d
 	and a			;ac5e
 	ld a,(hl)			;ac5f
-	jr nz,L_AC64		;ac60
-	ld a,0e0h		;ac62
-L_AC64:
+	jr nz,copia_los_cuatro_bytes_del_sprite		;ac60
+	ld a,0e0h		;ac62   ; si no lo esta, 0xE0: fuera de la pantalla
+copia_los_cuatro_bytes_del_sprite:
 	ld (de),a			;ac64
 	inc l			;ac65
 	inc l			;ac66
 	inc e			;ac67
-	ldi		;ac68
+	ldi		;ac68   ; fila, columna y dibujo
 	ldi		;ac6a
 	ldi		;ac6c
-	ld a,009h		;ac6e
+	ld a,009h		;ac6e   ; y al hueco siguiente
 	add a,l			;ac70
 	ld l,a			;ac71
-	djnz L_AC5B		;ac72
+	djnz uno_de_0xE370_a_su_sprite		;ac72
 	ret			;ac74
-L_AC75:
-	ld a,(0e204h)		;ac75   ; la X en la pantalla de lo que se maneja
+
+; ----------------------------------------------------------------------
+; EL ANGULO HACIA EL JUGADOR. Saca las dos diferencias -la del jugador contra (ix+2) y (ix+3)- en valor absoluto, y de paso se queda con el cuadrante en D segun de que lado caiga cada una. Luego divide una entre otra para tener la tangente y busca ese valor en la tabla de ocho de 0xADB8, que son las tangentes de 11,25 en 11,25 grados. El angulo sale en las 256 unidades de circunferencia de la casa: 0x40 es un cuarto de vuelta.
+; ----------------------------------------------------------------------
+el_angulo_hacia_el_jugador:
+	ld a,(0e204h)		;ac75   ; la fila del jugador
 	ld l,a			;ac78
-	ld a,(0e205h)		;ac79   ; la Y en la pantalla de lo que se maneja
+	ld a,(0e205h)		;ac79   ; y su columna, corrida dieciseis
 	add a,010h		;ac7c
 	ld h,a			;ac7e
 	ld d,001h		;ac7f
 	ld a,l			;ac81
-	sub (ix+002h)		;ac82
+	sub (ix+002h)		;ac82   ; menos la fila del objeto
 	ld b,000h		;ac85
-	jr z,L_AC90		;ac87
+	jr z,y_ahora_la_columna		;ac87   ; iguales: diferencia cero
 	ld b,a			;ac89
-	jr nc,L_AC90		;ac8a
-	dec d			;ac8c
+	jr nc,y_ahora_la_columna		;ac8a
+	dec d			;ac8c   ; si sale negativa, al otro lado y en valor absoluto
 	neg		;ac8d
 	ld b,a			;ac8f
-L_AC90:
+y_ahora_la_columna:
 	ld a,h			;ac90
-	sub (ix+003h)		;ac91
+	sub (ix+003h)		;ac91   ; menos la columna del objeto
 	ld e,000h		;ac94
 	ld c,000h		;ac96
-	jr z,L_ACA1		;ac98
+	jr z,junta_el_cuadrante		;ac98
 	ld c,a			;ac9a
-	jr nc,L_ACA1		;ac9b
-	inc e			;ac9d
+	jr nc,junta_el_cuadrante		;ac9b
+	inc e			;ac9d   ; lo mismo: al otro lado y en valor absoluto
 	neg		;ac9e
 	ld c,a			;aca0
-L_ACA1:
-	ld a,d			;aca1
+junta_el_cuadrante:
+	ld a,d			;aca1   ; los dos lados hacen el cuadrante
 	add a,e			;aca2
 	cp 001h		;aca3
 	jr nz,L_ACAC		;aca5
@@ -891,89 +987,101 @@ L_ACA1:
 	jr nz,L_ACAC		;aca8
 	ld a,003h		;acaa
 L_ACAC:
-	ld d,a			;acac
-	ld l,b			;acad
+	ld d,a			;acac   ; el cuadrante
+	ld l,b			;acad   ; las dos diferencias, a dividir
 	ld h,000h		;acae
 	ld b,c			;acb0
 	push de			;acb1
-	call L_ACF8		;acb2
-	ld hl,0adb8h		;acb5
+	call la_tangente		;acb2   ; la tangente
+	ld hl,0adb8h		;acb5   ; y las ocho tangentes de la tabla
 	ld b,040h		;acb8
-L_ACBA:
-	ld a,(hl)			;acba
+busca_el_angulo_en_la_tabla:
+	ld a,(hl)			;acba   ; la tangente que toca comparar
 	inc hl			;acbb
 	push hl			;acbc
 	ld h,(hl)			;acbd
 	ld l,a			;acbe
 	and a			;acbf
-	sbc hl,de		;acc0
+	sbc hl,de		;acc0   ; contra la calculada
 	pop hl			;acc2
-	jr c,L_ACCC		;acc3
+	jr c,pon_el_angulo_en_su_cuadrante		;acc3   ; la primera que se pasa manda
 	inc hl			;acc5
-	ld a,b			;acc6
+	ld a,b			;acc6   ; y si no, 11,25 grados menos
 	sub 008h		;acc7
 	ld b,a			;acc9
-	jr nz,L_ACBA		;acca
-L_ACCC:
+	jr nz,busca_el_angulo_en_la_tabla		;acca
+pon_el_angulo_en_su_cuadrante:
 	pop de			;accc
-	dec d			;accd
-	jr nz,L_ACD6		;acce
-	ld a,040h		;acd0
+	dec d			;accd   ; el cuadrante
+	jr nz,el_tercer_cuadrante		;acce
+	ld a,040h		;acd0   ; el primero se mide al reves
 	sub b			;acd2
 	add a,040h		;acd3
 	ret			;acd5
-L_ACD6:
+el_tercer_cuadrante:
 	dec d			;acd6
-	jr nz,L_ACDD		;acd7
-	ld a,080h		;acd9
+	jr nz,el_segundo_y_el_cuarto		;acd7
+	ld a,080h		;acd9   ; media vuelta mas
 	add a,b			;acdb
 	ret			;acdc
-L_ACDD:
+el_segundo_y_el_cuarto:
 	ld a,b			;acdd
 	dec d			;acde
 	ret nz			;acdf
-	neg		;ace0
+	neg		;ace0   ; y el cuarto, cambiado de signo
 	ret			;ace2
-L_ACE3:
-	ld c,008h		;ace3
+
+; ----------------------------------------------------------------------
+; DIVIDIR 16 ENTRE 8. La division de restar y desplazar de toda la vida, ocho vueltas: HL es el dividendo, B el divisor y el cociente sale por L. No hay `div` en el Z80 y esto es lo que se hace en su lugar.
+; ----------------------------------------------------------------------
+divide_16_entre_8:
+	ld c,008h		;ace3   ; ocho vueltas
 	xor a			;ace5
-L_ACE6:
-	adc hl,hl		;ace6
+divide_una_vuelta:
+	adc hl,hl		;ace6   ; un bit mas
 	ld a,h			;ace8
 	jr c,L_ACEE		;ace9
-	cp b			;aceb
+	cp b			;aceb   ; ¿cabe el divisor?
 	jr c,L_ACF1		;acec
 L_ACEE:
-	sub b			;acee
+	sub b			;acee   ; pues se resta
 	ld h,a			;acef
 	xor a			;acf0
 L_ACF1:
-	ccf			;acf1
+	ccf			;acf1   ; y el bit del cociente
 	dec c			;acf2
-	jr nz,L_ACE6		;acf3
-	rl l		;acf5
+	jr nz,divide_una_vuelta		;acf3
+	rl l		;acf5   ; el ultimo bit
 	ret			;acf7
-L_ACF8:
-	ld a,b			;acf8
+
+; ----------------------------------------------------------------------
+; LA TANGENTE DE LAS DOS DIFERENCIAS. Dos divisiones seguidas para sacar 16 bits de cociente: la parte entera y la fraccion, que es lo que hace falta para poder comparar contra la tabla de 0xADB8, que esta en ese mismo formato. Con el divisor a cero devuelve 0xFFFF, que es "infinito".
+; ----------------------------------------------------------------------
+la_tangente:
+	ld a,b			;acf8   ; ¿el divisor es cero?
 	or a			;acf9
-	jr z,L_AD0A		;acfa
-	ld de,00000h		;acfc
-	call L_ACE3		;acff
-	ld d,l			;ad02
-	ld l,000h		;ad03
-	call L_ACE3		;ad05
+	jr z,tangente_infinita		;acfa
+	ld de,00000h		;acfc   ; la parte entera
+	call divide_16_entre_8		;acff
+	ld d,l			;ad02   ; guardada
+	ld l,000h		;ad03   ; y ahora la fraccion
+	call divide_16_entre_8		;ad05
 	ld e,l			;ad08
 	ret			;ad09
-L_AD0A:
-	dec a			;ad0a
+tangente_infinita:
+	dec a			;ad0a   ; 0xFFFF: recto
 	ld d,a			;ad0b
 	ld e,a			;ad0c
 	ret			;ad0d
-L_AD0E:
-	bit 7,d		;ad0e
+
+; ----------------------------------------------------------------------
+; DOBLAR CON SIGNO. Si DE es negativo lo cambia de signo, lo dobla y lo vuelve a cambiar; si no, lo dobla y ya. Hace falta porque `add hl,de` no entiende de signos.
+; ----------------------------------------------------------------------
+dobla_con_signo:
+	bit 7,d		;ad0e   ; ¿es negativo?
 	push af			;ad10
 	jr z,L_AD1A		;ad11
-	ld a,e			;ad13
+	ld a,e			;ad13   ; pues cambiado de signo
 	cpl			;ad14
 	ld e,a			;ad15
 	ld a,d			;ad16
@@ -983,10 +1091,10 @@ L_AD0E:
 L_AD1A:
 	ld l,e			;ad1a
 	ld h,d			;ad1b
-	add hl,de			;ad1c
+	add hl,de			;ad1c   ; doblado
 	pop af			;ad1d
-	ret z			;ad1e
-	ld a,l			;ad1f
+	ret z			;ad1e   ; y si era positivo, ya esta
+	ld a,l			;ad1f   ; y si era negativo, se le devuelve el signo
 	cpl			;ad20
 	ld l,a			;ad21
 	ld a,h			;ad22
@@ -994,199 +1102,1224 @@ L_AD1A:
 	ld h,a			;ad24
 	inc hl			;ad25
 	ret			;ad26
-L_AD27:
-	ld b,a			;ad27
-	ld c,000h		;ad28
-	cp 041h		;ad2a
-	jr c,L_AD44		;ad2c
+
+; ----------------------------------------------------------------------
+; DESCOMPONER UN ANGULO. La pareja del de 0xAC75: entra un angulo de 0 a 255 y salen sus dos componentes, cada una con su signo. Primero lo mete en el primer cuadrante, apuntando en C cual era, y luego lee la curva de 65 de 0xAD77 dos veces -en B y en 0x40 - B, que es el complemento- y le pone a cada una el signo que le toque. Eso son un seno y un coseno LEIDOS, sin calcular nada.
+; ----------------------------------------------------------------------
+descompon_el_angulo:
+	ld b,a			;ad27   ; el angulo
+	ld c,000h		;ad28   ; y el cuadrante, de momento el 0
+	cp 041h		;ad2a   ; hasta 0x40, el primer cuadrante
+	jr c,lee_las_dos_componentes		;ad2c
 	inc c			;ad2e
-	cp 080h		;ad2f
+	cp 080h		;ad2f   ; hasta 0x80, el segundo...
 	jr nc,L_AD38		;ad31
-	ld a,080h		;ad33
+	ld a,080h		;ad33   ; ...y se mide desde el otro lado
 	sub b			;ad35
-	jr L_AD44		;ad36
+	jr lee_las_dos_componentes		;ad36
 L_AD38:
 	inc c			;ad38
-	cp 0c0h		;ad39
-	jr nc,L_AD41		;ad3b
-	sub 080h		;ad3d
-	jr L_AD44		;ad3f
-L_AD41:
+	cp 0c0h		;ad39   ; hasta 0xC0, el tercero...
+	jr nc,el_cuarto_cuadrante		;ad3b
+	sub 080h		;ad3d   ; ...y se le quita media vuelta
+	jr lee_las_dos_componentes		;ad3f
+el_cuarto_cuadrante:
 	inc c			;ad41
-	neg		;ad42
-L_AD44:
+	neg		;ad42   ; y el cuarto, cambiado de signo
+lee_las_dos_componentes:
 	ld b,a			;ad44
-	ex af,af'			;ad45
+	ex af,af'			;ad45   ; el angulo del cuadrante, guardado
 	ld a,b			;ad46
 	ex af,af'			;ad47
-	ld hl,0ad77h		;ad48
+	ld hl,0ad77h		;ad48   ; la curva de 65
 	add a,l			;ad4b
 	ld l,a			;ad4c
-	jr nc,L_AD50		;ad4d
+	jr nc,la_primera_componente		;ad4d
 	inc h			;ad4f
-L_AD50:
+la_primera_componente:
 	ld d,000h		;ad50
-	ld e,(hl)			;ad52
-	ld a,c			;ad53
+	ld e,(hl)			;ad52   ; la que toca
+	ld a,c			;ad53   ; el cuadrante
 	sub 001h		;ad54
-	cp 002h		;ad56
+	cp 002h		;ad56   ; en el 1 y en el 2 va como esta...
 	ld a,e			;ad58
-	jr nc,L_AD5E		;ad59
-	dec d			;ad5b
+	jr nc,la_segunda_componente		;ad59
+	dec d			;ad5b   ; ...y en los otros dos, cambiada de signo
 	neg		;ad5c
-L_AD5E:
+la_segunda_componente:
 	ld e,a			;ad5e
-	ld hl,0ad77h		;ad5f
-	ld a,040h		;ad62
+	ld hl,0ad77h		;ad5f   ; la misma curva
+	ld a,040h		;ad62   ; pero en el complemento: eso es el coseno
 	sub b			;ad64
 	add a,l			;ad65
 	ld l,a			;ad66
-	jr nc,L_AD6A		;ad67
+	jr nc,y_su_signo		;ad67
 	inc h			;ad69
-L_AD6A:
+y_su_signo:
 	ld b,000h		;ad6a
 	ld a,c			;ad6c
-	cp 002h		;ad6d
+	cp 002h		;ad6d   ; del 2 en adelante va como esta...
 	ld a,(hl)			;ad6f
 	jr nc,L_AD75		;ad70
-	dec b			;ad72
+	dec b			;ad72   ; ...y antes, cambiada de signo
 	neg		;ad73
 L_AD75:
 	ld c,a			;ad75
 	ret			;ad76
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xad77..0xb581  (2058 bytes)
-DATA_AD77:
+; DATOS curva_de_65: 65 valores de una curva: p09:AD48 lee el de B y p09:AD5F
+;   el de 0x40 - B, y los cambia de signo segun el cuadrante (C). Asi se sacan
+;   las dos componentes sin calcular nada
+;   0xad77..0xadb8  (65 bytes)
+DATA_curva_de_65:
 	defb 0ffh,0ffh,0ffh,0ffh,0feh,0feh,0fdh,0fch,0fbh,0f9h,0f8h,0f6h,0f4h,0f3h,0f1h,0eeh	; ad77  ................
 	defb 0ech,0eah,0e7h,0e4h,0e1h,0deh,0dch,0d9h,0d4h,0d1h,0cdh,0c9h,0c5h,0c1h,0bdh,0b9h	; ad87  ................
 	defb 0b5h,0b0h,0abh,0a7h,0a2h,09dh,098h,093h,08eh,088h,083h,07eh,078h,073h,069h,067h	; ad97  ...........~xsig
 	defb 061h,05ch,056h,050h,04ah,044h,03eh,038h,02eh,02bh,02fh,01fh,019h,012h,00ch,006h	; ada7  a\VPJD>8.+/.....
-	defb 001h,0f6h,004h,066h,002h,07dh,001h,0ffh,000h,0aah,000h,069h,000h,032h,000h,000h	; adb7  ...f.}.....i.2..
-	defb 000h,0ffh,0ffh,00ah,010h,00ah,010h,00ah,030h,00ah,015h,00ah,010h,00ah,015h,00ah	; adc7  ........0.......
-	defb 060h,00ah,020h,00ah,010h,00ah,010h,00ah,020h,00ah,010h,00ah,010h,00ah,020h,00ah	; add7  `. ..... ..... .
-	defb 010h,00ah,010h,00ah,010h,00ah,050h,000h,070h,00ah,010h,00ah,010h,00ah,010h,00ah	; ade7  ......P.p.......
-	defb 020h,00ah,010h,00ah,010h,00ah,0ffh,0ffh,00ch,010h,00ch,020h,00ch,020h,00ch,010h	; adf7   .......... . ..
-	defb 00ch,010h,00ch,010h,00ch,020h,00ch,020h,00ch,020h,00ch,010h,00ch,020h,00ch,010h	; ae07  ..... . . ... ..
-	defb 00ch,040h,00ch,010h,00ch,010h,00ch,010h,00ch,040h,00ch,0ffh,00ah,010h,00ah,010h	; ae17  .@.......@......
-	defb 00ah,010h,00ah,030h,00ah,010h,00ah,010h,00ah,010h,00ah,010h,00ah,030h,00ah,010h	; ae27  ...0.........0..
-	defb 00ah,010h,00ah,010h,00ah,070h,005h,005h,005h,015h,00ah,010h,00ah,015h,005h,015h	; ae37  .....p..........
-	defb 005h,030h,005h,040h,00ah,010h,005h,010h,00ah,020h,005h,010h,00ah,010h,00ah,010h	; ae47  .0.@..... ......
-	defb 00ah,010h,005h,010h,00ah,010h,005h,0ffh,00ah,005h,00ah,005h,00ah,060h,000h,045h	; ae57  .............`.E
-	defb 00ah,005h,00ah,010h,00ah,020h,00ah,010h,00ah,050h,000h,060h,00ah,005h,00ah,005h	; ae67  ..... ...P.`....
-	defb 00ah,010h,00ah,010h,00ah,025h,00ah,005h,00ah,080h,00ah,010h,00ah,010h,00ah,005h	; ae77  .....%..........
-	defb 00ah,015h,00ah,010h,00ah,060h,00ah,010h,00ah,010h,00ah,010h,00ah,0ffh,007h,005h	; ae87  .....`..........
-	defb 007h,025h,007h,010h,007h,040h,007h,005h,007h,005h,007h,040h,001h,010h,001h,005h	; ae97  .%...@.....@....
-	defb 001h,015h,001h,030h,007h,005h,007h,015h,001h,010h,001h,030h,007h,010h,001h,020h	; aea7  ...0.......0...
-	defb 001h,010h,007h,005h,007h,035h,001h,005h,001h,005h,001h,010h,001h,040h,007h,005h	; aeb7  .....5.......@..
-	defb 007h,005h,001h,005h,007h,015h,001h,0ffh,00fh,020h,00fh,030h,00fh,010h,00ah,010h	; aec7  ......... .0....
-	defb 00ah,020h,00fh,010h,00ah,010h,00ah,075h,00fh,015h,00ah,010h,00ah,010h,00ah,010h	; aed7  . .....u........
-	defb 00ah,030h,005h,010h,005h,005h,00fh,015h,005h,005h,005h,015h,00fh,010h,005h,010h	; aee7  .0..............
-	defb 005h,005h,00fh,075h,005h,010h,00ah,010h,005h,010h,00fh,020h,00ah,010h,00ah,005h	; aef7  ...u....... ....
-	defb 00fh,005h,00fh,030h,005h,0ffh,00ch,010h,00ch,010h,00ch,030h,007h,005h,007h,010h	; af07  ...0.......0....
-	defb 007h,090h,00bh,015h,00bh,030h,00bh,030h,00ch,010h,00ch,010h,007h,005h,007h,035h	; af17  .....0.0.......5
-	defb 00ch,005h,00ch,005h,007h,040h,00ch,010h,00ch,005h,00ch,010h,00bh,055h,00ch,010h	; af27  .....@.......U..
-	defb 00ch,005h,00bh,025h,007h,010h,007h,005h,00bh,015h,00ch,005h,00ch,005h,00ch,010h	; af37  ...%............
-	defb 007h,005h,007h,015h,00ch,010h,00ch,010h,00ch,0ffh,007h,010h,007h,010h,007h,030h	; af47  ...............0
-	defb 006h,010h,006h,010h,006h,020h,007h,080h,007h,010h,007h,010h,006h,010h,006h,010h	; af57  ..... ..........
-	defb 006h,050h,007h,010h,007h,030h,006h,010h,006h,010h,007h,030h,007h,010h,006h,020h	; af67  .P...0.....0...
-	defb 006h,005h,007h,055h,006h,010h,006h,050h,007h,010h,007h,010h,007h,020h,006h,020h	; af77  ...U...P..... .
-	defb 006h,010h,007h,005h,007h,0ffh,00fh,010h,00fh,040h,00ah,010h,00ah,010h,00ah,020h	; af87  .........@.....
-	defb 00ah,010h,00fh,010h,00ah,020h,001h,005h,001h,015h,001h,040h,00ah,005h,00ah,005h	; af97  ..... .....@....
-	defb 00fh,010h,005h,010h,005h,010h,005h,050h,001h,010h,001h,010h,001h,010h,00fh,010h	; afa7  .......P........
-	defb 001h,010h,005h,010h,005h,035h,005h,025h,005h,010h,005h,030h,00fh,030h,005h,010h	; afb7  .....5.%...0.0..
-	defb 005h,030h,00fh,010h,00ah,010h,001h,010h,001h,020h,00ah,010h,00ah,010h,001h,005h	; afc7  .0....... ......
-	defb 001h,005h,001h,020h,00fh,005h,00ah,005h,00ah,010h,001h,010h,001h,020h,00ah,010h	; afd7  ... ......... ..
-	defb 001h,0ffh,009h,010h,009h,030h,009h,010h,009h,020h,009h,020h,009h,010h,009h,060h	; afe7  .....0... . ...`
-	defb 009h,010h,009h,010h,009h,040h,009h,010h,009h,010h,009h,070h,009h,010h,009h,020h	; aff7  .....@.....p...
-	defb 009h,010h,009h,010h,009h,040h,009h,0ffh,00ah,010h,00ah,010h,00ah,010h,001h,010h	; b007  .....@..........
-	defb 001h,010h,00fh,010h,00fh,005h,001h,005h,001h,030h,00ah,005h,00ah,005h,00fh,005h	; b017  .........0......
-	defb 00ah,050h,00eh,005h,00eh,005h,00eh,005h,00eh,010h,00eh,040h,00fh,005h,001h,005h	; b027  .P.........@....
-	defb 001h,020h,001h,010h,00fh,020h,00ah,020h,001h,005h,001h,015h,00eh,020h,00eh,010h	; b037  . ... . ..... ..
-	defb 005h,010h,005h,010h,001h,010h,005h,010h,00fh,020h,001h,010h,00fh,010h,00ah,010h	; b047  ......... ......
-	defb 005h,020h,005h,005h,005h,0ffh,001h,010h,001h,010h,001h,005h,001h,005h,00eh,010h	; b057  . ..............
-	defb 00eh,010h,00eh,005h,00eh,035h,005h,010h,005h,020h,005h,010h,005h,005h,00ah,005h	; b067  .....5... ......
-	defb 00ah,030h,00dh,010h,00dh,010h,001h,010h,00dh,010h,001h,020h,00eh,030h,00eh,010h	; b077  .0......... .0..
-	defb 001h,010h,00ah,010h,00ah,010h,005h,010h,005h,010h,001h,010h,001h,005h,00eh,005h	; b087  ................
-	defb 00eh,045h,00eh,005h,005h,020h,005h,010h,005h,020h,005h,030h,001h,010h,00ah,010h	; b097  .E... ... .0....
-	defb 00ah,010h,00ah,010h,00dh,010h,00ah,020h,001h,005h,001h,005h,00dh,010h,00ah,020h	; b0a7  ....... .......
-	defb 00dh,010h,00dh,010h,00ah,005h,00ah,025h,001h,010h,001h,010h,001h,020h,005h,010h	; b0b7  .......%..... ..
-	defb 00eh,0ffh,007h,010h,007h,010h,007h,010h,007h,010h,00ah,010h,00fh,010h,00fh,010h	; b0c7  ................
-	defb 00ah,010h,007h,010h,007h,010h,007h,010h,007h,010h,00ah,020h,00fh,020h,007h,010h	; b0d7  ........... . ..
-	defb 00ah,010h,007h,010h,00ah,010h,00ah,005h,00ah,005h,007h,010h,00fh,090h,007h,010h	; b0e7  ................
-	defb 007h,005h,00ah,005h,00ah,010h,00ah,020h,00fh,020h,00fh,020h,00ah,010h,00ah,005h	; b0f7  ....... . . ....
-	defb 007h,045h,007h,020h,007h,010h,007h,005h,00fh,045h,00ah,010h,00ah,010h,00ah,005h	; b107  .E. .....E......
-	defb 007h,010h,007h,035h,00fh,010h,00ah,010h,00ah,010h,00fh,080h,00ah,010h,00ah,005h	; b117  ...5............
-	defb 00ah,005h,00fh,010h,007h,010h,007h,010h,007h,010h,00ah,015h,00ah,005h,00fh,010h	; b127  ................
-	defb 007h,020h,007h,010h,00ah,005h,00ah,005h,00ah,060h,00ah,005h,007h,005h,00ah,005h	; b137  . .......`......
-	defb 007h,005h,00fh,010h,007h,010h,007h,0ffh,006h,010h,006h,010h,006h,030h,006h,010h	; b147  .............0..
-	defb 006h,010h,006h,060h,009h,010h,009h,010h,006h,010h,006h,050h,009h,010h,006h,010h	; b157  ...`.......P....
-	defb 006h,020h,009h,030h,009h,010h,009h,010h,006h,010h,006h,010h,009h,020h,009h,020h	; b167  . .0......... .
-	defb 006h,010h,006h,010h,006h,010h,009h,020h,009h,010h,006h,010h,006h,010h,009h,010h	; b177  ....... ........
-	defb 009h,005h,006h,005h,006h,020h,009h,010h,006h,010h,006h,0ffh,00ah,010h,00ah,010h	; b187  ..... ..........
-	defb 00ah,010h,001h,005h,001h,015h,00ah,010h,001h,010h,001h,010h,00ah,060h,000h,065h	; b197  .............`.e
-	defb 001h,005h,001h,010h,001h,010h,00dh,010h,00dh,010h,001h,010h,00dh,020h,001h,070h	; b1a7  ............. .p
-	defb 000h,060h,009h,010h,009h,005h,00ah,015h,00ah,010h,009h,010h,00ah,010h,00ah,010h	; b1b7  .`..............
-	defb 009h,010h,009h,060h,000h,060h,00dh,010h,00dh,010h,001h,010h,001h,010h,001h,010h	; b1c7  ...`.`..........
-	defb 001h,005h,001h,005h,00dh,010h,001h,020h,00ah,020h,00ah,020h,00dh,020h,001h,030h	; b1d7  ....... . . . .0
-	defb 001h,010h,009h,030h,009h,020h,00ah,020h,00ah,020h,009h,020h,00dh,010h,009h,0ffh	; b1e7  ...0. . . . ....
-	defb 00bh,010h,00ch,010h,00ch,010h,00bh,010h,00ch,010h,00ch,010h,00ch,090h,007h,010h	; b1f7  ................
-	defb 007h,010h,00bh,010h,007h,010h,007h,010h,00bh,010h,00ch,010h,00ch,010h,00bh,005h	; b207  ................
-	defb 00ch,005h,00bh,010h,00ch,080h,00ch,020h,00ch,005h,00ch,015h,00ch,005h,00ch,015h	; b217  ....... ........
-	defb 007h,005h,007h,005h,007h,010h,00ch,010h,00ch,005h,00ch,005h,00ch,020h,00ah,010h	; b227  ............. ..
-	defb 00ah,010h,00ah,010h,007h,010h,007h,010h,00ah,010h,00ah,010h,007h,010h,007h,020h	; b237  ...............
-	defb 00ah,005h,00ch,005h,00ch,010h,006h,010h,006h,010h,00ch,020h,00ch,010h,006h,010h	; b247  ........... ....
-	defb 006h,010h,006h,010h,00ch,010h,00ch,010h,00ch,010h,007h,010h,007h,010h,00ch,010h	; b257  ................
-	defb 00ch,010h,00ah,010h,00ah,010h,00ah,010h,00ch,010h,00ch,085h,006h,015h,006h,010h	; b267  ................
-	defb 00bh,005h,006h,005h,00bh,010h,006h,010h,00bh,010h,006h,010h,006h,010h,006h,010h	; b277  ................
-	defb 00ch,010h,00ch,010h,007h,010h,007h,010h,00bh,010h,007h,010h,00ch,010h,00bh,005h	; b287  ................
-	defb 00ch,005h,00bh,030h,00ch,010h,00ch,005h,00ch,0ffh,009h,010h,00fh,020h,00fh,010h	; b297  ...0......... ..
-	defb 009h,020h,009h,010h,001h,010h,001h,010h,001h,010h,001h,010h,009h,010h,00fh,010h	; b2a7  . ..............
-	defb 001h,010h,001h,010h,001h,010h,009h,010h,009h,010h,00fh,030h,00fh,010h,001h,005h	; b2b7  ...........0....
-	defb 001h,015h,009h,010h,00fh,010h,00fh,080h,009h,030h,009h,010h,00fh,010h,001h,010h	; b2c7  .........0......
-	defb 001h,060h,001h,010h,001h,010h,009h,010h,00fh,010h,009h,020h,009h,010h,009h,020h	; b2d7  .`......... ...
-	defb 00fh,020h,009h,010h,001h,010h,001h,010h,001h,010h,001h,010h,00fh,010h,00fh,020h	; b2e7  . .............
-	defb 001h,010h,009h,020h,009h,0ffh,00eh,010h,00eh,010h,00eh,040h,00eh,090h,00ah,010h	; b2f7  ... .......@....
-	defb 00ah,010h,00ah,050h,001h,010h,001h,010h,001h,010h,001h,010h,005h,010h,005h,040h	; b307  ...P...........@
-	defb 00ah,010h,00ah,010h,00ah,020h,005h,010h,005h,020h,005h,060h,001h,010h,001h,010h	; b317  ..... ... .`....
-	defb 001h,010h,001h,010h,00ah,010h,00ah,010h,001h,010h,001h,010h,00eh,010h,00eh,040h	; b327  ...............@
-	defb 00dh,010h,00dh,010h,00ah,010h,00ah,020h,001h,010h,001h,030h,00eh,010h,00eh,010h	; b337  ....... ...0....
-	defb 00ah,010h,00eh,010h,00ah,010h,00ah,020h,00eh,030h,005h,020h,005h,010h,00dh,010h	; b347  ....... .0. ....
-	defb 00dh,020h,005h,010h,005h,030h,00eh,010h,00dh,010h,00eh,020h,00ah,010h,00ah,010h	; b357  . ...0..... ....
-	defb 00ah,010h,00dh,030h,001h,010h,001h,010h,00eh,010h,00eh,030h,001h,010h,001h,010h	; b367  ...0.......0....
-	defb 001h,010h,00dh,020h,00ah,010h,00ah,010h,001h,010h,00ah,010h,001h,010h,00eh,010h	; b377  ... ............
-	defb 00eh,020h,00eh,030h,00dh,010h,001h,010h,001h,010h,00eh,010h,00eh,010h,00dh,010h	; b387  . .0............
-	defb 001h,010h,001h,020h,00eh,010h,00eh,0ffh,00fh,010h,00ah,010h,00ah,010h,00ah,010h	; b397  ... ............
-	defb 00ah,020h,00fh,010h,00fh,010h,00ah,010h,00ah,010h,00fh,010h,00ah,010h,00fh,020h	; b3a7  . .............
-	defb 00ah,010h,00ah,050h,00fh,010h,001h,010h,001h,010h,001h,010h,00fh,030h,001h,010h	; b3b7  ...P.........0..
-	defb 001h,010h,00fh,010h,00ah,010h,00ah,010h,001h,010h,00fh,010h,001h,020h,00fh,010h	; b3c7  ............. ..
-	defb 001h,010h,001h,060h,00ah,010h,009h,030h,009h,010h,00ah,010h,00fh,010h,00ah,010h	; b3d7  ...`...0........
-	defb 00fh,010h,001h,010h,001h,010h,009h,010h,009h,010h,001h,010h,001h,050h,00ah,005h	; b3e7  .............P..
-	defb 001h,015h,001h,010h,00ah,010h,00ah,020h,001h,020h,001h,020h,00ah,010h,00ah,010h	; b3f7  ....... . . ....
-	defb 001h,010h,00fh,020h,00fh,010h,00ah,010h,009h,020h,00ah,010h,009h,010h,001h,010h	; b407  ... ..... ......
-	defb 001h,020h,001h,010h,001h,010h,00ah,010h,001h,010h,00ah,010h,009h,010h,00ah,010h	; b417  . ..............
-	defb 009h,080h,00fh,015h,00ah,005h,00fh,010h,00ah,010h,00ah,010h,009h,010h,00ah,020h	; b427  ...............
-	defb 009h,010h,001h,010h,00ah,010h,00ah,010h,00ah,010h,009h,010h,001h,010h,001h,010h	; b437  ................
-	defb 001h,0ffh,006h,010h,006h,010h,006h,020h,00ch,010h,00ch,010h,00ch,010h,006h,010h	; b447  ....... ........
-	defb 006h,010h,00ch,040h,006h,010h,00ch,010h,00ch,010h,00ch,030h,00bh,030h,006h,010h	; b457  ...@.......0.0..
-	defb 00bh,010h,006h,010h,006h,010h,006h,010h,00bh,010h,006h,020h,00bh,020h,00ah,020h	; b467  ........... . .
-	defb 00ah,020h,00ah,015h,00bh,015h,00bh,020h,006h,010h,006h,010h,00ah,010h,00ah,010h	; b477  . ..... ........
-	defb 00ch,010h,00ch,010h,007h,010h,007h,010h,007h,020h,00ah,010h,00ah,020h,007h,020h	; b487  ......... ... .
-	defb 00ah,010h,00ah,010h,00ah,030h,00bh,010h,00bh,010h,00ch,010h,00ch,010h,00ch,010h	; b497  .....0..........
-	defb 00ch,010h,00bh,050h,00bh,010h,00ch,010h,007h,010h,00ch,010h,00ch,010h,007h,010h	; b4a7  ...P............
-	defb 00ah,010h,007h,010h,00ah,010h,007h,010h,007h,0ffh,001h,010h,001h,010h,001h,040h	; b4b7  ...............@
-	defb 005h,010h,005h,020h,001h,020h,001h,010h,001h,005h,005h,025h,001h,010h,001h,020h	; b4c7  ... . .....%...
-	defb 00eh,010h,00eh,010h,001h,010h,001h,010h,00eh,010h,001h,030h,001h,030h,001h,010h	; b4d7  ...........0.0..
-	defb 001h,010h,00ah,010h,00ah,010h,001h,010h,001h,020h,00ah,020h,00ah,010h,00eh,020h	; b4e7  ......... . ...
-	defb 00ah,010h,00eh,010h,00eh,020h,001h,020h,005h,010h,001h,010h,001h,010h,00dh,015h	; b4f7  ..... . ........
-	defb 005h,015h,00dh,010h,005h,010h,001h,030h,00dh,010h,00dh,010h,00ah,010h,00ah,010h	; b507  .......0........
-	defb 001h,010h,001h,010h,00ah,010h,001h,010h,001h,020h,00ah,010h,00ah,010h,00eh,020h	; b517  ......... .....
-	defb 00eh,010h,00eh,010h,001h,010h,001h,020h,001h,010h,00dh,010h,00dh,020h,00dh,010h	; b527  ....... ..... ..
-	defb 001h,020h,001h,010h,001h,020h,005h,010h,00ah,020h,00ah,010h,005h,010h,00ah,010h	; b537  . ... ... ......
-	defb 00ah,010h,00ah,010h,001h,020h,001h,010h,001h,010h,001h,010h,00eh,010h,00eh,010h	; b547  ..... ..........
-	defb 00eh,030h,00dh,010h,00dh,010h,001h,010h,001h,010h,00ah,010h,00ah,020h,001h,010h	; b557  .0........... ..
-	defb 00ah,020h,00ah,010h,00dh,010h,001h,010h,001h,010h,001h,010h,00eh,010h,00ah,010h	; b567  . ..............
-	defb 001h,010h,001h,010h,00dh,020h,00eh,010h,00eh,0ffh	; b577  ..... ....
+	defb 001h	; adb7
+
+; ----------------------------------------------------------------------
+; DATOS tangentes_ADB8: LA TABLA DE TANGENTES de la arcotangente de p09:ACBA:
+;   ocho palabras en formato 8.8 -0x04F6, 0x0266, 0x017D, 0x00FF, 0x00AA,
+;   0x0069, 0x0032 y 0- que son las tangentes de 78,75, 67,5, 56,25, 45,
+;   33,75, 22,5, 11,25 y 0 grados. Se recorren con B bajando de 8 en 8 desde
+;   0x40, o sea 11,25 grados por escalon en las 256 unidades de circunferencia
+;   que usa el cartucho. El 0x00FF es el de 45 grados, donde la tangente vale
+;   1
+;   0xadb8..0xadc8  (16 bytes)
+DATA_tangentes_ADB8:
+	defb 0f6h,004h	; adb8
+	defb 066h,002h	; adba
+	defb 07dh,001h	; adbc
+	defb 0ffh,000h	; adbe
+	defb 0aah,000h	; adc0
+	defb 069h,000h	; adc2
+	defb 032h,000h	; adc4
+	defb 000h,000h	; adc6
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_1: el guion de enemigos de la fase 1 y 2: parejas
+;   (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el
+;   segundo byte; las fases que apuntan a un 0xFF no sacan nada
+;   0xadc8..0xadca  (2 bytes)
+DATA_enemigos_fase_1:
+	defb 0ffh,0ffh	; adc8
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_3: el guion de enemigos de la fase 3 y 4: parejas
+;   (objeto, distancia en BCD hasta el siguiente) cerradas con 0xFF en el
+;   segundo byte; las fases que apuntan a un 0xFF no sacan nada
+;   0xadca..0xadff  (53 bytes)
+DATA_enemigos_fase_3:
+	defb 00ah,010h	; adca
+	defb 00ah,010h	; adcc
+	defb 00ah,030h	; adce
+	defb 00ah,015h	; add0
+	defb 00ah,010h	; add2
+	defb 00ah,015h	; add4
+	defb 00ah,060h	; add6
+	defb 00ah,020h	; add8
+	defb 00ah,010h	; adda
+	defb 00ah,010h	; addc
+	defb 00ah,020h	; adde
+	defb 00ah,010h	; ade0
+	defb 00ah,010h	; ade2
+	defb 00ah,020h	; ade4
+	defb 00ah,010h	; ade6
+	defb 00ah,010h	; ade8
+	defb 00ah,010h	; adea
+	defb 00ah,050h	; adec
+	defb 000h,070h	; adee
+	defb 00ah,010h	; adf0
+	defb 00ah,010h	; adf2
+	defb 00ah,010h	; adf4
+	defb 00ah,020h	; adf6
+	defb 00ah,010h	; adf8
+	defb 00ah,010h	; adfa
+	defb 00ah,0ffh	; adfc
+	defb 0ffh	; adfe
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_5: el guion de enemigos de la fase 5: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xadff..0xae23  (36 bytes)
+DATA_enemigos_fase_5:
+	defb 00ch,010h	; adff
+	defb 00ch,020h	; ae01
+	defb 00ch,020h	; ae03
+	defb 00ch,010h	; ae05
+	defb 00ch,010h	; ae07
+	defb 00ch,010h	; ae09
+	defb 00ch,020h	; ae0b
+	defb 00ch,020h	; ae0d
+	defb 00ch,020h	; ae0f
+	defb 00ch,010h	; ae11
+	defb 00ch,020h	; ae13
+	defb 00ch,010h	; ae15
+	defb 00ch,040h	; ae17
+	defb 00ch,010h	; ae19
+	defb 00ch,010h	; ae1b
+	defb 00ch,010h	; ae1d
+	defb 00ch,040h	; ae1f
+	defb 00ch,0ffh	; ae21
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_6: el guion de enemigos de la fase 6: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xae23..0xae5f  (60 bytes)
+DATA_enemigos_fase_6:
+	defb 00ah,010h	; ae23
+	defb 00ah,010h	; ae25
+	defb 00ah,010h	; ae27
+	defb 00ah,030h	; ae29
+	defb 00ah,010h	; ae2b
+	defb 00ah,010h	; ae2d
+	defb 00ah,010h	; ae2f
+	defb 00ah,010h	; ae31
+	defb 00ah,030h	; ae33
+	defb 00ah,010h	; ae35
+	defb 00ah,010h	; ae37
+	defb 00ah,010h	; ae39
+	defb 00ah,070h	; ae3b
+	defb 005h,005h	; ae3d
+	defb 005h,015h	; ae3f
+	defb 00ah,010h	; ae41
+	defb 00ah,015h	; ae43
+	defb 005h,015h	; ae45
+	defb 005h,030h	; ae47
+	defb 005h,040h	; ae49
+	defb 00ah,010h	; ae4b
+	defb 005h,010h	; ae4d
+	defb 00ah,020h	; ae4f
+	defb 005h,010h	; ae51
+	defb 00ah,010h	; ae53
+	defb 00ah,010h	; ae55
+	defb 00ah,010h	; ae57
+	defb 005h,010h	; ae59
+	defb 00ah,010h	; ae5b
+	defb 005h,0ffh	; ae5d
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_7: el guion de enemigos de la fase 7: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xae5f..0xae95  (54 bytes)
+DATA_enemigos_fase_7:
+	defb 00ah,005h	; ae5f
+	defb 00ah,005h	; ae61
+	defb 00ah,060h	; ae63
+	defb 000h,045h	; ae65
+	defb 00ah,005h	; ae67
+	defb 00ah,010h	; ae69
+	defb 00ah,020h	; ae6b
+	defb 00ah,010h	; ae6d
+	defb 00ah,050h	; ae6f
+	defb 000h,060h	; ae71
+	defb 00ah,005h	; ae73
+	defb 00ah,005h	; ae75
+	defb 00ah,010h	; ae77
+	defb 00ah,010h	; ae79
+	defb 00ah,025h	; ae7b
+	defb 00ah,005h	; ae7d
+	defb 00ah,080h	; ae7f
+	defb 00ah,010h	; ae81
+	defb 00ah,010h	; ae83
+	defb 00ah,005h	; ae85
+	defb 00ah,015h	; ae87
+	defb 00ah,010h	; ae89
+	defb 00ah,060h	; ae8b
+	defb 00ah,010h	; ae8d
+	defb 00ah,010h	; ae8f
+	defb 00ah,010h	; ae91
+	defb 00ah,0ffh	; ae93
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_8: el guion de enemigos de la fase 8: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xae95..0xaecf  (58 bytes)
+DATA_enemigos_fase_8:
+	defb 007h,005h	; ae95
+	defb 007h,025h	; ae97
+	defb 007h,010h	; ae99
+	defb 007h,040h	; ae9b
+	defb 007h,005h	; ae9d
+	defb 007h,005h	; ae9f
+	defb 007h,040h	; aea1
+	defb 001h,010h	; aea3
+	defb 001h,005h	; aea5
+	defb 001h,015h	; aea7
+	defb 001h,030h	; aea9
+	defb 007h,005h	; aeab
+	defb 007h,015h	; aead
+	defb 001h,010h	; aeaf
+	defb 001h,030h	; aeb1
+	defb 007h,010h	; aeb3
+	defb 001h,020h	; aeb5
+	defb 001h,010h	; aeb7
+	defb 007h,005h	; aeb9
+	defb 007h,035h	; aebb
+	defb 001h,005h	; aebd
+	defb 001h,005h	; aebf
+	defb 001h,010h	; aec1
+	defb 001h,040h	; aec3
+	defb 007h,005h	; aec5
+	defb 007h,005h	; aec7
+	defb 001h,005h	; aec9
+	defb 007h,015h	; aecb
+	defb 001h,0ffh	; aecd
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_9: el guion de enemigos de la fase 9: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xaecf..0xaf0d  (62 bytes)
+DATA_enemigos_fase_9:
+	defb 00fh,020h	; aecf
+	defb 00fh,030h	; aed1
+	defb 00fh,010h	; aed3
+	defb 00ah,010h	; aed5
+	defb 00ah,020h	; aed7
+	defb 00fh,010h	; aed9
+	defb 00ah,010h	; aedb
+	defb 00ah,075h	; aedd
+	defb 00fh,015h	; aedf
+	defb 00ah,010h	; aee1
+	defb 00ah,010h	; aee3
+	defb 00ah,010h	; aee5
+	defb 00ah,030h	; aee7
+	defb 005h,010h	; aee9
+	defb 005h,005h	; aeeb
+	defb 00fh,015h	; aeed
+	defb 005h,005h	; aeef
+	defb 005h,015h	; aef1
+	defb 00fh,010h	; aef3
+	defb 005h,010h	; aef5
+	defb 005h,005h	; aef7
+	defb 00fh,075h	; aef9
+	defb 005h,010h	; aefb
+	defb 00ah,010h	; aefd
+	defb 005h,010h	; aeff
+	defb 00fh,020h	; af01
+	defb 00ah,010h	; af03
+	defb 00ah,005h	; af05
+	defb 00fh,005h	; af07
+	defb 00fh,030h	; af09
+	defb 005h,0ffh	; af0b
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_10: el guion de enemigos de la fase 10: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xaf0d..0xaf51  (68 bytes)
+DATA_enemigos_fase_10:
+	defb 00ch,010h	; af0d
+	defb 00ch,010h	; af0f
+	defb 00ch,030h	; af11
+	defb 007h,005h	; af13
+	defb 007h,010h	; af15
+	defb 007h,090h	; af17
+	defb 00bh,015h	; af19
+	defb 00bh,030h	; af1b
+	defb 00bh,030h	; af1d
+	defb 00ch,010h	; af1f
+	defb 00ch,010h	; af21
+	defb 007h,005h	; af23
+	defb 007h,035h	; af25
+	defb 00ch,005h	; af27
+	defb 00ch,005h	; af29
+	defb 007h,040h	; af2b
+	defb 00ch,010h	; af2d
+	defb 00ch,005h	; af2f
+	defb 00ch,010h	; af31
+	defb 00bh,055h	; af33
+	defb 00ch,010h	; af35
+	defb 00ch,005h	; af37
+	defb 00bh,025h	; af39
+	defb 007h,010h	; af3b
+	defb 007h,005h	; af3d
+	defb 00bh,015h	; af3f
+	defb 00ch,005h	; af41
+	defb 00ch,005h	; af43
+	defb 00ch,010h	; af45
+	defb 007h,005h	; af47
+	defb 007h,015h	; af49
+	defb 00ch,010h	; af4b
+	defb 00ch,010h	; af4d
+	defb 00ch,0ffh	; af4f
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_11: el guion de enemigos de la fase 11: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xaf51..0xaf8d  (60 bytes)
+DATA_enemigos_fase_11:
+	defb 007h,010h	; af51
+	defb 007h,010h	; af53
+	defb 007h,030h	; af55
+	defb 006h,010h	; af57
+	defb 006h,010h	; af59
+	defb 006h,020h	; af5b
+	defb 007h,080h	; af5d
+	defb 007h,010h	; af5f
+	defb 007h,010h	; af61
+	defb 006h,010h	; af63
+	defb 006h,010h	; af65
+	defb 006h,050h	; af67
+	defb 007h,010h	; af69
+	defb 007h,030h	; af6b
+	defb 006h,010h	; af6d
+	defb 006h,010h	; af6f
+	defb 007h,030h	; af71
+	defb 007h,010h	; af73
+	defb 006h,020h	; af75
+	defb 006h,005h	; af77
+	defb 007h,055h	; af79
+	defb 006h,010h	; af7b
+	defb 006h,050h	; af7d
+	defb 007h,010h	; af7f
+	defb 007h,010h	; af81
+	defb 007h,020h	; af83
+	defb 006h,020h	; af85
+	defb 006h,010h	; af87
+	defb 007h,005h	; af89
+	defb 007h,0ffh	; af8b
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_12: el guion de enemigos de la fase 12: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xaf8d..0xafe9  (92 bytes)
+DATA_enemigos_fase_12:
+	defb 00fh,010h	; af8d
+	defb 00fh,040h	; af8f
+	defb 00ah,010h	; af91
+	defb 00ah,010h	; af93
+	defb 00ah,020h	; af95
+	defb 00ah,010h	; af97
+	defb 00fh,010h	; af99
+	defb 00ah,020h	; af9b
+	defb 001h,005h	; af9d
+	defb 001h,015h	; af9f
+	defb 001h,040h	; afa1
+	defb 00ah,005h	; afa3
+	defb 00ah,005h	; afa5
+	defb 00fh,010h	; afa7
+	defb 005h,010h	; afa9
+	defb 005h,010h	; afab
+	defb 005h,050h	; afad
+	defb 001h,010h	; afaf
+	defb 001h,010h	; afb1
+	defb 001h,010h	; afb3
+	defb 00fh,010h	; afb5
+	defb 001h,010h	; afb7
+	defb 005h,010h	; afb9
+	defb 005h,035h	; afbb
+	defb 005h,025h	; afbd
+	defb 005h,010h	; afbf
+	defb 005h,030h	; afc1
+	defb 00fh,030h	; afc3
+	defb 005h,010h	; afc5
+	defb 005h,030h	; afc7
+	defb 00fh,010h	; afc9
+	defb 00ah,010h	; afcb
+	defb 001h,010h	; afcd
+	defb 001h,020h	; afcf
+	defb 00ah,010h	; afd1
+	defb 00ah,010h	; afd3
+	defb 001h,005h	; afd5
+	defb 001h,005h	; afd7
+	defb 001h,020h	; afd9
+	defb 00fh,005h	; afdb
+	defb 00ah,005h	; afdd
+	defb 00ah,010h	; afdf
+	defb 001h,010h	; afe1
+	defb 001h,020h	; afe3
+	defb 00ah,010h	; afe5
+	defb 001h,0ffh	; afe7
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_13: el guion de enemigos de la fase 13: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xafe9..0xb00f  (38 bytes)
+DATA_enemigos_fase_13:
+	defb 009h,010h	; afe9
+	defb 009h,030h	; afeb
+	defb 009h,010h	; afed
+	defb 009h,020h	; afef
+	defb 009h,020h	; aff1
+	defb 009h,010h	; aff3
+	defb 009h,060h	; aff5
+	defb 009h,010h	; aff7
+	defb 009h,010h	; aff9
+	defb 009h,040h	; affb
+	defb 009h,010h	; affd
+	defb 009h,010h	; afff
+	defb 009h,070h	; b001
+	defb 009h,010h	; b003
+	defb 009h,020h	; b005
+	defb 009h,010h	; b007
+	defb 009h,010h	; b009
+	defb 009h,040h	; b00b
+	defb 009h,0ffh	; b00d
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_14: el guion de enemigos de la fase 14: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xb00f..0xb05d  (78 bytes)
+DATA_enemigos_fase_14:
+	defb 00ah,010h	; b00f
+	defb 00ah,010h	; b011
+	defb 00ah,010h	; b013
+	defb 001h,010h	; b015
+	defb 001h,010h	; b017
+	defb 00fh,010h	; b019
+	defb 00fh,005h	; b01b
+	defb 001h,005h	; b01d
+	defb 001h,030h	; b01f
+	defb 00ah,005h	; b021
+	defb 00ah,005h	; b023
+	defb 00fh,005h	; b025
+	defb 00ah,050h	; b027
+	defb 00eh,005h	; b029
+	defb 00eh,005h	; b02b
+	defb 00eh,005h	; b02d
+	defb 00eh,010h	; b02f
+	defb 00eh,040h	; b031
+	defb 00fh,005h	; b033
+	defb 001h,005h	; b035
+	defb 001h,020h	; b037
+	defb 001h,010h	; b039
+	defb 00fh,020h	; b03b
+	defb 00ah,020h	; b03d
+	defb 001h,005h	; b03f
+	defb 001h,015h	; b041
+	defb 00eh,020h	; b043
+	defb 00eh,010h	; b045
+	defb 005h,010h	; b047
+	defb 005h,010h	; b049
+	defb 001h,010h	; b04b
+	defb 005h,010h	; b04d
+	defb 00fh,020h	; b04f
+	defb 001h,010h	; b051
+	defb 00fh,010h	; b053
+	defb 00ah,010h	; b055
+	defb 005h,020h	; b057
+	defb 005h,005h	; b059
+	defb 005h,0ffh	; b05b
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_15: el guion de enemigos de la fase 15: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xb05d..0xb0c9  (108 bytes)
+DATA_enemigos_fase_15:
+	defb 001h,010h	; b05d
+	defb 001h,010h	; b05f
+	defb 001h,005h	; b061
+	defb 001h,005h	; b063
+	defb 00eh,010h	; b065
+	defb 00eh,010h	; b067
+	defb 00eh,005h	; b069
+	defb 00eh,035h	; b06b
+	defb 005h,010h	; b06d
+	defb 005h,020h	; b06f
+	defb 005h,010h	; b071
+	defb 005h,005h	; b073
+	defb 00ah,005h	; b075
+	defb 00ah,030h	; b077
+	defb 00dh,010h	; b079
+	defb 00dh,010h	; b07b
+	defb 001h,010h	; b07d
+	defb 00dh,010h	; b07f
+	defb 001h,020h	; b081
+	defb 00eh,030h	; b083
+	defb 00eh,010h	; b085
+	defb 001h,010h	; b087
+	defb 00ah,010h	; b089
+	defb 00ah,010h	; b08b
+	defb 005h,010h	; b08d
+	defb 005h,010h	; b08f
+	defb 001h,010h	; b091
+	defb 001h,005h	; b093
+	defb 00eh,005h	; b095
+	defb 00eh,045h	; b097
+	defb 00eh,005h	; b099
+	defb 005h,020h	; b09b
+	defb 005h,010h	; b09d
+	defb 005h,020h	; b09f
+	defb 005h,030h	; b0a1
+	defb 001h,010h	; b0a3
+	defb 00ah,010h	; b0a5
+	defb 00ah,010h	; b0a7
+	defb 00ah,010h	; b0a9
+	defb 00dh,010h	; b0ab
+	defb 00ah,020h	; b0ad
+	defb 001h,005h	; b0af
+	defb 001h,005h	; b0b1
+	defb 00dh,010h	; b0b3
+	defb 00ah,020h	; b0b5
+	defb 00dh,010h	; b0b7
+	defb 00dh,010h	; b0b9
+	defb 00ah,005h	; b0bb
+	defb 00ah,025h	; b0bd
+	defb 001h,010h	; b0bf
+	defb 001h,010h	; b0c1
+	defb 001h,020h	; b0c3
+	defb 005h,010h	; b0c5
+	defb 00eh,0ffh	; b0c7
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_16: el guion de enemigos de la fase 16: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xb0c9..0xb14f  (134 bytes)
+DATA_enemigos_fase_16:
+	defb 007h,010h	; b0c9
+	defb 007h,010h	; b0cb
+	defb 007h,010h	; b0cd
+	defb 007h,010h	; b0cf
+	defb 00ah,010h	; b0d1
+	defb 00fh,010h	; b0d3
+	defb 00fh,010h	; b0d5
+	defb 00ah,010h	; b0d7
+	defb 007h,010h	; b0d9
+	defb 007h,010h	; b0db
+	defb 007h,010h	; b0dd
+	defb 007h,010h	; b0df
+	defb 00ah,020h	; b0e1
+	defb 00fh,020h	; b0e3
+	defb 007h,010h	; b0e5
+	defb 00ah,010h	; b0e7
+	defb 007h,010h	; b0e9
+	defb 00ah,010h	; b0eb
+	defb 00ah,005h	; b0ed
+	defb 00ah,005h	; b0ef
+	defb 007h,010h	; b0f1
+	defb 00fh,090h	; b0f3
+	defb 007h,010h	; b0f5
+	defb 007h,005h	; b0f7
+	defb 00ah,005h	; b0f9
+	defb 00ah,010h	; b0fb
+	defb 00ah,020h	; b0fd
+	defb 00fh,020h	; b0ff
+	defb 00fh,020h	; b101
+	defb 00ah,010h	; b103
+	defb 00ah,005h	; b105
+	defb 007h,045h	; b107
+	defb 007h,020h	; b109
+	defb 007h,010h	; b10b
+	defb 007h,005h	; b10d
+	defb 00fh,045h	; b10f
+	defb 00ah,010h	; b111
+	defb 00ah,010h	; b113
+	defb 00ah,005h	; b115
+	defb 007h,010h	; b117
+	defb 007h,035h	; b119
+	defb 00fh,010h	; b11b
+	defb 00ah,010h	; b11d
+	defb 00ah,010h	; b11f
+	defb 00fh,080h	; b121
+	defb 00ah,010h	; b123
+	defb 00ah,005h	; b125
+	defb 00ah,005h	; b127
+	defb 00fh,010h	; b129
+	defb 007h,010h	; b12b
+	defb 007h,010h	; b12d
+	defb 007h,010h	; b12f
+	defb 00ah,015h	; b131
+	defb 00ah,005h	; b133
+	defb 00fh,010h	; b135
+	defb 007h,020h	; b137
+	defb 007h,010h	; b139
+	defb 00ah,005h	; b13b
+	defb 00ah,005h	; b13d
+	defb 00ah,060h	; b13f
+	defb 00ah,005h	; b141
+	defb 007h,005h	; b143
+	defb 00ah,005h	; b145
+	defb 007h,005h	; b147
+	defb 00fh,010h	; b149
+	defb 007h,010h	; b14b
+	defb 007h,0ffh	; b14d
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_17: el guion de enemigos de la fase 17: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xb14f..0xb193  (68 bytes)
+DATA_enemigos_fase_17:
+	defb 006h,010h	; b14f
+	defb 006h,010h	; b151
+	defb 006h,030h	; b153
+	defb 006h,010h	; b155
+	defb 006h,010h	; b157
+	defb 006h,060h	; b159
+	defb 009h,010h	; b15b
+	defb 009h,010h	; b15d
+	defb 006h,010h	; b15f
+	defb 006h,050h	; b161
+	defb 009h,010h	; b163
+	defb 006h,010h	; b165
+	defb 006h,020h	; b167
+	defb 009h,030h	; b169
+	defb 009h,010h	; b16b
+	defb 009h,010h	; b16d
+	defb 006h,010h	; b16f
+	defb 006h,010h	; b171
+	defb 009h,020h	; b173
+	defb 009h,020h	; b175
+	defb 006h,010h	; b177
+	defb 006h,010h	; b179
+	defb 006h,010h	; b17b
+	defb 009h,020h	; b17d
+	defb 009h,010h	; b17f
+	defb 006h,010h	; b181
+	defb 006h,010h	; b183
+	defb 009h,010h	; b185
+	defb 009h,005h	; b187
+	defb 006h,005h	; b189
+	defb 006h,020h	; b18b
+	defb 009h,010h	; b18d
+	defb 006h,010h	; b18f
+	defb 006h,0ffh	; b191
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_18: el guion de enemigos de la fase 18: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xb193..0xb1f7  (100 bytes)
+DATA_enemigos_fase_18:
+	defb 00ah,010h	; b193
+	defb 00ah,010h	; b195
+	defb 00ah,010h	; b197
+	defb 001h,005h	; b199
+	defb 001h,015h	; b19b
+	defb 00ah,010h	; b19d
+	defb 001h,010h	; b19f
+	defb 001h,010h	; b1a1
+	defb 00ah,060h	; b1a3
+	defb 000h,065h	; b1a5
+	defb 001h,005h	; b1a7
+	defb 001h,010h	; b1a9
+	defb 001h,010h	; b1ab
+	defb 00dh,010h	; b1ad
+	defb 00dh,010h	; b1af
+	defb 001h,010h	; b1b1
+	defb 00dh,020h	; b1b3
+	defb 001h,070h	; b1b5
+	defb 000h,060h	; b1b7
+	defb 009h,010h	; b1b9
+	defb 009h,005h	; b1bb
+	defb 00ah,015h	; b1bd
+	defb 00ah,010h	; b1bf
+	defb 009h,010h	; b1c1
+	defb 00ah,010h	; b1c3
+	defb 00ah,010h	; b1c5
+	defb 009h,010h	; b1c7
+	defb 009h,060h	; b1c9
+	defb 000h,060h	; b1cb
+	defb 00dh,010h	; b1cd
+	defb 00dh,010h	; b1cf
+	defb 001h,010h	; b1d1
+	defb 001h,010h	; b1d3
+	defb 001h,010h	; b1d5
+	defb 001h,005h	; b1d7
+	defb 001h,005h	; b1d9
+	defb 00dh,010h	; b1db
+	defb 001h,020h	; b1dd
+	defb 00ah,020h	; b1df
+	defb 00ah,020h	; b1e1
+	defb 00dh,020h	; b1e3
+	defb 001h,030h	; b1e5
+	defb 001h,010h	; b1e7
+	defb 009h,030h	; b1e9
+	defb 009h,020h	; b1eb
+	defb 00ah,020h	; b1ed
+	defb 00ah,020h	; b1ef
+	defb 009h,020h	; b1f1
+	defb 00dh,010h	; b1f3
+	defb 009h,0ffh	; b1f5
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_19: el guion de enemigos de la fase 19: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xb1f7..0xb2a1  (170 bytes)
+DATA_enemigos_fase_19:
+	defb 00bh,010h	; b1f7
+	defb 00ch,010h	; b1f9
+	defb 00ch,010h	; b1fb
+	defb 00bh,010h	; b1fd
+	defb 00ch,010h	; b1ff
+	defb 00ch,010h	; b201
+	defb 00ch,090h	; b203
+	defb 007h,010h	; b205
+	defb 007h,010h	; b207
+	defb 00bh,010h	; b209
+	defb 007h,010h	; b20b
+	defb 007h,010h	; b20d
+	defb 00bh,010h	; b20f
+	defb 00ch,010h	; b211
+	defb 00ch,010h	; b213
+	defb 00bh,005h	; b215
+	defb 00ch,005h	; b217
+	defb 00bh,010h	; b219
+	defb 00ch,080h	; b21b
+	defb 00ch,020h	; b21d
+	defb 00ch,005h	; b21f
+	defb 00ch,015h	; b221
+	defb 00ch,005h	; b223
+	defb 00ch,015h	; b225
+	defb 007h,005h	; b227
+	defb 007h,005h	; b229
+	defb 007h,010h	; b22b
+	defb 00ch,010h	; b22d
+	defb 00ch,005h	; b22f
+	defb 00ch,005h	; b231
+	defb 00ch,020h	; b233
+	defb 00ah,010h	; b235
+	defb 00ah,010h	; b237
+	defb 00ah,010h	; b239
+	defb 007h,010h	; b23b
+	defb 007h,010h	; b23d
+	defb 00ah,010h	; b23f
+	defb 00ah,010h	; b241
+	defb 007h,010h	; b243
+	defb 007h,020h	; b245
+	defb 00ah,005h	; b247
+	defb 00ch,005h	; b249
+	defb 00ch,010h	; b24b
+	defb 006h,010h	; b24d
+	defb 006h,010h	; b24f
+	defb 00ch,020h	; b251
+	defb 00ch,010h	; b253
+	defb 006h,010h	; b255
+	defb 006h,010h	; b257
+	defb 006h,010h	; b259
+	defb 00ch,010h	; b25b
+	defb 00ch,010h	; b25d
+	defb 00ch,010h	; b25f
+	defb 007h,010h	; b261
+	defb 007h,010h	; b263
+	defb 00ch,010h	; b265
+	defb 00ch,010h	; b267
+	defb 00ah,010h	; b269
+	defb 00ah,010h	; b26b
+	defb 00ah,010h	; b26d
+	defb 00ch,010h	; b26f
+	defb 00ch,085h	; b271
+	defb 006h,015h	; b273
+	defb 006h,010h	; b275
+	defb 00bh,005h	; b277
+	defb 006h,005h	; b279
+	defb 00bh,010h	; b27b
+	defb 006h,010h	; b27d
+	defb 00bh,010h	; b27f
+	defb 006h,010h	; b281
+	defb 006h,010h	; b283
+	defb 006h,010h	; b285
+	defb 00ch,010h	; b287
+	defb 00ch,010h	; b289
+	defb 007h,010h	; b28b
+	defb 007h,010h	; b28d
+	defb 00bh,010h	; b28f
+	defb 007h,010h	; b291
+	defb 00ch,010h	; b293
+	defb 00bh,005h	; b295
+	defb 00ch,005h	; b297
+	defb 00bh,030h	; b299
+	defb 00ch,010h	; b29b
+	defb 00ch,005h	; b29d
+	defb 00ch,0ffh	; b29f
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_20: el guion de enemigos de la fase 20: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xb2a1..0xb2fd  (92 bytes)
+DATA_enemigos_fase_20:
+	defb 009h,010h	; b2a1
+	defb 00fh,020h	; b2a3
+	defb 00fh,010h	; b2a5
+	defb 009h,020h	; b2a7
+	defb 009h,010h	; b2a9
+	defb 001h,010h	; b2ab
+	defb 001h,010h	; b2ad
+	defb 001h,010h	; b2af
+	defb 001h,010h	; b2b1
+	defb 009h,010h	; b2b3
+	defb 00fh,010h	; b2b5
+	defb 001h,010h	; b2b7
+	defb 001h,010h	; b2b9
+	defb 001h,010h	; b2bb
+	defb 009h,010h	; b2bd
+	defb 009h,010h	; b2bf
+	defb 00fh,030h	; b2c1
+	defb 00fh,010h	; b2c3
+	defb 001h,005h	; b2c5
+	defb 001h,015h	; b2c7
+	defb 009h,010h	; b2c9
+	defb 00fh,010h	; b2cb
+	defb 00fh,080h	; b2cd
+	defb 009h,030h	; b2cf
+	defb 009h,010h	; b2d1
+	defb 00fh,010h	; b2d3
+	defb 001h,010h	; b2d5
+	defb 001h,060h	; b2d7
+	defb 001h,010h	; b2d9
+	defb 001h,010h	; b2db
+	defb 009h,010h	; b2dd
+	defb 00fh,010h	; b2df
+	defb 009h,020h	; b2e1
+	defb 009h,010h	; b2e3
+	defb 009h,020h	; b2e5
+	defb 00fh,020h	; b2e7
+	defb 009h,010h	; b2e9
+	defb 001h,010h	; b2eb
+	defb 001h,010h	; b2ed
+	defb 001h,010h	; b2ef
+	defb 001h,010h	; b2f1
+	defb 00fh,010h	; b2f3
+	defb 00fh,020h	; b2f5
+	defb 001h,010h	; b2f7
+	defb 009h,020h	; b2f9
+	defb 009h,0ffh	; b2fb
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_21: el guion de enemigos de la fase 21: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xb2fd..0xb39f  (162 bytes)
+DATA_enemigos_fase_21:
+	defb 00eh,010h	; b2fd
+	defb 00eh,010h	; b2ff
+	defb 00eh,040h	; b301
+	defb 00eh,090h	; b303
+	defb 00ah,010h	; b305
+	defb 00ah,010h	; b307
+	defb 00ah,050h	; b309
+	defb 001h,010h	; b30b
+	defb 001h,010h	; b30d
+	defb 001h,010h	; b30f
+	defb 001h,010h	; b311
+	defb 005h,010h	; b313
+	defb 005h,040h	; b315
+	defb 00ah,010h	; b317
+	defb 00ah,010h	; b319
+	defb 00ah,020h	; b31b
+	defb 005h,010h	; b31d
+	defb 005h,020h	; b31f
+	defb 005h,060h	; b321
+	defb 001h,010h	; b323
+	defb 001h,010h	; b325
+	defb 001h,010h	; b327
+	defb 001h,010h	; b329
+	defb 00ah,010h	; b32b
+	defb 00ah,010h	; b32d
+	defb 001h,010h	; b32f
+	defb 001h,010h	; b331
+	defb 00eh,010h	; b333
+	defb 00eh,040h	; b335
+	defb 00dh,010h	; b337
+	defb 00dh,010h	; b339
+	defb 00ah,010h	; b33b
+	defb 00ah,020h	; b33d
+	defb 001h,010h	; b33f
+	defb 001h,030h	; b341
+	defb 00eh,010h	; b343
+	defb 00eh,010h	; b345
+	defb 00ah,010h	; b347
+	defb 00eh,010h	; b349
+	defb 00ah,010h	; b34b
+	defb 00ah,020h	; b34d
+	defb 00eh,030h	; b34f
+	defb 005h,020h	; b351
+	defb 005h,010h	; b353
+	defb 00dh,010h	; b355
+	defb 00dh,020h	; b357
+	defb 005h,010h	; b359
+	defb 005h,030h	; b35b
+	defb 00eh,010h	; b35d
+	defb 00dh,010h	; b35f
+	defb 00eh,020h	; b361
+	defb 00ah,010h	; b363
+	defb 00ah,010h	; b365
+	defb 00ah,010h	; b367
+	defb 00dh,030h	; b369
+	defb 001h,010h	; b36b
+	defb 001h,010h	; b36d
+	defb 00eh,010h	; b36f
+	defb 00eh,030h	; b371
+	defb 001h,010h	; b373
+	defb 001h,010h	; b375
+	defb 001h,010h	; b377
+	defb 00dh,020h	; b379
+	defb 00ah,010h	; b37b
+	defb 00ah,010h	; b37d
+	defb 001h,010h	; b37f
+	defb 00ah,010h	; b381
+	defb 001h,010h	; b383
+	defb 00eh,010h	; b385
+	defb 00eh,020h	; b387
+	defb 00eh,030h	; b389
+	defb 00dh,010h	; b38b
+	defb 001h,010h	; b38d
+	defb 001h,010h	; b38f
+	defb 00eh,010h	; b391
+	defb 00eh,010h	; b393
+	defb 00dh,010h	; b395
+	defb 001h,010h	; b397
+	defb 001h,020h	; b399
+	defb 00eh,010h	; b39b
+	defb 00eh,0ffh	; b39d
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_22: el guion de enemigos de la fase 22: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xb39f..0xb449  (170 bytes)
+DATA_enemigos_fase_22:
+	defb 00fh,010h	; b39f
+	defb 00ah,010h	; b3a1
+	defb 00ah,010h	; b3a3
+	defb 00ah,010h	; b3a5
+	defb 00ah,020h	; b3a7
+	defb 00fh,010h	; b3a9
+	defb 00fh,010h	; b3ab
+	defb 00ah,010h	; b3ad
+	defb 00ah,010h	; b3af
+	defb 00fh,010h	; b3b1
+	defb 00ah,010h	; b3b3
+	defb 00fh,020h	; b3b5
+	defb 00ah,010h	; b3b7
+	defb 00ah,050h	; b3b9
+	defb 00fh,010h	; b3bb
+	defb 001h,010h	; b3bd
+	defb 001h,010h	; b3bf
+	defb 001h,010h	; b3c1
+	defb 00fh,030h	; b3c3
+	defb 001h,010h	; b3c5
+	defb 001h,010h	; b3c7
+	defb 00fh,010h	; b3c9
+	defb 00ah,010h	; b3cb
+	defb 00ah,010h	; b3cd
+	defb 001h,010h	; b3cf
+	defb 00fh,010h	; b3d1
+	defb 001h,020h	; b3d3
+	defb 00fh,010h	; b3d5
+	defb 001h,010h	; b3d7
+	defb 001h,060h	; b3d9
+	defb 00ah,010h	; b3db
+	defb 009h,030h	; b3dd
+	defb 009h,010h	; b3df
+	defb 00ah,010h	; b3e1
+	defb 00fh,010h	; b3e3
+	defb 00ah,010h	; b3e5
+	defb 00fh,010h	; b3e7
+	defb 001h,010h	; b3e9
+	defb 001h,010h	; b3eb
+	defb 009h,010h	; b3ed
+	defb 009h,010h	; b3ef
+	defb 001h,010h	; b3f1
+	defb 001h,050h	; b3f3
+	defb 00ah,005h	; b3f5
+	defb 001h,015h	; b3f7
+	defb 001h,010h	; b3f9
+	defb 00ah,010h	; b3fb
+	defb 00ah,020h	; b3fd
+	defb 001h,020h	; b3ff
+	defb 001h,020h	; b401
+	defb 00ah,010h	; b403
+	defb 00ah,010h	; b405
+	defb 001h,010h	; b407
+	defb 00fh,020h	; b409
+	defb 00fh,010h	; b40b
+	defb 00ah,010h	; b40d
+	defb 009h,020h	; b40f
+	defb 00ah,010h	; b411
+	defb 009h,010h	; b413
+	defb 001h,010h	; b415
+	defb 001h,020h	; b417
+	defb 001h,010h	; b419
+	defb 001h,010h	; b41b
+	defb 00ah,010h	; b41d
+	defb 001h,010h	; b41f
+	defb 00ah,010h	; b421
+	defb 009h,010h	; b423
+	defb 00ah,010h	; b425
+	defb 009h,080h	; b427
+	defb 00fh,015h	; b429
+	defb 00ah,005h	; b42b
+	defb 00fh,010h	; b42d
+	defb 00ah,010h	; b42f
+	defb 00ah,010h	; b431
+	defb 009h,010h	; b433
+	defb 00ah,020h	; b435
+	defb 009h,010h	; b437
+	defb 001h,010h	; b439
+	defb 00ah,010h	; b43b
+	defb 00ah,010h	; b43d
+	defb 00ah,010h	; b43f
+	defb 009h,010h	; b441
+	defb 001h,010h	; b443
+	defb 001h,010h	; b445
+	defb 001h,0ffh	; b447
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_23: el guion de enemigos de la fase 23: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xb449..0xb4c1  (120 bytes)
+DATA_enemigos_fase_23:
+	defb 006h,010h	; b449
+	defb 006h,010h	; b44b
+	defb 006h,020h	; b44d
+	defb 00ch,010h	; b44f
+	defb 00ch,010h	; b451
+	defb 00ch,010h	; b453
+	defb 006h,010h	; b455
+	defb 006h,010h	; b457
+	defb 00ch,040h	; b459
+	defb 006h,010h	; b45b
+	defb 00ch,010h	; b45d
+	defb 00ch,010h	; b45f
+	defb 00ch,030h	; b461
+	defb 00bh,030h	; b463
+	defb 006h,010h	; b465
+	defb 00bh,010h	; b467
+	defb 006h,010h	; b469
+	defb 006h,010h	; b46b
+	defb 006h,010h	; b46d
+	defb 00bh,010h	; b46f
+	defb 006h,020h	; b471
+	defb 00bh,020h	; b473
+	defb 00ah,020h	; b475
+	defb 00ah,020h	; b477
+	defb 00ah,015h	; b479
+	defb 00bh,015h	; b47b
+	defb 00bh,020h	; b47d
+	defb 006h,010h	; b47f
+	defb 006h,010h	; b481
+	defb 00ah,010h	; b483
+	defb 00ah,010h	; b485
+	defb 00ch,010h	; b487
+	defb 00ch,010h	; b489
+	defb 007h,010h	; b48b
+	defb 007h,010h	; b48d
+	defb 007h,020h	; b48f
+	defb 00ah,010h	; b491
+	defb 00ah,020h	; b493
+	defb 007h,020h	; b495
+	defb 00ah,010h	; b497
+	defb 00ah,010h	; b499
+	defb 00ah,030h	; b49b
+	defb 00bh,010h	; b49d
+	defb 00bh,010h	; b49f
+	defb 00ch,010h	; b4a1
+	defb 00ch,010h	; b4a3
+	defb 00ch,010h	; b4a5
+	defb 00ch,010h	; b4a7
+	defb 00bh,050h	; b4a9
+	defb 00bh,010h	; b4ab
+	defb 00ch,010h	; b4ad
+	defb 007h,010h	; b4af
+	defb 00ch,010h	; b4b1
+	defb 00ch,010h	; b4b3
+	defb 007h,010h	; b4b5
+	defb 00ah,010h	; b4b7
+	defb 007h,010h	; b4b9
+	defb 00ah,010h	; b4bb
+	defb 007h,010h	; b4bd
+	defb 007h,0ffh	; b4bf
+
+; ----------------------------------------------------------------------
+; DATOS enemigos_fase_24: el guion de enemigos de la fase 24: parejas (objeto,
+;   distancia en BCD hasta el siguiente) cerradas con 0xFF en el segundo byte
+;   0xb4c1..0xb581  (192 bytes)
+DATA_enemigos_fase_24:
+	defb 001h,010h	; b4c1
+	defb 001h,010h	; b4c3
+	defb 001h,040h	; b4c5
+	defb 005h,010h	; b4c7
+	defb 005h,020h	; b4c9
+	defb 001h,020h	; b4cb
+	defb 001h,010h	; b4cd
+	defb 001h,005h	; b4cf
+	defb 005h,025h	; b4d1
+	defb 001h,010h	; b4d3
+	defb 001h,020h	; b4d5
+	defb 00eh,010h	; b4d7
+	defb 00eh,010h	; b4d9
+	defb 001h,010h	; b4db
+	defb 001h,010h	; b4dd
+	defb 00eh,010h	; b4df
+	defb 001h,030h	; b4e1
+	defb 001h,030h	; b4e3
+	defb 001h,010h	; b4e5
+	defb 001h,010h	; b4e7
+	defb 00ah,010h	; b4e9
+	defb 00ah,010h	; b4eb
+	defb 001h,010h	; b4ed
+	defb 001h,020h	; b4ef
+	defb 00ah,020h	; b4f1
+	defb 00ah,010h	; b4f3
+	defb 00eh,020h	; b4f5
+	defb 00ah,010h	; b4f7
+	defb 00eh,010h	; b4f9
+	defb 00eh,020h	; b4fb
+	defb 001h,020h	; b4fd
+	defb 005h,010h	; b4ff
+	defb 001h,010h	; b501
+	defb 001h,010h	; b503
+	defb 00dh,015h	; b505
+	defb 005h,015h	; b507
+	defb 00dh,010h	; b509
+	defb 005h,010h	; b50b
+	defb 001h,030h	; b50d
+	defb 00dh,010h	; b50f
+	defb 00dh,010h	; b511
+	defb 00ah,010h	; b513
+	defb 00ah,010h	; b515
+	defb 001h,010h	; b517
+	defb 001h,010h	; b519
+	defb 00ah,010h	; b51b
+	defb 001h,010h	; b51d
+	defb 001h,020h	; b51f
+	defb 00ah,010h	; b521
+	defb 00ah,010h	; b523
+	defb 00eh,020h	; b525
+	defb 00eh,010h	; b527
+	defb 00eh,010h	; b529
+	defb 001h,010h	; b52b
+	defb 001h,020h	; b52d
+	defb 001h,010h	; b52f
+	defb 00dh,010h	; b531
+	defb 00dh,020h	; b533
+	defb 00dh,010h	; b535
+	defb 001h,020h	; b537
+	defb 001h,010h	; b539
+	defb 001h,020h	; b53b
+	defb 005h,010h	; b53d
+	defb 00ah,020h	; b53f
+	defb 00ah,010h	; b541
+	defb 005h,010h	; b543
+	defb 00ah,010h	; b545
+	defb 00ah,010h	; b547
+	defb 00ah,010h	; b549
+	defb 001h,020h	; b54b
+	defb 001h,010h	; b54d
+	defb 001h,010h	; b54f
+	defb 001h,010h	; b551
+	defb 00eh,010h	; b553
+	defb 00eh,010h	; b555
+	defb 00eh,030h	; b557
+	defb 00dh,010h	; b559
+	defb 00dh,010h	; b55b
+	defb 001h,010h	; b55d
+	defb 001h,010h	; b55f
+	defb 00ah,010h	; b561
+	defb 00ah,020h	; b563
+	defb 001h,010h	; b565
+	defb 00ah,020h	; b567
+	defb 00ah,010h	; b569
+	defb 00dh,010h	; b56b
+	defb 001h,010h	; b56d
+	defb 001h,010h	; b56f
+	defb 001h,010h	; b571
+	defb 00eh,010h	; b573
+	defb 00ah,010h	; b575
+	defb 001h,010h	; b577
+	defb 001h,010h	; b579
+	defb 00dh,020h	; b57b
+	defb 00eh,010h	; b57d
+	defb 00eh,0ffh	; b57f
 
 ; ======================================================================
 ; CODIGO 0xb581..0xb59c  (27 bytes)
@@ -1231,8 +2364,10 @@ DATA_plantilla_de_la_clase_1:
 	defb 001h	; b5aa
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xb5ab..0xb5ad  (2 bytes)
-DATA_B5AB:
+; DATOS dos_ceros_sin_lector: dos ceros detras de la plantilla de 15 bytes de
+;   0xB59C (p09:B588); no los lee nadie
+;   0xb5ab..0xb5ad  (2 bytes)
+DATA_dos_ceros_sin_lector:
 	defb 000h,000h	; b5ab
 
 ; ======================================================================
@@ -1246,7 +2381,7 @@ DATA_B5AB:
 ; ----------------------------------------------------------------------
 atiende_clase_1:
 	ld c,030h		;b5ad   ; el dibujo base de esta clase
-	call L_AA86		;b5af   ; ponerselo
+	call el_dibujo_por_distancia_con_aleteo		;b5af   ; ponerselo
 	ld a,(0e003h)		;b5b2   ; el contador de cuadros
 	and 007h		;b5b5   ; uno de cada ocho
 	jr nz,atiende_clase_1_estado		;b5b7
@@ -1278,7 +2413,7 @@ atiende_clase_1_frena:
 atiende_clase_1_una_sola_vez:
 	bit 0,(ix+014h)		;b5ec   ; una bandera para que esto pase una vez y no en cada cuadro
 	ret nz			;b5f0
-	call L_AB1E		;b5f1   ; lo que sea que hace al llegar
+	call hay_sitio_en_0xE370		;b5f1   ; lo que sea que hace al llegar
 	ld (ix+014h),001h		;b5f4   ; y queda marcado
 	ret			;b5f8
 atiende_clase_1_acelera:
@@ -1483,7 +2618,7 @@ DATA_plantilla_de_la_clase_6:
 ; ----------------------------------------------------------------------
 atiende_clase_6:
 	ld c,030h		;b71b   ; el dibujo base
-	call L_AA86		;b71d
+	call el_dibujo_por_distancia_con_aleteo		;b71d
 	ld l,(ix+00ch)		;b720   ; la velocidad X
 	ld h,(ix+00dh)		;b723
 	ld de,00002h		;b726   ; mas dos
@@ -1555,24 +2690,28 @@ clase_6_paso_del_segundo_vaiven:
 	ld hl,0b851h		;b7a7   ; la segunda tabla de rampas
 	add a,l			;b7aa
 	ld l,a			;b7ab
-	jr nc,L_B7AF		;b7ac
+	jr nc,multiplica_el_paso		;b7ac
 	inc h			;b7ae
-L_B7AF:
-	ld e,(hl)			;b7af
+
+; ----------------------------------------------------------------------
+; MULTIPLICAR EL PASO POR SU FACTOR. Coge el paso de 16 bits que apunte HL, lo cambia de signo si (ix+0x18) esta a cero, y lo suma (ix+0x1A) veces: eso es multiplicar a base de sumar, que en el Z80 es lo que hay. El resultado se le suma a la profundidad.
+; ----------------------------------------------------------------------
+multiplica_el_paso:
+	ld e,(hl)			;b7af   ; el paso, 16 bits
 	inc hl			;b7b0
 	ld d,(hl)			;b7b1
-	ld a,(ix+018h)		;b7b2
+	ld a,(ix+018h)		;b7b2   ; ¿va hacia el otro lado?
 	and a			;b7b5
 	jr z,clase_6_multiplica_el_segundo		;b7b6
-	xor a			;b7b8
+	xor a			;b7b8   ; pues cambiado de signo, en 16 bits
 	sub e			;b7b9
 	ld e,a			;b7ba
 	ld a,000h		;b7bb
 	sbc a,d			;b7bd
 	ld d,a			;b7be
 clase_6_multiplica_el_segundo:
-	ld b,(ix+01ah)		;b7bf
-	ld hl,00000h		;b7c2
+	ld b,(ix+01ah)		;b7bf   ; cuantas veces
+	ld hl,00000h		;b7c2   ; desde cero
 clase_6_multiplica_bucle_2:
 	add hl,de			;b7c5
 	djnz clase_6_multiplica_bucle_2		;b7c6
@@ -1691,7 +2830,7 @@ monta_clase_7:
 	ld hl,0b89fh		;b87a   ; su plantilla
 	ld bc,0000fh		;b87d   ; quince bytes
 	ldir		;b880
-	ld a,(0e205h)		;b882   ; la Y en la pantalla de lo que se maneja
+	ld a,(0e205h)		;b882   ; la X en la pantalla de lo que se maneja
 	cp 050h		;b885
 	ld c,001h		;b887
 	jr c,L_B892		;b889
@@ -1732,7 +2871,7 @@ DATA_plantilla_de_la_clase_7:
 ; ----------------------------------------------------------------------
 atiende_clase_7:
 	ld c,02ch		;b8ae   ; su dibujo
-	call L_AAAD		;b8b0
+	call el_dibujo_por_distancia		;b8b0
 	ld a,(0e16ah)		;b8b3   ; lo que se lleva
 	and a			;b8b6
 	ld a,005h		;b8b7   ; con ello, un dibujo...
@@ -1859,29 +2998,36 @@ clase_9_velocidad_del_primero:
 	ld a,(hl)			;b982
 	rra			;b983
 	ld c,000h		;b984
-	jr nc,L_B98D		;b986
+	jr nc,los_tres_pasos_de_lado		;b986
 	inc c			;b988
 	rra			;b989
-	jr c,L_B98D		;b98a
+	jr c,los_tres_pasos_de_lado		;b98a
 	inc c			;b98c
-L_B98D:
-	ld (iy+01ah),c		;b98d
+
+; ----------------------------------------------------------------------
+; LOS TRES PASOS DE LADO. Con C a 0 no se mueve, con 1 va hacia un lado (-0x10) y con cualquier otro hacia el otro (+0x10). El valor de C queda apuntado en (iy+0x1A) para lo que venga despues.
+; ----------------------------------------------------------------------
+los_tres_pasos_de_lado:
+	ld (iy+01ah),c		;b98d   ; cual de los tres
 	ld a,c			;b990
-	ld de,00000h		;b991
+	ld de,00000h		;b991   ; el 0 se queda quieto
 	and a			;b994
-	jr z,L_B9A0		;b995
-	ld de,0fff0h		;b997
+	jr z,guarda_el_paso_de_lado		;b995
+	ld de,0fff0h		;b997   ; el 1 va hacia atras...
 	dec a			;b99a
-	jr z,L_B9A0		;b99b
-	ld de,00010h		;b99d
-L_B9A0:
+	jr z,guarda_el_paso_de_lado		;b99b
+	ld de,00010h		;b99d   ; ...y el resto hacia delante
+guarda_el_paso_de_lado:
 	ld (iy+017h),e		;b9a0
 	ld (iy+018h),d		;b9a3
 	ret			;b9a6
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xb9a7..0xb9c0  (25 bytes)
-DATA_B9A7:
+; DATOS plantilla_de_25: la plantilla de 25 bytes que p09:B933 y p09:B970
+;   copian con ldir al hueco del objeto, cuatro bytes mas alla de su tipo y
+;   posicion
+;   0xb9a7..0xb9c0  (25 bytes)
+DATA_plantilla_de_25:
 	defb 098h,00ah,000h,04eh,000h,078h,000h,010h,010h,000h,000h,000h,000h,000h,001h,000h	; b9a7  ...N.x..........
 	defb 078h,000h,010h,000h,000h,000h,000h,000h,001h	; b9b7  x........
 
@@ -1896,7 +3042,7 @@ DATA_B9A7:
 ; ----------------------------------------------------------------------
 atiende_clase_9:
 	ld c,02ch		;b9c0   ; su dibujo
-	call L_AAAD		;b9c2
+	call el_dibujo_por_distancia		;b9c2
 	ld l,(ix+00ch)		;b9c5   ; la velocidad X
 	ld h,(ix+00dh)		;b9c8
 	ld de,00001h		;b9cb
@@ -1937,7 +3083,7 @@ clase_9_gira:
 	ld a,(ix+01ch)		;ba22   ; y a las ocho vueltas...
 	cp 008h		;ba25
 	jr nz,clase_9_paso_de_la_vuelta		;ba27
-	call L_AB1E		;ba29   ; ...pasa algo
+	call hay_sitio_en_0xE370		;ba29   ; ...pasa algo
 clase_9_paso_de_la_vuelta:
 	inc (ix+019h)		;ba2c   ; el paso
 	ld a,(ix+019h)		;ba2f
@@ -2076,10 +3222,22 @@ L_BAFF:
 	jp L_AA78		;bb02   ; y se le da
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xbb05..0xbb1e  (25 bytes)
-DATA_BB05:
+; DATOS plantilla_de_17: la plantilla de 17 bytes que p09:BAE7 copia con ldir
+;   al hueco del objeto
+;   0xbb05..0xbb16  (17 bytes)
+DATA_plantilla_de_17:
 	defb 098h,001h,000h,04eh,000h,078h,000h,00bh,010h,000h,000h,000h,000h,000h,001h,000h	; bb05  ...N.x..........
-	defb 001h,0b0h,0ffh,020h,000h,0e0h,0ffh,050h,000h	; bb15  ... ...P.
+	defb 001h	; bb15
+
+; ----------------------------------------------------------------------
+; DATOS cuatro_empujones: cuatro palabras que p09:BAF6 elige con un contador
+;   que gira (0xE286) & 3 y pasa en DE a p09:AA78, el empujon
+;   0xbb16..0xbb1e  (8 bytes)
+DATA_cuatro_empujones:
+	defb 0b0h,0ffh	; bb16
+	defb 020h,000h	; bb18
+	defb 0e0h,0ffh	; bb1a
+	defb 050h,000h	; bb1c
 
 ; ======================================================================
 ; CODIGO 0xbb1e..0xbb5b  (61 bytes)
@@ -2092,7 +3250,7 @@ DATA_BB05:
 ; ----------------------------------------------------------------------
 atiende_clase_10:
 	ld c,038h		;bb1e   ; su dibujo
-	call L_AA86		;bb20
+	call el_dibujo_por_distancia_con_aleteo		;bb20
 	ld l,(ix+00ch)		;bb23   ; la velocidad X
 	ld h,(ix+00dh)		;bb26
 	ld de,00002h		;bb29   ; mas dos
@@ -2275,7 +3433,7 @@ atiende_clase_11:
 	cp 080h		;bc42   ; a los 0x80 cuadros...
 	jr nz,clase_11_tiempo		;bc44
 	ld (ix+015h),000h		;bc46
-	call L_AB1E		;bc4a   ; ...pasa algo
+	call hay_sitio_en_0xE370		;bc4a   ; ...pasa algo
 clase_11_tiempo:
 	ld a,(ix+001h)		;bc4d   ; en que tiempo va
 	dec a			;bc50
@@ -2353,7 +3511,7 @@ monta_clase_12:
 	ld hl,0bcech		;bcc6   ; su plantilla
 	ld bc,0000fh		;bcc9   ; quince bytes
 	ldir		;bccc
-	ld a,(0e204h)		;bcce   ; la X en la pantalla de lo que se maneja
+	ld a,(0e204h)		;bcce   ; la Y en la pantalla de lo que se maneja
 	ld c,a			;bcd1
 	ld a,0a0h		;bcd2   ; 0xA0 menos ella
 	sub c			;bcd4
@@ -2390,7 +3548,7 @@ DATA_plantilla_de_la_clase_12:
 
 atiende_clase_12:
 	ld c,030h		;bcfb   ; su dibujo
-	call L_AA86		;bcfd
+	call el_dibujo_por_distancia_con_aleteo		;bcfd
 	ld a,(ix+009h)		;bd00   ; la Y
 	cp 002h		;bd03   ; por debajo de 2...
 	jr c,clase_12_se_ha_ido		;bd05
@@ -2559,7 +3717,7 @@ monta_clase_14:
 L_BE1F:
 	ld a,(hl)			;be1f   ; la altura que toca
 	ld (ix+009h),a		;be20
-	ld a,(0e205h)		;be23   ; la Y en la pantalla de lo que se maneja
+	ld a,(0e205h)		;be23   ; la X en la pantalla de lo que se maneja
 	cp (ix+009h)		;be26   ; contra la suya
 	ld de,0fe00h		;be29   ; si esta por encima, hacia arriba...
 	jr c,clase_14_orientada		;be2c
@@ -2571,10 +3729,18 @@ clase_14_orientada:
 	ret			;be39
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xbe3a..0xbe51  (23 bytes)
-DATA_BE3A:
-	defb 0bch,00ah,000h,0a8h,000h,000h,000h,098h,000h,000h,000h,000h,000h,0fdh,001h,020h	; be3a  ...............
-	defb 080h,0c0h,060h,0e0h,0a0h,040h,070h	; be4a
+; DATOS plantilla_de_15: la plantilla de 15 bytes que p09:BE08 copia con ldir
+;   al hueco del objeto
+;   0xbe3a..0xbe49  (15 bytes)
+DATA_plantilla_de_15:
+	defb 0bch,00ah,000h,0a8h,000h,000h,000h,098h,000h,000h,000h,000h,000h,0fdh,001h	; be3a  ...............
+
+; ----------------------------------------------------------------------
+; DATOS ocho_alturas: ocho alturas que p09:BE15 elige con (0xE284) & 7 y pone
+;   en (ix+9); p09:BE26 decide con ellas si el objeto sube o baja
+;   0xbe49..0xbe51  (8 bytes)
+DATA_ocho_alturas:
+	defb 020h,080h,0c0h,060h,0e0h,0a0h,040h,070h	; be49   ..`..@p
 
 ; ======================================================================
 ; CODIGO 0xbe51..0xbebf  (110 bytes)
@@ -2583,21 +3749,25 @@ DATA_BE3A:
 
 L_BE51:
 	ret			;be51
-L_BE52:
-	ld (ix+005h),00fh		;be52
-	ld (ix+007h),0a4h		;be56
-	ld (ix+00bh),070h		;be5a
-	ld (ix+012h),001h		;be5e
-	ld (ix+013h),080h		;be62
-	ld hl,0e303h		;be66
-	inc (hl)			;be69
-	bit 0,(hl)		;be6a
-	ld a,002h		;be6c
+
+; ----------------------------------------------------------------------
+; ARRANCAR EL QUE VA DE UN LADO A OTRO. Le clava el dibujo, las dos coordenadas y una cuenta de 0x80, y de 0xE303 saca hacia que lado sale ESTE: los pares a un lado, con velocidad 0x0100, y los impares al otro, con 0xFF00. Asi van alternandose sin necesidad de azar.
+; ----------------------------------------------------------------------
+arranca_el_que_cruza:
+	ld (ix+005h),00fh		;be52   ; el dibujo 0x0F
+	ld (ix+007h),0a4h		;be56   ; la fila 0xA4
+	ld (ix+00bh),070h		;be5a   ; y la columna 0x70
+	ld (ix+012h),001h		;be5e   ; se mueve solo
+	ld (ix+013h),080h		;be62   ; y una cuenta de 0x80
+	ld hl,0e303h		;be66   ; cuantos van ya
+	inc (hl)			;be69   ; uno mas
+	bit 0,(hl)		;be6a   ; y su bit 0 dice el lado
+	ld a,002h		;be6c   ; los impares, hacia delante...
 	ld de,00100h		;be6e
-	jr nz,L_BE78		;be71
-	ld a,0f0h		;be73
+	jr nz,arranca_el_que_cruza_con_su_paso		;be71
+	ld a,0f0h		;be73   ; ...y los pares, hacia atras
 	ld de,0ff00h		;be75
-L_BE78:
+arranca_el_que_cruza_con_su_paso:
 	ld (ix+009h),a		;be78
 	jp L_AA78		;be7b
 L_BE7E:
@@ -2610,10 +3780,10 @@ L_BE89:
 	ld (ix+004h),c		;be89
 	ld a,(ix+001h)		;be8c
 	dec a			;be8f
-	jr z,L_BEA9		;be90
+	jr z,la_cuenta_del_que_cruza		;be90
 	dec a			;be92
 	ret z			;be93
-	ld a,(0e205h)		;be94   ; la Y en la pantalla de lo que se maneja
+	ld a,(0e205h)		;be94   ; la X en la pantalla de lo que se maneja
 	sub (ix+009h)		;be97
 	jr nc,L_BE9E		;be9a
 	neg		;be9c
@@ -2623,21 +3793,27 @@ L_BE9E:
 	inc (ix+001h)		;bea1
 	ld (ix+012h),000h		;bea4
 	ret			;bea8
-L_BEA9:
-	dec (ix+013h)		;bea9
-	jr z,L_BEB7		;beac
-	ld a,(ix+013h)		;beae
-	cp 040h		;beb1
+
+; ----------------------------------------------------------------------
+; LA CUENTA DEL QUE CRUZA. Baja de 0x80 a cero y, justo a la mitad -en 0x40-, mira si hay sitio en los huecos de 0xE370 para soltar otra cosa. Al llegar a cero, al paso siguiente.
+; ----------------------------------------------------------------------
+la_cuenta_del_que_cruza:
+	dec (ix+013h)		;bea9   ; un cuadro menos
+	jr z,el_que_cruza_al_paso_siguiente		;beac
+	ld a,(ix+013h)		;beae   ; la cuenta
+	cp 040h		;beb1   ; justo a la mitad...
 	ret nz			;beb3
-	jp L_AB1E		;beb4
-L_BEB7:
+	jp hay_sitio_en_0xE370		;beb4   ; ...se mira si hay sitio para otro
+el_que_cruza_al_paso_siguiente:
 	inc (ix+001h)		;beb7
 	ld (ix+012h),001h		;beba
 	ret			;bebe
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0xbebf..0xc000  (321 bytes)
-DATA_BEBF:
+; DATOS relleno_del_banco_9: 321 bytes a 0xFF hasta el final de los 8 KB del
+;   banco: espacio libre
+;   0xbebf..0xc000  (321 bytes)
+DATA_relleno_del_banco_9:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bebf  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; becf  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; bedf  ................

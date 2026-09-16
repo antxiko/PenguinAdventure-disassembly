@@ -1,2 +1,59 @@
 # Banco 06 (se ejecuta en 0xa000). Directivas: L etiqueta, C comentario de
 # linea, B cabecera de bloque, D rango de datos, F anchura de fila.
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0xA000 0xA387 cola_9DFA  la cola del guion comprimido de 0x9DFA del banco 5, que pasa de ranura sin cambiar de banco; se entra por 0xA000, 0xA1E1; lo cargan p00:4929, p00:4934 (903 bytes)
+F 0xA000 16
+D 0xA387 0xA52C guion_A387  guion comprimido que lee pinta y pinta_sin_color; se entra por 0xA387, 0xA4F6; lo cargan p00:495C, p00:4967 (421 bytes)
+F 0xA387 16
+D 0xA52C 0xA6B7 guion_A52C  guion comprimido que lee pinta y pinta_sin_color; se entra por 0xA52C, 0xA575; lo cargan p00:493A, p00:4945 (395 bytes)
+F 0xA52C 16
+D 0xA6B7 0xA77A guion_A6B7  guion comprimido que lee pinta y pinta_sin_color; se entra por 0xA6B7, 0xA6ED; lo cargan p00:496D, p00:4978 (195 bytes)
+F 0xA6B7 16
+D 0xA77A 0xAADB guion_A77A  guion comprimido que lee pinta y pinta_sin_color; se entra por 0xA77A, 0xAABB; lo cargan p00:4837, p00:4842 (865 bytes)
+F 0xA77A 16
+D 0xAADB 0xABA5 guion_AADB  guion comprimido que lee pinta y pinta_sin_color; se entra por 0xAADB, 0xAB93; lo cargan p00:4859, p00:4864 (202 bytes)
+F 0xAADB 16
+D 0xABA5 0xAF34 guion_ABA5  guion comprimido que lee pinta y pinta_sin_color; se entra por 0xABA5, 0xAF15; lo cargan p00:4848, p00:4853 (911 bytes)
+F 0xABA5 16
+D 0xAF34 0xB006 guion_AF34  guion comprimido que lee pinta y pinta_sin_color; se entra por 0xAF34, 0xB003; lo cargan p00:486A, p00:4875 (210 bytes)
+F 0xAF34 16
+D 0xB006 0xB0C8 tira_B006  bloque sin comprimir de columnas de 16 bytes (6 columnas con espejo) que lee pinta_bloque; lo cargan p00:487E (194 bytes)
+F 0xB006 16
+D 0xB0C8 0xB110 guion_B0C8  guion comprimido que lee pinta y pinta_sin_color; se entra por 0xB0C8, 0xB0FE; lo cargan p00:4C54, p00:4C5F (72 bytes)
+F 0xB0C8 16
+D 0xB110 0xB13C guion_B110  guion comprimido que lee pinta y pinta_sin_color; se entra por 0xB110, 0xB129; lo cargan p00:4C87, p00:4C92 (44 bytes)
+F 0xB110 16
+D 0xB13C 0xB200 guion_B13C  guion comprimido que lee pinta y pinta_sin_color; se entra por 0xB13C, 0xB1DC; lo cargan p00:4C65, p00:4C70 (196 bytes)
+F 0xB13C 16
+D 0xB200 0xB260 guion_B200  guion comprimido que lee pinta y pinta_sin_color; se entra por 0xB200, 0xB24D; lo cargan p00:4C98, p00:4CA3 (96 bytes)
+F 0xB200 16
+D 0xB260 0xB38F guion_B260  guion comprimido que lee pinta y pinta_sin_color; se entra por 0xB260, 0xB36E; lo cargan p00:4C76, p00:4C81 (303 bytes)
+F 0xB260 16
+D 0xB38F 0xB423 guion_B38F  guion comprimido que lee pinta y pinta_sin_color; se entra por 0xB38F, 0xB407; lo cargan p00:4CA9, p00:4CB4 (148 bytes)
+F 0xB38F 16
+D 0xB423 0xB597 guion_B423  guion comprimido que lee pinta_en_los_tres; lo cargan p00:5BAD (372 bytes)
+F 0xB423 16
+D 0xB597 0xB5A8 guion_B597  guion comprimido que lee pinta_en_los_tres; lo cargan p00:5BCF (17 bytes)
+F 0xB597 16
+D 0xB5A8 0xB5B9 guion_B5A8  guion comprimido que lee pinta_en_los_tres; lo cargan p00:5BF3 (17 bytes)
+F 0xB5A8 16
+D 0xB5B9 0xB71B guion_B5B9  guion comprimido que lee pinta_sin_color; lo cargan p00:47FE (354 bytes)
+F 0xB5B9 16
+D 0xB71B 0xB96A guion_B71B  guion comprimido que lee pinta_en_los_tres; lo cargan p00:51EC (591 bytes)
+F 0xB71B 16
+D 0xB96A 0xBA5A guion_B96A  guion comprimido que lee pinta_en_los_tres; lo cargan p00:51F5 (240 bytes)
+F 0xB96A 16
+D 0xBA5A 0xBCBC tira_BA5A  bloque sin comprimir de columnas de 16 bytes (19 columnas con espejo) que lee pinta_bloque; lo cargan p00:48BE (610 bytes)
+F 0xBA5A 16
+D 0xBCBC 0xBD42 guion_BCBC  guion comprimido que lee pinta y pinta_sin_color; se entra por 0xBCBC, 0xBCFD; lo cargan p00:5528, p00:5533 (134 bytes)
+F 0xBCBC 16
+D 0xBD42 0xBD89 guion_BD42  guion comprimido que lee pinta y pinta_sin_color; se entra por 0xBD42, 0xBD70; lo cargan p00:5539, p00:5544 (71 bytes)
+F 0xBD42 16
+D 0xBD89 0xBDA9 patrones_de_cuatro_caracteres  ocho bytes de patrones por caracter, cuatro caracteres: trae_un_caracter_del_banco_6 (p00:41EB) coge los de 0xBD89 + 8*C y los manda a 0x3718, con C = ((0xE003) & 6) / 2 (p03:A6C1)
+F 0xBD89 8
+D 0xBDA9 0xBDC9 colores_de_cuatro_caracteres  los ocho bytes de colores de los mismos cuatro caracteres, 0x20 bytes mas abajo; p00:41FB los manda a 0x1718
+F 0xBDA9 8
+D 0xBDC9 0xC000 relleno_del_banco_6  567 bytes a 0xFF hasta el final de los 8 KB del banco: espacio libre
+F 0xBDC9 16
+# --- fin de los bloques de bloques.py ---

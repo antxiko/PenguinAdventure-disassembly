@@ -1,2 +1,381 @@
 # Banco 13 (se ejecuta en 0xa000). Directivas: L etiqueta, C comentario de
 # linea, B cabecera de bloque, D rango de datos, F anchura de fila.
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0xA000 0xA044 cola_9EE9  la cola del guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo) de 0x9EE9 del banco 12, que pasa de ranura sin cambiar de banco; lo cargan p01:655A por 0x9D85[1] (68 bytes)
+F 0xA000 16
+D 0xA044 0xA1A5 tira_A044  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x9D85[2] (353 bytes)
+F 0xA044 16
+D 0xA1A5 0xA314 tira_A1A5  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0x9D85[3] (367 bytes)
+F 0xA1A5 16
+D 0xA314 0xA3DD guion_A314  guion comprimido que lee descomprime; lo cargan p01:61C2 (201 bytes)
+F 0xA314 16
+D 0xA3DD 0xA3E5 cuadros_A3DD  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xA3DD 2
+D 0xA3E5 0xA445 tira_A3E5  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0xA3DD[0] (96 bytes)
+F 0xA3E5 16
+D 0xA445 0xA4A5 tira_A445  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0xA3DD[1] (96 bytes)
+F 0xA445 16
+D 0xA4A5 0xA505 tira_A4A5  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0xA3DD[2] (96 bytes)
+F 0xA4A5 16
+D 0xA505 0xA563 tira_A505  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0xA3DD[3] (94 bytes)
+F 0xA505 16
+D 0xA563 0xA59D tira_A563  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (el rotulo del modo 3 (0xE0A2)) que lee pinta_guion_con_mascara; lo cargan p01:6C61 (58 bytes)
+F 0xA563 16
+D 0xA59D 0xA5D7 tira_A59D  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (el rotulo del modo 4 (0xE0A2)) que lee pinta_guion_con_mascara; lo cargan p01:6C61 (58 bytes)
+F 0xA59D 16
+D 0xA5D7 0xA613 tira_A5D7  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (el rotulo del otro modo (0xE0A2)) que lee pinta_guion_con_mascara; lo cargan p01:6C61 (60 bytes)
+F 0xA5D7 16
+D 0xA613 0xA627 animacion_por_decorado_A613  un puntero por decorado (0xE0A1) a una tabla de cuatro cuadros de animacion; la lee p01:6576 con (0xE0A6) = 1 y el cuadro lo da (0xE4C2) & 3
+F 0xA613 2
+D 0xA627 0xA63B animacion_por_decorado_A627  un puntero por decorado (0xE0A1) a una tabla de cuatro cuadros de animacion; la lee p01:6576 con (0xE0A6) = 2 y el cuadro lo da (0xE4C2) & 3
+F 0xA627 2
+D 0xA63B 0xA643 cuadros_A63B  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xA63B 2
+D 0xA643 0xA666 tira_A643  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo; cuadro 1 de la animacion del fondo; cuadro 2 de la animacion del fondo; cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xA63B[0], p01:6576 con (0xE0A6) = 1 por 0xA63B[1], p01:6576 con (0xE0A6) = 1 por 0xA63B[2], p01:6576 con (0xE0A6) = 1 por 0xA63B[3] (35 bytes)
+F 0xA643 16
+D 0xA666 0xA66E cuadros_A666  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xA666 2
+D 0xA66E 0xA691 tira_A66E  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo; cuadro 1 de la animacion del fondo; cuadro 2 de la animacion del fondo; cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xA666[0], p01:6576 con (0xE0A6) = 2 por 0xA666[1], p01:6576 con (0xE0A6) = 2 por 0xA666[2], p01:6576 con (0xE0A6) = 2 por 0xA666[3] (35 bytes)
+F 0xA66E 16
+D 0xA691 0xA699 cuadros_A691  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xA691 2
+D 0xA699 0xA6B4 tira_A699  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xA691[0], p01:6576 con (0xE0A6) = 1 por 0xA85B[0] (27 bytes)
+F 0xA699 16
+D 0xA6B4 0xA6CF tira_A6B4  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xA691[1], p01:6576 con (0xE0A6) = 1 por 0xA85B[1] (27 bytes)
+F 0xA6B4 16
+D 0xA6CF 0xA6EE tira_A6CF  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xA691[2], p01:6576 con (0xE0A6) = 1 por 0xA85B[2] (31 bytes)
+F 0xA6CF 16
+D 0xA6EE 0xA711 tira_A6EE  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xA691[3], p01:6576 con (0xE0A6) = 1 por 0xA85B[3] (35 bytes)
+F 0xA6EE 16
+D 0xA711 0xA719 cuadros_A711  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xA711 2
+D 0xA719 0xA734 tira_A719  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xA711[0], p01:6576 con (0xE0A6) = 2 por 0xA86F[0] (27 bytes)
+F 0xA719 16
+D 0xA734 0xA74F tira_A734  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xA711[1], p01:6576 con (0xE0A6) = 2 por 0xA86F[1] (27 bytes)
+F 0xA734 16
+D 0xA74F 0xA76E tira_A74F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xA711[2], p01:6576 con (0xE0A6) = 2 por 0xA86F[2] (31 bytes)
+F 0xA74F 16
+D 0xA76E 0xA791 tira_A76E  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xA711[3], p01:6576 con (0xE0A6) = 2 por 0xA86F[3] (35 bytes)
+F 0xA76E 16
+D 0xA791 0xA799 cuadros_A791  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xA791 2
+D 0xA799 0xA7B1 tira_A799  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xA791[0] (24 bytes)
+F 0xA799 16
+D 0xA7B1 0xA7C8 tira_A7B1  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xA791[1] (23 bytes)
+F 0xA7B1 16
+D 0xA7C8 0xA7E0 tira_A7C8  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xA791[2] (24 bytes)
+F 0xA7C8 16
+D 0xA7E0 0xA7F6 tira_A7E0  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xA791[3] (22 bytes)
+F 0xA7E0 16
+D 0xA7F6 0xA7FE cuadros_A7F6  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xA7F6 2
+D 0xA7FE 0xA816 tira_A7FE  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xA7F6[0] (24 bytes)
+F 0xA7FE 16
+D 0xA816 0xA82D tira_A816  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xA7F6[1] (23 bytes)
+F 0xA816 16
+D 0xA82D 0xA845 tira_A82D  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xA7F6[2] (24 bytes)
+F 0xA82D 16
+D 0xA845 0xA85B tira_A845  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xA7F6[3] (22 bytes)
+F 0xA845 16
+D 0xA85B 0xA863 cuadros_A85B  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xA85B 2
+D 0xA863 0xA86F guiones_vacios_A863  cuatro guiones de copia_bloques vacios, `80 EB FF` -el destino 0xEB80 y el 0xFF que acaba- detras de la tabla de cuadros de al lado. Ninguna palabra de la ROM apunta a ellos
+F 0xA863 3
+D 0xA86F 0xA877 cuadros_A86F  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xA86F 2
+D 0xA877 0xA883 guiones_vacios_A877  cuatro guiones de copia_bloques vacios, `80 EB FF` -el destino 0xEB80 y el 0xFF que acaba- detras de la tabla de cuadros de al lado. Ninguna palabra de la ROM apunta a ellos
+F 0xA877 3
+D 0xA883 0xA88B cuadros_A883  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xA883 2
+D 0xA88B 0xA8BE tira_A88B  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xA883[0] (51 bytes)
+F 0xA88B 16
+D 0xA8BE 0xA8F7 tira_A8BE  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xA883[1] (57 bytes)
+F 0xA8BE 16
+D 0xA8F7 0xA931 tira_A8F7  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xA883[2] (58 bytes)
+F 0xA8F7 16
+D 0xA931 0xA95E tira_A931  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xA883[3] (45 bytes)
+F 0xA931 16
+D 0xA95E 0xA966 cuadros_A95E  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xA95E 2
+D 0xA966 0xA995 tira_A966  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xA95E[0] (47 bytes)
+F 0xA966 16
+D 0xA995 0xA9CD tira_A995  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xA95E[1] (56 bytes)
+F 0xA995 16
+D 0xA9CD 0xAA03 tira_A9CD  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xA95E[2] (54 bytes)
+F 0xA9CD 16
+D 0xAA03 0xAA2C tira_AA03  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xA95E[3] (41 bytes)
+F 0xAA03 16
+D 0xAA2C 0xAA34 cuadros_AA2C  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xAA2C 2
+D 0xAA34 0xAA70 tira_AA34  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo; cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xAA2C[0], p01:6576 con (0xE0A6) = 1 por 0xAA2C[2] (60 bytes)
+F 0xAA34 16
+D 0xAA70 0xAAAC tira_AA70  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo; cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xAA2C[1], p01:6576 con (0xE0A6) = 1 por 0xAA2C[3] (60 bytes)
+F 0xAA70 16
+D 0xAAAC 0xAAB4 cuadros_AAAC  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xAAAC 2
+D 0xAAB4 0xAAF0 tira_AAB4  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo; cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xAAAC[0], p01:6576 con (0xE0A6) = 2 por 0xAAAC[2] (60 bytes)
+F 0xAAB4 16
+D 0xAAF0 0xAB2C tira_AAF0  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo; cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xAAAC[1], p01:6576 con (0xE0A6) = 2 por 0xAAAC[3] (60 bytes)
+F 0xAAF0 16
+D 0xAB2C 0xAB34 cuadros_AB2C  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xAB2C 2
+D 0xAB34 0xAB4D tira_AB34  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo; cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xAB2C[0], p01:6576 con (0xE0A6) = 1 por 0xAB2C[2] (25 bytes)
+F 0xAB34 16
+D 0xAB4D 0xAB5F tira_AB4D  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo; cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xAB2C[1], p01:6576 con (0xE0A6) = 1 por 0xAB2C[3] (18 bytes)
+F 0xAB4D 16
+D 0xAB5F 0xAB67 cuadros_AB5F  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xAB5F 2
+D 0xAB67 0xAB80 tira_AB67  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo; cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xAB5F[0], p01:6576 con (0xE0A6) = 2 por 0xAB5F[2] (25 bytes)
+F 0xAB67 16
+D 0xAB80 0xAB92 tira_AB80  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo; cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xAB5F[1], p01:6576 con (0xE0A6) = 2 por 0xAB5F[3] (18 bytes)
+F 0xAB80 16
+D 0xAB92 0xAB9A cuadros_AB92  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xAB92 2
+D 0xAB9A 0xABAD tira_AB9A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo; cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xAB92[0], p01:6576 con (0xE0A6) = 1 por 0xAB92[2] (19 bytes)
+F 0xAB9A 16
+D 0xABAD 0xABC0 tira_ABAD  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo; cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xAB92[1], p01:6576 con (0xE0A6) = 1 por 0xAB92[3] (19 bytes)
+F 0xABAD 16
+D 0xABC0 0xABC8 cuadros_ABC0  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xABC0 2
+D 0xABC8 0xABDB tira_ABC8  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo; cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xABC0[0], p01:6576 con (0xE0A6) = 2 por 0xABC0[2] (19 bytes)
+F 0xABC8 16
+D 0xABDB 0xABEE tira_ABDB  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo; cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xABC0[1], p01:6576 con (0xE0A6) = 2 por 0xABC0[3] (19 bytes)
+F 0xABDB 16
+D 0xABEE 0xABF6 cuadros_ABEE  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xABEE 2
+D 0xABF6 0xABF9 tira_ABF6  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xABEE[0] (3 bytes)
+F 0xABF6 16
+D 0xABF9 0xABFC tira_ABF9  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xABEE[1] (3 bytes)
+F 0xABF9 16
+D 0xABFC 0xABFF tira_ABFC  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xABEE[2] (3 bytes)
+F 0xABFC 16
+D 0xABFF 0xAC02 tira_ABFF  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 1 por 0xABEE[3] (3 bytes)
+F 0xABFF 16
+D 0xAC02 0xAC0A cuadros_AC02  los cuatro guiones de copia_bloques de un decorado, uno por cuadro
+F 0xAC02 2
+D 0xAC0A 0xAC0D tira_AC0A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 0 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xAC02[0] (3 bytes)
+F 0xAC0A 16
+D 0xAC0D 0xAC10 tira_AC0D  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 1 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xAC02[1] (3 bytes)
+F 0xAC0D 16
+D 0xAC10 0xAC13 tira_AC10  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 2 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xAC02[2] (3 bytes)
+F 0xAC10 16
+D 0xAC13 0xAC16 tira_AC13  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:6576 con (0xE0A6) = 2 por 0xAC02[3] (3 bytes)
+F 0xAC13 16
+D 0xAC16 0xAC2A fila_por_decorado  diez punteros, uno por decorado (0xE0A1), a una fila de 32 bytes que p01:61E1 copia con ldir a 0xE510 y de ahi a 0xECA0. Los decorados 5 a 9 apuntan a 0xAC8A, que es la tabla de distancias de las fases: esos 32 bytes los leen las dos rutinas
+F 0xAC16 2
+D 0xAC2A 0xAC4A fila_de_decorado_AC2A  32 bytes que p01:61F1 copia a 0xE510 para los decorados 0
+F 0xAC2A 16
+D 0xAC4A 0xAC6A fila_de_decorado_AC4A  32 bytes que p01:61F1 copia a 0xE510 para los decorados 1, 2
+F 0xAC4A 16
+D 0xAC6A 0xAC8A fila_de_decorado_AC6A  32 bytes que p01:61F1 copia a 0xE510 para los decorados 3, 4
+F 0xAC6A 16
+D 0xAC8A 0xACBA distancia_de_salida_por_fase  24 palabras, una por fase: p01:6456 la pone en 0xE301 (la distancia a la que toca el objeto siguiente). Sus primeros 32 bytes son tambien la fila que p01:61E1 copia para los decorados 5 a 9
+F 0xAC8A 2
+D 0xACBA 0xAD1A largo_de_cada_fase  24 entradas de 4 bytes, una por fase: el byte bajo y el nibble bajo del siguiente son los doce bits del TIEMPO que queda (0xE08B), y el nibble alto va aparte; la leen p00:47BA y p01:6217
+F 0xACBA 4
+D 0xAD1A 0xAD38 salida_por_decorado  diez entradas de 3 bytes, una por decorado (o la 9 a partir de la segunda vuelta, p01:6273): la Y en pantalla de lo que se maneja (0xE204) y por donde va la rotacion de sus sprites (0xE203), p01:627A
+F 0xAD1A 3
+D 0xAD38 0xAD68 copia_a_E570  48 bytes que p01:6303 copia de un tiron con ldir a 0xE570
+F 0xAD38 16
+D 0xAD68 0xADE8 atributos_de_sprite_iniciales  los atributos de los 32 sprites (Y, X, patron, color): p01:6337 copia los 128 bytes con ldir a 0xEE80, la tabla de atributos en RAM
+F 0xAD68 4
+D 0xADE8 0xAE18 segundo_guion_por_fase  24 punteros, uno por fase, al segundo guion (el_segundo_guion, p01:66DA): lo que pasa a cada distancia
+F 0xADE8 2
+D 0xAE18 0xAE1B segundo_guion_fase_1  el segundo guion de la fase 1: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAE18 3
+D 0xAE1B 0xAE1E segundo_guion_fase_2  el segundo guion de la fase 2: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAE1B 3
+D 0xAE1E 0xAE2D segundo_guion_fase_3  el segundo guion de la fase 3: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAE1E 3
+D 0xAE2D 0xAE42 segundo_guion_fase_4  el segundo guion de la fase 4: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAE2D 3
+D 0xAE42 0xAE45 segundo_guion_fase_5  el segundo guion de la fase 5: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAE42 3
+D 0xAE45 0xAE5A segundo_guion_fase_6  el segundo guion de la fase 6: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAE45 3
+D 0xAE5A 0xAE75 segundo_guion_fase_7  el segundo guion de la fase 7: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAE5A 3
+D 0xAE75 0xAE78 segundo_guion_fase_8  el segundo guion de la fase 8: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAE75 3
+D 0xAE78 0xAE87 segundo_guion_fase_9  el segundo guion de la fase 9: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAE78 3
+D 0xAE87 0xAE96 segundo_guion_fase_10  el segundo guion de la fase 10: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAE87 3
+D 0xAE96 0xAEB1 segundo_guion_fase_11  el segundo guion de la fase 11: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAE96 3
+D 0xAEB1 0xAECC segundo_guion_fase_12  el segundo guion de la fase 12: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAEB1 3
+D 0xAECC 0xAEE7 segundo_guion_fase_13  el segundo guion de la fase 13: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAECC 3
+D 0xAEE7 0xAF02 segundo_guion_fase_14  el segundo guion de la fase 14: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAEE7 3
+D 0xAF02 0xAF11 segundo_guion_fase_15  el segundo guion de la fase 15: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAF02 3
+D 0xAF11 0xAF26 segundo_guion_fase_16  el segundo guion de la fase 16: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAF11 3
+D 0xAF26 0xAF3B segundo_guion_fase_17  el segundo guion de la fase 17: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAF26 3
+D 0xAF3B 0xAF62 segundo_guion_fase_18  el segundo guion de la fase 18: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAF3B 3
+D 0xAF62 0xAF89 segundo_guion_fase_19  el segundo guion de la fase 19: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAF62 3
+D 0xAF89 0xAF9E segundo_guion_fase_20  el segundo guion de la fase 20: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAF89 3
+D 0xAF9E 0xAFCB segundo_guion_fase_21  el segundo guion de la fase 21: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAF9E 3
+D 0xAFCB 0xAFF2 segundo_guion_fase_22  el segundo guion de la fase 22: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAFCB 3
+D 0xAFF2 0xB019 segundo_guion_fase_23  el segundo guion de la fase 23: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xAFF2 3
+D 0xB019 0xB046 segundo_guion_fase_24  el segundo guion de la fase 24: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
+F 0xB019 3
+D 0xB046 0xB076 tabla_por_fase_B046  24 punteros, uno por fase, a listas de entradas de 4 bytes que p01:638F indexa con (0xE0B6): una palabra a 0xE0AF y dos bytes a 0xE0B1 y 0xE0B2
+F 0xB046 2
+D 0xB076 0xB08A lista_B046_B076  entradas de 4 bytes de la fase 1 (tabla_por_fase_B046)
+F 0xB076 4
+D 0xB08A 0xB09A lista_B046_B08A  entradas de 4 bytes de la fase 2 (tabla_por_fase_B046)
+F 0xB08A 4
+D 0xB09A 0xB0AE lista_B046_B09A  entradas de 4 bytes de la fase 3 (tabla_por_fase_B046)
+F 0xB09A 4
+D 0xB0AE 0xB0B2 lista_B046_B0AE  entradas de 4 bytes de la fase 4 (tabla_por_fase_B046)
+F 0xB0AE 4
+D 0xB0B2 0xB0B6 lista_B046_B0B2  entradas de 4 bytes de la fase 5 (tabla_por_fase_B046)
+F 0xB0B2 4
+D 0xB0B6 0xB0C6 lista_B046_B0B6  entradas de 4 bytes de la fase 6 (tabla_por_fase_B046)
+F 0xB0B6 4
+D 0xB0C6 0xB0D2 lista_B046_B0C6  entradas de 4 bytes de la fase 7 (tabla_por_fase_B046)
+F 0xB0C6 4
+D 0xB0D2 0xB0D6 lista_B046_B0D2  entradas de 4 bytes de la fase 8 (tabla_por_fase_B046)
+F 0xB0D2 4
+D 0xB0D6 0xB0E6 lista_B046_B0D6  entradas de 4 bytes de la fase 9 (tabla_por_fase_B046)
+F 0xB0D6 4
+D 0xB0E6 0xB0EA lista_B046_B0E6  entradas de 4 bytes de la fase 10 (tabla_por_fase_B046)
+F 0xB0E6 4
+D 0xB0EA 0xB0EE lista_B046_B0EA  entradas de 4 bytes de la fase 11 (tabla_por_fase_B046)
+F 0xB0EA 4
+D 0xB0EE 0xB102 lista_B046_B0EE  entradas de 4 bytes de la fase 12 (tabla_por_fase_B046)
+F 0xB0EE 4
+D 0xB102 0xB116 lista_B046_B102  entradas de 4 bytes de la fase 13 (tabla_por_fase_B046)
+F 0xB102 4
+D 0xB116 0xB122 lista_B046_B116  entradas de 4 bytes de la fase 14 (tabla_por_fase_B046)
+F 0xB116 4
+D 0xB122 0xB132 lista_B046_B122  entradas de 4 bytes de la fase 15 (tabla_por_fase_B046)
+F 0xB122 4
+D 0xB132 0xB13A lista_B046_B132  entradas de 4 bytes de la fase 16 (tabla_por_fase_B046)
+F 0xB132 4
+D 0xB13A 0xB13E lista_B046_B13A  entradas de 4 bytes de la fase 17 (tabla_por_fase_B046)
+F 0xB13A 4
+D 0xB13E 0xB152 lista_B046_B13E  entradas de 4 bytes de la fase 18 (tabla_por_fase_B046)
+F 0xB13E 4
+D 0xB152 0xB156 lista_B046_B152  entradas de 4 bytes de la fase 19 (tabla_por_fase_B046)
+F 0xB152 4
+D 0xB156 0xB15A lista_B046_B156  entradas de 4 bytes de la fase 20 (tabla_por_fase_B046)
+F 0xB156 4
+D 0xB15A 0xB16E lista_B046_B15A  entradas de 4 bytes de la fase 21 (tabla_por_fase_B046)
+F 0xB15A 4
+D 0xB16E 0xB182 lista_B046_B16E  entradas de 4 bytes de la fase 22 (tabla_por_fase_B046)
+F 0xB16E 4
+D 0xB182 0xB186 lista_B046_B182  entradas de 4 bytes de la fase 23 (tabla_por_fase_B046)
+F 0xB182 4
+D 0xB186 0xB192 lista_B046_B186  entradas de 4 bytes de la fase 24 (tabla_por_fase_B046)
+F 0xB186 4
+D 0xB192 0xB1C2 tabla_por_fase_B192  24 punteros, uno por fase, a listas de palabras que p01:63DB indexa con (0xE0D4) y lleva a 0xE0D5
+F 0xB192 2
+D 0xB1C2 0xB1C8 lista_B192_B1C2  palabras de la fase 1 (tabla_por_fase_B192)
+F 0xB1C2 2
+D 0xB1C8 0xB1CC lista_B192_B1C8  palabras de la fase 2 (tabla_por_fase_B192)
+F 0xB1C8 2
+D 0xB1CC 0xB1D2 lista_B192_B1CC  palabras de la fase 3 (tabla_por_fase_B192)
+F 0xB1CC 2
+D 0xB1D2 0xB1D6 lista_B192_B1D2  palabras de la fase 4 (tabla_por_fase_B192)
+F 0xB1D2 2
+D 0xB1D6 0xB1DC lista_B192_B1D6  palabras de la fase 5 (tabla_por_fase_B192)
+F 0xB1D6 2
+D 0xB1DC 0xB1E2 lista_B192_B1DC  palabras de la fase 6 (tabla_por_fase_B192)
+F 0xB1DC 2
+D 0xB1E2 0xB1E8 lista_B192_B1E2  palabras de la fase 7 (tabla_por_fase_B192)
+F 0xB1E2 2
+D 0xB1E8 0xB1EE lista_B192_B1E8  palabras de la fase 8 (tabla_por_fase_B192)
+F 0xB1E8 2
+D 0xB1EE 0xB1F6 lista_B192_B1EE  palabras de la fase 9 (tabla_por_fase_B192)
+F 0xB1EE 2
+D 0xB1F6 0xB1FE lista_B192_B1F6  palabras de la fase 10 (tabla_por_fase_B192)
+F 0xB1F6 2
+D 0xB1FE 0xB206 lista_B192_B1FE  palabras de la fase 11 (tabla_por_fase_B192)
+F 0xB1FE 2
+D 0xB206 0xB20E lista_B192_B206  palabras de la fase 12 (tabla_por_fase_B192)
+F 0xB206 2
+D 0xB20E 0xB214 lista_B192_B20E  palabras de la fase 13 (tabla_por_fase_B192)
+F 0xB20E 2
+D 0xB214 0xB21A lista_B192_B214  palabras de la fase 14 (tabla_por_fase_B192)
+F 0xB214 2
+D 0xB21A 0xB224 lista_B192_B21A  palabras de la fase 15 (tabla_por_fase_B192)
+F 0xB21A 2
+D 0xB224 0xB22E lista_B192_B224  palabras de la fase 16 (tabla_por_fase_B192)
+F 0xB224 2
+D 0xB22E 0xB236 lista_B192_B22E  palabras de la fase 17 (tabla_por_fase_B192)
+F 0xB22E 2
+D 0xB236 0xB242 lista_B192_B236  palabras de la fase 18 (tabla_por_fase_B192)
+F 0xB236 2
+D 0xB242 0xB24E lista_B192_B242  palabras de la fase 19 (tabla_por_fase_B192)
+F 0xB242 2
+D 0xB24E 0xB258 lista_B192_B24E  palabras de la fase 20 (tabla_por_fase_B192)
+F 0xB24E 2
+D 0xB258 0xB264 lista_B192_B258  palabras de la fase 21 (tabla_por_fase_B192)
+F 0xB258 2
+D 0xB264 0xB272 lista_B192_B264  palabras de la fase 22 (tabla_por_fase_B192)
+F 0xB264 2
+D 0xB272 0xB27E lista_B192_B272  palabras de la fase 23 (tabla_por_fase_B192)
+F 0xB272 2
+D 0xB27E 0xB28C lista_B192_B27E  palabras de la fase 24 (tabla_por_fase_B192)
+F 0xB27E 2
+D 0xB28C 0xB2EC tabla_por_fase_B28C  24 entradas de 4 bytes, una por fase, que p01:6414 reparte: una palabra a 0xE0AB y dos bytes a 0xE0AD y 0xE0AE
+F 0xB28C 4
+D 0xB2EC 0xB58C columnas_B2EC  32 columnas de 21 bytes que p01:7B85 copia de una en una a la tabla de nombres en RAM, un byte por fila; el puntero lo deja p03:AA96 en 0xE4E0
+F 0xB2EC 21
+D 0xB58C 0xB5F1 guion_B58C  guion comprimido que lee descomprime (por el puente de AB3D); lo cargan p03:AB3D (101 bytes)
+F 0xB58C 16
+D 0xB5F1 0xB891 columnas_B5F1  32 columnas de 21 bytes que p01:7B85 copia de una en una a la tabla de nombres en RAM, un byte por fila; el puntero lo deja p03:AB6F en 0xE4E0
+F 0xB5F1 21
+D 0xB891 0xB90D guion_B891  guion comprimido que lee descomprime (por el puente de AC34); lo cargan p03:AC34 (124 bytes)
+F 0xB891 16
+D 0xB90D 0xB930 guion_B90D  guion comprimido que lee descomprime (por el puente de AB9B); lo cargan p03:AB9B (35 bytes)
+F 0xB90D 16
+D 0xB930 0xB93C guion_B930  guion comprimido que lee descomprime (por el puente de ABD7); lo cargan p03:ABD7 (12 bytes)
+F 0xB930 16
+D 0xB93C 0xB963 guion_B93C  guion comprimido que lee descomprime (por el puente de ABFC); lo cargan p03:ABFC (39 bytes)
+F 0xB93C 16
+D 0xB963 0xB995 columnas_B963  10 columnas de 5 bytes que p01:7BC4 copia de una en una a la tabla de nombres en RAM, un byte por fila; el puntero lo deja p03:AC4E en 0xE4E2
+F 0xB963 5
+D 0xB995 0xBA0B guion_B995  guion comprimido que lee descomprime (por el puente de ACB2); lo cargan p03:ACB2 (118 bytes)
+F 0xB995 16
+D 0xBA0B 0xBA1B ocho_guiones_al_azar  ocho punteros a guiones de pinta_guion_con_mascara; p01:7B72 elige uno con `ld a,r / and 7` (p01:7B7F)
+F 0xBA0B 2
+D 0xBA1B 0xBA28 tira_BA1B  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (uno de ocho elegidos con el registro R) que lee pinta_guion_con_mascara; lo cargan p01:7B7F por 0xBA0B[0] (13 bytes)
+F 0xBA1B 16
+D 0xBA28 0xBA39 tira_BA28  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (uno de ocho elegidos con el registro R) que lee pinta_guion_con_mascara; lo cargan p01:7B7F por 0xBA0B[1] (17 bytes)
+F 0xBA28 16
+D 0xBA39 0xBA47 tira_BA39  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (uno de ocho elegidos con el registro R) que lee pinta_guion_con_mascara; lo cargan p01:7B7F por 0xBA0B[2] (14 bytes)
+F 0xBA39 16
+D 0xBA47 0xBA57 tira_BA47  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (uno de ocho elegidos con el registro R) que lee pinta_guion_con_mascara; lo cargan p01:7B7F por 0xBA0B[3] (16 bytes)
+F 0xBA47 16
+D 0xBA57 0xBA6C tira_BA57  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (uno de ocho elegidos con el registro R) que lee pinta_guion_con_mascara; lo cargan p01:7B7F por 0xBA0B[4] (21 bytes)
+F 0xBA57 16
+D 0xBA6C 0xBA7D tira_BA6C  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (uno de ocho elegidos con el registro R) que lee pinta_guion_con_mascara; lo cargan p01:7B7F por 0xBA0B[5] (17 bytes)
+F 0xBA6C 16
+D 0xBA7D 0xBA8B tira_BA7D  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (uno de ocho elegidos con el registro R) que lee pinta_guion_con_mascara; lo cargan p01:7B7F por 0xBA0B[6] (14 bytes)
+F 0xBA7D 16
+D 0xBA8B 0xBA9E tira_BA8B  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (uno de ocho elegidos con el registro R) que lee pinta_guion_con_mascara; lo cargan p01:7B7F por 0xBA0B[7] (19 bytes)
+F 0xBA8B 16
+D 0xBA9E 0xBAB2 sprites_de_la_presentacion  cinco atributos de sprite (Y, X, patron, color) que p00:5C88 copia con ldir a 0xEE80 al montar el rotulo de la presentacion
+F 0xBA9E 4
+D 0xBAB2 0xBC99 guion_BAB2  guion comprimido que lee pinta_sin_color; lo cargan p00:5C82 (487 bytes)
+F 0xBAB2 16
+D 0xBC99 0xBCB9 ocho_sprites_BC99  ocho atributos de sprite que p01:7DC7 copia con ldir a 0xEEE0, los sprites 24 a 31
+F 0xBC99 4
+D 0xBCB9 0xBCD9 ocho_sprites_BCB9  los otros ocho que p01:7DE9 copia al mismo sitio, 0xEEE0
+F 0xBCB9 4
+D 0xBCD9 0xC000 relleno_del_banco_13  807 bytes a 0xFF hasta el final de los 8 KB del banco: espacio libre
+F 0xBCD9 16
+# --- fin de los bloques de bloques.py ---

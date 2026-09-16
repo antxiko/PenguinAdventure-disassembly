@@ -413,11 +413,18 @@ class TrazadorDeBancos:
                                    for j in range(len(sombra)))
 
                 # --- flujo
+                # `llamadas` guarda tambien los saltos: un puente que acaba en
+                # `jp pinta` le pasa el guion igual que uno que hace `call`, y
+                # tools/bloques.py necesita los dos.
                 if op == 0xC3:                                   # jp nn
-                    self._ir(self.word(pc + 1, s), s, sombra, pila, b, pc, "jp")
+                    t = self.word(pc + 1, s)
+                    self.llamadas.append((t, b, pc, s, hl, de))
+                    self._ir(t, s, sombra, pila, b, pc, "jp")
                     para = True
                 elif op in JP_CC:
-                    self._ir(self.word(pc + 1, s), s, sombra, pila, b, pc, "jp cc")
+                    t = self.word(pc + 1, s)
+                    self.llamadas.append((t, b, pc, s, hl, de))
+                    self._ir(t, s, sombra, pila, b, pc, "jp cc")
                 elif op == 0xCD:                                 # call nn
                     t = self.word(pc + 1, s)
                     self.llamadas.append((t, b, pc, s, hl, de))
@@ -426,14 +433,18 @@ class TrazadorDeBancos:
                         self._despacha(b, pc, nxt, s, sombra, pila)
                         para = True
                 elif op in CALL_CC:
-                    self._ir(self.word(pc + 1, s), s, sombra, pila, b, pc, "call cc")
+                    t = self.word(pc + 1, s)
+                    self.llamadas.append((t, b, pc, s, hl, de))
+                    self._ir(t, s, sombra, pila, b, pc, "call cc")
                 elif op == 0x18:                                 # jr e
-                    self._ir(nxt + self._s8(self.byte(pc + 1, s)), s, sombra,
-                             pila, b, pc, "jr")
+                    t = nxt + self._s8(self.byte(pc + 1, s))
+                    self.llamadas.append((t, b, pc, s, hl, de))
+                    self._ir(t, s, sombra, pila, b, pc, "jr")
                     para = True
                 elif op in JR_CC or op == 0x10:
-                    self._ir(nxt + self._s8(self.byte(pc + 1, s)), s, sombra,
-                             pila, b, pc, "jr cc")
+                    t = nxt + self._s8(self.byte(pc + 1, s))
+                    self.llamadas.append((t, b, pc, s, hl, de))
+                    self._ir(t, s, sombra, pila, b, pc, "jr cc")
                 elif op == 0xC9:
                     para = True
                 elif op == 0xE9:

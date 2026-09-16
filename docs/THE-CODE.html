@@ -1,0 +1,125 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The code — Penguin Adventure (Konami, 1986)</title>
+<style>
+:root{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;--linea:#23262e;
+  --rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+@media (prefers-color-scheme:light){:root{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;
+  --panel:#f7f6f2;--linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}}
+:root[data-theme="dark"]{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;
+  --linea:#23262e;--rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+:root[data-theme="light"]{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;--panel:#f7f6f2;
+  --linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--tinta);padding:0 1.25rem 6rem;
+  font:15px/1.7 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.w{max-width:1120px;margin:0 auto}
+.n{max-width:68ch}
+h1,h2,h3,h4{font-weight:400;text-wrap:balance}
+a{color:var(--cyan)}
+img{image-rendering:pixelated;max-width:100%;height:auto;display:block}
+header.top{display:flex;flex-direction:column;align-items:center;gap:1.5rem;
+  padding:4rem 0 2rem;text-align:center}
+header.top img{width:min(100%,642px)}
+.claim{max-width:60ch;color:var(--suave);font-size:1.05rem}
+.claim b{color:var(--tinta);font-weight:400}
+.ficha{display:flex;flex-wrap:wrap;justify-content:center;gap:0 1.5rem;width:100%;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);
+  border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);padding:.85rem 0}
+.ficha b{color:var(--rojo);font-weight:400}
+nav{display:flex;flex-wrap:wrap;gap:1.25rem;justify-content:center;padding:1.25rem 0;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+nav a{color:var(--suave);text-decoration:none;border-bottom:1px solid transparent}
+nav a:hover,nav a:focus{color:var(--tinta);border-bottom-color:var(--rojo)}
+nav.docs{border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);
+  margin-bottom:1rem}
+section{margin-top:4.5rem;scroll-margin-top:1rem}
+section>h2{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;
+  border-left:3px solid var(--rojo);padding-left:.9rem;margin:0 0 1.5rem}
+.cifras{display:grid;gap:1px;background:var(--linea);border:1px solid var(--linea);
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.cifra{background:var(--panel);padding:1.1rem}
+.cifra b{display:block;font-size:1.7rem;color:var(--oro);font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.cifra span{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--suave)}
+.hall{border-top:1px solid var(--linea);padding-top:1.75rem;margin-top:2.5rem}
+.hall:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.hall h3{margin:0 0 .75rem;font-size:1.15rem;color:var(--rojo)}
+.hall h4{color:var(--oro);margin:1.5rem 0 .5rem;font-size:.95rem}
+.hall p{margin:0 0 1rem}
+pre.asm{background:var(--panel);border-left:2px solid var(--verde);margin:1.25rem 0;
+  padding:1rem 1.1rem;overflow-x:auto;font-size:13px;line-height:1.6;color:var(--tinta)}
+.par{display:grid;gap:1.25rem;grid-template-columns:1fr}
+@media(min-width:820px){.par{grid-template-columns:1fr 1fr}}
+.par figure{margin:0}
+table{border-collapse:collapse;width:100%;margin:1.25rem 0;font-size:13px;display:block;
+  overflow-x:auto}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--linea)}
+th{color:var(--suave);font-weight:400;font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+td.num{font-variant-numeric:tabular-nums;color:var(--oro)}
+.nivel{margin-top:2rem}
+.nivel h3{margin:0 0 .9rem;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase}
+.nivel em{color:var(--cyan);font-style:normal}
+.sep{color:var(--suave);margin:0 .6rem}
+.rejilla{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.rejilla figure{margin:0;background:var(--panel);box-shadow:0 0 0 1px var(--linea)}
+.rejilla figcaption{display:flex;justify-content:space-between;padding:.45rem .65rem;
+  font-size:11px;color:var(--suave);border-top:1px solid var(--linea)}
+.dir{font-variant-numeric:tabular-nums;color:var(--verde)}
+footer{margin-top:5rem;padding-top:1.5rem;border-top:1px solid var(--linea);
+  color:var(--suave);font-size:12px}
+
+/* Aviso de trabajo en curso: tiene que verse antes que las cifras, porque un
+   100% mal leido hace mas dano que no ponerlo. */
+.aviso{background:#3a2a10;border-left:3px solid var(--oro);margin:1.5rem auto;
+  padding:1rem 1.2rem;max-width:900px;border-radius:4px}
+.aviso p{margin:0;color:var(--tinta);font-size:15px;line-height:1.65}
+.galeria{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;margin:1.5rem 0}
+.galeria figure{margin:0}
+.galeria img{width:100%;height:auto;image-rendering:pixelated;
+  border:1px solid var(--linea);border-radius:3px}
+.galeria figcaption{color:var(--suave);font-size:13px;margin-top:.5rem}
+audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
+</style>
+<div class="w"><nav class="top"><a href="index.html">Home</a><a href="GETTING-STARTED.html">Start</a><a href="THE-GAME.html">The game</a><a href="THE-CARTRIDGE.html">The cartridge</a><a href="THE-CODE.html" style=color:var(--tinta)>The code</a><a href="FINDINGS.html">Findings</a><a href="IN-THE-EMULATOR.html">In the emulator</a><a href="OPEN-QUESTIONS.html">Open questions</a><a href="es/EL-CODIGO.html" style="margin-left:auto;color:var(--oro)">Castellano</a></nav>
+<h1 id="the-code">The code</h1>
+<h2 id="the-state-machine">The state machine</h2>
+<p>Sixteen states and, inside each one, as many substates as needed. The trick is the <code>ld bc,(0xE000)</code> at p02:800F: one instruction loads both —the state in C and the substate in B— and then the house dispatcher jumps on C while each state walks B down with <code>djnz</code> until it reaches the substate due. Leaving a substate is as short as <code>inc (hl)</code> on 0xE001.</p>
+<p>And a detail at p02:800B: in states 0, 1 and 2 the address 0x8A55 is pushed onto the <b>stack</b> before dispatching, so that when the state does <code>ret</code> it does not go back to its caller but there. It is a way of chaining without spending a call.</p>
+<p>The attract cycle is 0 → 1 → 2 → 0. State 3 —the title screen with PUSH SPACE KEY— is only entered by pressing something.</p>
+<h2 id="the-house-dispatcher">The house dispatcher</h2>
+<p><code>call despacha</code> (p00:4060) with the index in A, and <b>the pointers sit glued right behind the call itself</b>: the routine pops the return address off the stack, uses it as the base of the table and jumps. It spends no register passing the table around, which is why in the listing the <code>defw</code>s appear immediately after the <code>call</code>.</p>
+<h2 id="the-three-script-formats">The three script formats</h2>
+<p>The cartridge does not have one decompressor: it has three ways of emitting bytes, and all three are run in Python by <code>tools/graficos.py</code> to draw the images on this site.</p>
+<p><b>The compressed one</b> (p00:418C to RAM, p00:4386 to VRAM). A destination word and then orders:</p>
+<table><tr><th>byte</th><th>what it does</th></tr><tr><td><code>0x00</code></td><td>done</td></tr><tr><td>bare <code>0x80</code></td><td>another destination word follows</td></tr><tr><td>bit 7 set</td><td>the low seven are how many bytes go through as they are</td></tr><tr><td>bit 7 clear</td><td>the low seven are how many times the next byte repeats</td></tr></table>
+<p>Each byte also goes through p00:43F9, which is where it gets mirrored —a mirrored character is the same byte read backwards, p00:4402— or has its colours swapped in pairs (p00:440D).</p>
+<p><b>The masked one</b> (p00:42BC and p00:42BE). No compression at all: a destination word, <code>0xFF</code> ends it, <code>0xFE</code> opens another run and everything else is a byte as it is. The interesting part is the <code>and c</code> at p00:42C9: with the mask at zero what gets written is zeros, so <b>the same script both paints a caption and erases it</b>. That is what the shop does when it closes.</p>
+<p><b>The block one</b> (p00:43B3). Uncompressed bytes sixteen at a time, and bit 0 of H rules: if it is set, each column is painted <b>twice</b>, the second one mirrored. That is why the ROM holds half a figure and not the whole one.</p>
+<h2 id="the-objects-and-the-three-coordinates">The objects, and the three coordinates</h2>
+<p>There are three sets of slots, and the first one explains how the game is built.</p>
+<p><b>0xE310: three slots of 0x20 bytes.</b> Each object has <b>three</b> coordinates, not two, each with its own 16-bit speed:</p>
+<pre><code>+0x00  what class of object; a zero means a free slot
++0x02  the screen column        +0x03  the row
++0x06  X, 16 bits               +0x0C  its speed
++0x08  Y, 16 bits               +0x0E  its speed
++0x0A  Z -the DEPTH-            +0x10  its speed
++0x12  whether it moves by itself</code></pre>
+<p>The Z is what makes things come towards you: p09:A966 works out the screen column by <b>subtracting the depth from the X</b> and keeping the high byte, and that is what gives the perspective. And p09:AA18 picks one of four drawings from the high byte of the X: the same creature from larger to smaller.</p>
+<p><b>0xE370: three slots of 0x10 bytes</b>, with two coordinates and their speeds.</p>
+<p><b>0xE3A0: three slots of 0x10 bytes</b> for what flies through the air. Each one carries <b>two sprites</b>, not one: row, column, drawing and colour for the first, and row, column and drawing for the second, which inherits its colour. That is the house way of painting a two-coloured figure on an MSX1, where a sprite has one colour.</p>
+<h2 id="what-you-control">What you control</h2>
+<p>Four sprites in a two-by-two block, placed by p03:A8DB from (0xE204, 0xE205) —row and column— and the pose set by p03:A8F5 from the table at 0xA91D: thirteen poses of eight bytes, four (pattern, colour) pairs each.</p>
+<p>The <b>state</b> of what you control is 0xE203, and it is not an animation counter: it is what nearly everything hangs off. States 3, 4, 8 and 10 are the ones where nothing collides; p02:9751 sets it to 1 or 2 on a jump, p03:B33B to 15, and p02:925D to 0x15 or 0x16 on losing. p00:42FB only consults it to decide where to split the sprite table on upload: in state 4 it moves sprites 4 and 5 to the front, and in 16 the eight at 0xEEE0, which on a VDP that paints only four per line is giving them priority.</p>
+<h2 id="the-screen-mirror">The screen mirror</h2>
+<p>The RAM from 0xEBA0 to 0xEEFF is an exact copy of the VRAM from 0x3820 to 0x3B7F, 0x4C80 apart: 0xEBA0 is row 1, 0xEBE0 row 3 —where the play area starts— and 0xEE80 the sprite attribute table. The screen is built in RAM and pushed in one go with <code>outi</code>, which is the only way to fill the VRAM at frame rate.</p>
+<p>And mind the loop count at p00:4270: <code>ld b,d</code> comes in with 0x40, but each turn drops B <b>twice</b> —once the <code>outi</code>, which is &quot;output and decrement&quot;, and once the <code>djnz</code>— so it moves 32 bytes per turn and not 64. And 32 is exactly one row.</p>
+<h2 id="real-trigonometry">Real trigonometry</h2>
+<p>The curves are written in the ROM and read back: a 24-step circle and a 32-step parabola. But to <b>aim</b> at the player, bank 9 computes:</p>
+<ul><li>p09:ACE3 divides 16 by 8 bits by subtract-and-shift, because the Z80 has no <code>div</code>;</li><li>p09:ACF8 does two divisions in a row to get the tangent with whole part and fraction;</li><li>p09:ACBA looks that tangent up in the table of <b>eight</b> at 0xADB8 —0x04F6, 0x0266, 0x017D, 0x00FF, 0x00AA, 0x0069, 0x0032 and 0—, which are the tangents of 78.75°, 67.5°, 56.25°, 45°, 33.75°, 22.5°, 11.25° and 0°. That is an <b>arctangent</b>.</li></ul>
+<p>The angle comes out in the house&#x27;s 256 units of a circle, and p09:AD27 breaks it back into its two components by reading the 65-entry curve at 0xAD77 twice, at B and at 0x40 − B.</p>
+<h2 id="randomness">Randomness</h2>
+<p>There is no generator. The randomness comes from the <b>Z80&#x27;s R register</b>, the memory refresh counter, which goes up by one for every instruction the CPU fetches. p00:5630 uses it to pick one of four backgrounds, p09:AADA for a creature&#x27;s side and shove, and p01:79A1 for the gambling machine&#x27;s reels.</p>
+<p>It is cheap and it is not random: R is a counter, and two reads separated by a fixed piece of code differ by a <b>fixed</b> amount.</p>
+<footer><p><em>Penguin Adventure / Yume Tairiku Adventure</em> was published by Konami for the MSX in 1986; its catalogue number is RC-743 and it is 128 KB. All rights in the game remain with their holders. This is preservation, study and documentation work, and the cartridge image is not distributed.</p></footer></div>

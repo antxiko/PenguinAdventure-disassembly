@@ -101,12 +101,12 @@ C 0x4079 a 0x8000
 C 0x407E el 3
 C 0x407F a 0xA000, y con esto los 24 KB de 0x6000 a 0xBFFF quedan puestos
 C 0x4086 BIOS RSLREG: el registro de ranuras primarias
-C 0x4089 se queda con los dos bits de la pagina 3, que es donde hay RAM seguro
+C 0x4089 dos rotaciones: los bits 2 y 3 del registro, que son los de la PAGINA 1
 C 0x408E la tabla de expansion de ranuras de la BIOS
 C 0x4094 el bit 7 dice si esa ranura primaria esta expandida
-C 0x409C y los dos bits de la subranura de la pagina 3
+C 0x409C y los dos bits de la subranura de la pagina 1
 C 0x40A0 H = 0x80: la pagina 2, que es la que se va a conectar
-C 0x40A2 BIOS ENASLT: mete en la pagina 2 la misma ranura donde esta la RAM
+C 0x40A2 BIOS ENASLT: mete en la pagina 2 la ranura donde esta el CARTUCHO, y con eso ocupa de 0x4000 a 0xBFFF
 C 0x40A5 el 0xC3 de un `jp`
 C 0x40A7 en H.KEYI, el gancho que la BIOS ejecuta en cada interrupcion
 C 0x40AA y detras la direccion del manejador
@@ -221,7 +221,7 @@ C 0x41EB la tabla de patrones, en el banco 6
 C 0x41EE DE = 0xBD89 + 8*C
 C 0x41F1 0x3718: la ultima fila de la tabla de patrones
 C 0x41F7 y para alla van los ocho bytes
-C 0x41FB la tabla de colores, veinte bytes mas abajo
+C 0x41FB la tabla de colores, 0x20 bytes -treinta y dos- mas abajo: 0xBDA9
 C 0x4201 0x1718, que en este cartucho es zona de sprites
 C 0x420F y a devolver el trio 1-2-3
 C 0x4222 con las ranuras como estaban
@@ -356,10 +356,10 @@ C 0x42ED desde el primero
 C 0x42F0 los treinta y dos
 C 0x42F2 con la Y fuera de la pantalla
 L 0x42F4 esconde_todos_vuelta
-B 0x42FB SUBIR LOS SPRITES, ROTANDO CUAL VA PRIMERO. El VDP del MSX1 solo pinta cuatro sprites por linea y descarta los demas por orden de tabla, asi que el que este siempre el ultimo desaparece siempre. La solucion de la casa es no subir la tabla del tiron: se parte en trozos y se sube desplazada, de modo que el que hoy va el primero manana va el ultimo y el parpadeo se reparte. Cuanto se desplaza lo dice (0xE203).
+B 0x42FB SUBIR LOS SPRITES, CON DOS ESTADOS QUE SE SALTAN EL ORDEN. Lo normal es subir los 128 bytes de la tabla de un tiron. Pero mira el estado de lo que se maneja (0xE203) y hay dos en los que no: en el 4 adelanta los ocho bytes de 0xEE90 -los sprites 4 y 5- al principio de la tabla, y en el 16 se adelantan los ocho sprites de 0xEEE0 y detras va uno suelto de 0xEE98. El VDP del MSX1 solo pinta cuatro sprites por linea y descarta los siguientes POR ORDEN DE TABLA, asi que adelantar uno es darle prioridad para que no parpadee.
 L 0x42FB sube_los_sprites
-C 0x42FB por donde va la rotacion
-C 0x42FE en el 4 se reparte de otra manera
+C 0x42FB el ESTADO de lo que se maneja
+C 0x42FE en el 4, los sprites 4 y 5 van delante
 C 0x4302 la tabla de atributos, en la VRAM
 C 0x4305 y su copia en RAM
 C 0x4308 los 128 bytes de los treinta y dos sprites
@@ -368,8 +368,8 @@ C 0x430E los ocho primeros bytes salen de 0xEE90
 C 0x431A y detras van los de 0xEE80
 C 0x4326 y el resto sigue en orden
 L 0x4332 sube_los_sprites_desde_arriba
-C 0x4332 la misma rotacion, pero para la otra mitad de la tabla
-C 0x4335 en el 16 se reparte de otra manera
+C 0x4332 el mismo estado, pero esta version empieza la tabla por 0xEEE0
+C 0x4335 y en el 16 se parte en cuatro trozos
 C 0x4339 los 32 primeros bytes desde 0xEEE0
 C 0x4345 y los 96 de detras desde 0xEE80
 L 0x4351 sube_los_sprites_rotado_16
@@ -685,7 +685,7 @@ L 0x4786 reparte_siguiente
 C 0x4786 una ranura menos
 C 0x478A y a devolver el 2 y el 3
 
-B 0x479D DE QUE TAMANO ES LA FASE. Mete los bancos 12 y 13 solo para leer cuatro bytes: la tabla de 0xACBA lleva una entrada por fase, indexada por (0xE092), y de ella salen los doce bits que van a 0xE08B. La rutina es un ejemplo limpio de lo que hacen los bancos 12 y 13 en este cartucho: se mapean, se lee y se devuelven, sin ejecutar en ellos ni una instruccion.
+B 0x479D CUANTO TIEMPO DA LA FASE. Mete los bancos 12 y 13 solo para leer cuatro bytes: la tabla de 0xACBA lleva una entrada por fase, indexada por (0xE092), y de ella salen los doce bits del tiempo (0xE08B). La rutina es un ejemplo limpio de lo que hacen los bancos 12 y 13 en este cartucho: se mapean, se lee y se devuelven, sin ejecutar en ellos ni una instruccion.
 L 0x479D lee_los_datos_de_la_fase
 C 0x479E el banco 12
 C 0x47A8 y el 13
@@ -695,7 +695,7 @@ C 0x47B8 por cuatro, que es lo que mide cada entrada
 C 0x47BA la tabla, en el banco 13
 C 0x47BE el byte bajo
 C 0x47C0 y del siguiente solo el nibble de abajo: son DOCE bits
-C 0x47C4 y de ahi sale el largo de la fase
+C 0x47C4 y de ahi sale el TIEMPO de la fase
 C 0x47C9 el 2 y el 3, de vuelta
 C 0x47DC banco 1
 C 0x47DF y la ultima, tambien en el banco 1
@@ -2469,7 +2469,7 @@ C 0x5EF2 y en su copia de RAM
 C 0x5EF5 el mapa ya esta entero
 C 0x5EF6 sin interrupciones mientras cambia el mapa
 C 0x5EFC y en su copia de RAM
-C 0x5EFF el mapa ya esta entero1098 comentarios
+C 0x5EFF el mapa ya esta entero
 
 # --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
 # tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
@@ -2486,7 +2486,7 @@ C 0x4179 la segunda copia del banco de 0xA000, la del sonido
 C 0x417F la copia en RAM del banco de 0xA000
 C 0x452B la pausa que se hace al perder o al cambiar de fase
 C 0x470B por que pareja del guion de la fase va
-C 0x472E lo andado en la fase
+C 0x472E la distancia a la que toca el objeto siguiente
 C 0x4731 por que pareja del guion de la fase va
 C 0x473A la copia en RAM del banco de 0x8000
 C 0x4744 la copia en RAM del banco de 0xA000
@@ -2524,7 +2524,7 @@ C 0x5323 el DECORADO, de 0 a 9
 C 0x543D el DECORADO, de 0 a 9
 C 0x54B1 el DECORADO, de 0 a 9
 C 0x559C el DECORADO, de 0 a 9
-C 0x561C el largo de la fase
+C 0x561C el TIEMPO que queda
 C 0x5814 el DECORADO, de 0 a 9
 C 0x5845 el DECORADO, de 0 a 9
 C 0x587F el DECORADO, de 0 a 9
@@ -2535,3 +2535,101 @@ C 0x587F el DECORADO, de 0 a 9
 C 0x489A la bandera de PAUSA
 C 0x5E70 los avisos que deja el cuadro
 C 0x5EE9 los avisos que deja el cuadro
+
+# --- El ultimo hueco del banco (2026-09-15).
+D 0x422F 0x4232 llamada_huerfana  Los tres bytes CD ED 42, `call 0x42ED` (esconde_los_sprites), entre borra_la_pantalla_entera y borra_el_area_de_juego. Ningun salto ni llamada llega aqui
+F 0x422F 3
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x4A89 0x4A93 color_del_fondo_por_decorado  un byte por decorado (0xE0A1, de 0 a 9): el color con que p00:49BE llena los ocho primeros de la tabla de colores (FILVRM en 0x0008)
+F 0x4A89 1
+D 0x4A93 0x4AF7 tercio_arriba_por_decorado  diez entradas de 10 bytes, una por decorado (0xE0A1), para el tercio de arriba de la pantalla: guion de patrones, guion de patrones con espejo, destino de ese espejo, guion de colores y guion de colores con espejo, todos del trio 4-5-6. La carga p00:49CD y la recorre p00:4A24
+F 0x4A93 10
+D 0x4AF7 0x4B5B tercio_medio_por_decorado  diez entradas de 10 bytes, una por decorado (0xE0A1), para el tercio del medio de la pantalla: guion de patrones, guion de patrones con espejo, destino de ese espejo, guion de colores y guion de colores con espejo, todos del trio 4-5-6. La carga p00:4A21 y la recorre p00:4A24
+F 0x4AF7 10
+D 0x4B5B 0x4BBF tercio_abajo_por_decorado  diez entradas de 10 bytes, una por decorado (0xE0A1), para el tercio de abajo de la pantalla: guion de patrones, guion de patrones con espejo, destino de ese espejo, guion de colores y guion de colores con espejo, todos del trio 4-5-6. La carga p00:49F7 y la recorre p00:4A24
+F 0x4B5B 10
+D 0x565F 0x5667 cuatro_guiones_al_azar  cuatro punteros a guiones de pinta_sin_color del trio 7-8-9; p00:5630 elige uno con `ld a,r / rra / rra / and 3`, lo apunta en 0xE0E2 y lo pinta en p00:5642
+F 0x565F 2
+D 0x5F35 0x5F63 lineas_que_suben_5F35  punteros a las lineas del texto que sube: las 23 del tramo largo (0xE149, p00:5ED5). Cada una apunta a un byte de duracion y un guion de descomprime de los bancos 10/11
+F 0x5F35 2
+D 0x5F63 0x5F6D lineas_que_suben_5F63  punteros a las lineas del texto que sube: las 5 de un tramo corto (0xE147 si (0xE0B9) es cero, p00:5F1F). Cada una apunta a un byte de duracion y un guion de descomprime de los bancos 10/11
+F 0x5F63 2
+D 0x5F6D 0x5F77 lineas_que_suben_5F6D  punteros a las lineas del texto que sube: las 5 del otro tramo corto (p00:5F25). Cada una apunta a un byte de duracion y un guion de descomprime de los bancos 10/11
+F 0x5F6D 2
+D 0x5F99 0x5FA0 tira_5F99  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (nivel 0 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan p00:5F96 (7 bytes)
+F 0x5F99 16
+D 0x5FA0 0x5FA7 tira_5FA0  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (nivel 1 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan p00:5F96 (7 bytes)
+F 0x5FA0 16
+D 0x5FA7 0x5FAE tira_5FA7  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (nivel 2 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan p00:5F96 (7 bytes)
+F 0x5FA7 16
+D 0x5FAE 0x5FB5 tira_5FAE  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (nivel 3 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan p00:5F96 (7 bytes)
+F 0x5FAE 16
+D 0x5FB5 0x5FBC tira_5FB5  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (nivel 4 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan p00:5F96 (7 bytes)
+F 0x5FB5 16
+D 0x5FBC 0x5FC3 tira_5FBC  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (nivel 5 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan p00:5F96 (7 bytes)
+F 0x5FBC 16
+D 0x5FC3 0x5FCA tira_5FC3  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (nivel 6 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan p00:5F96 (7 bytes)
+F 0x5FC3 16
+D 0x5FCA 0x5FD1 tira_5FCA  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (nivel 7 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan p00:5F96 (7 bytes)
+F 0x5FCA 16
+D 0x5FD1 0x5FD8 tira_5FD1  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (nivel 8 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan p00:5F96 (7 bytes)
+F 0x5FD1 16
+D 0x5FD8 0x5FEE escalera_de_la_barra  22 desplazamientos (0x00 a 0x31, de siete en siete) sobre 0x5FA0: p00:5F8C los indexa con (0xE4C0) - 4 para elegir cual de los ocho guiones llenos pinta. Cada escalon dura mas que el anterior
+F 0x5FD8 11
+D 0x5FEE 0x6000 relleno_del_banco_0  18 bytes a 0xFF hasta el final del banco 0
+F 0x5FEE 16
+# --- fin de los bloques de bloques.py ---
+
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0x4688 en que tiempo va el bicho que vuela: 0 nada, 1 aparecer, 2 mover
+C 0x468E la columna del bicho que vuela
+C 0x4691 el paso del vaiven del que vuela, de 32
+C 0x4694 hacia que lado cruza el que vuela
+C 0x4697 cual de las cuatro cosas que se cogen esta puesta
+C 0x46A0 la fila de eso que se coge
+C 0x46A3 la columna de eso que se coge
+C 0x46AF la fila de ese otro objeto
+C 0x46B2 la columna de ese otro objeto
+C 0x5CB3 el hueco de sprite 7
+C 0x5CB8 el hueco de sprite 8
+C 0x5CEF el hueco de sprite 7
+C 0x5D18 el hueco de sprite 8
+C 0x5D2C el hueco de sprite 8
+C 0x5D5B el hueco de sprite 7
+C 0x5D5E el hueco de sprite 8
+C 0x5D78 el hueco de sprite 7
+C 0x5D88 el hueco de sprite 8
+
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0x5F7A el nivel de la barra de nueve
+
+B 0x5630 EL FONDO SALE AL AZAR. Otra vez el registro R -el de refresco, que va cambiando solo- y de ahi, dos rotaciones y dos bits: uno de los cuatro guiones de 0x565F, que se queda apuntado en 0xE0E2. Es el mismo truco de azar que usa el centelleo.
+L 0x5630 el_fondo_al_azar
+C 0x5630 el registro R: el azar de la casa
+C 0x5632 dos rotaciones...
+C 0x5634 ...y dos bits: uno de cuatro
+C 0x5636 apuntado
+C 0x5639 los cuatro guiones
+C 0x563F el que ha salido
+L 0x585B pinta_dos_bloques_de_0x79C7
+C 0x585B el guion de 0x79C7
+C 0x585E dos filas de bloque...
+C 0x5864 ...y una de una
+L 0x586D pinta_dos_bloques_de_0x7B34
+C 0x586D el guion de 0x7B34
+C 0x5870 ocho filas de bloque...
+C 0x5876 ...y tres de una
+L 0x5F01 prepara_el_texto_que_sube
+C 0x5F01 tres velocidades del texto
+C 0x5F10 el guion fijo de 0xBCF8
+C 0x5F13 banco 11: a descomprimirlo
+C 0x5F19 y por que linea va
+C 0x5F1C la tabla de lineas de 0x5F35
+L 0x42F4 esconde_todos_vuelta
+C 0x42F4 0xE0 en la fila del sprite
+C 0x42F5 y cuatro bytes hasta el siguiente

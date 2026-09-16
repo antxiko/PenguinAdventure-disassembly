@@ -1,2 +1,105 @@
 # Banco 04 (se ejecuta en 0x6000). Directivas: L etiqueta, C comentario de
 # linea, B cabecera de bloque, D rango de datos, F anchura de fila.
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x6000 0x6001 guion_6000  guion comprimido (patrones con espejo del tercio de arriba; patrones del tercio de arriba) que lee pinta; lo cargan tercio de arriba[0] (1 bytes)
+F 0x6000 16
+D 0x6001 0x6002 guion_6001  guion comprimido (colores con espejo del tercio de arriba; colores del tercio de arriba) que lee pinta; lo cargan tercio de arriba[0] (1 bytes)
+F 0x6001 16
+D 0x6002 0x61A7 guion_6002  guion comprimido (patrones con espejo del tercio del medio; patrones del tercio del medio) que lee pinta; se entra por 0x6002, 0x6059; lo cargan tercio del medio[0] (421 bytes)
+F 0x6002 16
+D 0x61A7 0x624B guion_61A7  guion comprimido (colores con espejo del tercio del medio; colores del tercio del medio) que lee pinta; se entra por 0x61A7, 0x61D2; lo cargan tercio del medio[0] (164 bytes)
+F 0x61A7 16
+D 0x624B 0x624E guion_624B  guion comprimido (patrones con espejo del tercio de abajo; patrones del tercio de abajo) que lee pinta; se entra por 0x624B, 0x624D; lo cargan tercio de abajo[0] (3 bytes)
+F 0x624B 16
+D 0x624E 0x6251 guion_624E  guion comprimido (colores con espejo del tercio de abajo; colores del tercio de abajo) que lee pinta; se entra por 0x624E, 0x6250; lo cargan tercio de abajo[0] (3 bytes)
+F 0x624E 16
+D 0x6251 0x636E guion_6251  guion comprimido (patrones con espejo del tercio de arriba; patrones del tercio de arriba) que lee pinta; se entra por 0x6251, 0x625E; lo cargan tercio de arriba[1], tercio de arriba[3] (285 bytes)
+F 0x6251 16
+D 0x636E 0x637F guion_636E  guion comprimido (colores con espejo del tercio de arriba; colores del tercio de arriba) que lee pinta; se entra por 0x636E, 0x6370; lo cargan tercio de arriba[1] (17 bytes)
+F 0x636E 16
+D 0x637F 0x657D guion_637F  guion comprimido (patrones con espejo del tercio del medio; patrones del tercio del medio) que lee pinta; se entra por 0x637F, 0x6398; lo cargan tercio del medio[1], tercio del medio[3] (510 bytes)
+F 0x637F 16
+D 0x657D 0x65CE guion_657D  guion comprimido (colores con espejo del tercio del medio; colores del tercio del medio) que lee pinta; se entra por 0x657D, 0x6585; lo cargan tercio del medio[1] (81 bytes)
+F 0x657D 16
+D 0x65CE 0x661F guion_65CE  guion comprimido (patrones con espejo del tercio de abajo; patrones del tercio de abajo) que lee pinta; se entra por 0x65CE, 0x65D0; lo cargan tercio de abajo[1], tercio de abajo[3] (81 bytes)
+F 0x65CE 16
+D 0x661F 0x6624 guion_661F  guion comprimido (colores con espejo del tercio de abajo; colores del tercio de abajo) que lee pinta; se entra por 0x661F, 0x6621; lo cargan tercio de abajo[1] (5 bytes)
+F 0x661F 16
+D 0x6624 0x6625 guion_6624  guion comprimido (patrones con espejo del tercio de arriba; patrones del tercio de arriba) que lee pinta; lo cargan tercio de arriba[2] (1 bytes)
+F 0x6624 16
+D 0x6625 0x6626 guion_6625  guion comprimido (colores con espejo del tercio de arriba; colores del tercio de arriba) que lee pinta; lo cargan tercio de arriba[2] (1 bytes)
+F 0x6625 16
+D 0x6626 0x681F guion_6626  guion comprimido (patrones con espejo del tercio del medio; patrones del tercio del medio) que lee pinta; se entra por 0x6626, 0x6653; lo cargan tercio del medio[2] (505 bytes)
+F 0x6626 16
+D 0x681F 0x6913 guion_681F  guion comprimido (colores con espejo del tercio del medio; colores del tercio del medio) que lee pinta; se entra por 0x681F, 0x6835; lo cargan tercio del medio[2] (244 bytes)
+F 0x681F 16
+D 0x6913 0x696E guion_6913  guion comprimido (patrones con espejo del tercio de abajo; patrones del tercio de abajo) que lee pinta; se entra por 0x6913, 0x6915; lo cargan tercio de abajo[2] (91 bytes)
+F 0x6913 16
+D 0x696E 0x698F guion_696E  guion comprimido (colores con espejo del tercio de abajo; colores del tercio de abajo) que lee pinta; se entra por 0x696E, 0x6970; lo cargan tercio de abajo[2] (33 bytes)
+F 0x696E 16
+D 0x698F 0x69A0 guion_698F  guion comprimido (colores con espejo del tercio de arriba; colores del tercio de arriba) que lee pinta; se entra por 0x698F, 0x6991; lo cargan tercio de arriba[3] (17 bytes)
+F 0x698F 16
+D 0x69A0 0x6A29 guion_69A0  guion comprimido (colores con espejo del tercio del medio; colores del tercio del medio) que lee pinta; se entra por 0x69A0, 0x69AC; lo cargan tercio del medio[3] (137 bytes)
+F 0x69A0 16
+D 0x6A29 0x6A2E guion_6A29  guion comprimido (colores con espejo del tercio de abajo; colores del tercio de abajo) que lee pinta; se entra por 0x6A29, 0x6A2B; lo cargan tercio de abajo[3] (5 bytes)
+F 0x6A29 16
+D 0x6A2E 0x6A2F guion_6A2E  guion comprimido (patrones con espejo del tercio de arriba; patrones del tercio de arriba) que lee pinta; lo cargan tercio de arriba[4] (1 bytes)
+F 0x6A2E 16
+D 0x6A2F 0x6A30 guion_6A2F  guion comprimido (colores con espejo del tercio de arriba; colores del tercio de arriba) que lee pinta; lo cargan tercio de arriba[4] (1 bytes)
+F 0x6A2F 16
+D 0x6A30 0x6CB4 guion_6A30  guion comprimido (patrones con espejo del tercio del medio; patrones del tercio del medio) que lee pinta; se entra por 0x6A30, 0x6A8F; lo cargan tercio del medio[4] (644 bytes)
+F 0x6A30 16
+D 0x6CB4 0x6E12 guion_6CB4  guion comprimido (colores con espejo del tercio del medio; colores del tercio del medio) que lee pinta; se entra por 0x6CB4, 0x6CE3; lo cargan tercio del medio[4] (350 bytes)
+F 0x6CB4 16
+D 0x6E12 0x6E1E guion_6E12  guion comprimido (patrones con espejo del tercio de abajo; patrones del tercio de abajo) que lee pinta; se entra por 0x6E12, 0x6E14; lo cargan tercio de abajo[4] (12 bytes)
+F 0x6E12 16
+D 0x6E1E 0x6E23 guion_6E1E  guion comprimido (colores con espejo del tercio de abajo; colores del tercio de abajo) que lee pinta; se entra por 0x6E1E, 0x6E20; lo cargan tercio de abajo[4] (5 bytes)
+F 0x6E1E 16
+D 0x6E23 0x6F7E guion_6E23  guion comprimido (patrones con espejo del tercio de arriba; patrones del tercio de arriba) que lee pinta; se entra por 0x6E23, 0x6E84; lo cargan tercio de arriba[5] (347 bytes)
+F 0x6E23 16
+D 0x6F7E 0x6FA1 guion_6F7E  guion comprimido (colores con espejo del tercio de arriba; colores del tercio de arriba) que lee pinta; se entra por 0x6F7E, 0x6F8C; lo cargan tercio de arriba[5] (35 bytes)
+F 0x6F7E 16
+D 0x6FA1 0x71F5 guion_6FA1  guion comprimido (patrones con espejo del tercio del medio; patrones del tercio del medio) que lee pinta; se entra por 0x6FA1, 0x6FD0; lo cargan tercio del medio[5] (596 bytes)
+F 0x6FA1 16
+D 0x71F5 0x72FE guion_71F5  guion comprimido (colores con espejo del tercio del medio; colores del tercio del medio) que lee pinta; se entra por 0x71F5, 0x7209; lo cargan tercio del medio[5] (265 bytes)
+F 0x71F5 16
+D 0x72FE 0x733C guion_72FE  guion comprimido (patrones con espejo del tercio de abajo; patrones del tercio de abajo) que lee pinta; se entra por 0x72FE, 0x7300; lo cargan tercio de abajo[5] (62 bytes)
+F 0x72FE 16
+D 0x733C 0x7360 guion_733C  guion comprimido (colores con espejo del tercio de abajo; colores del tercio de abajo) que lee pinta; se entra por 0x733C, 0x733E; lo cargan tercio de abajo[5] (36 bytes)
+F 0x733C 16
+D 0x7360 0x74F0 guion_7360  guion comprimido (patrones con espejo del tercio de arriba; patrones del tercio de arriba) que lee pinta; se entra por 0x7360, 0x7396; lo cargan tercio de arriba[6], tercio de arriba[9] (400 bytes)
+F 0x7360 16
+D 0x74F0 0x758A guion_74F0  guion comprimido (colores con espejo del tercio de arriba; colores del tercio de arriba) que lee pinta; se entra por 0x74F0, 0x750D; lo cargan tercio de arriba[6] (154 bytes)
+F 0x74F0 16
+D 0x758A 0x77CC guion_758A  guion comprimido (patrones con espejo del tercio del medio; patrones del tercio del medio) que lee pinta; se entra por 0x758A, 0x75A3; lo cargan tercio del medio[6], tercio del medio[9] (578 bytes)
+F 0x758A 16
+D 0x77CC 0x7842 guion_77CC  guion comprimido (colores con espejo del tercio del medio; colores del tercio del medio) que lee pinta; se entra por 0x77CC, 0x77D0; lo cargan tercio del medio[6] (118 bytes)
+F 0x77CC 16
+D 0x7842 0x78EE guion_7842  guion comprimido (patrones con espejo del tercio de abajo; patrones del tercio de abajo) que lee pinta; se entra por 0x7842, 0x7848; lo cargan tercio de abajo[6], tercio de abajo[9] (172 bytes)
+F 0x7842 16
+D 0x78EE 0x791C guion_78EE  guion comprimido (colores con espejo del tercio de abajo; colores del tercio de abajo) que lee pinta; se entra por 0x78EE, 0x78F0; lo cargan tercio de abajo[6] (46 bytes)
+F 0x78EE 16
+D 0x791C 0x7C0C guion_791C  guion comprimido (patrones con espejo del tercio de arriba; patrones del tercio de arriba) que lee pinta; se entra por 0x791C, 0x7C0B; lo cargan tercio de arriba[7] (752 bytes)
+F 0x791C 16
+D 0x7C0C 0x7C1B guion_7C0C  guion comprimido (colores con espejo del tercio de arriba; colores del tercio de arriba) que lee pinta; se entra por 0x7C0C, 0x7C1A; lo cargan tercio de arriba[7] (15 bytes)
+F 0x7C0C 16
+D 0x7C1B 0x7E09 guion_7C1B  guion comprimido (patrones con espejo del tercio del medio; patrones del tercio del medio) que lee pinta; se entra por 0x7C1B, 0x7C35; lo cargan tercio del medio[7] (494 bytes)
+F 0x7C1B 16
+D 0x7E09 0x7E91 guion_7E09  guion comprimido (colores con espejo del tercio del medio; colores del tercio del medio) que lee pinta; se entra por 0x7E09, 0x7E11; lo cargan tercio del medio[7] (136 bytes)
+F 0x7E09 16
+D 0x7E91 0x7F1E guion_7E91  guion comprimido (patrones con espejo del tercio de abajo; patrones del tercio de abajo) que lee pinta; se entra por 0x7E91, 0x7E93; lo cargan tercio de abajo[7] (141 bytes)
+F 0x7E91 16
+D 0x7F1E 0x7F25 guion_7F1E  guion comprimido (colores con espejo del tercio de abajo; colores del tercio de abajo) que lee pinta; se entra por 0x7F1E, 0x7F20; lo cargan tercio de abajo[7] (7 bytes)
+F 0x7F1E 16
+D 0x7F25 0x7F26 guion_7F25  guion comprimido (patrones con espejo del tercio de arriba; patrones del tercio de arriba) que lee pinta; lo cargan tercio de arriba[8] (1 bytes)
+F 0x7F25 16
+D 0x7F26 0x7F27 guion_7F26  guion comprimido (colores con espejo del tercio de arriba; colores del tercio de arriba) que lee pinta; lo cargan tercio de arriba[8] (1 bytes)
+F 0x7F26 16
+D 0x7F27 0x7F2A guion_7F27  guion comprimido (patrones con espejo del tercio del medio; patrones del tercio del medio) que lee pinta; se entra por 0x7F27, 0x7F29; lo cargan tercio del medio[8] (3 bytes)
+F 0x7F27 16
+D 0x7F2A 0x7F2D guion_7F2A  guion comprimido (colores con espejo del tercio del medio; colores del tercio del medio) que lee pinta; se entra por 0x7F2A, 0x7F2C; lo cargan tercio del medio[8] (3 bytes)
+F 0x7F2A 16
+D 0x7F2D 0x8000 guion_7F2D  guion comprimido (patrones del tercio de abajo) que lee pinta; lo cargan tercio de abajo[8]; sigue en el banco 5, en la ranura de al lado (211 bytes)
+F 0x7F2D 16
+# --- fin de los bloques de bloques.py ---

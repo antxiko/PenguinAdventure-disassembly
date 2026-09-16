@@ -1,0 +1,126 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hallazgos — Penguin Adventure (Konami, 1986)</title>
+<style>
+:root{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;--linea:#23262e;
+  --rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+@media (prefers-color-scheme:light){:root{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;
+  --panel:#f7f6f2;--linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}}
+:root[data-theme="dark"]{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;
+  --linea:#23262e;--rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+:root[data-theme="light"]{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;--panel:#f7f6f2;
+  --linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--tinta);padding:0 1.25rem 6rem;
+  font:15px/1.7 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.w{max-width:1120px;margin:0 auto}
+.n{max-width:68ch}
+h1,h2,h3,h4{font-weight:400;text-wrap:balance}
+a{color:var(--cyan)}
+img{image-rendering:pixelated;max-width:100%;height:auto;display:block}
+header.top{display:flex;flex-direction:column;align-items:center;gap:1.5rem;
+  padding:4rem 0 2rem;text-align:center}
+header.top img{width:min(100%,642px)}
+.claim{max-width:60ch;color:var(--suave);font-size:1.05rem}
+.claim b{color:var(--tinta);font-weight:400}
+.ficha{display:flex;flex-wrap:wrap;justify-content:center;gap:0 1.5rem;width:100%;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);
+  border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);padding:.85rem 0}
+.ficha b{color:var(--rojo);font-weight:400}
+nav{display:flex;flex-wrap:wrap;gap:1.25rem;justify-content:center;padding:1.25rem 0;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+nav a{color:var(--suave);text-decoration:none;border-bottom:1px solid transparent}
+nav a:hover,nav a:focus{color:var(--tinta);border-bottom-color:var(--rojo)}
+nav.docs{border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);
+  margin-bottom:1rem}
+section{margin-top:4.5rem;scroll-margin-top:1rem}
+section>h2{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;
+  border-left:3px solid var(--rojo);padding-left:.9rem;margin:0 0 1.5rem}
+.cifras{display:grid;gap:1px;background:var(--linea);border:1px solid var(--linea);
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.cifra{background:var(--panel);padding:1.1rem}
+.cifra b{display:block;font-size:1.7rem;color:var(--oro);font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.cifra span{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--suave)}
+.hall{border-top:1px solid var(--linea);padding-top:1.75rem;margin-top:2.5rem}
+.hall:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.hall h3{margin:0 0 .75rem;font-size:1.15rem;color:var(--rojo)}
+.hall h4{color:var(--oro);margin:1.5rem 0 .5rem;font-size:.95rem}
+.hall p{margin:0 0 1rem}
+pre.asm{background:var(--panel);border-left:2px solid var(--verde);margin:1.25rem 0;
+  padding:1rem 1.1rem;overflow-x:auto;font-size:13px;line-height:1.6;color:var(--tinta)}
+.par{display:grid;gap:1.25rem;grid-template-columns:1fr}
+@media(min-width:820px){.par{grid-template-columns:1fr 1fr}}
+.par figure{margin:0}
+table{border-collapse:collapse;width:100%;margin:1.25rem 0;font-size:13px;display:block;
+  overflow-x:auto}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--linea)}
+th{color:var(--suave);font-weight:400;font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+td.num{font-variant-numeric:tabular-nums;color:var(--oro)}
+.nivel{margin-top:2rem}
+.nivel h3{margin:0 0 .9rem;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase}
+.nivel em{color:var(--cyan);font-style:normal}
+.sep{color:var(--suave);margin:0 .6rem}
+.rejilla{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.rejilla figure{margin:0;background:var(--panel);box-shadow:0 0 0 1px var(--linea)}
+.rejilla figcaption{display:flex;justify-content:space-between;padding:.45rem .65rem;
+  font-size:11px;color:var(--suave);border-top:1px solid var(--linea)}
+.dir{font-variant-numeric:tabular-nums;color:var(--verde)}
+footer{margin-top:5rem;padding-top:1.5rem;border-top:1px solid var(--linea);
+  color:var(--suave);font-size:12px}
+
+/* Aviso de trabajo en curso: tiene que verse antes que las cifras, porque un
+   100% mal leido hace mas dano que no ponerlo. */
+.aviso{background:#3a2a10;border-left:3px solid var(--oro);margin:1.5rem auto;
+  padding:1rem 1.2rem;max-width:900px;border-radius:4px}
+.aviso p{margin:0;color:var(--tinta);font-size:15px;line-height:1.65}
+.galeria{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;margin:1.5rem 0}
+.galeria figure{margin:0}
+.galeria img{width:100%;height:auto;image-rendering:pixelated;
+  border:1px solid var(--linea);border-radius:3px}
+.galeria figcaption{color:var(--suave);font-size:13px;margin-top:.5rem}
+audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
+</style>
+<div class="w"><nav class="top"><a href="index.html">Portada</a><a href="EMPEZAR.html">Empezar</a><a href="EL-JUEGO.html">El juego</a><a href="EL-CARTUCHO.html">El cartucho</a><a href="EL-CODIGO.html">El código</a><a href="HALLAZGOS.html" style=color:var(--tinta)>Hallazgos</a><a href="EN-EL-EMULADOR.html">En el emulador</a><a href="PREGUNTAS-ABIERTAS.html">Preguntas abiertas</a><a href="../FINDINGS.html" style="margin-left:auto;color:var(--oro)">English</a></nav>
+<h1 id="hallazgos">Hallazgos</h1>
+<p>Lo que aparece al desmontarlo, con la dirección al lado para que se pueda comprobar.</p>
+<h2 id="dos-claves-de-teclado-noriko-y-kazumi">Dos claves de teclado: NORIKO y KAZUMI</h2>
+<p>Se teclean en la pantalla del título —el estado 3, el del PUSH SPACE KEY— y encienden el <b>CONTINUE</b>, que sin ellas no existe.</p>
+<p>p02:9522 vigila <b>nueve</b> teclas con <code>SNSMAT</code> de la BIOS, que devuelve el bit a cero cuando la tecla está pulsada. A cada una le guarda su estado del cuadro anterior en un byte propio, y cuando una acaba de pulsarse —antes suelta, ahora pulsada— apunta su número en una cola de seis en 0xF0F8: los cinco de atrás se corren con <code>ldir</code> y la nueva entra por el final.</p>
+<p>Las nueve teclas, con el número que les toca por el orden en que el código las mira:</p>
+<table><tr><th>0</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr><tr><td>A</td><td>I</td><td>K</td><td>M</td><td>N</td><td>O</td><td>R</td><td>U</td><td>Z</td></tr></table>
+<p>Al pulsar espacio, p02:80F2 compara esas seis con los dos patrones de 0x965F:</p>
+<pre><code>04 05 06 01 02 05   -&gt;  N O R I K O
+02 00 08 07 03 01   -&gt;  K A Z U M I</code></pre>
+<p>Y no son nueve teclas cualesquiera: son <b>exactamente</b> las letras que hacen falta para escribir esos dos nombres, y ninguna más. Si una clave de teclado vigila un puñado raro de teclas, esas teclas son el alfabeto de la clave.</p>
+<p><b>Las dos no hacen lo mismo.</b> NORIKO deja 0xFE en 0xF0F7 y KAZUMI 0xFF. Con 0xFE o más aparece el CONTINUE (p02:8937 y p02:8A32), pero con 0xFE <b>justo</b> el borrado del fin de partida se salta los 143 bytes de 0xE160 y los 64 del espejo de pantalla (p02:8985): NORIKO además conserva lo que se lleve encima.</p>
+<p>Las dos están comprobadas en openMSX, no sólo leídas. Ver <a href="EN-EL-EMULADOR.html">En el emulador</a>.</p>
+<h2 id="la-cereza-es-el-unico-simbolo-que-cuenta-suelto">La cereza es el único símbolo que cuenta suelto</h2>
+<p>Los rodillos de la máquina de apostar sacan su símbolo del registro R enmascarado a cuatro bits, y con ese índice leen la tabla de dieciséis de 0x7B34:</p>
+<pre><code>00 01 04 03 02 00 01 00 01 02 05 00 01 00 02 03</code></pre>
+<p>La cereza —el símbolo 0— ocupa <b>cinco</b> de las dieciséis casillas: 31,2 % por rodillo, y al menos una en el <b>67,5 %</b> de las tiradas.</p>
+<p>Y el reparto de premios de p01:7AF0 la trata aparte. Hay dos cuentas distintas: una que exige que los tres rodillos sean iguales, y un <code>inc (hl)</code> que sube un contador <b>por cada</b> rodillo que valga cero. Los siete multiplicadores de 0x7B23 son 1, 2, 4, 8, 10, 15 y 20, y los tres primeros son los de una, dos y tres cerezas. Los demás símbolos sólo pagan de tres en tres, y el símbolo 5 se marca con 0xFF: el premio gordo.</p>
+<p>Es la regla clásica de las cerezas de una tragaperras, escrita en Z80. Y la tabla de premios pintada en la propia máquina dice lo mismo.</p>
+<h2 id="veinticuatro-fases-no-trece">Veinticuatro fases, no trece</h2>
+<p>Los trece son lo que el cartucho le declara al Konami Game Master en la cabecera de 0x4010. p02:8328 compara la fase con 0x19, y las tres tablas de guion cierran en veinticuatro entradas justas. La partida de dos jugadores es otro diseño entero.</p>
+<h2 id="el-tiempo-corre-aunque-no-se-ande">El tiempo corre aunque no se ande</h2>
+<p>0xE08B no es el largo de la fase: es el tiempo. p02:922D le quita uno <b>cada 32 cuadros</b>, se ande o no se ande; por debajo de 0x15 pita un cuadro sí y otro no; y al acabar la fase p02:94D1 lo cambia por puntos de 0x20 en 0x20.</p>
+<p>De ahí que el objeto de p03:B31E, que le suma 0x50 en BCD, no alargue el recorrido: <b>da tiempo extra</b>. Es lo único de todo el cartucho que toca ese contador después de montada la fase.</p>
+<h2 id="una-vida-extra-cada-50-000-puntos">Una vida extra cada 50.000 puntos</h2>
+<p>El marcador son tres bytes en BCD —seis cifras— y topa en 999999. p02:938B mira el byte alto contra el umbral de 0xE095: cuando lo alcanza, el umbral <b>sube 5 en BCD</b> —otros 50.000— y se da una vida. Si el umbral se desborda se queda en 0xFF, que ya no se alcanza nunca.</p>
+<p>Las vidas topan en 99: p01:74E5 mira el acarreo del <code>daa</code> y, si se pasa, las clava en 0x99.</p>
+<h2 id="el-blanco-aguanta-veinte-impactos">El blanco aguanta veinte impactos</h2>
+<p>Lo que se dispara con el segundo botón sale de p03:BD8A y sólo puede haber uno en vuelo: 0xE500 es la marca. Contra el blanco de 0xE535, cada acierto suma uno a 0xE53C y hace falta llegar a <b>veinte</b> (p01:77D1). Los diecinueve anteriores sólo suenan. El vigésimo pone los cuatro registros de 0xE550 a 5, apunta 0xE53A a 0xAE0A y 0xE530 pasa a 2.</p>
+<h2 id="lo-que-se-lanza-apunta">Lo que se lanza APUNTA</h2>
+<p>El registro de 0xE540 aparece parpadeando 32 cuadros entre dos dibujos —el aviso de que va a salir— y entonces p03:B1C8 mira dónde está el jugador y escoge uno de tres pasos: a la izquierda, recto o a la derecha. Si la diferencia es menor de 16 columnas, va recto.</p>
+<p>Baja en tres tramos con precisión de subpíxel —un byte de fracción por debajo de cada coordenada— y cambia de dibujo en cada uno: 0xAC, 0xB0 y 0xB4.</p>
+<h2 id="el-relleno-de-un-banco-es-una-instruccion">El relleno de un banco es una instrucción</h2>
+<p>El <code>0xFF</code> con el que se rellena la cola de un banco es <code>rst 38h</code>. El trazador se salía por ahí al banco vecino y daba por código lo que era relleno.</p>
+<p>Y peor: este cartucho <b>cambia de banco con las interrupciones abiertas</b>, con semáforo en 0xE005. Ningún trazador estático sigue eso, y de ahí salieron 14 KB inventados en los bancos 12 y 13 que hubo que declarar a mano.</p>
+<h2 id="catorce-bytes-de-codigo-muerto">Catorce bytes de código muerto</h2>
+<p>En p01:7B50 hay catorce bytes que se leen limpios como código —<code>ld a,(0xE0C5) / and a / ret nz / ld a,(0xE115) / and a / ret z</code>…— y a los que no salta nadie. Ni un <code>call</code>, ni un <code>jp</code>, ni una tabla. Están declarados como datos porque como código no se ejecutan nunca.</p>
+<h2 id="la-d-que-no-es-un-byte-alto">La D que no es un byte alto</h2>
+<p><code>resta_en_bcd_de_dos_bytes</code> (p01:6F86) es la rutina con la que se paga en la tienda y se apuesta. Entra con IX apuntando al número y C con lo que se quita —pero <b>la D no es el byte alto del importe</b>: es lo que se le resta al byte alto <em>cuando hay que pedir prestado</em>, y vale 1 en todas las llamadas. Es el acarreo a mano, y hace falta porque <code>daa</code> no se lleva bien con <code>sbc</code>.</p>
+<p>Si se lee como un importe de 16 bits, todos los precios de la tienda salen 256 veces más caros de lo que son.</p>
+<footer><p><em>Penguin Adventure / Yume Tairiku Adventure</em> lo publico Konami para MSX en 1986; su numero de catalogo es RC-743 y son 128 KB. Todos los derechos sobre el juego siguen siendo de sus titulares. Este trabajo es de preservacion, estudio y documentacion, y la imagen del cartucho no se distribuye.</p></footer></div>

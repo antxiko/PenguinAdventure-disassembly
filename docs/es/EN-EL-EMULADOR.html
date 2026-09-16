@@ -1,0 +1,118 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>En el emulador — Penguin Adventure (Konami, 1986)</title>
+<style>
+:root{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;--linea:#23262e;
+  --rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+@media (prefers-color-scheme:light){:root{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;
+  --panel:#f7f6f2;--linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}}
+:root[data-theme="dark"]{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;
+  --linea:#23262e;--rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+:root[data-theme="light"]{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;--panel:#f7f6f2;
+  --linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--tinta);padding:0 1.25rem 6rem;
+  font:15px/1.7 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.w{max-width:1120px;margin:0 auto}
+.n{max-width:68ch}
+h1,h2,h3,h4{font-weight:400;text-wrap:balance}
+a{color:var(--cyan)}
+img{image-rendering:pixelated;max-width:100%;height:auto;display:block}
+header.top{display:flex;flex-direction:column;align-items:center;gap:1.5rem;
+  padding:4rem 0 2rem;text-align:center}
+header.top img{width:min(100%,642px)}
+.claim{max-width:60ch;color:var(--suave);font-size:1.05rem}
+.claim b{color:var(--tinta);font-weight:400}
+.ficha{display:flex;flex-wrap:wrap;justify-content:center;gap:0 1.5rem;width:100%;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);
+  border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);padding:.85rem 0}
+.ficha b{color:var(--rojo);font-weight:400}
+nav{display:flex;flex-wrap:wrap;gap:1.25rem;justify-content:center;padding:1.25rem 0;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+nav a{color:var(--suave);text-decoration:none;border-bottom:1px solid transparent}
+nav a:hover,nav a:focus{color:var(--tinta);border-bottom-color:var(--rojo)}
+nav.docs{border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);
+  margin-bottom:1rem}
+section{margin-top:4.5rem;scroll-margin-top:1rem}
+section>h2{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;
+  border-left:3px solid var(--rojo);padding-left:.9rem;margin:0 0 1.5rem}
+.cifras{display:grid;gap:1px;background:var(--linea);border:1px solid var(--linea);
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.cifra{background:var(--panel);padding:1.1rem}
+.cifra b{display:block;font-size:1.7rem;color:var(--oro);font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.cifra span{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--suave)}
+.hall{border-top:1px solid var(--linea);padding-top:1.75rem;margin-top:2.5rem}
+.hall:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.hall h3{margin:0 0 .75rem;font-size:1.15rem;color:var(--rojo)}
+.hall h4{color:var(--oro);margin:1.5rem 0 .5rem;font-size:.95rem}
+.hall p{margin:0 0 1rem}
+pre.asm{background:var(--panel);border-left:2px solid var(--verde);margin:1.25rem 0;
+  padding:1rem 1.1rem;overflow-x:auto;font-size:13px;line-height:1.6;color:var(--tinta)}
+.par{display:grid;gap:1.25rem;grid-template-columns:1fr}
+@media(min-width:820px){.par{grid-template-columns:1fr 1fr}}
+.par figure{margin:0}
+table{border-collapse:collapse;width:100%;margin:1.25rem 0;font-size:13px;display:block;
+  overflow-x:auto}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--linea)}
+th{color:var(--suave);font-weight:400;font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+td.num{font-variant-numeric:tabular-nums;color:var(--oro)}
+.nivel{margin-top:2rem}
+.nivel h3{margin:0 0 .9rem;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase}
+.nivel em{color:var(--cyan);font-style:normal}
+.sep{color:var(--suave);margin:0 .6rem}
+.rejilla{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.rejilla figure{margin:0;background:var(--panel);box-shadow:0 0 0 1px var(--linea)}
+.rejilla figcaption{display:flex;justify-content:space-between;padding:.45rem .65rem;
+  font-size:11px;color:var(--suave);border-top:1px solid var(--linea)}
+.dir{font-variant-numeric:tabular-nums;color:var(--verde)}
+footer{margin-top:5rem;padding-top:1.5rem;border-top:1px solid var(--linea);
+  color:var(--suave);font-size:12px}
+
+/* Aviso de trabajo en curso: tiene que verse antes que las cifras, porque un
+   100% mal leido hace mas dano que no ponerlo. */
+.aviso{background:#3a2a10;border-left:3px solid var(--oro);margin:1.5rem auto;
+  padding:1rem 1.2rem;max-width:900px;border-radius:4px}
+.aviso p{margin:0;color:var(--tinta);font-size:15px;line-height:1.65}
+.galeria{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;margin:1.5rem 0}
+.galeria figure{margin:0}
+.galeria img{width:100%;height:auto;image-rendering:pixelated;
+  border:1px solid var(--linea);border-radius:3px}
+.galeria figcaption{color:var(--suave);font-size:13px;margin-top:.5rem}
+audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
+</style>
+<div class="w"><nav class="top"><a href="index.html">Portada</a><a href="EMPEZAR.html">Empezar</a><a href="EL-JUEGO.html">El juego</a><a href="EL-CARTUCHO.html">El cartucho</a><a href="EL-CODIGO.html">El código</a><a href="HALLAZGOS.html">Hallazgos</a><a href="EN-EL-EMULADOR.html" style=color:var(--tinta)>En el emulador</a><a href="PREGUNTAS-ABIERTAS.html">Preguntas abiertas</a><a href="../IN-THE-EMULATOR.html" style="margin-left:auto;color:var(--oro)">English</a></nav>
+<h1 id="en-el-emulador">En el emulador</h1>
+<p>Casi todo lo que hay en esta web sale de leer el binario y de ejecutar sus rutinas en Python. Pero hay cosas que sólo cierra verlas correr, y las dos claves de teclado son una de ellas.</p>
+<h2 id="la-maquina-importa">La máquina importa</h2>
+<p>Con <code>Philips_VG_8020</code> este cartucho <b>no arranca</b>: el MSX se queda en la pantalla de inicio del BASIC y no llega a ejecutarse nunca. Con <code>C-BIOS_MSX1_EU</code> sí. Se nota en dos sitios:</p>
+<ul><li>0xE003, el contador de cuadros, se mueve;</li><li>0xF0F7 se pone a 0, que es lo que hace el INIT en p00:40BD.</li></ul>
+<p>Si se mira a ojo la pantalla y se ve el BASIC, es esto. Y si se miran esas dos direcciones antes de empezar, se ahorra la tarde.</p>
+<h2 id="comprobar-las-dos-claves">Comprobar las dos claves</h2>
+<pre><code>PA_OUT=work/omsx PA_CLAVE=NORIKO openmsx -machine C-BIOS_MSX1_EU \
+    -carta penguinadventure.rom -script tools/omsx_claves.tcl</code></pre>
+<p>La sonda arranca, pulsa espacio para entrar en la pantalla del título, escribe la palabra letra a letra sobre la matriz de teclado y lee 0xF0F7 y la cola de 0xF0F8. Con <code>PA_CLAVE=KAZUMI</code> prueba la otra.</p>
+<p>Lo que sale, y es lo que el listado predecía byte a byte:</p>
+<pre><code>pulsada N (fila 4 mascara 08) -&gt; cola 00 00 00 00 00 04
+pulsada O (fila 4 mascara 10) -&gt; cola 00 00 00 00 04 05
+pulsada R (fila 4 mascara 80) -&gt; cola 00 00 00 04 05 06
+pulsada I (fila 3 mascara 40) -&gt; cola 00 00 04 05 06 01
+pulsada K (fila 4 mascara 01) -&gt; cola 00 04 05 06 01 02
+pulsada O (fila 4 mascara 10) -&gt; cola 04 05 06 01 02 05
+0xF0F7 DESPUES = FE
+VERDE: 0xFE, o sea NORIKO</code></pre>
+<p>Y con KAZUMI, la cola <code>02 00 08 07 03 01</code> y 0xF0F7 a 0xFF.</p>
+<h2 id="las-cuatro-trampas-que-han-costado-una-tarde">Las cuatro trampas, que han costado una tarde</h2>
+<p><b>El estado.</b> El vigilante de las claves sólo corre en el <b>estado 3</b>, que es la pantalla del PUSH SPACE KEY. El ciclo de atracción va 0 → 1 → 2 → 0 y al 3 no se llega solo: hay que pulsar para entrar. Teclear la palabra durante la demo no hace absolutamente nada, y eso no se ve mirando la pantalla.</p>
+<p><b><code>type</code> no sirve.</b> Manda la tecla demasiado poco tiempo y el vigilante, que sólo apunta la tecla cuando <b>cambia</b> de suelta a pulsada, no llega a verla. Se pulsa la matriz a mano con <code>keymatrixdown</code> y <code>keymatrixup</code>, y hay que <b>soltar</b> entre tecla y tecla: dos pulsaciones seguidas sin soltar en medio son una sola.</p>
+<p><b>La primera tecla se pierde</b> si se pulsa en el mismo instante de entrar en el estado 3. Medio segundo de respiro y entra.</p>
+<p><b>Las capturas salen rancias</b> con <code>throttle off</code>: el render no se refresca y se ve la pantalla de hace varios segundos. Para fotografiar hay que correr a velocidad real.</p>
+<h2 id="arrancar-en-la-fase-que-se-quiera">Arrancar en la fase que se quiera</h2>
+<p>No hace falta jugarse el juego entero. La fase está en 0xE092, de 1 a 24, y se puede escribir desde la consola del emulador:</p>
+<pre><code>debug write memory 0xE092 12</code></pre>
+<p>Ojo con las dos tablas de p00:4105 y p00:4113, que <b>sólo cubren las trece primeras</b> de las veinticuatro: es una de las <a href="PREGUNTAS-ABIERTAS.html">preguntas abiertas</a>.</p>
+<h2 id="cotejar-un-dibujo-contra-la-vram">Cotejar un dibujo contra la VRAM</h2>
+<p>Las imágenes de esta web se dibujan ejecutando las rutinas del cartucho en Python. La forma de comprobar que una está bien no es mirarla: es volcar los 16 KB de VRAM del emulador en el mismo instante y compararlos byte a byte. Si salen cero diferencias, la imagen es la del cartucho.</p>
+<p>Y si salen una o dos, mirar primero si es el <b>instante</b> del volcado —una animación pillada a medias— antes de tocar nada.</p>
+<footer><p><em>Penguin Adventure / Yume Tairiku Adventure</em> lo publico Konami para MSX en 1986; su numero de catalogo es RC-743 y son 128 KB. Todos los derechos sobre el juego siguen siendo de sus titulares. Este trabajo es de preservacion, estudio y documentacion, y la imagen del cartucho no se distribuye.</p></footer></div>

@@ -1,0 +1,115 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>El juego — Penguin Adventure (Konami, 1986)</title>
+<style>
+:root{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;--linea:#23262e;
+  --rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+@media (prefers-color-scheme:light){:root{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;
+  --panel:#f7f6f2;--linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}}
+:root[data-theme="dark"]{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;
+  --linea:#23262e;--rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+:root[data-theme="light"]{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;--panel:#f7f6f2;
+  --linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--tinta);padding:0 1.25rem 6rem;
+  font:15px/1.7 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.w{max-width:1120px;margin:0 auto}
+.n{max-width:68ch}
+h1,h2,h3,h4{font-weight:400;text-wrap:balance}
+a{color:var(--cyan)}
+img{image-rendering:pixelated;max-width:100%;height:auto;display:block}
+header.top{display:flex;flex-direction:column;align-items:center;gap:1.5rem;
+  padding:4rem 0 2rem;text-align:center}
+header.top img{width:min(100%,642px)}
+.claim{max-width:60ch;color:var(--suave);font-size:1.05rem}
+.claim b{color:var(--tinta);font-weight:400}
+.ficha{display:flex;flex-wrap:wrap;justify-content:center;gap:0 1.5rem;width:100%;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);
+  border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);padding:.85rem 0}
+.ficha b{color:var(--rojo);font-weight:400}
+nav{display:flex;flex-wrap:wrap;gap:1.25rem;justify-content:center;padding:1.25rem 0;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+nav a{color:var(--suave);text-decoration:none;border-bottom:1px solid transparent}
+nav a:hover,nav a:focus{color:var(--tinta);border-bottom-color:var(--rojo)}
+nav.docs{border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);
+  margin-bottom:1rem}
+section{margin-top:4.5rem;scroll-margin-top:1rem}
+section>h2{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;
+  border-left:3px solid var(--rojo);padding-left:.9rem;margin:0 0 1.5rem}
+.cifras{display:grid;gap:1px;background:var(--linea);border:1px solid var(--linea);
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.cifra{background:var(--panel);padding:1.1rem}
+.cifra b{display:block;font-size:1.7rem;color:var(--oro);font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.cifra span{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--suave)}
+.hall{border-top:1px solid var(--linea);padding-top:1.75rem;margin-top:2.5rem}
+.hall:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.hall h3{margin:0 0 .75rem;font-size:1.15rem;color:var(--rojo)}
+.hall h4{color:var(--oro);margin:1.5rem 0 .5rem;font-size:.95rem}
+.hall p{margin:0 0 1rem}
+pre.asm{background:var(--panel);border-left:2px solid var(--verde);margin:1.25rem 0;
+  padding:1rem 1.1rem;overflow-x:auto;font-size:13px;line-height:1.6;color:var(--tinta)}
+.par{display:grid;gap:1.25rem;grid-template-columns:1fr}
+@media(min-width:820px){.par{grid-template-columns:1fr 1fr}}
+.par figure{margin:0}
+table{border-collapse:collapse;width:100%;margin:1.25rem 0;font-size:13px;display:block;
+  overflow-x:auto}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--linea)}
+th{color:var(--suave);font-weight:400;font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+td.num{font-variant-numeric:tabular-nums;color:var(--oro)}
+.nivel{margin-top:2rem}
+.nivel h3{margin:0 0 .9rem;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase}
+.nivel em{color:var(--cyan);font-style:normal}
+.sep{color:var(--suave);margin:0 .6rem}
+.rejilla{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.rejilla figure{margin:0;background:var(--panel);box-shadow:0 0 0 1px var(--linea)}
+.rejilla figcaption{display:flex;justify-content:space-between;padding:.45rem .65rem;
+  font-size:11px;color:var(--suave);border-top:1px solid var(--linea)}
+.dir{font-variant-numeric:tabular-nums;color:var(--verde)}
+footer{margin-top:5rem;padding-top:1.5rem;border-top:1px solid var(--linea);
+  color:var(--suave);font-size:12px}
+
+/* Aviso de trabajo en curso: tiene que verse antes que las cifras, porque un
+   100% mal leido hace mas dano que no ponerlo. */
+.aviso{background:#3a2a10;border-left:3px solid var(--oro);margin:1.5rem auto;
+  padding:1rem 1.2rem;max-width:900px;border-radius:4px}
+.aviso p{margin:0;color:var(--tinta);font-size:15px;line-height:1.65}
+.galeria{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;margin:1.5rem 0}
+.galeria figure{margin:0}
+.galeria img{width:100%;height:auto;image-rendering:pixelated;
+  border:1px solid var(--linea);border-radius:3px}
+.galeria figcaption{color:var(--suave);font-size:13px;margin-top:.5rem}
+audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
+</style>
+<div class="w"><nav class="top"><a href="index.html">Portada</a><a href="EMPEZAR.html">Empezar</a><a href="EL-JUEGO.html" style=color:var(--tinta)>El juego</a><a href="EL-CARTUCHO.html">El cartucho</a><a href="EL-CODIGO.html">El código</a><a href="HALLAZGOS.html">Hallazgos</a><a href="EN-EL-EMULADOR.html">En el emulador</a><a href="PREGUNTAS-ABIERTAS.html">Preguntas abiertas</a><a href="../THE-GAME.html" style="margin-left:auto;color:var(--oro)">English</a></nav>
+<h1 id="el-juego">El juego</h1>
+<p><em>Penguin Adventure</em> (夢大陸アドベンチャー, <em>Yume Tairiku Adventure</em>) es la continuación de <em>Antarctic Adventure</em>, y de un cartucho de 32 KB pasa a 128. El pingüino corre hacia el fondo de la pantalla, esquiva lo que le sale al paso y tiene que llegar a la meta antes de que se le acabe el tiempo.</p>
+<p><img src="../imagenes/titulo_resto.png" alt="La pantalla del título"></p>
+<p>Hay <b>dos pantallas de título</b> y el cartucho elige con el byte de país de la BIOS (0x002B). La diferencia es un guion de más, el 0xA463, y sólo toca el rótulo: el dibujo de fondo es el mismo.</p>
+<h2 id="veinticuatro-fases-no-trece">Veinticuatro fases, no trece</h2>
+<p>El cartucho le <em>declara</em> trece al Konami Game Master en su segunda cabecera, la de 0x4010. El juego dice otra cosa: p02:8328 compara la fase con 0x19 y las tres tablas de guion —terreno, enemigos y la tercera— cierran en veinticuatro entradas justas.</p>
+<p><img src="../imagenes/fases_1_jugador.png" alt="Las veinticuatro fases de un jugador"></p>
+<p>Cada fila es una fase. Los bloques de color son los tramos de terreno en el orden en que salen, y las marcas de debajo, los bichos que el guion suelta. Las tres primeras fases no sueltan ninguno: su guion es un <code>0xFF</code> pelado.</p>
+<p>Y la partida de dos jugadores es <b>otro diseño entero</b>, no una variación: ni un solo tramo coincide byte a byte con el de un jugador.</p>
+<p><img src="../imagenes/fases_2_jugadores.png" alt="Las veinticuatro de dos jugadores"></p>
+<h2 id="diez-decorados">Diez decorados</h2>
+<p>El terreno se monta con diez decorados, cada uno con sus caracteres —tres cargas, una por tercio de pantalla— y 672 bytes de tabla de nombres que p01:6000 descomprime en 0xEBE0.</p>
+<p><img src="../imagenes/decorado_0.png" alt="El primer decorado"></p>
+<p>Los decorados 8 y 9 no los usa ninguna de las veinticuatro fases: los ponen a mano p03:B602 y p03:B932 para dos escenas de por medio.</p>
+<h2 id="el-tiempo-que-corre-solo">El tiempo, que corre solo</h2>
+<p>0xE08B es el tiempo, y baja uno <b>cada 32 cuadros se ande o no se ande</b> (p02:922D). Por debajo de 0x15 pita un cuadro sí y otro no, y al acabar la fase p02:94D1 lo cambia por puntos de 0x20 en 0x20.</p>
+<p>Lo que va bajando con el terreno es otra cosa, 0xE08D, y de ella salen los nueve cortes del final de fase: a 0x30, 0x25, 0x20, 0x15, 0x10, 8, 5, 2 y 0 de la meta pasa algo distinto (p01:65CF).</p>
+<h2 id="la-tienda-y-la-maquina-de-apostar">La tienda y la máquina de apostar</h2>
+<p>Entre fase y fase hay dos sitios donde gastar los puntos.</p>
+<p>La <b>tienda</b> tiene seis casillas de dos bytes —qué es y cuánto cuesta—, un cursor que se mueve con izquierda y derecha con el efecto 0x23, y el marcador haciendo de dinero. Comprar resta en BCD; si no llega, suena el 0x25 y no pasa nada.</p>
+<p>Y la <b>máquina de apostar</b>:</p>
+<p><img src="../imagenes/apostar.png" alt="La máquina de apostar"></p>
+<p>Se apuesta moviendo dinero entre el marcador y una bolsa —arriba y abajo de uno en uno, izquierda y derecha de diez en diez—, los tres rodillos giran y lo apostado se multiplica por lo que salga. La tabla de premios está pintada en la propia máquina, y dice lo mismo que el código.</p>
+<p><img src="../imagenes/simbolos.png" alt="Los seis símbolos"></p>
+<p>La cereza ocupa <b>cinco</b> de las dieciséis casillas de la tabla de 0x7B34, así que sale el 31,2 % de las veces por rodillo. Y es el único símbolo que cuenta suelto: una paga ×1, dos ×2 y tres ×4. Los demás sólo pagan de tres en tres —×8, ×10, ×15, ×20 y el premio gordo—. Al menos una cereza sale en el <b>67,5 %</b> de las tiradas.</p>
+<h2 id="lo-que-se-lleva-encima">Lo que se lleva encima</h2>
+<p>Cinco ranuras en 0xE440, y lo que llevan decide si un golpe mata o no:</p>
+<table><tr><th>lo que se lleva</th><th>de qué salva</th></tr><tr><td>0xE1F1</td><td>de todo: para cualquier golpe y cualquier hueco</td></tr><tr><td>0xE164</td><td>de los bichos de clase 6 y 12; se gasta uno por golpe</td></tr><tr><td>0xE165</td><td>de las clases 1 y 13; se gasta uno por golpe</td></tr><tr><td>0xE170</td><td>de las clases 5 y 14; esta no se gasta</td></tr><tr><td>0xE163</td><td>de la clase 6 de los otros huecos</td></tr><tr><td>0xE16B</td><td>de la clase 4, que no mata: sólo para el juego 0x80 cuadros</td></tr></table>
+<p>Y los huecos del suelo —los objetos de clase 14— cuestan la vida salvo que se lleve 0xE1F1, 0xE171 o 0xE172. Con 0xE1F1 puesto no sólo no se cae: el hueco cambia de variante y caen 768 puntos.</p>
+<footer><p><em>Penguin Adventure / Yume Tairiku Adventure</em> lo publico Konami para MSX en 1986; su numero de catalogo es RC-743 y son 128 KB. Todos los derechos sobre el juego siguen siendo de sus titulares. Este trabajo es de preservacion, estudio y documentacion, y la imagen del cartucho no se distribuye.</p></footer></div>

@@ -1,0 +1,106 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Preguntas abiertas — Penguin Adventure (Konami, 1986)</title>
+<style>
+:root{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;--linea:#23262e;
+  --rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+@media (prefers-color-scheme:light){:root{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;
+  --panel:#f7f6f2;--linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}}
+:root[data-theme="dark"]{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;
+  --linea:#23262e;--rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+:root[data-theme="light"]{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;--panel:#f7f6f2;
+  --linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--tinta);padding:0 1.25rem 6rem;
+  font:15px/1.7 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.w{max-width:1120px;margin:0 auto}
+.n{max-width:68ch}
+h1,h2,h3,h4{font-weight:400;text-wrap:balance}
+a{color:var(--cyan)}
+img{image-rendering:pixelated;max-width:100%;height:auto;display:block}
+header.top{display:flex;flex-direction:column;align-items:center;gap:1.5rem;
+  padding:4rem 0 2rem;text-align:center}
+header.top img{width:min(100%,642px)}
+.claim{max-width:60ch;color:var(--suave);font-size:1.05rem}
+.claim b{color:var(--tinta);font-weight:400}
+.ficha{display:flex;flex-wrap:wrap;justify-content:center;gap:0 1.5rem;width:100%;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);
+  border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);padding:.85rem 0}
+.ficha b{color:var(--rojo);font-weight:400}
+nav{display:flex;flex-wrap:wrap;gap:1.25rem;justify-content:center;padding:1.25rem 0;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+nav a{color:var(--suave);text-decoration:none;border-bottom:1px solid transparent}
+nav a:hover,nav a:focus{color:var(--tinta);border-bottom-color:var(--rojo)}
+nav.docs{border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);
+  margin-bottom:1rem}
+section{margin-top:4.5rem;scroll-margin-top:1rem}
+section>h2{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;
+  border-left:3px solid var(--rojo);padding-left:.9rem;margin:0 0 1.5rem}
+.cifras{display:grid;gap:1px;background:var(--linea);border:1px solid var(--linea);
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.cifra{background:var(--panel);padding:1.1rem}
+.cifra b{display:block;font-size:1.7rem;color:var(--oro);font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.cifra span{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--suave)}
+.hall{border-top:1px solid var(--linea);padding-top:1.75rem;margin-top:2.5rem}
+.hall:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.hall h3{margin:0 0 .75rem;font-size:1.15rem;color:var(--rojo)}
+.hall h4{color:var(--oro);margin:1.5rem 0 .5rem;font-size:.95rem}
+.hall p{margin:0 0 1rem}
+pre.asm{background:var(--panel);border-left:2px solid var(--verde);margin:1.25rem 0;
+  padding:1rem 1.1rem;overflow-x:auto;font-size:13px;line-height:1.6;color:var(--tinta)}
+.par{display:grid;gap:1.25rem;grid-template-columns:1fr}
+@media(min-width:820px){.par{grid-template-columns:1fr 1fr}}
+.par figure{margin:0}
+table{border-collapse:collapse;width:100%;margin:1.25rem 0;font-size:13px;display:block;
+  overflow-x:auto}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--linea)}
+th{color:var(--suave);font-weight:400;font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+td.num{font-variant-numeric:tabular-nums;color:var(--oro)}
+.nivel{margin-top:2rem}
+.nivel h3{margin:0 0 .9rem;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase}
+.nivel em{color:var(--cyan);font-style:normal}
+.sep{color:var(--suave);margin:0 .6rem}
+.rejilla{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.rejilla figure{margin:0;background:var(--panel);box-shadow:0 0 0 1px var(--linea)}
+.rejilla figcaption{display:flex;justify-content:space-between;padding:.45rem .65rem;
+  font-size:11px;color:var(--suave);border-top:1px solid var(--linea)}
+.dir{font-variant-numeric:tabular-nums;color:var(--verde)}
+footer{margin-top:5rem;padding-top:1.5rem;border-top:1px solid var(--linea);
+  color:var(--suave);font-size:12px}
+
+/* Aviso de trabajo en curso: tiene que verse antes que las cifras, porque un
+   100% mal leido hace mas dano que no ponerlo. */
+.aviso{background:#3a2a10;border-left:3px solid var(--oro);margin:1.5rem auto;
+  padding:1rem 1.2rem;max-width:900px;border-radius:4px}
+.aviso p{margin:0;color:var(--tinta);font-size:15px;line-height:1.65}
+.galeria{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;margin:1.5rem 0}
+.galeria figure{margin:0}
+.galeria img{width:100%;height:auto;image-rendering:pixelated;
+  border:1px solid var(--linea);border-radius:3px}
+.galeria figcaption{color:var(--suave);font-size:13px;margin-top:.5rem}
+audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
+</style>
+<div class="w"><nav class="top"><a href="index.html">Portada</a><a href="EMPEZAR.html">Empezar</a><a href="EL-JUEGO.html">El juego</a><a href="EL-CARTUCHO.html">El cartucho</a><a href="EL-CODIGO.html">El código</a><a href="HALLAZGOS.html">Hallazgos</a><a href="EN-EL-EMULADOR.html">En el emulador</a><a href="PREGUNTAS-ABIERTAS.html" style=color:var(--tinta)>Preguntas abiertas</a><a href="../OPEN-QUESTIONS.html" style="margin-left:auto;color:var(--oro)">English</a></nav>
+<h1 id="preguntas-abiertas">Preguntas abiertas</h1>
+<p>Lo que no se sabe, dicho como lo que es. Cada byte del cartucho está asignado a código o a datos y el listado reensambla byte a byte, pero eso no quiere decir que todo esté <b>entendido</b>.</p>
+<h2 id="los-patrones-de-sprite-0x00-a-0x0c-no-los-carga-nadie">Los patrones de sprite 0x00 a 0x0C no los carga nadie</h2>
+<p>Ocho de las trece poses de la tabla de 0xA91D piden los patrones de sprite 0x00, 0x04, 0x08 y 0x0C. Y esa zona de la VRAM —de 0x1800 a 0x187F— <b>no la escribe ninguno</b> de los diecinueve guiones de sprite conocidos, ni ninguno de los guiones con máscara que sueltan los puentes del banco 1.</p>
+<p>Las dos explicaciones que caben:</p>
+<ol><li>que haya una carga que el barrido de guiones no ve, por ejemplo una copia sin comprimir con destino calculado;</li><li>que la base de los patrones de sprite —el registro 6 del VDP— cambie en alguna escena, y entonces esos números apunten a otro sitio.</li></ol>
+<p>No se ha zanjado. Y hasta que se zanje, dibujar las trece poses juntas no significa nada: los números de patrón son <b>relativos a la hoja de sprites que tenga cargada cada escena</b>, así que la misma pose es una cosa distinta según lo que se haya soltado antes en 0x1800.</p>
+<h2 id="la-cabecera-del-game-master-mete-la-fase-donde-el-game-master-espera-vidas">La cabecera del Game Master mete la fase donde el Game Master espera vidas</h2>
+<p>La segunda cabecera, la de 0x4010, declara trece fases y da las direcciones de lo que el Konami Game Master sabe tocar. Una de ellas cae donde el Game Master espera el contador de vidas y lo que hay ahí es la fase. Puede ser deliberado —para que el Game Master deje cambiar la fase desde su MODIFY MODE— o puede ser un descuido de Konami. No hay forma de decidirlo desde este binario solo.</p>
+<h2 id="que-son-cuatro-de-los-seis-simbolos-de-la-maquina">Qué son cuatro de los seis símbolos de la máquina</h2>
+<p>La cereza y el racimo de uvas se reconocen sin discusión en el dibujo sacado de la ROM. Los otros cuatro no: hay un dibujo en tonos tostados con verde debajo, uno rojo, uno azul y el del premio gordo, que es blanco sobre transparente. Se publican tal como salen y cada cual que los mire.</p>
+<h2 id="el-ritmo-exacto-del-truco-de-la-tragaperras">El ritmo exacto del truco de la tragaperras</h2>
+<p>Los tres rodillos se sortean en el mismo bucle y en el mismo cuadro, con un trozo de código idéntico entre uno y otro, así que sus índices son <em>r</em>, <em>r+k</em> y <em>r+2k</em> con <b>k fija</b>. Y al parar un rodillo el bucle hace una vuelta menos, con lo que el cuadro tarda un poco menos y R avanza distinto.</p>
+<p>De ahí que pulsar a un ritmo fijo no dé azar sino siempre el mismo patrón. Lo que <b>no</b> está medido es cuánto vale esa k módulo 16, porque depende de cuántas instrucciones lee la CPU dentro del bucle contando la rutina <code>WRTVRM</code> de la BIOS, y esa cambia de un modelo de MSX a otro. Es decir: el truco podría funcionar en una máquina y no en otra.</p>
+<h2 id="por-que-no-arranca-en-un-philips-vg-8020">Por qué no arranca en un Philips VG-8020</h2>
+<p>Está medido que en esa máquina el cartucho se queda en la pantalla de inicio del BASIC —0xE003 no se mueve y 0xF0F7 no se pone a cero— y que con <code>C-BIOS_MSX1_EU</code> arranca sin problema. No está averiguado <b>por qué</b>. La cabecera es correcta, el <code>AB</code> y el INIT de 0x406A se leen bien en 0x4000 desde la propia consola del emulador, y aun así el BIOS no llega a llamarlo.</p>
+<h2 id="las-tablas-que-solo-cubren-trece-fases">Las tablas que sólo cubren trece fases</h2>
+<p>p00:4105 y p00:4113 indexan dos tablas con el número de fase, y las dos tienen trece entradas cuando las fases son veinticuatro. Con una fase de la 14 en adelante se leen bytes de más allá del final de la tabla. No se ha comprobado en marcha qué sale de ahí ni si el juego llega alguna vez a ese camino.</p>
+<h2 id="el-sonido-por-dentro">El sonido, por dentro</h2>
+<p>Las partituras están declaradas enteras y el lenguaje se entiende —<code>FE 00</code> cambia la marca +0x0E y la partitura pasa de lenguaje de efecto a lenguaje de música—, pero no se ha escrito un reproductor que las saque fuera del cartucho. Mientras no lo haya, lo que hay es una descripción, no una prueba.</p>
+<footer><p><em>Penguin Adventure / Yume Tairiku Adventure</em> lo publico Konami para MSX en 1986; su numero de catalogo es RC-743 y son 128 KB. Todos los derechos sobre el juego siguen siendo de sus titulares. Este trabajo es de preservacion, estudio y documentacion, y la imagen del cartucho no se distribuye.</p></footer></div>

@@ -1,0 +1,118 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>In the emulator — Penguin Adventure (Konami, 1986)</title>
+<style>
+:root{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;--linea:#23262e;
+  --rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+@media (prefers-color-scheme:light){:root{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;
+  --panel:#f7f6f2;--linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}}
+:root[data-theme="dark"]{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;
+  --linea:#23262e;--rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+:root[data-theme="light"]{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;--panel:#f7f6f2;
+  --linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--tinta);padding:0 1.25rem 6rem;
+  font:15px/1.7 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.w{max-width:1120px;margin:0 auto}
+.n{max-width:68ch}
+h1,h2,h3,h4{font-weight:400;text-wrap:balance}
+a{color:var(--cyan)}
+img{image-rendering:pixelated;max-width:100%;height:auto;display:block}
+header.top{display:flex;flex-direction:column;align-items:center;gap:1.5rem;
+  padding:4rem 0 2rem;text-align:center}
+header.top img{width:min(100%,642px)}
+.claim{max-width:60ch;color:var(--suave);font-size:1.05rem}
+.claim b{color:var(--tinta);font-weight:400}
+.ficha{display:flex;flex-wrap:wrap;justify-content:center;gap:0 1.5rem;width:100%;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);
+  border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);padding:.85rem 0}
+.ficha b{color:var(--rojo);font-weight:400}
+nav{display:flex;flex-wrap:wrap;gap:1.25rem;justify-content:center;padding:1.25rem 0;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+nav a{color:var(--suave);text-decoration:none;border-bottom:1px solid transparent}
+nav a:hover,nav a:focus{color:var(--tinta);border-bottom-color:var(--rojo)}
+nav.docs{border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);
+  margin-bottom:1rem}
+section{margin-top:4.5rem;scroll-margin-top:1rem}
+section>h2{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;
+  border-left:3px solid var(--rojo);padding-left:.9rem;margin:0 0 1.5rem}
+.cifras{display:grid;gap:1px;background:var(--linea);border:1px solid var(--linea);
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.cifra{background:var(--panel);padding:1.1rem}
+.cifra b{display:block;font-size:1.7rem;color:var(--oro);font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.cifra span{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--suave)}
+.hall{border-top:1px solid var(--linea);padding-top:1.75rem;margin-top:2.5rem}
+.hall:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.hall h3{margin:0 0 .75rem;font-size:1.15rem;color:var(--rojo)}
+.hall h4{color:var(--oro);margin:1.5rem 0 .5rem;font-size:.95rem}
+.hall p{margin:0 0 1rem}
+pre.asm{background:var(--panel);border-left:2px solid var(--verde);margin:1.25rem 0;
+  padding:1rem 1.1rem;overflow-x:auto;font-size:13px;line-height:1.6;color:var(--tinta)}
+.par{display:grid;gap:1.25rem;grid-template-columns:1fr}
+@media(min-width:820px){.par{grid-template-columns:1fr 1fr}}
+.par figure{margin:0}
+table{border-collapse:collapse;width:100%;margin:1.25rem 0;font-size:13px;display:block;
+  overflow-x:auto}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--linea)}
+th{color:var(--suave);font-weight:400;font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+td.num{font-variant-numeric:tabular-nums;color:var(--oro)}
+.nivel{margin-top:2rem}
+.nivel h3{margin:0 0 .9rem;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase}
+.nivel em{color:var(--cyan);font-style:normal}
+.sep{color:var(--suave);margin:0 .6rem}
+.rejilla{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.rejilla figure{margin:0;background:var(--panel);box-shadow:0 0 0 1px var(--linea)}
+.rejilla figcaption{display:flex;justify-content:space-between;padding:.45rem .65rem;
+  font-size:11px;color:var(--suave);border-top:1px solid var(--linea)}
+.dir{font-variant-numeric:tabular-nums;color:var(--verde)}
+footer{margin-top:5rem;padding-top:1.5rem;border-top:1px solid var(--linea);
+  color:var(--suave);font-size:12px}
+
+/* Aviso de trabajo en curso: tiene que verse antes que las cifras, porque un
+   100% mal leido hace mas dano que no ponerlo. */
+.aviso{background:#3a2a10;border-left:3px solid var(--oro);margin:1.5rem auto;
+  padding:1rem 1.2rem;max-width:900px;border-radius:4px}
+.aviso p{margin:0;color:var(--tinta);font-size:15px;line-height:1.65}
+.galeria{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;margin:1.5rem 0}
+.galeria figure{margin:0}
+.galeria img{width:100%;height:auto;image-rendering:pixelated;
+  border:1px solid var(--linea);border-radius:3px}
+.galeria figcaption{color:var(--suave);font-size:13px;margin-top:.5rem}
+audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
+</style>
+<div class="w"><nav class="top"><a href="index.html">Home</a><a href="GETTING-STARTED.html">Start</a><a href="THE-GAME.html">The game</a><a href="THE-CARTRIDGE.html">The cartridge</a><a href="THE-CODE.html">The code</a><a href="FINDINGS.html">Findings</a><a href="IN-THE-EMULATOR.html" style=color:var(--tinta)>In the emulator</a><a href="OPEN-QUESTIONS.html">Open questions</a><a href="es/EN-EL-EMULADOR.html" style="margin-left:auto;color:var(--oro)">Castellano</a></nav>
+<h1 id="in-the-emulator">In the emulator</h1>
+<p>Almost everything on this site comes from reading the binary and running its routines in Python. But some things are only settled by watching them run, and the two keyboard codes are one of them.</p>
+<h2 id="the-machine-matters">The machine matters</h2>
+<p>With <code>Philips_VG_8020</code> this cartridge <b>does not start</b>: the MSX sits on the BASIC boot screen and never runs. With <code>C-BIOS_MSX1_EU</code> it does. You can tell in two places:</p>
+<ul><li>0xE003, the frame counter, moves;</li><li>0xF0F7 goes to 0, which is what INIT does at p00:40BD.</li></ul>
+<p>If you look at the screen and see BASIC, this is why. And if you check those two addresses before starting, it saves you an afternoon.</p>
+<h2 id="checking-the-two-codes">Checking the two codes</h2>
+<pre><code>PA_OUT=work/omsx PA_CLAVE=NORIKO openmsx -machine C-BIOS_MSX1_EU \
+    -carta penguinadventure.rom -script tools/omsx_claves.tcl</code></pre>
+<p>The probe boots, presses space to get into the title screen, types the word letter by letter on the key matrix and reads 0xF0F7 and the queue at 0xF0F8. With <code>PA_CLAVE=KAZUMI</code> it tries the other one.</p>
+<p>What comes out, and it is what the listing predicted byte for byte:</p>
+<pre><code>pulsada N (fila 4 mascara 08) -&gt; cola 00 00 00 00 00 04
+pulsada O (fila 4 mascara 10) -&gt; cola 00 00 00 00 04 05
+pulsada R (fila 4 mascara 80) -&gt; cola 00 00 00 04 05 06
+pulsada I (fila 3 mascara 40) -&gt; cola 00 00 04 05 06 01
+pulsada K (fila 4 mascara 01) -&gt; cola 00 04 05 06 01 02
+pulsada O (fila 4 mascara 10) -&gt; cola 04 05 06 01 02 05
+0xF0F7 DESPUES = FE
+VERDE: 0xFE, o sea NORIKO</code></pre>
+<p>And with KAZUMI, the queue <code>02 00 08 07 03 01</code> and 0xF0F7 at 0xFF.</p>
+<h2 id="the-four-traps-which-cost-an-afternoon">The four traps, which cost an afternoon</h2>
+<p><b>The state.</b> The code watcher only runs in <b>state 3</b>, which is the PUSH SPACE KEY screen. The attract cycle goes 0 → 1 → 2 → 0 and state 3 is not reached on its own: you have to press something to get in. Typing the word during the demo does absolutely nothing, and you cannot see that by looking at the screen.</p>
+<p><b><code>type</code> will not do.</b> It holds the key too briefly and the watcher, which only notes a key when it <b>changes</b> from released to pressed, never sees it. You press the matrix by hand with <code>keymatrixdown</code> and <code>keymatrixup</code>, and you have to <b>release</b> between keys: two presses in a row without a release in between are one press.</p>
+<p><b>The first key is lost</b> if it is pressed at the very instant state 3 is entered. Half a second of breathing room and it registers.</p>
+<p><b>Screenshots come out stale</b> with <code>throttle off</code>: the renderer does not refresh and you see the screen from several seconds ago. To take pictures you have to run at real speed.</p>
+<h2 id="starting-on-whichever-stage-you-like">Starting on whichever stage you like</h2>
+<p>There is no need to play the whole game. The stage is at 0xE092, from 1 to 24, and it can be written from the emulator console:</p>
+<pre><code>debug write memory 0xE092 12</code></pre>
+<p>Mind the two tables at p00:4105 and p00:4113, which <b>only cover the first thirteen</b> of the twenty-four: that is one of the <a href="OPEN-QUESTIONS.html">open questions</a>.</p>
+<h2 id="checking-a-drawing-against-the-vram">Checking a drawing against the VRAM</h2>
+<p>The images on this site are drawn by running the cartridge&#x27;s routines in Python. The way to check one is right is not to look at it: it is to dump the emulator&#x27;s 16 KB of VRAM at the same instant and compare byte for byte. If it comes out at zero differences, the image is the cartridge&#x27;s.</p>
+<p>And if one or two come out, look first at whether it is the <b>instant</b> of the dump —an animation caught halfway— before touching anything.</p>
+<footer><p><em>Penguin Adventure / Yume Tairiku Adventure</em> was published by Konami for the MSX in 1986; its catalogue number is RC-743 and it is 128 KB. All rights in the game remain with their holders. This is preservation, study and documentation work, and the cartridge image is not distributed.</p></footer></div>

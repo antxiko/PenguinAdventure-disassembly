@@ -1,2 +1,99 @@
 # Banco 07 (se ejecuta en 0x6000). Directivas: L etiqueta, C comentario de
 # linea, B cabecera de bloque, D rango de datos, F anchura de fila.
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x6000 0x6095 guion_6000  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x6000, 0x6089; lo cargan p00:4CF3, p00:4CFE (149 bytes)
+F 0x6000 16
+D 0x6095 0x60E8 guion_6095  guion comprimido que lee pinta; se entra por 0x6095, 0x60E3; lo cargan p00:4D41, p00:4D4C (83 bytes)
+F 0x6095 16
+D 0x60E8 0x6237 guion_60E8  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x60E8, 0x6230; lo cargan p00:4D04, p00:4D0F (335 bytes)
+F 0x60E8 16
+D 0x6237 0x6304 guion_6237  guion comprimido que lee pinta; se entra por 0x6237, 0x62FE; lo cargan p00:4D57, p00:4D62 (205 bytes)
+F 0x6237 16
+D 0x6304 0x6386 guion_6304  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x6304, 0x6360; lo cargan p00:4DA1, p00:4DAC (130 bytes)
+F 0x6304 16
+D 0x6386 0x63B9 guion_6386  guion comprimido que lee pinta; se entra por 0x6386, 0x63A0; lo cargan p00:4DE7, p00:4DF2 (51 bytes)
+F 0x6386 16
+D 0x63B9 0x6473 guion_63B9  guion comprimido que lee pinta_sin_color; lo cargan p00:4DB2 (186 bytes)
+F 0x63B9 16
+D 0x6473 0x6496 guion_6473  guion comprimido que lee pinta; lo cargan p00:4DFD (35 bytes)
+F 0x6473 16
+D 0x6496 0x64D9 guion_6496  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x6496, 0x649C; lo cargan p00:4E3C, p00:4E47 (67 bytes)
+F 0x6496 16
+D 0x64D9 0x64E4 guion_64D9  guion comprimido que lee pinta; se entra por 0x64D9, 0x64DE; lo cargan p00:4E78, p00:4E83 (11 bytes)
+F 0x64D9 16
+D 0x64E4 0x6562 guion_64E4  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x64E4, 0x6538; lo cargan p00:4E4D, p00:4E58 (126 bytes)
+F 0x64E4 16
+D 0x6562 0x6591 guion_6562  guion comprimido que lee pinta; se entra por 0x6562, 0x6586; lo cargan p00:4E8E, p00:4E99 (47 bytes)
+F 0x6562 16
+D 0x6591 0x65F2 guion_6591  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x6591, 0x65B1; lo cargan p00:4EE1, p00:4EEC (97 bytes)
+F 0x6591 16
+D 0x65F2 0x6630 guion_65F2  guion comprimido que lee pinta; se entra por 0x65F2, 0x6606; lo cargan p00:4F1D, p00:4F28 (62 bytes)
+F 0x65F2 16
+D 0x6630 0x66DA guion_6630  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x6630, 0x665A; lo cargan p00:4EF2, p00:4EFD (170 bytes)
+F 0x6630 16
+D 0x66DA 0x6714 guion_66DA  guion comprimido que lee pinta; se entra por 0x66DA, 0x66F5; lo cargan p00:4F33, p00:4F3E (58 bytes)
+F 0x66DA 16
+D 0x6714 0x67CB guion_6714  guion comprimido que lee pinta_sin_color; lo cargan p00:4F7D (183 bytes)
+F 0x6714 16
+D 0x67CB 0x682F guion_67CB  guion comprimido que lee pinta_sin_color; lo cargan p00:4F89 (100 bytes)
+F 0x67CB 16
+D 0x682F 0x68EA guion_682F  guion comprimido que lee pinta_sin_color; lo cargan p00:4F83 (187 bytes)
+F 0x682F 16
+D 0x68EA 0x6932 guion_68EA  guion comprimido que lee pinta_sin_color; lo cargan p00:4F8F (72 bytes)
+F 0x68EA 16
+D 0x6932 0x69A0 guion_6932  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x6932, 0x6965; lo cargan p00:4FD2, p00:4FDD (110 bytes)
+F 0x6932 16
+D 0x69A0 0x69F5 guion_69A0  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x69A0, 0x69CF; lo cargan p00:4FF4, p00:4FFF (85 bytes)
+F 0x69A0 16
+D 0x69F5 0x6AD6 guion_69F5  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x69F5, 0x6AAF; lo cargan p00:4FE3, p00:4FEE (225 bytes)
+F 0x69F5 16
+D 0x6AD6 0x6B64 guion_6AD6  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x6AD6, 0x6B48; lo cargan p00:5005, p00:5010 (142 bytes)
+F 0x6AD6 16
+D 0x6B64 0x6BDB guion_6B64  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x6B64, 0x6B82; lo cargan p00:504F, p00:505A (119 bytes)
+F 0x6B64 16
+D 0x6BDB 0x6C11 guion_6BDB  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x6BDB, 0x6BE9; lo cargan p00:5071, p00:507C (54 bytes)
+F 0x6BDB 16
+D 0x6C11 0x6C7A guion_6C11  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x6C11, 0x6C13; lo cargan p00:5060, p00:506B (105 bytes)
+F 0x6C11 16
+D 0x6C7A 0x6C9C guion_6C7A  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x6C7A, 0x6C7C; lo cargan p00:5082, p00:508D (34 bytes)
+F 0x6C7A 16
+D 0x6C9C 0x6FC3 guion_6C9C  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x6C9C, 0x6FB9; lo cargan p00:50CC, p00:50D7 (807 bytes)
+F 0x6C9C 16
+D 0x6FC3 0x6FDB guion_6FC3  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x6FC3, 0x6FD8; lo cargan p00:50EE, p00:50F9 (24 bytes)
+F 0x6FC3 16
+D 0x6FDB 0x7655 guion_6FDB  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x6FDB, 0x7640; lo cargan p00:50DD, p00:50E8 (1658 bytes)
+F 0x6FDB 16
+D 0x7655 0x7686 guion_7655  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x7655, 0x7683; lo cargan p00:50FF, p00:510A (49 bytes)
+F 0x7655 16
+D 0x7686 0x7806 guion_7686  guion comprimido que lee pinta_sin_color; lo cargan p00:5149 (384 bytes)
+F 0x7686 16
+D 0x7806 0x7891 guion_7806  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x7806, 0x7857; lo cargan p00:5194, p00:519F (139 bytes)
+F 0x7806 16
+D 0x7891 0x78F1 guion_7891  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x7891, 0x78C8; lo cargan p00:51A5, p00:51B0 (96 bytes)
+F 0x7891 16
+D 0x78F1 0x7953 tira_78F1  bloque sin comprimir de columnas de 16 bytes (3 columnas con espejo) que lee pinta_bloque; lo cargan p00:5831, p00:58D0 (98 bytes)
+F 0x78F1 16
+D 0x7953 0x79C7 guion_7953  guion comprimido que lee pinta_sin_color; lo cargan p00:5834, p00:58D3 (116 bytes)
+F 0x7953 16
+D 0x79C7 0x79E9 tira_79C7  bloque sin comprimir de columnas de 16 bytes (2 columnas) que lee pinta_bloque; lo cargan p00:5861 (34 bytes)
+F 0x79C7 16
+D 0x79E9 0x7A0B tira_79E9  bloque sin comprimir de columnas de 16 bytes (1 columnas con espejo) que lee pinta_bloque; lo cargan p00:5867 (34 bytes)
+F 0x79E9 16
+D 0x7A0B 0x7AF2 guion_7A0B  guion comprimido que lee pinta_sin_color; lo cargan p00:586A (231 bytes)
+F 0x7A0B 16
+D 0x7AF2 0x7B34 tira_7AF2  bloque sin comprimir de columnas de 16 bytes (2 columnas con espejo) que lee pinta_bloque; lo cargan p00:5856, p00:590F (66 bytes)
+F 0x7AF2 16
+D 0x7B34 0x7BB6 tira_7B34  bloque sin comprimir de columnas de 16 bytes (8 columnas) que lee pinta_bloque; lo cargan p00:5873 (130 bytes)
+F 0x7B34 16
+D 0x7BB6 0x7C18 tira_7BB6  bloque sin comprimir de columnas de 16 bytes (3 columnas con espejo) que lee pinta_bloque; lo cargan p00:5879 (98 bytes)
+F 0x7BB6 16
+D 0x7C18 0x7D6F guion_7C18  guion comprimido que lee pinta_sin_color; lo cargan p00:587C (343 bytes)
+F 0x7C18 16
+D 0x7D6F 0x7E3A guion_7D6F  guion comprimido que lee pinta_sin_color; lo cargan p00:576C (203 bytes)
+F 0x7D6F 16
+D 0x7E3A 0x7FBC guion_7E3A  guion comprimido que lee pinta y pinta_sin_color; se entra por 0x7E3A, 0x7E3C; lo cargan p00:5613, p00:56FA (386 bytes)
+F 0x7E3A 16
+D 0x7FBC 0x8000 guion_7FBC  guion comprimido que lee pinta_sin_color; lo cargan p00:5683; sigue en el banco 8, en la ranura de al lado (68 bytes)
+F 0x7FBC 16
+# --- fin de los bloques de bloques.py ---

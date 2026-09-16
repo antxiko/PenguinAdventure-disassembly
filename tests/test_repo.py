@@ -60,6 +60,22 @@ PERMITIDO = {
     "README.es.md": ("Antarctic",),
 }
 
+# Y la misma excepcion en las paginas donde la continuacion ES el contenido.
+# La excepcion NO es abierta: ademas de estar en esta lista, el fichero tiene
+# que llevar en el texto la palabra que la justifica -"continuacion" o
+# "sequel"-. Asi, si alguna vez alguien copia un parrafo del juego anterior sin
+# esa palabra, el test vuelve a saltar, que es para lo que esta.
+PERMITIDO_SI_LO_JUSTIFICA = {
+    os.path.join("docs", "THE-GAME.md"): ("Antarctic",),
+    os.path.join("docs", "THE-GAME.html"): ("Antarctic",),
+    os.path.join("docs", "index.html"): ("Antarctic",),
+    os.path.join("docs", "es", "EL-JUEGO.md"): ("Antarctic",),
+    os.path.join("docs", "es", "EL-JUEGO.html"): ("Antarctic",),
+    os.path.join("docs", "es", "index.html"): ("Antarctic",),
+    os.path.join("tools", "make_web.py"): ("Antarctic",),
+}
+JUSTIFICAN = ("continuaci", "sequel")
+
 EXTENSIONES = (".py", ".md", ".txt", ".html", ".sh", ".tcl", ".notes",
                ".entries", ".nocode", ".yml")
 NOMBRES_SUELTOS = ("Makefile", "LICENSE", ".gitignore")
@@ -86,8 +102,11 @@ class NombreDelJuego(unittest.TestCase):
                 texto = open(ruta, encoding="utf-8").read()
             except (UnicodeDecodeError, OSError):
                 continue
+            justificado = ()
+            if any(p in texto.lower() for p in JUSTIFICAN):
+                justificado = PERMITIDO_SI_LO_JUSTIFICA.get(rel, ())
             for juego in OTROS_JUEGOS:
-                if juego in permitidos:
+                if juego in permitidos or juego in justificado:
                     continue
                 if re.search(re.escape(juego), texto, re.IGNORECASE):
                     malos.append("%s nombra a %r" % (rel, juego))

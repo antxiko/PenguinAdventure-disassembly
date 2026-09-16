@@ -149,7 +149,7 @@ estado_3_espera_a_que_pulsen:
 	djnz estado_3_parpadeo_final		;80d6
 	ld hl,0e004h		;80d8   ; el contador
 	dec (hl)			;80db
-	call L_9505		;80dc
+	call uno_o_dos_jugadores		;80dc
 	call L_91F7		;80df
 	ld a,(0e006h)		;80e2   ; las teclas recien pulsadas
 	and 010h		;80e5   ; el bit 4: la barra o el disparo
@@ -158,7 +158,7 @@ estado_3_espera_a_que_pulsen:
 	call 0413ah		;80ea   ; banco 0: pide_sonido_si_esta_activo
 	ld c,000h		;80ed
 	call L_9201		;80ef
-	call L_9634		;80f2
+	call mira_si_es_una_de_las_dos_claves		;80f2
 	ld a,(0e082h)		;80f5   ; uno o dos jugadores
 	and a			;80f8
 	ld de,08e14h		;80f9   ; el rotulo de uno...
@@ -195,7 +195,7 @@ L_8129:
 estado_3_arranca_la_partida:
 	djnz estado_3_ultimo		;8133
 	call 04224h		;8135   ; borrar la pantalla
-	call L_9346		;8138
+	call borra_la_partida		;8138
 	ld a,(0e082h)		;813b   ; uno o dos jugadores
 	ld (0e08fh),a		;813e   ; queda apuntado para la partida
 	call 046e3h		;8141   ; y a montar la fase
@@ -209,7 +209,7 @@ estado_3_ultimo:
 ; ----------------------------------------------------------------------
 estado_4:
 	djnz estado_4_ya_montada		;814b   ; el subestado
-	call L_8AEC		;814d
+	call escena_despacha_por_0xE0B5		;814d
 	ld a,(0e012h)		;8150   ; una espera
 	and a			;8153
 	ret nz			;8154
@@ -227,7 +227,7 @@ estado_4:
 	call 04995h		;8173   ; los caracteres del tercio de arriba
 	call 049fch		;8176   ; los del de en medio
 	call 049d2h		;8179   ; y los del de abajo
-	call L_966B		;817c
+	call monta_la_pantalla_entera		;817c
 	call 057fbh		;817f
 	call L_9689		;8182
 	call 06000h		;8185   ; el mapa del decorado
@@ -253,7 +253,7 @@ estado_4_ya_montada:
 	xor a			;81b2
 	ld (0e0b5h),a		;81b3
 	ld (0e126h),a		;81b6
-	call L_8AEC		;81b9
+	call escena_despacha_por_0xE0B5		;81b9
 	ld a,0adh		;81bc   ; el efecto 0xAD
 	call 0413ah		;81be   ; banco 0: pide_sonido_si_esta_activo
 	xor a			;81c1
@@ -312,7 +312,7 @@ estado_5_sale_de_la_pausa:
 	call 04995h		;822f   ; otra vez los caracteres de los tres tercios
 	call 049fch		;8232
 	call 049d2h		;8235
-	call L_966B		;8238
+	call monta_la_pantalla_entera		;8238
 	call 05974h		;823b
 	call L_9689		;823e
 	call 04265h		;8241   ; subir la zona de juego
@@ -504,7 +504,7 @@ estado_6_suena_el_paso_de_fase:
 	ld a,c			;8395
 	ld (0e21eh),a		;8396   ; y la clase de paso de fase
 	ld a,017h		;8399
-	ld (0e203h),a		;839b   ; por donde va la rotacion de los sprites; por que hueco se parte la tabla de sprites
+	ld (0e203h),a		;839b   ; el ESTADO de lo que se maneja
 	call 055f7h		;839e
 estado_6_avisa_y_avanza:
 	ld a,001h		;83a1
@@ -519,7 +519,7 @@ estado_7:
 	call 042fbh		;83ab   ; banco 0: sube_los_sprites
 	call L_96F9		;83ae
 	call 0a985h		;83b1   ; banco 3
-	ld a,(0e203h)		;83b4   ; por donde va la rotacion de los sprites; por que hueco se parte la tabla de sprites
+	ld a,(0e203h)		;83b4   ; el ESTADO de lo que se maneja
 	cp 00ch		;83b7   ; hasta el 12 no se sigue
 	ret nz			;83b9
 	call 07db3h		;83ba   ; lo que sea, en el banco 1
@@ -606,10 +606,10 @@ estado_7_prepara_la_siguiente:
 	ld a,001h		;8476
 	ld (0e21eh),a		;8478   ; la clase de paso de fase
 	ld a,018h		;847b
-	ld (0e203h),a		;847d   ; por donde va la rotacion de los sprites; por que hueco se parte la tabla de sprites
+	ld (0e203h),a		;847d   ; el ESTADO de lo que se maneja
 	xor a			;8480
 	ld (0e0ddh),a		;8481
-	ld a,(0e08bh)		;8484   ; el largo de la fase
+	ld a,(0e08bh)		;8484   ; el TIEMPO que queda
 	and 00fh		;8487   ; los cuatro bits de abajo
 	cp 002h		;8489   ; y de ahi salen cinco posiciones distintas
 	ld c,028h		;848b
@@ -640,7 +640,7 @@ estado_7_ultimo:
 	ld (0ee8bh),a		;84c0
 	ld (0ee8fh),a		;84c3
 	ld a,00bh		;84c6
-	ld (0e203h),a		;84c8   ; por donde va la rotacion de los sprites; por que hueco se parte la tabla de sprites
+	ld (0e203h),a		;84c8   ; el ESTADO de lo que se maneja
 	ld a,003h		;84cb
 	ld (0e0a5h),a		;84cd   ; por que vuelta de la fase va; la vuelta 3
 	ld a,062h		;84d0
@@ -659,7 +659,7 @@ estado_8:
 	call L_96F9		;84e6
 	call 0a985h		;84e9   ; banco 3
 	call 0be41h		;84ec   ; banco 3
-	ld a,(0e203h)		;84ef   ; por donde va la rotacion de los sprites; el paso de la transicion
+	ld a,(0e203h)		;84ef   ; el ESTADO de lo que se maneja
 	cp 019h		;84f2   ; en el 0x19 se acaba
 	ret nz			;84f4
 	jp avanza_el_subestado		;84f5
@@ -673,7 +673,7 @@ estado_8_monta_otra_vez:
 	call 049fch		;8509   ; los del de en medio
 	call 049d2h		;850c   ; y los del de abajo
 	call 057fbh		;850f
-	call L_966B		;8512
+	call monta_la_pantalla_entera		;8512
 	xor a			;8515
 	call L_9453		;8516
 	call 06000h		;8519   ; banco 1
@@ -719,7 +719,7 @@ estado_9_monta_otra_vez:
 	call 049d2h		;8576
 	call 057fbh		;8579
 	call L_9689		;857c
-	call L_966B		;857f
+	call monta_la_pantalla_entera		;857f
 	call L_9431		;8582
 	call 06000h		;8585   ; banco 1
 	call 06539h		;8588   ; banco 1
@@ -732,7 +732,7 @@ estado_9_espera_la_transicion:
 	call 04332h		;8598   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;859b
 	call 0a985h		;859e   ; banco 3
-	ld a,(0e203h)		;85a1   ; por donde va la rotacion de los sprites; el paso de la transicion
+	ld a,(0e203h)		;85a1   ; el ESTADO de lo que se maneja
 	and a			;85a4
 	ld c,020h		;85a5   ; con cero, un efecto...
 	jr z,estado_9_suena_y_vuelve		;85a7
@@ -752,7 +752,7 @@ estado_9_ultimo:
 avisa_y_avanza_con_paso:
 	call 04265h		;85c2   ; banco 0: sube_el_area_de_juego; subir la zona de juego
 	ld a,01ah		;85c5
-	ld (0e203h),a		;85c7   ; por donde va la rotacion de los sprites; el paso de la transicion, a 0x1A
+	ld (0e203h),a		;85c7   ; el ESTADO de lo que se maneja, a 0x1A
 	ld a,001h		;85ca
 	ld (0e096h),a		;85cc   ; los avisos que deja el cuadro; y un aviso
 	jp avanza_el_subestado		;85cf
@@ -760,7 +760,7 @@ estado_10:
 	djnz estado_10_monta_otra_vez		;85d2
 	call 04332h		;85d4   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;85d7
-	ld a,(0e203h)		;85da   ; por donde va la rotacion de los sprites; el paso de la transicion
+	ld a,(0e203h)		;85da   ; el ESTADO de lo que se maneja
 	cp 011h		;85dd   ; en el 0x11 se acaba
 	ret nz			;85df
 	jp avanza_el_subestado		;85e0
@@ -771,13 +771,13 @@ estado_10_monta_otra_vez:
 	call 0b8ddh		;85eb   ; banco 3
 	call 0463fh		;85ee   ; banco 0: empieza_una_vida; empezar una vida
 	ld a,002h		;85f1
-	ld (0e4c0h),a		;85f3
+	ld (0e4c0h),a		;85f3   ; el nivel de la barra de nueve
 	ld (0e4c1h),a		;85f6
 	call 04995h		;85f9
 	call 049fch		;85fc
 	call 049d2h		;85ff
 	call 057fbh		;8602
-	call L_966B		;8605
+	call monta_la_pantalla_entera		;8605
 	xor a			;8608
 	call L_9453		;8609
 	call 06000h		;860c   ; banco 1
@@ -792,7 +792,7 @@ estado_10_espera:
 	call 04332h		;8622   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;8625
 	call 0a985h		;8628   ; banco 3
-	ld a,(0e203h)		;862b   ; por donde va la rotacion de los sprites; el paso de la transicion
+	ld a,(0e203h)		;862b   ; el ESTADO de lo que se maneja
 	and a			;862e
 	ret nz			;862f   ; hasta cero no se sigue
 	ld a,020h		;8630   ; el efecto 0x20
@@ -810,7 +810,7 @@ estado_11_espera:
 	call 04332h		;864a   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;864d
 	call 0a985h		;8650   ; banco 3
-	ld a,(0e203h)		;8653   ; por donde va la rotacion de los sprites; el paso de la transicion
+	ld a,(0e203h)		;8653   ; el ESTADO de lo que se maneja
 	and a			;8656   ; hasta cero no se sigue
 	ret nz			;8657
 	jp avanza_el_subestado		;8658
@@ -825,7 +825,7 @@ estado_11_monta_otra_vez:
 	call 049d2h		;866f
 	call 057fbh		;8672
 	call L_9689		;8675
-	call L_966B		;8678
+	call monta_la_pantalla_entera		;8678
 	call L_9431		;867b
 	call 06000h		;867e   ; banco 1
 	call 06539h		;8681   ; banco 1
@@ -836,12 +836,12 @@ estado_11_monta_otra_vez:
 estado_11_ultimo:
 	call 042e8h		;868f
 	ld a,001h		;8692   ; la clase de paso de fase
-	ld (0e21eh),a		;8694
+	ld (0e21eh),a		;8694   ; por que tiempo va la otra secuencia
 	ld a,01bh		;8697
-	ld (0e203h),a		;8699   ; por donde va la rotacion de los sprites; el paso de la transicion, a 0x1B
+	ld (0e203h),a		;8699   ; el ESTADO de lo que se maneja, a 0x1B
 	call 07db3h		;869c   ; banco 1
 	ld a,0f8h		;869f   ; un valor de trabajo
-	ld (0e21fh),a		;86a1
+	ld (0e21fh),a		;86a1   ; el paso de montar y desmontar la figura
 	ld c,00eh		;86a4   ; catorce sprites
 	ld hl,0ee90h		;86a6   ; desde el hueco 4
 estado_11_llena_los_sprites:
@@ -882,7 +882,7 @@ estado_12:
 	djnz estado_12_subestado_1		;86c6
 	call 04332h		;86c8   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;86cb
-	ld a,(0e203h)		;86ce   ; por donde va la rotacion de los sprites; el paso de la transicion
+	ld a,(0e203h)		;86ce   ; el ESTADO de lo que se maneja
 	cp 011h		;86d1   ; en el 0x11 se sigue
 	ret nz			;86d3
 	jp avanza_el_subestado		;86d4
@@ -900,7 +900,7 @@ estado_12_subestado_2:
 	call 04332h		;86ef   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;86f2
 	call 0a985h		;86f5   ; banco 3
-	ld a,(0e203h)		;86f8   ; por donde va la rotacion de los sprites; el paso de la transicion
+	ld a,(0e203h)		;86f8   ; el ESTADO de lo que se maneja
 	and a			;86fb   ; hasta cero no se sigue
 	ret nz			;86fc
 	ld a,020h		;86fd   ; el efecto 0x20
@@ -998,7 +998,7 @@ estado_12_subestado_7:
 	call 049d2h		;87c2
 	call 057fbh		;87c5
 	call L_9689		;87c8
-	call L_966B		;87cb
+	call monta_la_pantalla_entera		;87cb
 	call L_9431		;87ce
 	call 04265h		;87d1   ; banco 0: sube_el_area_de_juego
 	ld a,095h		;87d4
@@ -1008,7 +1008,7 @@ estado_12_subestado_8:
 	djnz estado_12_ultimo		;87dc
 	call 04332h		;87de   ; banco 0: sube_los_sprites_desde_arriba
 	call L_96F9		;87e1
-	ld a,(0e203h)		;87e4   ; por donde va la rotacion de los sprites; el paso de la transicion
+	ld a,(0e203h)		;87e4   ; el ESTADO de lo que se maneja
 	cp 004h		;87e7   ; en el 4 se acaba
 	ret nz			;87e9
 	call L_9493		;87ea
@@ -1025,7 +1025,7 @@ estado_12_ultimo:
 ; ESTADO 13: PARADO. Dos llamadas y ya esta. Es donde se queda el juego mientras la pausa este puesta, y de aqui solo se sale por el estado 5, que es quien mira la tecla.
 ; ----------------------------------------------------------------------
 estado_13_la_pausa:
-	call L_8AEC		;8800   ; lo que hay que hacer aunque este parado
+	call escena_despacha_por_0xE0B5		;8800   ; lo que hay que hacer aunque este parado
 	jp 0be41h		;8803   ; y lo del banco 3
 
 ; ----------------------------------------------------------------------
@@ -1073,13 +1073,13 @@ L_8833:
 	ld (0e126h),a		;885b
 	inc a			;885e
 	ld (0e10eh),a		;885f
-	call L_8AEC		;8862
+	call escena_despacha_por_0xE0B5		;8862
 	xor a			;8865
 	jp pon_la_espera_y_avanza		;8866   ; y sin espera
 estado_14_espera_y_rehace:
 	dec b			;8869   ; este subestado se mira con `dec b`, no con `djnz`
 	jp nz,L_8919		;886a
-	call L_8AEC		;886d
+	call escena_despacha_por_0xE0B5		;886d
 	ld hl,0e004h		;8870   ; la espera
 	dec (hl)			;8873
 	ret nz			;8874   ; mientras dure, nada
@@ -1104,7 +1104,7 @@ estado_14_espera_y_rehace:
 	jr z,estado_14_vuelta_2		;88a5
 	cp 003h		;88a7
 	jr z,estado_14_vuelta_3		;88a9
-	call L_966B		;88ab
+	call monta_la_pantalla_entera		;88ab
 	call L_9689		;88ae
 	call 04265h		;88b1   ; banco 0: sube_el_area_de_juego; subir la zona de juego
 	call L_9493		;88b4
@@ -1152,8 +1152,8 @@ L_8919:
 	call 04265h		;891c   ; banco 0: sube_el_area_de_juego
 	call 05750h		;891f
 	xor a			;8922
-	ld (0e21dh),a		;8923
-	ld (0e21bh),a		;8926
+	ld (0e21dh),a		;8923   ; por que paso va la secuencia
+	ld (0e21bh),a		;8926   ; la cuenta de cuadros del paso en el que va la secuencia
 	inc a			;8929
 	ld (0e096h),a		;892a   ; los avisos que deja el cuadro
 	ld (0e097h),a		;892d   ; la bandera de que la fase se ha acabado
@@ -1407,20 +1407,20 @@ destapa_escribe:
 	ld a,(hl)			;8ae8
 	cp 006h		;8ae9   ; seis pasadas y se acabo
 	ret			;8aeb
-L_8AEC:
-	ld a,(0e0b5h)		;8aec
+escena_despacha_por_0xE0B5:
+	ld a,(0e0b5h)		;8aec   ; por que paso va la escena
 	ld b,a			;8aef
-	djnz L_8AFE		;8af0
-	ld hl,0e126h		;8af2
+	djnz L_8AFE		;8af0   ; el 1 es el primero
+	ld hl,0e126h		;8af2   ; y si no hay paso, se descuenta la cuenta
 	dec (hl)			;8af5
-	jp z,L_8CF3		;8af6
-L_8AF9:
+	jp z,L_8CF3		;8af6   ; al acabarse, se acaba la escena
+escena_avanza_el_subestado:
 	ld hl,0e004h		;8af9
-	inc (hl)			;8afc
+	inc (hl)			;8afc   ; un subestado mas
 	ret			;8afd
 L_8AFE:
-	djnz L_8B15		;8afe
-	call L_8B51		;8b00
+	djnz escena_paso_1		;8afe
+	call lee_el_byte_del_guion		;8b00
 	ld hl,0e121h		;8b03
 	sub (hl)			;8b06
 	dec a			;8b07
@@ -1429,27 +1429,31 @@ L_8AFE:
 	ld (0e004h),a		;8b0d   ; el contador de espera del estado
 	ld b,005h		;8b10
 	jp L_8CFA		;8b12
-L_8B15:
-	djnz L_8B5C		;8b15
-	call L_8B51		;8b17
+
+; ----------------------------------------------------------------------
+; EL GUION DE LA ESCENA, PASO 1: LA ENTRADA. Lee un byte del guion, lo usa de indice en la tabla de SIETE bytes de 0x8D85 -hasta seis entradas- y de ahi saca una cuenta (0xE126), un puntero de texto (0xE124) y otro puntero que se queda en 0xE11F. Si el destino esta a cero, la escena se acaba.
+; ----------------------------------------------------------------------
+escena_paso_1:
+	djnz escena_paso_2		;8b15   ; si no es el paso 1, al siguiente
+	call lee_el_byte_del_guion		;8b17   ; el byte siguiente del guion
 	dec a			;8b1a
-	cp 006h		;8b1b
+	cp 006h		;8b1b   ; solo hay seis entradas
 	jp nc,L_8CF3		;8b1d
-	ld hl,08d85h		;8b20
+	ld hl,08d85h		;8b20   ; la tabla de siete bytes
 	ld b,a			;8b23
-	add a,a			;8b24
+	add a,a			;8b24   ; por siete
 	ld c,a			;8b25
 	add a,a			;8b26
 	add a,b			;8b27
 	add a,c			;8b28
-	call 04056h		;8b29   ; banco 0: a_mas_hl
-	ld a,(hl)			;8b2c
+	call 04056h		;8b29   ; la entrada que toca
+	ld a,(hl)			;8b2c   ; la cuenta
 	inc hl			;8b2d
-	ld e,(hl)			;8b2e
+	ld e,(hl)			;8b2e   ; el puntero del texto
 	inc hl			;8b2f
 	ld d,(hl)			;8b30
 	inc hl			;8b31
-	ld c,(hl)			;8b32
+	ld c,(hl)			;8b32   ; y el del guion
 	inc hl			;8b33
 	ld b,(hl)			;8b34
 	inc hl			;8b35
@@ -1459,209 +1463,229 @@ L_8B15:
 	ld h,(hl)			;8b39
 	ld l,a			;8b3a
 	pop af			;8b3b
-	ld (0e126h),a		;8b3c
+	ld (0e126h),a		;8b3c   ; la cuenta, guardada
 	ld a,(hl)			;8b3f
-	and a			;8b40
+	and a			;8b40   ; con el destino a cero, se acabo
 	jp z,L_8CF3		;8b41
-	ld (0e124h),de		;8b44
-	ld (0e11fh),bc		;8b48
-	ld b,006h		;8b4c
+	ld (0e124h),de		;8b44   ; el texto...
+	ld (0e11fh),bc		;8b48   ; ...y el guion
+	ld b,006h		;8b4c   ; y al paso 6
 	jp L_8CFA		;8b4e
-L_8B51:
-	ld de,(0e11fh)		;8b51
-L_8B55:
-	inc de			;8b55
+
+; ----------------------------------------------------------------------
+; EL BYTE SIGUIENTE DEL GUION. El puntero vive en 0xE11F y se adelanta ANTES de leer, o sea que apunta siempre al ultimo byte servido, no al siguiente.
+; ----------------------------------------------------------------------
+lee_el_byte_del_guion:
+	ld de,(0e11fh)		;8b51   ; el puntero del guion
+adelanta_y_lee:
+	inc de			;8b55   ; se adelanta primero...
 	ld (0e11fh),de		;8b56
-	ld a,(de)			;8b5a
+	ld a,(de)			;8b5a   ; ...y se lee despues
 	ret			;8b5b
-L_8B5C:
-	djnz L_8B83		;8b5c
-	call L_8B51		;8b5e
-	ld b,008h		;8b61
+
+; ----------------------------------------------------------------------
+; EL PASO 2: RETOCAR OCHO COLORES. Lee ocho bytes de la VRAM uno a uno y, a los que tengan 1 en el nibble alto, les mete 9: o sea que un color se cambia por otro sin volver a pintar nada.
+; ----------------------------------------------------------------------
+escena_paso_2:
+	djnz escena_paso_3		;8b5c   ; si no es el paso 2, al siguiente
+	call lee_el_byte_del_guion		;8b5e   ; de donde
+	ld b,008h		;8b61   ; ocho bytes
 	ld l,a			;8b63
-	call L_8B55		;8b64
+	call adelanta_y_lee		;8b64
 	ld h,a			;8b67
-L_8B68:
-	call 0004ah		;8b68   ; BIOS RDVRM - Reads the content of VRAM
+retoca_un_color:
+	call 0004ah		;8b68   ; BIOS RDVRM - Reads the content of VRAM | BIOS RDVRM: el que hay
 	ld c,a			;8b6b
-	and 0f0h		;8b6c
-	cp 010h		;8b6e
+	and 0f0h		;8b6c   ; su nibble alto
+	cp 010h		;8b6e   ; ¿es el 1?
 	jr nz,L_8B74		;8b70
-	ld a,090h		;8b72
+	ld a,090h		;8b72   ; pues el 9
 L_8B74:
 	or c			;8b74
-	call 0004dh		;8b75   ; BIOS WRTVRM - Writes data in VRAM
+	call 0004dh		;8b75   ; BIOS WRTVRM - Writes data in VRAM | y devuelto
 	inc hl			;8b78
-	djnz L_8B68		;8b79
+	djnz retoca_un_color		;8b79
 	call L_8CFF		;8b7b
 	ld b,002h		;8b7e
 	jp L_8CFA		;8b80
-L_8B83:
-	dec b			;8b83
-	jp nz,L_8C44		;8b84
-	ld hl,(0e141h)		;8b87
-	dec hl			;8b8a
+
+; ----------------------------------------------------------------------
+; EL PASO 3: LOS SPRITES DE LA ESCENA. Una cuenta larga en 0xE141 que baja de 0x200, y el bit 4 del byte bajo escoge entre dos juegos de sprites: eso es lo que hace que la figura se mueva sola. 0xE143 dice cual de las cuatro parejas de juegos toca -0x8D09/0x8D16, 0x8D23/0x8D34, 0x8D41/0x8D52 y 0x8D63/0x8D74- y da la vuelta al llegar a cuatro.
+; ----------------------------------------------------------------------
+escena_paso_3:
+	dec b			;8b83   ; si no es el paso 3, al siguiente
+	jp nz,escena_paso_4		;8b84
+	ld hl,(0e141h)		;8b87   ; la cuenta larga
+	dec hl			;8b8a   ; uno menos
 	ld (0e141h),hl		;8b8b
 	ld a,l			;8b8e
-	or h			;8b8f
-	jp z,L_8C34		;8b90
-	ld a,(0e143h)		;8b93
+	or h			;8b8f   ; al llegar a cero, se cambia de pareja
+	jp z,cambia_de_pareja_de_juegos		;8b90
+	ld a,(0e143h)		;8b93   ; que pareja toca
 	and a			;8b96
-	jp nz,L_8BFE		;8b97
-	ld ix,08d09h		;8b9a
-	bit 4,l		;8b9e
-	jr z,L_8BA6		;8ba0
+	jp nz,la_segunda_pareja_de_juegos		;8b97
+	ld ix,08d09h		;8b9a   ; la primera...
+	bit 4,l		;8b9e   ; ...y su bit 4 escoge cual de las dos
+	jr z,pinta_los_sprites_de_la_escena		;8ba0
 	ld ix,08d16h		;8ba2
-L_8BA6:
-	ld a,(ix+000h)		;8ba6
+pinta_los_sprites_de_la_escena:
+	ld a,(ix+000h)		;8ba6   ; cuantos sprites
 	ld b,a			;8ba9
 	inc ix		;8baa
-	ld de,03b00h		;8bac
-L_8BAF:
-	ld hl,0e122h		;8baf
+	ld de,03b00h		;8bac   ; la tabla de atributos, en la VRAM
+pinta_un_sprite_de_la_escena:
+	ld hl,0e122h		;8baf   ; los dos desplazamientos
 	ld a,(ix+000h)		;8bb2
 	push af			;8bb5
-	ld a,(0e139h)		;8bb6
+	ld a,(0e139h)		;8bb6   ; ¿va mirando al otro lado?
 	and a			;8bb9
 	jr z,L_8BC1		;8bba
 	pop af			;8bbc
-	neg		;8bbd
-	jr L_8BC2		;8bbf
+	neg		;8bbd   ; pues el desplazamiento, cambiado de signo
+	jr escribe_el_sprite_en_la_vram		;8bbf
 L_8BC1:
 	pop af			;8bc1
-L_8BC2:
-	add a,(hl)			;8bc2
+escribe_el_sprite_en_la_vram:
+	add a,(hl)			;8bc2   ; la fila
 	ld c,a			;8bc3
 	inc hl			;8bc4
 	ld a,(hl)			;8bc5
-	add a,(ix+001h)		;8bc6
+	add a,(ix+001h)		;8bc6   ; y la columna
 	ex de,hl			;8bc9
-	call 0004dh		;8bca   ; BIOS WRTVRM - Writes data in VRAM
+	call 0004dh		;8bca   ; BIOS WRTVRM - Writes data in VRAM | BIOS WRTVRM: la fila
 	ld a,c			;8bcd
 	inc hl			;8bce
-	call 0004dh		;8bcf   ; BIOS WRTVRM - Writes data in VRAM
-	ld a,(ix+002h)		;8bd2
+	call 0004dh		;8bcf   ; BIOS WRTVRM - Writes data in VRAM | y la columna
+	ld a,(ix+002h)		;8bd2   ; el dibujo
 	ld c,a			;8bd5
-	ld a,(0e139h)		;8bd6
+	ld a,(0e139h)		;8bd6   ; mirando al otro lado...
 	and a			;8bd9
 	jr z,L_8BE0		;8bda
-	ld a,004h		;8bdc
+	ld a,004h		;8bdc   ; ...son cuatro dibujos mas alla
 	add a,c			;8bde
 	ld c,a			;8bdf
 L_8BE0:
 	ld a,c			;8be0
 	inc hl			;8be1
-	call 0004dh		;8be2   ; BIOS WRTVRM - Writes data in VRAM
-	ld a,(ix+003h)		;8be5
+	call 0004dh		;8be2   ; BIOS WRTVRM - Writes data in VRAM | el dibujo
+	ld a,(ix+003h)		;8be5   ; y el color
 	inc hl			;8be8
 	call 0004dh		;8be9   ; BIOS WRTVRM - Writes data in VRAM
 	inc hl			;8bec
 	ex de,hl			;8bed
-	inc ix		;8bee
+	inc ix		;8bee   ; cuatro bytes por sprite
 	inc ix		;8bf0
 	inc ix		;8bf2
 	inc ix		;8bf4
-	djnz L_8BAF		;8bf6
-	ld a,0d0h		;8bf8
+	djnz pinta_un_sprite_de_la_escena		;8bf6
+	ld a,0d0h		;8bf8   ; y al acabar, 0xD0 en la fila del siguiente: los demas no se pintan
 	ex de,hl			;8bfa
 	jp 0004dh		;8bfb   ; BIOS WRTVRM - Writes data in VRAM
-L_8BFE:
-	dec a			;8bfe
-	jr nz,L_8C11		;8bff
-	ld ix,08d23h		;8c01
-	bit 4,l		;8c05
-	jp z,L_8BA6		;8c07
+la_segunda_pareja_de_juegos:
+	dec a			;8bfe   ; ¿la segunda pareja?
+	jr nz,la_tercera_pareja_de_juegos		;8bff
+	ld ix,08d23h		;8c01   ; el primer juego...
+	bit 4,l		;8c05   ; ...y su bit 4 escoge cual de los dos
+	jp z,pinta_los_sprites_de_la_escena		;8c07
 	ld ix,08d34h		;8c0a
-	jp L_8BA6		;8c0e
-L_8C11:
-	dec a			;8c11
-	jr nz,L_8C24		;8c12
-	ld ix,08d41h		;8c14
-	bit 4,l		;8c18
-	jp z,L_8BA6		;8c1a
+	jp pinta_los_sprites_de_la_escena		;8c0e
+la_tercera_pareja_de_juegos:
+	dec a			;8c11   ; ¿la tercera pareja?
+	jr nz,la_cuarta_pareja_de_juegos		;8c12
+	ld ix,08d41h		;8c14   ; el primer juego...
+	bit 4,l		;8c18   ; ...y su bit 4 escoge
+	jp z,pinta_los_sprites_de_la_escena		;8c1a
 	ld ix,08d52h		;8c1d
-	jp L_8BA6		;8c21
-L_8C24:
-	ld ix,08d63h		;8c24
-	bit 4,l		;8c28
-	jp z,L_8BA6		;8c2a
+	jp pinta_los_sprites_de_la_escena		;8c21
+la_cuarta_pareja_de_juegos:
+	ld ix,08d63h		;8c24   ; la cuarta, la que queda
+	bit 4,l		;8c28   ; y su bit 4 escoge
+	jp z,pinta_los_sprites_de_la_escena		;8c2a
 	ld ix,08d74h		;8c2d
-	jp L_8BA6		;8c31
-L_8C34:
-	ld hl,00200h		;8c34
+	jp pinta_los_sprites_de_la_escena		;8c31
+cambia_de_pareja_de_juegos:
+	ld hl,00200h		;8c34   ; la cuenta, otra vez a 0x200
 	ld (0e141h),hl		;8c37
 	ld hl,0e143h		;8c3a
-	inc (hl)			;8c3d
+	inc (hl)			;8c3d   ; la pareja siguiente
 	ld a,(hl)			;8c3e
-	sub 004h		;8c3f
+	sub 004h		;8c3f   ; y a la cuarta...
 	ret nz			;8c41
-	ld (hl),a			;8c42
+	ld (hl),a			;8c42   ; ...vuelta a la primera
 	ret			;8c43
-L_8C44:
-	djnz L_8C70		;8c44
+
+; ----------------------------------------------------------------------
+; EL PASO 4: EL TEXTO, CARACTER A CARACTER. Uno de cada cuatro cuadros: lee del guion de 0xE124 una direccion de pantalla y un caracter, y lo escribe con WRTVRM. Cuando se acaba la cuenta de 0xE126, al paso 2.
+; ----------------------------------------------------------------------
+escena_paso_4:
+	djnz escena_paso_5		;8c44   ; si no es el paso 4, al siguiente
 	ld a,(0e003h)		;8c46   ; el contador de cuadros
-	and 003h		;8c49
-	jp nz,L_8AF9		;8c4b
-	ld de,(0e124h)		;8c4e
-	ld a,(de)			;8c52
+	and 003h		;8c49   ; uno de cada cuatro
+	jp nz,escena_avanza_el_subestado		;8c4b
+	ld de,(0e124h)		;8c4e   ; el guion del texto
+	ld a,(de)			;8c52   ; la direccion de pantalla...
 	ld l,a			;8c53
 	inc de			;8c54
 	ld a,(de)			;8c55
 	ld h,a			;8c56
 	inc de			;8c57
-	ld a,(de)			;8c58
-	call 0004dh		;8c59   ; BIOS WRTVRM - Writes data in VRAM
+	ld a,(de)			;8c58   ; ...y el caracter
+	call 0004dh		;8c59   ; BIOS WRTVRM - Writes data in VRAM | BIOS WRTVRM
 	inc de			;8c5c
-	ld (0e124h),de		;8c5d
+	ld (0e124h),de		;8c5d   ; el guion, adelantado
 	call L_8CFF		;8c61
 	ld hl,0e126h		;8c64
-	dec (hl)			;8c67
+	dec (hl)			;8c67   ; un caracter menos
 	ld b,002h		;8c68
-	jp z,L_8CFA		;8c6a
-	jp L_8AF9		;8c6d
-L_8C70:
+	jp z,L_8CFA		;8c6a   ; y al acabarse, al paso 2
+	jp escena_avanza_el_subestado		;8c6d
+
+; ----------------------------------------------------------------------
+; EL PASO 5: LA LINEA SIGUIENTE. Copia de un tiron los 26 bytes de una linea a la tabla de nombres: la linea de origen esta 0x1A mas alla de la anterior en 0x8E7C y la de destino 0x20 mas alla en la pantalla, empezando en 0x3923. Se llega hasta la linea 15, y alli se acaba.
+; ----------------------------------------------------------------------
+escena_paso_5:
 	xor a			;8c70
-	ld (0e139h),a		;8c71
+	ld (0e139h),a		;8c71   ; mirando hacia el lado de siempre
 	ld hl,0e126h		;8c74
-	inc (hl)			;8c77
+	inc (hl)			;8c77   ; una linea mas
 	ld a,(hl)			;8c78
-	cp 00fh		;8c79
-	jr z,L_8CA6		;8c7b
-	ld hl,03923h		;8c7d
+	cp 00fh		;8c79   ; ¿la quince?
+	jr z,se_acabo_el_texto		;8c7b
+	ld hl,03923h		;8c7d   ; la primera linea de la pantalla
 	ld (0e124h),hl		;8c80
-	ld hl,08e7ch		;8c83
-	dec a			;8c86
-	jr z,L_8C9C		;8c87
+	ld hl,08e7ch		;8c83   ; y el primer texto
+	dec a			;8c86   ; la primera va directa
+	jr z,copia_la_linea		;8c87
 	ld b,a			;8c89
-L_8C8A:
-	ld de,0001ah		;8c8a
+salta_a_la_linea_que_toca:
+	ld de,0001ah		;8c8a   ; 26 bytes por linea de texto...
 	add hl,de			;8c8d
 	push hl			;8c8e
 	ld hl,(0e124h)		;8c8f
-	ld de,00020h		;8c92
+	ld de,00020h		;8c92   ; ...y 32 por linea de pantalla
 	add hl,de			;8c95
 	ld (0e124h),hl		;8c96
 	pop hl			;8c99
-	djnz L_8C8A		;8c9a
-L_8C9C:
+	djnz salta_a_la_linea_que_toca		;8c9a
+copia_la_linea:
 	ex de,hl			;8c9c
 	ld hl,(0e124h)		;8c9d
-	ld bc,0001ah		;8ca0
-	jp 0428fh		;8ca3   ; banco 0: copia_a_vram
-L_8CA6:
-	ld b,040h		;8ca6
-	ld a,(0e10eh)		;8ca8
+	ld bc,0001ah		;8ca0   ; los 26 caracteres
+	jp 0428fh		;8ca3   ; banco 0: de un tiron a la VRAM
+se_acabo_el_texto:
+	ld b,040h		;8ca6   ; 0x40 de espera...
+	ld a,(0e10eh)		;8ca8   ; ...o solo 1 si 0xE10E esta puesto
 	and a			;8cab
-	jr z,L_8CB0		;8cac
+	jr z,arranca_la_espera_del_final		;8cac
 	ld b,001h		;8cae
-L_8CB0:
+arranca_la_espera_del_final:
 	ld a,b			;8cb0
-	ld (0e126h),a		;8cb1
-	ld hl,00200h		;8cb4
+	ld (0e126h),a		;8cb1   ; la espera
+	ld hl,00200h		;8cb4   ; la cuenta larga, otra vez a 0x200
 	ld (0e141h),hl		;8cb7
 	xor a			;8cba
-	ld (0e143h),a		;8cbb
-	ld a,(0e092h)		;8cbe   ; la FASE, de 1 a 24
+	ld (0e143h),a		;8cbb   ; la pareja de juegos, a la primera
+	ld a,(0e092h)		;8cbe   ; y la fase
 	dec a			;8cc1
 	ld b,a			;8cc2
 	cp 00eh		;8cc3
@@ -1689,7 +1713,7 @@ L_8CCF:
 L_8CF3:
 	ld hl,0e0b5h		;8cf3
 	inc (hl)			;8cf6
-	jp L_8AF9		;8cf7
+	jp escena_avanza_el_subestado		;8cf7
 L_8CFA:
 	ld hl,0e0b5h		;8cfa
 	ld (hl),b			;8cfd
@@ -1702,83 +1726,220 @@ L_8CFF:
 	jp 0413ah		;8d06   ; banco 0: pide_sonido_si_esta_activo
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x8d09..0x91ad  (1188 bytes)
-DATA_8D09:
-	defb 003h,008h,004h,0e0h,00ah,000h,0feh,0d8h,00fh,000h,000h,0d0h,001h,003h,000h,003h	; 8d09  ................
-	defb 0f8h,00ah,005h,000h,0f0h,00fh,000h,0ffh,0e8h,001h,004h,003h,003h,050h,00ah,005h	; 8d19  .............P..
-	defb 000h,048h,00fh,008h,00fh,040h,001h,001h,0ffh,038h,001h,003h,003h,005h,068h,00ah	; 8d29  .H...@...8....h.
-	defb 006h,000h,060h,00fh,002h,000h,058h,001h,004h,002h,004h,080h,00ah,002h,001h,078h	; 8d39  ..`...X........x
-	defb 00fh,0fch,000h,070h,001h,00ch,00eh,088h,001h,004h,003h,005h,0a0h,00ah,003h,000h	; 8d49  ...p............
-	defb 098h,00fh,0fch,000h,090h,001h,00ch,00eh,088h,001h,004h,002h,0f6h,0a8h,00fh,003h	; 8d59  ................
-	defb 003h,0c0h,006h,008h,001h,0b8h,00ah,004h,0fdh,0b0h,001h,004h,002h,0f7h,0c8h,00fh	; 8d69  ................
-	defb 003h,003h,0c0h,006h,008h,001h,0b8h,00ah,004h,0fdh,0b0h,001h,008h,0dch,090h,013h	; 8d79  ................
-	defb 090h,0c6h,0e0h,009h,0f4h,090h,02bh,090h,0c7h,0e0h,00ch,00fh,091h,047h,090h,0c8h	; 8d89  ......+......G..
-	defb 0e0h,003h,033h,091h,05fh,090h,0c9h,0e0h,009h,03ch,091h,07bh,090h,0cah,0e0h,00ch	; 8d99  ..3._....<.{....
-	defb 057h,091h,09bh,090h,0cbh,0e0h,0c9h,038h,028h,029h,033h,023h,02fh,032h,025h,0feh	; 8da9  W......8()3#/2%.
-	defb 0e9h,038h,033h,023h,02fh,032h,025h,0ffh,089h,038h,033h,034h,021h,027h,025h,0feh	; 8db9  .83#/2%..834!'%.
-	defb 0a9h,038h,02ch,029h,036h,025h,033h,0ffh,02ch,025h,036h,025h,02ch,000h,000h,000h	; 8dc9  .8,)6%3.,%6%,...
-	defb 010h,011h,0ffh,02ch,025h,036h,025h,02ch,000h,000h,000h,010h,012h,0ffh,0aah,03ah	; 8dd9  ...,%6%,.......:
-	defb 030h,035h,033h,028h,042h,033h,030h,021h,023h,025h,042h,02bh,025h,039h,0ffh,029h	; 8de9  053(B30!#%B+%9.)
-	defb 039h,02ch,025h,036h,025h,02ch,000h,033h,025h,02ch,025h,023h,034h,0ffh,01bh,01ch	; 8df9  9,%6%,.3%,%#4...
-	defb 0ffh,08dh,039h,02ch,025h,036h,025h,02ch,000h,011h,0ffh,0edh,039h,02ch,025h,036h	; 8e09  ..9,%6%,....9,%6
-	defb 025h,02ch,000h,012h,0ffh,0c9h,038h,026h,015h,000h,02bh,025h,039h,000h,023h,02fh	; 8e19  %,....8&..+%9.#/
-	defb 02eh,034h,029h,02eh,035h,025h,0ffh,00bh,039h,027h,021h,02dh,025h,000h,000h,02fh	; 8e29  .4).5%..9'!-%../
-	defb 036h,025h,032h,0feh,069h,039h,028h,029h,033h,023h,02fh,032h,025h,0feh,089h,039h	; 8e39  6%2.i9()3#/2%..9
-	defb 033h,023h,02fh,032h,025h,0ffh,002h,038h,034h,029h,02dh,025h,0feh,00ah,038h,024h	; 8e49  3#/2%..84)-%..8$
-	defb 029h,033h,034h,0feh,013h,038h,01bh,01ch,0feh,019h,038h,01dh,0ffh,00ah,038h,000h	; 8e59  )34..8....8...8.
-	defb 020h,022h,02fh,02eh,035h,033h,020h,0ffh,00ah,038h,000h,020h,037h,021h,032h,030h	; 8e69   "/.53 ..8. 7!20
-	defb 020h,000h,0ffh,044h,045h,046h,047h,048h,049h,04ah,04bh,04ch,043h,04dh,043h,043h	; 8e79   ..DEFGHIJKLCMCC
-	defb 04dh,04dh,043h,043h,043h,045h,046h,048h,049h,04ah,045h,043h,0ceh,0c9h,054h,055h	; 8e89  MMCCCEFHIJEC..TU
-	defb 041h,041h,041h,041h,041h,041h,041h,041h,060h,061h,042h,042h,042h,062h,063h,042h	; 8e99  AAAAAAAA`aBBBbcB
-	defb 042h,042h,042h,064h,065h,066h,0cfh,0cah,056h,041h,041h,041h,041h,041h,041h,041h	; 8ea9  BBBdef..VAAAAAAA
-	defb 041h,041h,067h,07ch,042h,042h,042h,068h,069h,042h,042h,042h,042h,06ah,06bh,06ch	; 8eb9  AAg|BBBhiBBBBjkl
-	defb 050h,04eh,057h,0cch,0d1h,041h,08eh,08fh,090h,091h,06dh,041h,098h,099h,09ah,042h	; 8ec9  PNW..A....mA...B
-	defb 042h,042h,042h,089h,08ah,08bh,07fh,080h,081h,05fh,0d0h,04fh,05eh,0cdh,0d2h,058h	; 8ed9  BBB......_.O^..X
-	defb 059h,05ah,05bh,092h,06eh,06fh,097h,07ah,09bh,042h,042h,070h,042h,082h,040h,040h	; 8ee9  YZ[.no.z.BBpB.@@
-	defb 040h,083h,084h,07dh,051h,043h,05ch,0a9h,0aah,0abh,041h,041h,041h,093h,094h,095h	; 8ef9  @..}QC\...AAA...
-	defb 096h,07bh,09ch,042h,042h,09fh,0a0h,0a1h,0a2h,0a3h,0a4h,0a5h,0a6h,07eh,052h,0cbh	; 8f09  .{.BB........~R.
-	defb 05dh,0a8h,041h,071h,042h,072h,073h,074h,075h,076h,077h,078h,09dh,042h,079h,09eh	; 8f19  ].AqBrstuvwx.By.
-	defb 085h,086h,087h,08ch,08dh,040h,0a7h,088h,053h,044h,041h,0b3h,0b2h,0b1h,0b0h,0afh	; 8f29  .....@..SDA.....
-	defb 05ah,05bh,05ch,05dh,05eh,05fh,094h,095h,096h,097h,042h,042h,08bh,09bh,09ah,099h	; 8f39  Z[\]^_....BB....
-	defb 098h,059h,0d3h,0cch,041h,041h,060h,042h,042h,0aeh,061h,062h,063h,064h,065h,066h	; 8f49  .Y..AA`BB.abcdef
-	defb 067h,068h,069h,06ah,09fh,09eh,09dh,09ch,040h,040h,08ch,058h,047h,0cdh,041h,06bh	; 8f59  ghij....@@.XG.Ak
-	defb 042h,042h,06ch,0adh,06dh,0a9h,0a8h,0a7h,0a6h,0a5h,0a4h,0a3h,0a2h,0a1h,0a0h,08ah	; 8f69  BBl.m...........
-	defb 08dh,08eh,040h,040h,08fh,06eh,0d2h,0ceh,041h,06fh,070h,071h,072h,0ach,0abh,0aah	; 8f79  ..@@.n..Aopqr...
-	defb 041h,073h,042h,042h,074h,075h,076h,041h,041h,077h,042h,090h,040h,091h,092h,078h	; 8f89  AsBBtuvAAwB.@..x
-	defb 0d0h,045h,041h,041h,041h,041h,041h,079h,07ah,07bh,07ch,042h,042h,07dh,041h,041h	; 8f99  .EAAAAAyz{|BB}AA
-	defb 041h,07eh,07fh,042h,080h,042h,093h,042h,042h,081h,0d0h,0cfh,057h,041h,041h,041h	; 8fa9  A~.B.B.BB...WAAA
-	defb 041h,082h,083h,084h,042h,042h,085h,086h,041h,041h,041h,087h,088h,042h,089h,042h	; 8fb9  A...BB..AAA..B.B
-	defb 042h,042h,042h,042h,0d1h,046h,049h,043h,04ah,04bh,043h,04ch,043h,04dh,04eh,04fh	; 8fc9  BBBB.FICJKCLCMNO
-	defb 050h,043h,043h,051h,052h,053h,054h,055h,056h,043h,043h,043h,04ch,043h,048h,001h	; 8fd9  PCCQRSTUVCCCLCH.
-	defb 000h,070h,00ch,001h,001h,078h,00ch,002h,000h,080h,00ch,002h,000h,088h,00ch,003h	; 8fe9  .p...x..........
-	defb 000h,090h,00ch,003h,000h,098h,00ch,004h,000h,0a0h,00ch,004h,000h,0a8h,00ch,005h	; 8ff9  ................
-	defb 000h,0b0h,00ch,006h,000h,0b8h,00ch,006h,000h,0c0h,00ch,006h,002h,0c8h,00ch,007h	; 9009  ................
-	defb 000h,0d8h,00ch,008h,000h,0e0h,00ch,008h,000h,0e8h,00ch,008h,000h,0a0h,014h,009h	; 9019  ................
-	defb 000h,0a8h,014h,009h,003h,0b0h,014h,00ah,000h,0b8h,014h,00ah,000h,0f0h,00ch,00ah	; 9029  ................
-	defb 000h,0f8h,00ch,00bh,000h,000h,00dh,00bh,000h,008h,00dh,00ch,000h,010h,00dh,00ch	; 9039  ................
-	defb 000h,018h,00dh,00dh,000h,020h,00dh,00dh,004h,028h,00dh,00eh,000h,038h,00dh,00eh	; 9049  ..... ...(...8..
-	defb 000h,0c0h,014h,00fh,000h,0c8h,014h,00fh,005h,0d0h,014h,00fh,000h,0d8h,014h,010h	; 9059  ................
-	defb 000h,0e0h,014h,011h,000h,0e8h,014h,011h,000h,0f0h,014h,011h,000h,0f8h,014h,012h	; 9069  ................
-	defb 000h,000h,015h,012h,006h,008h,015h,013h,000h,010h,015h,013h,000h,018h,015h,014h	; 9079  ................
-	defb 000h,020h,015h,014h,000h,028h,015h,014h,000h,028h,015h,014h,000h,030h,015h,015h	; 9089  . ...(...(...0..
-	defb 000h,038h,015h,015h,000h,040h,015h,016h,000h,048h,015h,016h,000h,050h,015h,016h	; 9099  .8...@...H...P..
-	defb 000h,058h,015h,016h,000h,060h,015h,017h,000h,068h,015h,017h,000h,070h,015h,017h	; 90a9  .X...`...h...p..
-	defb 000h,078h,015h,017h,000h,080h,015h,017h,000h,088h,015h,018h,000h,090h,015h,018h	; 90b9  .x..............
-	defb 000h,098h,015h,018h,000h,040h,00dh,018h,000h,048h,00dh,018h,000h,050h,00dh,018h	; 90c9  .....@...H...P..
-	defb 000h,058h,00dh,089h,039h,0ach,069h,039h,0adh,06ah,039h,0aeh,06bh,039h,0afh,06ch	; 90d9  .X..9.i9.j9.k9.l
-	defb 039h,0b0h,06dh,039h,0b1h,08dh,039h,0b2h,08eh,039h,0b3h,08fh,039h,0b4h,06fh,039h	; 90e9  9.m9..9..9..9.o9
-	defb 0b5h,070h,039h,0b6h,071h,039h,0b7h,091h,039h,0b8h,0b1h,039h,0b9h,0d1h,039h,0bah	; 90f9  .p9.q9..9..9..9.
-	defb 0f1h,039h,0bbh,011h,03ah,0b4h,012h,03ah,0b5h,0f2h,039h,0bch,0d2h,039h,0bdh,0b2h	; 9109  .9..:..:..9..9..
-	defb 039h,0beh,092h,039h,0bfh,093h,039h,0c0h,094h,039h,0c1h,095h,039h,0c2h,096h,039h	; 9119  9..9..9..9..9..9
-	defb 0c3h,097h,039h,0c4h,0b7h,039h,0c5h,0d7h,039h,0c6h,0d9h,039h,0c7h,0f9h,039h,0c8h	; 9129  ..9..9..9..9..9.
-	defb 019h,03ah,0b6h,018h,03ah,0b7h,038h,03ah,0b8h,058h,03ah,0b9h,078h,03ah,0bah,077h	; 9139  .:..:.8:.X:.x:.w
-	defb 03ah,0bbh,076h,03ah,0bch,075h,03ah,0bdh,074h,03ah,0beh,054h,03ah,0bfh,053h,03ah	; 9149  :.v:.u:.t:.T:.S:
-	defb 0c0h,073h,03ah,0c1h,093h,03ah,0c2h,092h,03ah,0c3h,091h,03ah,0c4h,090h,03ah,0c5h	; 9159  .s:..:..:..:..:.
-	defb 08fh,03ah,0c6h,08eh,03ah,0c7h,08dh,03ah,0c8h,08ch,03ah,0c9h,06ch,03ah,0cah,04ch	; 9169  .:..:..:..:.l:.L
-	defb 03ah,0cbh,033h,052h,048h,052h,056h,052h,04bh,070h,069h,07ah,063h,062h,07bh,052h	; 9179  :.3RHRVRKpizcb{R
-	defb 08bh,064h,07fh,083h,091h,083h,099h,062h,0a9h,062h,0b9h,062h,0cah,062h,0cfh,08ah	; 9189  .d.....b.b.b.b..
-	defb 0c3h,08ah,0b3h,092h,0abh,092h,08fh,09ah,07fh,09ah,069h,09ah,057h,082h,035h,096h	; 9199  ..........i.W.5.
-	defb 030h,08ah,03dh,070h	; 91a9
+; DATOS listas_de_sprites_para_IX: ocho listas que p02:8B9A, 8BA2, 8C01, 8C0A,
+;   8C14, 8C1D, 8C24 y 8C2D ponen en IX: un byte con la cuenta B y B atributos
+;   de sprite de 4 bytes que p02:8BA6 manda a 0x3B00 (las de 13 bytes llevan
+;   tres, las de 17 cuatro)
+;   0x8d09..0x8d85  (124 bytes)
+DATA_listas_de_sprites_para_IX:
+	defb 003h,008h,004h,0e0h,00ah,000h,0feh,0d8h,00fh,000h,000h,0d0h,001h,003h,000h,003h,0f8h	; 8d09  .................
+	defb 00ah,005h,000h,0f0h,00fh,000h,0ffh,0e8h,001h,004h,003h,003h,050h,00ah,005h,000h,048h	; 8d1a  ............P...H
+	defb 00fh,008h,00fh,040h,001h,001h,0ffh,038h,001h,003h,003h,005h,068h,00ah,006h,000h,060h	; 8d2b  ...@...8....h...`
+	defb 00fh,002h,000h,058h,001h,004h,002h,004h,080h,00ah,002h,001h,078h,00fh,0fch,000h,070h	; 8d3c  ...X........x...p
+	defb 001h,00ch,00eh,088h,001h,004h,003h,005h,0a0h,00ah,003h,000h,098h,00fh,0fch,000h,090h	; 8d4d  .................
+	defb 001h,00ch,00eh,088h,001h,004h,002h,0f6h,0a8h,00fh,003h,003h,0c0h,006h,008h,001h,0b8h	; 8d5e  .................
+	defb 00ah,004h,0fdh,0b0h,001h,004h,002h,0f7h,0c8h,00fh,003h,003h,0c0h,006h,008h,001h,0b8h	; 8d6f  .................
+	defb 00ah,004h,0fdh,0b0h,001h	; 8d80
+
+; ----------------------------------------------------------------------
+; DATOS entradas_de_7_8D85: seis entradas de 7 bytes: p02:8B20 multiplica A
+;   por siete sobre 0x8D85
+;   0x8d85..0x8daf  (42 bytes)
+DATA_entradas_de_7_8D85:
+	defb 008h,0dch,090h,013h,090h,0c6h,0e0h	; 8d85
+	defb 009h,0f4h,090h,02bh,090h,0c7h,0e0h	; 8d8c
+	defb 00ch,00fh,091h,047h,090h,0c8h,0e0h	; 8d93
+	defb 003h,033h,091h,05fh,090h,0c9h,0e0h	; 8d9a
+	defb 009h,03ch,091h,07bh,090h,0cah,0e0h	; 8da1
+	defb 00ch,057h,091h,09bh,090h,0cbh,0e0h	; 8da8
+
+; ----------------------------------------------------------------------
+; DATOS tira_8DAF: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que
+;   lee pinta_guion_con_mascara; lo cargan p02:93D1 (18 bytes)
+;   0x8daf..0x8dc1  (18 bytes)
+DATA_tira_8DAF:
+	defb 0c9h,038h,028h,029h,033h,023h,02fh,032h,025h,0feh,0e9h,038h,033h,023h,02fh,032h	; 8daf  .8()3#/2%..83#/2
+	defb 025h,0ffh	; 8dbf
+
+; ----------------------------------------------------------------------
+; DATOS tira_8DC1: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que
+;   lee pinta_guion_con_mascara; se entra por 0x8DC1, 0x8DC9; lo cargan
+;   p02:93FE, p02:940C (16 bytes)
+;   0x8dc1..0x8dd1  (16 bytes)
+DATA_tira_8DC1:
+	defb 089h,038h,033h,034h,021h,027h,025h,0feh,0a9h,038h,02ch,029h,036h,025h,033h,0ffh	; 8dc1  .834!'%..8,)6%3.
+
+; ----------------------------------------------------------------------
+; DATOS dos_rotulos_8DD1: dos guiones de bytes (0xFF acaba) que p02:93EB y
+;   93F0 pasan en DE a p00:42C1 con HL = 0x3869: uno u otro segun A
+;   0x8dd1..0x8de7  (22 bytes)
+DATA_dos_rotulos_8DD1:
+	defb 02ch,025h,036h,025h,02ch,000h,000h,000h,010h,011h,0ffh	; 8dd1  ,%6%,......
+	defb 02ch,025h,036h,025h,02ch,000h,000h,000h,010h,012h,0ffh	; 8ddc  ,%6%,......
+
+; ----------------------------------------------------------------------
+; DATOS tira_8DE7: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que
+;   lee pinta_guion_con_mascara y pinta_guion_lee_destino; lo cargan p02:80A6,
+;   p02:80AB (17 bytes)
+;   0x8de7..0x8df8  (17 bytes)
+DATA_tira_8DE7:
+	defb 0aah,03ah,030h,035h,033h,028h,042h,033h,030h,021h,023h,025h,042h,02bh,025h,039h	; 8de7  .:053(B30!#%B+%9
+	defb 0ffh	; 8df7
+
+; ----------------------------------------------------------------------
+; DATOS tira_8DF8: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que
+;   lee pinta_guion_con_mascara; lo cargan p02:80C0 (15 bytes)
+;   0x8df8..0x8e07  (15 bytes)
+DATA_tira_8DF8:
+	defb 029h,039h,02ch,025h,036h,025h,02ch,000h,033h,025h,02ch,025h,023h,034h,0ffh	; 8df8  )9,%6%,.3%,%#4.
+
+; ----------------------------------------------------------------------
+; DATOS tres_bytes_8E07: el guion `1B 1C FF` que p02:9215 pasa a p00:42C1: dos
+;   caracteres y el 0xFF que acaba
+;   0x8e07..0x8e0a  (3 bytes)
+DATA_tres_bytes_8E07:
+	defb 01bh,01ch,0ffh	; 8e07
+
+; ----------------------------------------------------------------------
+; DATOS tira_8E0A: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que
+;   lee pinta_guion_con_mascara y pinta_guion_lee_destino; lo cargan p02:80C6,
+;   p02:8103 (10 bytes)
+;   0x8e0a..0x8e14  (10 bytes)
+DATA_tira_8E0A:
+	defb 08dh,039h,02ch,025h,036h,025h,02ch,000h,011h,0ffh	; 8e0a  .9,%6%,...
+
+; ----------------------------------------------------------------------
+; DATOS tira_8E14: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que
+;   lee pinta_guion_con_mascara y pinta_guion_lee_destino; lo cargan p02:80CC,
+;   p02:812A (10 bytes)
+;   0x8e14..0x8e1e  (10 bytes)
+DATA_tira_8E14:
+	defb 0edh,039h,02ch,025h,036h,025h,02ch,000h,012h,0ffh	; 8e14  .9,%6%,...
+
+; ----------------------------------------------------------------------
+; DATOS tira_8E1E: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que
+;   lee pinta_guion_con_mascara y pinta_guion_lee_destino; lo cargan p02:8A3C,
+;   p02:8A52 (18 bytes)
+;   0x8e1e..0x8e30  (18 bytes)
+DATA_tira_8E1E:
+	defb 0c9h,038h,026h,015h,000h,02bh,025h,039h,000h,023h,02fh,02eh,034h,029h,02eh,035h	; 8e1e  .8&..+%9.#/.4).5
+	defb 025h,0ffh	; 8e2e
+
+; ----------------------------------------------------------------------
+; DATOS tira_8E30: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que
+;   lee pinta_guion_con_mascara; lo cargan p02:8A1D (31 bytes)
+;   0x8e30..0x8e4f  (31 bytes)
+DATA_tira_8E30:
+	defb 00bh,039h,027h,021h,02dh,025h,000h,000h,02fh,036h,025h,032h,0feh,069h,039h,028h	; 8e30  .9'!-%../6%2.i9(
+	defb 029h,033h,023h,02fh,032h,025h,0feh,089h,039h,033h,023h,02fh,032h,025h,0ffh	; 8e40  )3#/2%..93#/2%.
+
+; ----------------------------------------------------------------------
+; DATOS tira_8E4F: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que
+;   lee pinta_guion_con_mascara; lo cargan p02:9434 (23 bytes)
+;   0x8e4f..0x8e66  (23 bytes)
+DATA_tira_8E4F:
+	defb 002h,038h,034h,029h,02dh,025h,0feh,00ah,038h,024h,029h,033h,034h,0feh,013h,038h	; 8e4f  .84)-%..8$)34..8
+	defb 01bh,01ch,0feh,019h,038h,01dh,0ffh	; 8e5f
+
+; ----------------------------------------------------------------------
+; DATOS rotulo_8E66: guion con su destino delante (0x380A) y bytes hasta el
+;   0xFF, que p02:9457 carga en DE para el pintor con mascara
+;   0x8e66..0x8e71  (11 bytes)
+DATA_rotulo_8E66:
+	defb 00ah,038h,000h,020h,022h,02fh,02eh,035h,033h,020h,0ffh	; 8e66  .8. "/.53 .
+
+; ----------------------------------------------------------------------
+; DATOS tira_8E71: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que
+;   lee pinta_guion_lee_destino; lo cargan p02:9466 (11 bytes)
+;   0x8e71..0x8e7c  (11 bytes)
+DATA_tira_8E71:
+	defb 00ah,038h,000h,020h,037h,021h,032h,030h,020h,000h,0ffh	; 8e71  .8. 7!20 ..
+
+; ----------------------------------------------------------------------
+; DATOS imagen_de_14_filas: una imagen de 14 filas de 26 caracteres: p02:8C83
+;   copia la fila (0xE126) - 1 con copia_a_vram a 0x3923 + 0x20 por fila, y a
+;   la fila 15 lo deja (p02:8C79)
+;   0x8e7c..0x8fe8  (364 bytes)
+DATA_imagen_de_14_filas:
+	defb 044h,045h,046h,047h,048h,049h,04ah,04bh,04ch,043h,04dh,043h,043h,04dh,04dh,043h,043h,043h,045h,046h,048h,049h,04ah,045h,043h,0ceh	; 8e7c  DEFGHIJKLCMCCMMCCCEFHIJEC.
+	defb 0c9h,054h,055h,041h,041h,041h,041h,041h,041h,041h,041h,060h,061h,042h,042h,042h,062h,063h,042h,042h,042h,042h,064h,065h,066h,0cfh	; 8e96  .TUAAAAAAAA`aBBBbcBBBBdef.
+	defb 0cah,056h,041h,041h,041h,041h,041h,041h,041h,041h,041h,067h,07ch,042h,042h,042h,068h,069h,042h,042h,042h,042h,06ah,06bh,06ch,050h	; 8eb0  .VAAAAAAAAAg|BBBhiBBBBjklP
+	defb 04eh,057h,0cch,0d1h,041h,08eh,08fh,090h,091h,06dh,041h,098h,099h,09ah,042h,042h,042h,042h,089h,08ah,08bh,07fh,080h,081h,05fh,0d0h	; 8eca  NW..A....mA...BBBB......_.
+	defb 04fh,05eh,0cdh,0d2h,058h,059h,05ah,05bh,092h,06eh,06fh,097h,07ah,09bh,042h,042h,070h,042h,082h,040h,040h,040h,083h,084h,07dh,051h	; 8ee4  O^..XYZ[.no.z.BBpB.@@@..}Q
+	defb 043h,05ch,0a9h,0aah,0abh,041h,041h,041h,093h,094h,095h,096h,07bh,09ch,042h,042h,09fh,0a0h,0a1h,0a2h,0a3h,0a4h,0a5h,0a6h,07eh,052h	; 8efe  C\...AAA....{.BB........~R
+	defb 0cbh,05dh,0a8h,041h,071h,042h,072h,073h,074h,075h,076h,077h,078h,09dh,042h,079h,09eh,085h,086h,087h,08ch,08dh,040h,0a7h,088h,053h	; 8f18  .].AqBrstuvwx.By......@..S
+	defb 044h,041h,0b3h,0b2h,0b1h,0b0h,0afh,05ah,05bh,05ch,05dh,05eh,05fh,094h,095h,096h,097h,042h,042h,08bh,09bh,09ah,099h,098h,059h,0d3h	; 8f32  DA.....Z[\]^_....BB.....Y.
+	defb 0cch,041h,041h,060h,042h,042h,0aeh,061h,062h,063h,064h,065h,066h,067h,068h,069h,06ah,09fh,09eh,09dh,09ch,040h,040h,08ch,058h,047h	; 8f4c  .AA`BB.abcdefghij....@@.XG
+	defb 0cdh,041h,06bh,042h,042h,06ch,0adh,06dh,0a9h,0a8h,0a7h,0a6h,0a5h,0a4h,0a3h,0a2h,0a1h,0a0h,08ah,08dh,08eh,040h,040h,08fh,06eh,0d2h	; 8f66  .AkBBl.m.............@@.n.
+	defb 0ceh,041h,06fh,070h,071h,072h,0ach,0abh,0aah,041h,073h,042h,042h,074h,075h,076h,041h,041h,077h,042h,090h,040h,091h,092h,078h,0d0h	; 8f80  .Aopqr...AsBBtuvAAwB.@..x.
+	defb 045h,041h,041h,041h,041h,041h,079h,07ah,07bh,07ch,042h,042h,07dh,041h,041h,041h,07eh,07fh,042h,080h,042h,093h,042h,042h,081h,0d0h	; 8f9a  EAAAAAyz{|BB}AAA~.B.B.BB..
+	defb 0cfh,057h,041h,041h,041h,041h,082h,083h,084h,042h,042h,085h,086h,041h,041h,041h,087h,088h,042h,089h,042h,042h,042h,042h,042h,0d1h	; 8fb4  .WAAAA...BB..AAA..B.BBBBB.
+	defb 046h,049h,043h,04ah,04bh,043h,04ch,043h,04dh,04eh,04fh,050h,043h,043h,051h,052h,053h,054h,055h,056h,043h,043h,043h,04ch,043h,048h	; 8fce  FICJKCLCMNOPCCQRSTUVCCCLCH
+
+; ----------------------------------------------------------------------
+; DATOS tira_de_E11F: la tira que p02:8B51 va leyendo byte a byte con
+;   (0xE11F): p02:8CDD pone el puntero en 0x8FE7, el byte ANTERIOR, porque
+;   0x8B55 incrementa antes de leer. Lleva direcciones de VRAM y valores;
+;   llega hasta la tabla de 0x917B
+;   0x8fe8..0x917b  (403 bytes)
+DATA_tira_de_E11F:
+	defb 001h,000h,070h,00ch,001h,001h,078h,00ch,002h,000h,080h,00ch,002h,000h,088h,00ch	; 8fe8  ..p...x.........
+	defb 003h,000h,090h,00ch,003h,000h,098h,00ch,004h,000h,0a0h,00ch,004h,000h,0a8h,00ch	; 8ff8  ................
+	defb 005h,000h,0b0h,00ch,006h,000h,0b8h,00ch,006h,000h,0c0h,00ch,006h,002h,0c8h,00ch	; 9008  ................
+	defb 007h,000h,0d8h,00ch,008h,000h,0e0h,00ch,008h,000h,0e8h,00ch,008h,000h,0a0h,014h	; 9018  ................
+	defb 009h,000h,0a8h,014h,009h,003h,0b0h,014h,00ah,000h,0b8h,014h,00ah,000h,0f0h,00ch	; 9028  ................
+	defb 00ah,000h,0f8h,00ch,00bh,000h,000h,00dh,00bh,000h,008h,00dh,00ch,000h,010h,00dh	; 9038  ................
+	defb 00ch,000h,018h,00dh,00dh,000h,020h,00dh,00dh,004h,028h,00dh,00eh,000h,038h,00dh	; 9048  ...... ...(...8.
+	defb 00eh,000h,0c0h,014h,00fh,000h,0c8h,014h,00fh,005h,0d0h,014h,00fh,000h,0d8h,014h	; 9058  ................
+	defb 010h,000h,0e0h,014h,011h,000h,0e8h,014h,011h,000h,0f0h,014h,011h,000h,0f8h,014h	; 9068  ................
+	defb 012h,000h,000h,015h,012h,006h,008h,015h,013h,000h,010h,015h,013h,000h,018h,015h	; 9078  ................
+	defb 014h,000h,020h,015h,014h,000h,028h,015h,014h,000h,028h,015h,014h,000h,030h,015h	; 9088  .. ...(...(...0.
+	defb 015h,000h,038h,015h,015h,000h,040h,015h,016h,000h,048h,015h,016h,000h,050h,015h	; 9098  ..8...@...H...P.
+	defb 016h,000h,058h,015h,016h,000h,060h,015h,017h,000h,068h,015h,017h,000h,070h,015h	; 90a8  ..X...`...h...p.
+	defb 017h,000h,078h,015h,017h,000h,080h,015h,017h,000h,088h,015h,018h,000h,090h,015h	; 90b8  ..x.............
+	defb 018h,000h,098h,015h,018h,000h,040h,00dh,018h,000h,048h,00dh,018h,000h,050h,00dh	; 90c8  ......@...H...P.
+	defb 018h,000h,058h,00dh,089h,039h,0ach,069h,039h,0adh,06ah,039h,0aeh,06bh,039h,0afh	; 90d8  ..X..9.i9.j9.k9.
+	defb 06ch,039h,0b0h,06dh,039h,0b1h,08dh,039h,0b2h,08eh,039h,0b3h,08fh,039h,0b4h,06fh	; 90e8  l9.m9..9..9..9.o
+	defb 039h,0b5h,070h,039h,0b6h,071h,039h,0b7h,091h,039h,0b8h,0b1h,039h,0b9h,0d1h,039h	; 90f8  9.p9.q9..9..9..9
+	defb 0bah,0f1h,039h,0bbh,011h,03ah,0b4h,012h,03ah,0b5h,0f2h,039h,0bch,0d2h,039h,0bdh	; 9108  ..9..:..:..9..9.
+	defb 0b2h,039h,0beh,092h,039h,0bfh,093h,039h,0c0h,094h,039h,0c1h,095h,039h,0c2h,096h	; 9118  .9..9..9..9..9..
+	defb 039h,0c3h,097h,039h,0c4h,0b7h,039h,0c5h,0d7h,039h,0c6h,0d9h,039h,0c7h,0f9h,039h	; 9128  9..9..9..9..9..9
+	defb 0c8h,019h,03ah,0b6h,018h,03ah,0b7h,038h,03ah,0b8h,058h,03ah,0b9h,078h,03ah,0bah	; 9138  ..:..:.8:.X:.x:.
+	defb 077h,03ah,0bbh,076h,03ah,0bch,075h,03ah,0bdh,074h,03ah,0beh,054h,03ah,0bfh,053h	; 9148  w:.v:.u:.t:.T:.S
+	defb 03ah,0c0h,073h,03ah,0c1h,093h,03ah,0c2h,092h,03ah,0c3h,091h,03ah,0c4h,090h,03ah	; 9158  :.s:..:..:..:..:
+	defb 0c5h,08fh,03ah,0c6h,08eh,03ah,0c7h,08dh,03ah,0c8h,08ch,03ah,0c9h,06ch,03ah,0cah	; 9168  ..:..:..:..:.l:.
+	defb 04ch,03ah,0cbh	; 9178
+
+; ----------------------------------------------------------------------
+; DATOS palabras_por_fase_917B: 25 palabras: p02:8CD0 lleva a 0xE122 la de la
+;   fase (0xE092) - 1
+;   0x917b..0x91ad  (50 bytes)
+DATA_palabras_por_fase_917B:
+	defb 033h,052h	; 917b
+	defb 048h,052h	; 917d
+	defb 056h,052h	; 917f
+	defb 04bh,070h	; 9181
+	defb 069h,07ah	; 9183
+	defb 063h,062h	; 9185
+	defb 07bh,052h	; 9187
+	defb 08bh,064h	; 9189
+	defb 07fh,083h	; 918b
+	defb 091h,083h	; 918d
+	defb 099h,062h	; 918f
+	defb 0a9h,062h	; 9191
+	defb 0b9h,062h	; 9193
+	defb 0cah,062h	; 9195
+	defb 0cfh,08ah	; 9197
+	defb 0c3h,08ah	; 9199
+	defb 0b3h,092h	; 919b
+	defb 0abh,092h	; 919d
+	defb 08fh,09ah	; 919f
+	defb 07fh,09ah	; 91a1
+	defb 069h,09ah	; 91a3
+	defb 057h,082h	; 91a5
+	defb 035h,096h	; 91a7
+	defb 030h,08ah	; 91a9
+	defb 03dh,070h	; 91ab
 
 ; ======================================================================
 ; CODIGO 0x91ad..0x91bc  (15 bytes)
@@ -1795,50 +1956,63 @@ L_91B9:
 	call 04060h		;91b9   ; banco 0: despacha
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x91bc..0x91c4  (8 bytes)
-DATA_91BC:
-	defb 0f6h,091h,0c4h,091h,0e2h,091h,0f6h,091h	; 91bc  ........
+; DATOS despacho_de_91B9: 4 punteros pegados detras del `call despacha` de
+;   p02:91B9: la rutina a la que se salta con A
+;   0x91bc..0x91c4  (8 bytes)
+DATA_despacho_de_91B9:
+	defb 0f6h,091h	; 91bc
+	defb 0c4h,091h	; 91be
+	defb 0e2h,091h	; 91c0
+	defb 0f6h,091h	; 91c2
 
 ; ======================================================================
 ; CODIGO 0x91c4..0x935f  (411 bytes)
 ; ======================================================================
 
 
-L_91C4:
-	ld hl,0e202h		;91c4
+
+; ----------------------------------------------------------------------
+; SUBIR LA BARRA CADA SEIS PASOS. Borra 0xE202, cuenta en 0xE201 y, cada seis, mira 0xE160 para decidir el tope: 7 si esta a cero y 5 si no. Eso es lo que hace que la barra suba antes o despues segun lo que se lleve.
+; ----------------------------------------------------------------------
+sube_la_barra_cada_seis:
+	ld hl,0e202h		;91c4   ; el otro contador, a cero
 	ld (hl),000h		;91c7
 	dec l			;91c9
-	inc (hl)			;91ca
+	inc (hl)			;91ca   ; uno mas
 	ld a,(hl)			;91cb
-	sub 006h		;91cc
+	sub 006h		;91cc   ; ¿ya van seis?
 	ret nz			;91ce
-	ld (hl),a			;91cf
-	ld a,(0e160h)		;91d0
+	ld (hl),a			;91cf   ; vuelta a cero
+	ld a,(0e160h)		;91d0   ; y 0xE160 escoge el tope
 	and a			;91d3
-	ld c,007h		;91d4
+	ld c,007h		;91d4   ; sin el, el 7...
 	jr z,L_91DA		;91d6
-	ld c,005h		;91d8
+	ld c,005h		;91d8   ; ...y con el, el 5
 L_91DA:
-	ld hl,0e4c0h		;91da
+	ld hl,0e4c0h		;91da   ; el nivel de la barra
 	ld a,(hl)			;91dd
 	cp c			;91de
 	ret c			;91df
 	dec (hl)			;91e0
 	ret			;91e1
-L_91E2:
-	ld hl,0e201h		;91e2
+
+; ----------------------------------------------------------------------
+; BAJAR LA BARRA CADA CUATRO PASOS. La pareja de la anterior, con el otro contador: cada cuatro pasos sube el nivel de 0xE4C0, con tope en 0x19. Ojo al sentido: un numero MAS ALTO es un periodo mas largo, o sea que se anda mas despacio.
+; ----------------------------------------------------------------------
+baja_la_barra_cada_cuatro:
+	ld hl,0e201h		;91e2   ; el otro contador, a cero
 	ld (hl),000h		;91e5
 	inc l			;91e7
-	inc (hl)			;91e8
+	inc (hl)			;91e8   ; uno mas
 	ld a,(hl)			;91e9
-	sub 004h		;91ea
+	sub 004h		;91ea   ; ¿ya van cuatro?
 	ret nz			;91ec
-	ld (hl),a			;91ed
-	ld hl,0e4c0h		;91ee
+	ld (hl),a			;91ed   ; vuelta a cero
+	ld hl,0e4c0h		;91ee   ; el nivel de la barra
 	ld a,(hl)			;91f1
-	cp 019h		;91f2
+	cp 019h		;91f2   ; con tope en 0x19
 	ret nc			;91f4
-	inc (hl)			;91f5
+	inc (hl)			;91f5   ; uno mas
 L_91F6:
 	ret			;91f6
 L_91F7:
@@ -1882,7 +2056,7 @@ L_921B:
 	sbc a,000h		;9237
 	daa			;9239
 	ld (hl),a			;923a
-	ld hl,(0e08bh)		;923b   ; el largo de la fase
+	ld hl,(0e08bh)		;923b   ; el TIEMPO que queda
 	ld a,h			;923e
 	and a			;923f
 	jr nz,L_9250		;9240
@@ -1902,7 +2076,7 @@ L_9250:
 	jr z,L_9284		;9257
 	xor a			;9259
 	ld (0e097h),a		;925a   ; la bandera de que la fase se ha acabado
-	ld a,(0e203h)		;925d   ; por donde va la rotacion de los sprites
+	ld a,(0e203h)		;925d   ; el ESTADO de lo que se maneja
 	cp 004h		;9260
 	ld c,016h		;9262
 	jr z,L_9277		;9264
@@ -1917,9 +2091,9 @@ L_9250:
 	dec c			;9276
 L_9277:
 	ld a,c			;9277
-	ld (0e203h),a		;9278   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;9278   ; el ESTADO de lo que se maneja
 	xor a			;927b
-	ld (0e21dh),a		;927c
+	ld (0e21dh),a		;927c   ; por que paso va la secuencia
 	ld a,08ch		;927f
 	jp 0413ah		;9281   ; banco 0: pide_sonido_si_esta_activo
 L_9284:
@@ -1972,10 +2146,10 @@ L_92CE:
 L_92D7:
 	ld a,(hl)			;92d7
 	dec a			;92d8
-	jr nz,L_92DC		;92d9
+	jr nz,al_sprite_siguiente		;92d9
 	ld (hl),c			;92db
-L_92DC:
-	inc l			;92dc
+al_sprite_siguiente:
+	inc l			;92dc   ; cuatro bytes por sprite
 	inc l			;92dd
 	inc l			;92de
 	inc l			;92df
@@ -1994,7 +2168,7 @@ L_92EC:
 	cp 005h		;92f5
 	ret nc			;92f7
 	ld bc,0001fh		;92f8
-	ld a,(0e0a6h)		;92fb
+	ld a,(0e0a6h)		;92fb   ; el arrastre de lado que se lleva solo
 	and a			;92fe
 	jr z,L_9322		;92ff
 	dec a			;9301
@@ -2032,23 +2206,28 @@ L_9337:
 	pop bc			;9342
 	djnz L_9337		;9343
 	ret			;9345
-L_9346:
-	ld hl,0e086h		;9346
-	ld bc,00e7ah		;9349
+
+; ----------------------------------------------------------------------
+; BORRAR LA PARTIDA. Los 0xE7A bytes de 0xE086 en adelante a cero, y luego los ocho de 0x935F a 0xE090: dos vidas, y unos y ceros que son con lo que se empieza.
+; ----------------------------------------------------------------------
+borra_la_partida:
+	ld hl,0e086h		;9346   ; desde el marcador
+	ld bc,00e7ah		;9349   ; 3.706 bytes
 	ld d,h			;934c
 	ld e,l			;934d
 	inc e			;934e
 	ld (hl),000h		;934f
 	ldir		;9351
-	ld hl,0935fh		;9353
-	ld de,0e090h		;9356
+	ld hl,0935fh		;9353   ; y los ocho de partida
+	ld de,0e090h		;9356   ; a 0xE090
 	ld bc,00008h		;9359
 	ldir		;935c
 	ret			;935e
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x935f..0x9367  (8 bytes)
-DATA_935F:
+; DATOS ocho_bytes_a_E090: ocho bytes que p02:9353 copia con ldir a 0xE090
+;   0x935f..0x9367  (8 bytes)
+DATA_ocho_bytes_a_E090:
 	defb 002h,001h,001h,001h,000h,005h,000h,001h	; 935f  ........
 
 ; ======================================================================
@@ -2056,45 +2235,49 @@ DATA_935F:
 ; ======================================================================
 
 
-L_9367:
-	ld c,000h		;9367
-L_9369:
-	ld a,(0e002h)		;9369
-	add a,a			;936c
+
+; ----------------------------------------------------------------------
+; SUMAR PUNTOS. El marcador son TRES bytes en BCD -0xE086, 0xE087 y 0xE088-, o sea seis cifras, y topa en 999999. Se entra por 0x9367 con DE y C a cero, o por 0x9369 con los tres. Y aqui esta la VIDA EXTRA: cuando el byte alto del marcador alcanza a 0xE095, ese umbral sube 5 EN BCD -o sea 50.000 puntos mas- y se da una vida. Con 0xE002 en negativo no se suma nada.
+; ----------------------------------------------------------------------
+suma_puntos:
+	ld c,000h		;9367   ; el byte alto, a cero
+suma_puntos_con_los_tres:
+	ld a,(0e002h)		;9369   ; la bandera de 0xE002
+	add a,a			;936c   ; si tiene el bit 7 puesto, no se suma nada
 	ret p			;936d
-	ld hl,0e086h		;936e
+	ld hl,0e086h		;936e   ; el marcador, tres bytes
 	ld a,(hl)			;9371
-	add a,e			;9372
+	add a,e			;9372   ; las cifras bajas, EN BCD
 	daa			;9373
 	ld (hl),a			;9374
 	inc l			;9375
 	ld a,(hl)			;9376
-	adc a,d			;9377
+	adc a,d			;9377   ; las de en medio, con su acarreo
 	daa			;9378
 	ld (hl),a			;9379
 	inc hl			;937a
 	ld a,(hl)			;937b
-	adc a,c			;937c
+	adc a,c			;937c   ; y las altas
 	daa			;937d
 	ld (hl),a			;937e
-	jr nc,L_938B		;937f
-	ld hl,09999h		;9381
+	jr nc,mira_la_vida_extra		;937f   ; ¿se ha pasado de 999999?
+	ld hl,09999h		;9381   ; pues clavado en 999999
 	ld (0e083h),hl		;9384   ; los datos del juego
 	ld (0e084h),hl		;9387
 	ret			;938a
-L_938B:
+mira_la_vida_extra:
 	ex de,hl			;938b
-	ld hl,0e095h		;938c
-	cp (hl)			;938f
-	jr c,L_93AC		;9390
+	ld hl,0e095h		;938c   ; el umbral de la vida extra
+	cp (hl)			;938f   ; ¿lo ha alcanzado el byte alto?
+	jr c,L_93AC		;9390   ; si no, nada
 	ld a,(hl)			;9392
-	add a,005h		;9393
+	add a,005h		;9393   ; el umbral sube 5: otros 50.000
 	daa			;9395
-	jr nc,L_939A		;9396
-	ld a,0ffh		;9398
+	jr nc,L_939A		;9396   ; y si se desborda...
+	ld a,0ffh		;9398   ; ...se queda en 0xFF, que no se alcanza nunca
 L_939A:
 	ld (hl),a			;939a
-	ld hl,0e090h		;939b
+	ld hl,0e090h		;939b   ; las vidas
 	ld a,001h		;939e
 	add a,(hl)			;93a0
 	daa			;93a1
@@ -2108,19 +2291,23 @@ L_93AC:
 	ex de,hl			;93ac
 	ld b,003h		;93ad
 	ld de,0e085h		;93af
-L_93B2:
-	ld a,(de)			;93b2
-	sub (hl)			;93b3
-	jr c,L_93BB		;93b4
-	ret nz			;93b6
-	dec l			;93b7
+
+; ----------------------------------------------------------------------
+; ¿ES RECORD? Compara el marcador con el record cifra a cifra, de la mas alta a la mas baja. Si el marcador es menor se sale; si es mayor, los tres bytes del marcador se copian al record con `lddr`.
+; ----------------------------------------------------------------------
+mira_si_es_record:
+	ld a,(de)			;93b2   ; la cifra del marcador
+	sub (hl)			;93b3   ; menos la del record
+	jr c,guarda_el_record		;93b4   ; si el marcador es menor, no es record
+	ret nz			;93b6   ; si es mayor, es record
+	dec l			;93b7   ; y si son iguales, a la cifra siguiente
 	dec e			;93b8
-	djnz L_93B2		;93b9
-L_93BB:
-	ld bc,00003h		;93bb
+	djnz mira_si_es_record		;93b9
+guarda_el_record:
+	ld bc,00003h		;93bb   ; los tres bytes
 	ld e,085h		;93be
 	ld l,088h		;93c0
-	lddr		;93c2
+	lddr		;93c2   ; copiados hacia atras
 	ret			;93c4
 L_93C5:
 	call L_93E7		;93c5
@@ -2225,7 +2412,7 @@ L_9481:
 	ld b,002h		;9481
 	jr L_9424		;9483
 L_9485:
-	ld a,(0e203h)		;9485   ; por donde va la rotacion de los sprites
+	ld a,(0e203h)		;9485   ; el ESTADO de lo que se maneja
 	sub 00fh		;9488
 	ret nz			;948a
 	ld (0e1f0h),a		;948b
@@ -2240,8 +2427,10 @@ L_9493:
 	jp 0413ah		;949d   ; banco 0: pide_sonido_si_esta_activo
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x94a0..0x94aa  (10 bytes)
-DATA_94A0:
+; DATOS sonido_por_decorado: diez numeros de sonido, uno por decorado:
+;   p02:9496 coge el de (0xE0A1) y lo pide (p00:413A)
+;   0x94a0..0x94aa  (10 bytes)
+DATA_sonido_por_decorado:
 	defb 03bh,03eh,041h,044h,047h,04ah,04dh,050h,053h,05fh	; 94a0  ;>ADGJMPS_
 
 ; ======================================================================
@@ -2263,7 +2452,7 @@ L_94AA:
 	dec (hl)			;94bd
 	call L_9469		;94be
 	ld de,02000h		;94c1
-	call L_9367		;94c4
+	call suma_puntos		;94c4
 	ld a,02dh		;94c7
 	jp 0413ah		;94c9   ; banco 0: pide_sonido_si_esta_activo
 L_94CC:
@@ -2271,266 +2460,295 @@ L_94CC:
 	dec (hl)			;94cf
 	ret			;94d0
 L_94D1:
-	ld hl,(0e08bh)		;94d1   ; el largo de la fase
+	ld hl,(0e08bh)		;94d1   ; el TIEMPO que queda
 	ld a,h			;94d4
 	or l			;94d5
 	jr z,L_9500		;94d6
 	ld a,(0e003h)		;94d8   ; el contador de cuadros
 	and 003h		;94db
-	jr nz,L_94E6		;94dd
+	jr nz,el_tiempo_a_puntos		;94dd
 	push af			;94df
 	ld a,02eh		;94e0
 	call 0413ah		;94e2   ; banco 0: pide_sonido_si_esta_activo
 	pop af			;94e5
-L_94E6:
-	rra			;94e6
+
+; ----------------------------------------------------------------------
+; EL TIEMPO SE CAMBIA POR PUNTOS. Un cuadro de cada dos: le quita uno al tiempo EN BCD y suma 0x20 puntos. Asi es como se vacia el reloj al acabar la fase, y por eso se oye ese repiqueteo.
+; ----------------------------------------------------------------------
+el_tiempo_a_puntos:
+	rra			;94e6   ; un cuadro de cada dos
 	ret c			;94e7
 	ld a,l			;94e8
-	sub 001h		;94e9
+	sub 001h		;94e9   ; uno menos, EN BCD
 	daa			;94eb
 	ld l,a			;94ec
-	jr nc,L_94F4		;94ed
-	ld a,h			;94ef
+	jr nc,guarda_el_tiempo_y_suma		;94ed
+	ld a,h			;94ef   ; y el byte alto, con su prestamo
 	sub 001h		;94f0
 	daa			;94f2
 	ld h,a			;94f3
-L_94F4:
-	ld (0e08bh),hl		;94f4   ; el largo de la fase
-	ld de,00020h		;94f7
-	call L_9367		;94fa
+guarda_el_tiempo_y_suma:
+	ld (0e08bh),hl		;94f4   ; el TIEMPO que queda
+	ld de,00020h		;94f7   ; 0x20 puntos por unidad de tiempo
+	call suma_puntos		;94fa
 	jp L_9469		;94fd
 L_9500:
 	xor a			;9500
 	ld (0e096h),a		;9501   ; los avisos que deja el cuadro
 	ret			;9504
-L_9505:
-	call L_9522		;9505
-	ld a,(0e006h)		;9508   ; las teclas recien pulsadas
+
+; ----------------------------------------------------------------------
+; UNO O DOS JUGADORES, Y DE PASO LAS CLAVES. Los bits 0 y 1 de las teclas recien pulsadas dan la vuelta a 0xE082 con el efecto 0x23. Pero antes llama a 0x9522, que es donde esta lo bueno: el vigilante de las dos claves secretas.
+; ----------------------------------------------------------------------
+uno_o_dos_jugadores:
+	call vigila_las_claves		;9505   ; primero, el vigilante de las claves
+	ld a,(0e006h)		;9508   ; las teclas
 	ld c,a			;950b
-	and 001h		;950c
-	jr nz,L_9514		;950e
+	and 001h		;950c   ; el bit 0...
+	jr nz,cambia_de_uno_a_dos		;950e
 	ld a,c			;9510
-	and 002h		;9511
-	ret z			;9513
-L_9514:
+	and 002h		;9511   ; ...o el bit 1
+	ret z			;9513   ; sin ninguno, nada
+cambia_de_uno_a_dos:
 	ld a,(0e082h)		;9514   ; uno o dos jugadores
-	cpl			;9517
+	cpl			;9517   ; se le da la vuelta
 	and 001h		;9518
 	ld (0e082h),a		;951a   ; uno o dos jugadores
-	ld a,023h		;951d
+	ld a,023h		;951d   ; y el efecto 0x23
 	jp 0413ah		;951f   ; banco 0: pide_sonido_si_esta_activo
-L_9522:
-	ld a,002h		;9522
-	call 00141h		;9524   ; BIOS SNSMAT - Returns the value of the specified line from the keyboard matrix
-	ld c,000h		;9527
-	rla			;9529
+
+; ----------------------------------------------------------------------
+; EL VIGILANTE DE LAS CLAVES. Mira NUEVE teclas, una a una, con SNSMAT de la BIOS -que devuelve un bit a CERO por tecla pulsada- y a cada una le guarda su estado del cuadro anterior en un byte propio. Cuando una acaba de pulsarse -antes suelta, ahora pulsada- se apunta su numero en la cola de seis de 0xF0F8. Las nueve teclas, en orden alfabetico y con el numero que les toca, son: 0 = A (fila 2, bit 6), 1 = I (fila 3, bit 6), 2 = K (fila 4, bit 0), 3 = M (fila 4, bit 2), 4 = N (fila 4, bit 3), 5 = O (fila 4, bit 4), 6 = R (fila 4, bit 7), 7 = U (fila 5, bit 2) y 8 = Z (fila 5, bit 7). Y no son nueve cualesquiera: son exactamente las letras que hacen falta para escribir las dos claves de 0x965F.
+; ----------------------------------------------------------------------
+vigila_las_claves:
+	ld a,002h		;9522   ; fila 2 de la matriz
+	call 00141h		;9524   ; BIOS SNSMAT - Returns the value of the specified line from the keyboard matrix | BIOS SNSMAT: un bit a CERO por tecla pulsada
+	ld c,000h		;9527   ; esta es la tecla numero 0: la A
+	rla			;9529   ; dos rotaciones para sacar el bit 6...
 	rla			;952a
 	ld e,000h		;952b
-	jr c,L_9530		;952d
+	jr c,mira_si_acaba_de_pulsarse_la_A		;952d   ; ...y si esta a cero, esta pulsada
 	inc e			;952f
-L_9530:
-	ld a,(0e0e4h)		;9530
+mira_si_acaba_de_pulsarse_la_A:
+	ld a,(0e0e4h)		;9530   ; como estaba antes
 	ld b,a			;9533
 	ld a,e			;9534
-	ld (0e0e4h),a		;9535
-	xor b			;9538
-	jr z,L_9540		;9539
-	ld a,b			;953b
+	ld (0e0e4h),a		;9535   ; y como esta ahora
+	xor b			;9538   ; ¿ha cambiado?
+	jr z,la_tecla_I		;9539   ; si no, a la tecla siguiente
+	ld a,b			;953b   ; y si antes estaba suelta, es que ACABA de pulsarse
 	and a			;953c
-	jp z,L_9626		;953d
-L_9540:
-	ld a,003h		;9540
+	jp z,apunta_la_tecla_en_la_cola		;953d
+la_tecla_I:
+	ld a,003h		;9540   ; fila 3
 	call 00141h		;9542   ; BIOS SNSMAT - Returns the value of the specified line from the keyboard matrix
-	ld c,001h		;9545
-	and 040h		;9547
+	ld c,001h		;9545   ; la numero 1: la I
+	and 040h		;9547   ; su bit 6
 	ld e,000h		;9549
-	jr nz,L_954E		;954b
+	jr nz,mira_si_acaba_de_pulsarse_la_I		;954b
 	inc e			;954d
-L_954E:
-	ld a,(0e0e5h)		;954e
+mira_si_acaba_de_pulsarse_la_I:
+	ld a,(0e0e5h)		;954e   ; como estaba la I antes
 	ld b,a			;9551
 	ld a,e			;9552
-	ld (0e0e5h),a		;9553
-	xor b			;9556
-	jr z,L_955E		;9557
-	ld a,b			;9559
+	ld (0e0e5h),a		;9553   ; y como esta ahora
+	xor b			;9556   ; ¿ha cambiado?
+	jr z,la_tecla_K		;9557
+	ld a,b			;9559   ; y si antes estaba suelta, ACABA de pulsarse
 	and a			;955a
-	jp z,L_9626		;955b
-L_955E:
-	ld a,004h		;955e
+	jp z,apunta_la_tecla_en_la_cola		;955b
+la_tecla_K:
+	ld a,004h		;955e   ; fila 4
 	call 00141h		;9560   ; BIOS SNSMAT - Returns the value of the specified line from the keyboard matrix
-	ld c,002h		;9563
-	rra			;9565
+	ld c,002h		;9563   ; la numero 2: la K
+	rra			;9565   ; su bit 0
 	ld e,000h		;9566
-	jr c,L_956B		;9568
+	jr c,mira_si_acaba_de_pulsarse_la_K		;9568
 	inc e			;956a
-L_956B:
-	ld a,(0e0e7h)		;956b
+mira_si_acaba_de_pulsarse_la_K:
+	ld a,(0e0e7h)		;956b   ; como estaba la K antes
 	ld b,a			;956e
 	ld a,e			;956f
-	ld (0e0e7h),a		;9570
-	xor b			;9573
-	jr z,L_957B		;9574
-	ld a,b			;9576
+	ld (0e0e7h),a		;9570   ; y como esta ahora
+	xor b			;9573   ; ¿ha cambiado?
+	jr z,la_tecla_M		;9574
+	ld a,b			;9576   ; y si antes estaba suelta, ACABA de pulsarse
 	and a			;9577
-	jp z,L_9626		;9578
-L_957B:
+	jp z,apunta_la_tecla_en_la_cola		;9578
+la_tecla_M:
 	ld a,004h		;957b
 	call 00141h		;957d   ; BIOS SNSMAT - Returns the value of the specified line from the keyboard matrix
-	ld c,003h		;9580
-	and 004h		;9582
+	ld c,003h		;9580   ; la numero 3: la M
+	and 004h		;9582   ; su bit 2
 	ld e,000h		;9584
-	jr nz,L_9589		;9586
+	jr nz,mira_si_acaba_de_pulsarse_la_M		;9586
 	inc e			;9588
-L_9589:
-	ld a,(0e0eah)		;9589
+mira_si_acaba_de_pulsarse_la_M:
+	ld a,(0e0eah)		;9589   ; como estaba la M antes
 	ld b,a			;958c
 	ld a,e			;958d
-	ld (0e0eah),a		;958e
-	xor b			;9591
-	jr z,L_9599		;9592
-	ld a,b			;9594
+	ld (0e0eah),a		;958e   ; y como esta ahora
+	xor b			;9591   ; ¿ha cambiado?
+	jr z,la_tecla_N		;9592
+	ld a,b			;9594   ; y si antes estaba suelta, ACABA de pulsarse
 	and a			;9595
-	jp z,L_9626		;9596
-L_9599:
+	jp z,apunta_la_tecla_en_la_cola		;9596
+la_tecla_N:
 	ld a,004h		;9599
 	call 00141h		;959b   ; BIOS SNSMAT - Returns the value of the specified line from the keyboard matrix
-	ld c,004h		;959e
-	and 008h		;95a0
+	ld c,004h		;959e   ; la numero 4: la N
+	and 008h		;95a0   ; su bit 3
 	ld e,000h		;95a2
-	jr nz,L_95A7		;95a4
+	jr nz,mira_si_acaba_de_pulsarse_la_N		;95a4
 	inc e			;95a6
-L_95A7:
-	ld a,(0e0ebh)		;95a7
+mira_si_acaba_de_pulsarse_la_N:
+	ld a,(0e0ebh)		;95a7   ; como estaba la N antes
 	ld b,a			;95aa
 	ld a,e			;95ab
-	ld (0e0ebh),a		;95ac
-	xor b			;95af
-	jr z,L_95B6		;95b0
-	ld a,b			;95b2
+	ld (0e0ebh),a		;95ac   ; y como esta ahora
+	xor b			;95af   ; ¿ha cambiado?
+	jr z,la_tecla_O		;95b0
+	ld a,b			;95b2   ; y si antes estaba suelta, ACABA de pulsarse
 	and a			;95b3
-	jr z,L_9626		;95b4
-L_95B6:
+	jr z,apunta_la_tecla_en_la_cola		;95b4
+la_tecla_O:
 	ld a,004h		;95b6
 	call 00141h		;95b8   ; BIOS SNSMAT - Returns the value of the specified line from the keyboard matrix
-	ld c,005h		;95bb
-	and 010h		;95bd
+	ld c,005h		;95bb   ; la numero 5: la O
+	and 010h		;95bd   ; su bit 4
 	ld e,000h		;95bf
-	jr nz,L_95C4		;95c1
+	jr nz,mira_si_acaba_de_pulsarse_la_O		;95c1
 	inc e			;95c3
-L_95C4:
-	ld a,(0e0e6h)		;95c4
+mira_si_acaba_de_pulsarse_la_O:
+	ld a,(0e0e6h)		;95c4   ; como estaba la O antes
 	ld b,a			;95c7
 	ld a,e			;95c8
-	ld (0e0e6h),a		;95c9
-	xor b			;95cc
-	jr z,L_95D3		;95cd
-	ld a,b			;95cf
+	ld (0e0e6h),a		;95c9   ; y como esta ahora
+	xor b			;95cc   ; ¿ha cambiado?
+	jr z,la_tecla_R		;95cd
+	ld a,b			;95cf   ; y si antes estaba suelta, ACABA de pulsarse
 	and a			;95d0
-	jr z,L_9626		;95d1
-L_95D3:
+	jr z,apunta_la_tecla_en_la_cola		;95d1
+la_tecla_R:
 	ld a,004h		;95d3
 	call 00141h		;95d5   ; BIOS SNSMAT - Returns the value of the specified line from the keyboard matrix
-	ld c,006h		;95d8
-	rla			;95da
+	ld c,006h		;95d8   ; la numero 6: la R
+	rla			;95da   ; su bit 7
 	ld e,000h		;95db
-	jr c,L_95E0		;95dd
+	jr c,mira_si_acaba_de_pulsarse_la_R		;95dd
 	inc e			;95df
-L_95E0:
-	ld a,(0e0ech)		;95e0
+mira_si_acaba_de_pulsarse_la_R:
+	ld a,(0e0ech)		;95e0   ; como estaba la R antes
 	ld b,a			;95e3
 	ld a,e			;95e4
-	ld (0e0ech),a		;95e5
-	xor b			;95e8
-	jr z,L_95EF		;95e9
-	ld a,b			;95eb
+	ld (0e0ech),a		;95e5   ; y como esta ahora
+	xor b			;95e8   ; ¿ha cambiado?
+	jr z,la_tecla_U		;95e9
+	ld a,b			;95eb   ; y si antes estaba suelta, ACABA de pulsarse
 	and a			;95ec
-	jr z,L_9626		;95ed
-L_95EF:
-	ld a,005h		;95ef
+	jr z,apunta_la_tecla_en_la_cola		;95ed
+la_tecla_U:
+	ld a,005h		;95ef   ; fila 5
 	call 00141h		;95f1   ; BIOS SNSMAT - Returns the value of the specified line from the keyboard matrix
-	ld c,007h		;95f4
-	and 004h		;95f6
+	ld c,007h		;95f4   ; la numero 7: la U
+	and 004h		;95f6   ; su bit 2
 	ld e,000h		;95f8
-	jr nz,L_95FD		;95fa
+	jr nz,mira_si_acaba_de_pulsarse_la_U		;95fa
 	inc e			;95fc
-L_95FD:
-	ld a,(0e0e9h)		;95fd
+mira_si_acaba_de_pulsarse_la_U:
+	ld a,(0e0e9h)		;95fd   ; como estaba la U antes
 	ld b,a			;9600
 	ld a,e			;9601
-	ld (0e0e9h),a		;9602
-	xor b			;9605
-	jr z,L_960C		;9606
-	ld a,b			;9608
+	ld (0e0e9h),a		;9602   ; y como esta ahora
+	xor b			;9605   ; ¿ha cambiado?
+	jr z,la_tecla_Z		;9606
+	ld a,b			;9608   ; y si antes estaba suelta, ACABA de pulsarse
 	and a			;9609
-	jr z,L_9626		;960a
-L_960C:
+	jr z,apunta_la_tecla_en_la_cola		;960a
+la_tecla_Z:
 	ld a,005h		;960c
 	call 00141h		;960e   ; BIOS SNSMAT - Returns the value of the specified line from the keyboard matrix
-	ld c,008h		;9611
-	rla			;9613
+	ld c,008h		;9611   ; la numero 8: la Z
+	rla			;9613   ; su bit 7
 	ld e,000h		;9614
-	jr c,L_9619		;9616
+	jr c,mira_si_acaba_de_pulsarse_la_Z		;9616
 	inc e			;9618
-L_9619:
-	ld a,(0e0e8h)		;9619
+mira_si_acaba_de_pulsarse_la_Z:
+	ld a,(0e0e8h)		;9619   ; como estaba la Z antes
 	ld b,a			;961c
 	ld a,e			;961d
-	ld (0e0e8h),a		;961e
-	xor b			;9621
+	ld (0e0e8h),a		;961e   ; y como esta ahora
+	xor b			;9621   ; ¿ha cambiado?
 	ret z			;9622
 	ld a,b			;9623
-	and a			;9624
+	and a			;9624   ; y si antes estaba suelta, ACABA de pulsarse
 	ret nz			;9625
-L_9626:
-	ld a,c			;9626
-	ld de,0f0f8h		;9627
+
+; ----------------------------------------------------------------------
+; APUNTAR LA TECLA EN LA COLA. Seis bytes de 0xF0F8 a 0xF0FD: se corren todos uno a la izquierda y la tecla nueva entra por el final. O sea que ahi estan siempre las SEIS ULTIMAS teclas pulsadas, en orden.
+; ----------------------------------------------------------------------
+apunta_la_tecla_en_la_cola:
+	ld a,c			;9626   ; la tecla que acaba de pulsarse
+	ld de,0f0f8h		;9627   ; la cola de seis
 	ld hl,0f0f9h		;962a
-	ld bc,00005h		;962d
+	ld bc,00005h		;962d   ; los cinco de atras se corren
 	ldir		;9630
-	ld (de),a			;9632
+	ld (de),a			;9632   ; y la nueva, al final
 	ret			;9633
-L_9634:
-	ld hl,0f0f8h		;9634
-	ld de,0965fh		;9637
+
+; ----------------------------------------------------------------------
+; ¿ES UNA DE LAS DOS CLAVES? Compara las seis ultimas teclas con las dos secuencias de 0x965F. Con los numeros de arriba, la primera es 4-5-6-1-2-5 = **NORIKO** y la segunda 2-0-8-7-3-1 = **KAZUMI**. La primera deja 0xFE en 0xF0F7 y la segunda 0xFF; con cualquiera de las dos aparece el CONTINUE al acabarse la partida (p02:8937 y p02:8A32). Y hay una diferencia entre ellas: con 0xFE justo, el borrado del fin de partida se salta los 143 bytes de 0xE160 y los 64 del espejo de pantalla (p02:8985), asi que NORIKO conserva ademas lo que se llevara encima.
+; ----------------------------------------------------------------------
+mira_si_es_una_de_las_dos_claves:
+	ld hl,0f0f8h		;9634   ; las seis ultimas teclas
+	ld de,0965fh		;9637   ; contra la primera clave: NORIKO
 	ld b,006h		;963a
 L_963C:
-	ld a,(de)			;963c
+	ld a,(de)			;963c   ; byte a byte
 	cp (hl)			;963d
-	jr nz,L_964A		;963e
+	jr nz,mira_si_es_la_segunda_clave		;963e
 	inc hl			;9640
 	inc de			;9641
 	djnz L_963C		;9642
-	ld a,0feh		;9644
+	ld a,0feh		;9644   ; 0xFE: continue Y lo que se lleva
 	ld (0f0f7h),a		;9646
 	ret			;9649
-L_964A:
-	ld hl,0f0f8h		;964a
-	ld de,09665h		;964d
+mira_si_es_la_segunda_clave:
+	ld hl,0f0f8h		;964a   ; las seis ultimas teclas
+	ld de,09665h		;964d   ; contra la segunda: KAZUMI
 	ld b,006h		;9650
-L_9652:
+compara_la_segunda_clave:
 	ld a,(de)			;9652
 	cp (hl)			;9653
 	ret nz			;9654
 	inc hl			;9655
 	inc de			;9656
-	djnz L_9652		;9657
-	ld a,0ffh		;9659
+	djnz compara_la_segunda_clave		;9657
+	ld a,0ffh		;9659   ; 0xFF: continue a secas
 	ld (0f0f7h),a		;965b
 	ret			;965e
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x965f..0x966b  (12 bytes)
-DATA_965F:
-	defb 004h,005h,006h,001h,002h,005h,002h,000h,008h,007h,003h,001h	; 965f  ............
+; DATOS las_dos_claves: LAS DOS CLAVES SECRETAS, seis teclas cada una, que
+;   p02:9637 y p02:964D comparan con la cola de 0xF0F8. Con los numeros que
+;   reparte p02:9522 (0=A 1=I 2=K 3=M 4=N 5=O 6=R 7=U 8=Z), la primera es
+;   4-5-6-1-2-5 = NORIKO y la segunda 2-0-8-7-3-1 = KAZUMI
+;   0x965f..0x966b  (12 bytes)
+DATA_las_dos_claves:
+	defb 004h,005h,006h,001h,002h,005h	; 965f
+	defb 002h,000h,008h,007h,003h,001h	; 9665
 
 ; ======================================================================
 ; CODIGO 0x966b..0x9693  (40 bytes)
 ; ======================================================================
 
 
-L_966B:
-	call 04cd1h		;966b
+
+; ----------------------------------------------------------------------
+; MONTAR LA PANTALLA ENTERA. Nueve llamadas seguidas al banco 0, una por trozo, y la decima se salta. Aqui no hay bucle ni tabla: estan escritas una detras de otra, que es lo mas corto cuando son siempre las mismas.
+; ----------------------------------------------------------------------
+monta_la_pantalla_entera:
+	call 04cd1h		;966b   ; el primer trozo
 	call 04d7fh		;966e
 	call 04e1ah		;9671
 	call 04eb6h		;9674
@@ -2539,7 +2757,7 @@ L_966B:
 	call 0502dh		;967d
 	call 050aah		;9680
 	call 05127h		;9683
-	jp 05166h		;9686
+	jp 05166h		;9686   ; y el ultimo, con salto en vez de llamada
 L_9689:
 	call 05b1fh		;9689
 	ld a,(0e092h)		;968c   ; la FASE, de 1 a 24
@@ -2547,11 +2765,34 @@ L_9689:
 	call 04060h		;9690   ; banco 0: despacha
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9693..0x96c3  (48 bytes)
-DATA_9693:
-	defb 0c3h,096h,0c3h,096h,0c3h,096h,0c3h,096h,0c9h,096h,0d2h,096h,0c3h,096h,0c4h,096h	; 9693  ................
-	defb 0d2h,096h,0c9h,096h,0c9h,096h,0d2h,096h,0ebh,096h,0d2h,096h,0d7h,096h,0dfh,096h	; 96a3  ................
-	defb 0e5h,096h,0ebh,096h,0c9h,096h,0f0h,096h,0d7h,096h,0f0h,096h,0c9h,096h,0d7h,096h	; 96b3  ................
+; DATOS despacho_de_9690: 24 punteros pegados detras del `call despacha` de
+;   p02:9690: la rutina a la que se salta con A
+;   0x9693..0x96c3  (48 bytes)
+DATA_despacho_de_9690:
+	defb 0c3h,096h	; 9693
+	defb 0c3h,096h	; 9695
+	defb 0c3h,096h	; 9697
+	defb 0c3h,096h	; 9699
+	defb 0c9h,096h	; 969b
+	defb 0d2h,096h	; 969d
+	defb 0c3h,096h	; 969f
+	defb 0c4h,096h	; 96a1
+	defb 0d2h,096h	; 96a3
+	defb 0c9h,096h	; 96a5
+	defb 0c9h,096h	; 96a7
+	defb 0d2h,096h	; 96a9
+	defb 0ebh,096h	; 96ab
+	defb 0d2h,096h	; 96ad
+	defb 0d7h,096h	; 96af
+	defb 0dfh,096h	; 96b1
+	defb 0e5h,096h	; 96b3
+	defb 0ebh,096h	; 96b5
+	defb 0c9h,096h	; 96b7
+	defb 0f0h,096h	; 96b9
+	defb 0d7h,096h	; 96bb
+	defb 0f0h,096h	; 96bd
+	defb 0c9h,096h	; 96bf
+	defb 0d7h,096h	; 96c1
 
 ; ======================================================================
 ; CODIGO 0x96c3..0x96ff  (60 bytes)
@@ -2591,16 +2832,42 @@ L_96F3:
 L_96F6:
 	jp 05aadh		;96f6
 L_96F9:
-	ld a,(0e203h)		;96f9   ; por donde va la rotacion de los sprites
+	ld a,(0e203h)		;96f9   ; el ESTADO de lo que se maneja
 	call 04060h		;96fc   ; banco 0: despacha
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x96ff..0x9737  (56 bytes)
-DATA_96FF:
-	defb 037h,097h,09dh,097h,009h,098h,0b0h,098h,061h,099h,0e0h,099h,063h,09ah,0dbh,09ah	; 96ff  7.......a...c...
-	defb 074h,09bh,0f2h,09bh,080h,09ch,058h,09dh,069h,09dh,0bah,09dh,01eh,09eh,0adh,09eh	; 970f  t.....X.i.......
-	defb 080h,09fh,0c9h,09fh,019h,0a0h,03bh,0a0h,083h,0a0h,08ah,0a0h,08fh,0a1h,011h,0a2h	; 971f  ......;.........
-	defb 0beh,0a5h,0fdh,0a6h,0b3h,0a7h,0c8h,0a7h	; 972f  ........
+; DATOS despacho_de_96FC: 28 punteros pegados detras del `call despacha` de
+;   p02:96FC: la rutina a la que se salta con A
+;   0x96ff..0x9737  (56 bytes)
+DATA_despacho_de_96FC:
+	defb 037h,097h	; 96ff
+	defb 09dh,097h	; 9701
+	defb 009h,098h	; 9703
+	defb 0b0h,098h	; 9705
+	defb 061h,099h	; 9707
+	defb 0e0h,099h	; 9709
+	defb 063h,09ah	; 970b
+	defb 0dbh,09ah	; 970d
+	defb 074h,09bh	; 970f
+	defb 0f2h,09bh	; 9711
+	defb 080h,09ch	; 9713
+	defb 058h,09dh	; 9715
+	defb 069h,09dh	; 9717
+	defb 0bah,09dh	; 9719
+	defb 01eh,09eh	; 971b
+	defb 0adh,09eh	; 971d
+	defb 080h,09fh	; 971f
+	defb 0c9h,09fh	; 9721
+	defb 019h,0a0h	; 9723
+	defb 03bh,0a0h	; 9725
+	defb 083h,0a0h	; 9727
+	defb 08ah,0a0h	; 9729
+	defb 08fh,0a1h	; 972b
+	defb 011h,0a2h	; 972d
+	defb 0beh,0a5h	; 972f
+	defb 0fdh,0a6h	; 9731
+	defb 0b3h,0a7h	; 9733
+	defb 0c8h,0a7h	; 9735
 
 ; ======================================================================
 ; CODIGO 0x9737..0x97ff  (200 bytes)
@@ -2619,11 +2886,11 @@ L_9737:
 	and 010h		;974b
 	jr z,L_9773		;974d
 	ld a,0ffh		;974f
-	ld (0e208h),a		;9751
+	ld (0e208h),a		;9751   ; el paso dentro del salto
 	ld a,001h		;9754
-	ld (0e207h),a		;9756
-	ld a,(0e209h)		;9759
-	ld (0e20ah),a		;975c
+	ld (0e207h),a		;9756   ; el tramo del salto: 1 subiendo, 2 bajando
+	ld a,(0e209h)		;9759   ; hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
+	ld (0e20ah),a		;975c   ; la direccion congelada mientras dura el salto
 	ld a,(0e161h)		;975f
 	and a			;9762
 	ld a,001h		;9763
@@ -2632,47 +2899,47 @@ L_9737:
 	inc a			;9769
 	ld b,004h		;976a
 L_976C:
-	ld (0e203h),a		;976c   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;976c   ; el ESTADO de lo que se maneja
 	ld a,b			;976f
 	jp 04145h		;9770   ; banco 0: pide_sonido
 L_9773:
 	ld a,(0e0a1h)		;9773   ; el DECORADO, de 0 a 9
 	cp 009h		;9776
 	jr z,L_9780		;9778
-	ld a,(0e209h)		;977a
+	ld a,(0e209h)		;977a   ; hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
 	call 0a87ah		;977d   ; banco 3
 L_9780:
 	call 0a8dbh		;9780   ; banco 3
 	ld hl,0e206h		;9783
 	ld a,(0e003h)		;9786   ; el contador de cuadros
 	and 007h		;9789
-	jr nz,L_978E		;978b
+	jr nz,la_pose_por_los_dos_bits		;978b
 	inc (hl)			;978d
-L_978E:
-	ld a,(hl)			;978e
+la_pose_por_los_dos_bits:
+	ld a,(hl)			;978e   ; el contador de la animacion
 	rra			;978f
-	ld c,000h		;9790
+	ld c,000h		;9790   ; sin ningun bit, la pose 0
 	jr nc,L_9799		;9792
-	inc c			;9794
+	inc c			;9794   ; con el bit 0, la 1
 	rra			;9795
 	jr nc,L_9799		;9796
-	inc c			;9798
+	inc c			;9798   ; y con los dos, la 2
 L_9799:
 	ld a,c			;9799
-	jp 0a8f5h		;979a   ; banco 3
+	jp 0a8f5h		;979a   ; banco 3: a ponerla
 L_979D:
 	ld hl,0e16fh		;979d
 	bit 0,(hl)		;97a0
-	ld a,(0e20ah)		;97a2
+	ld a,(0e20ah)		;97a2   ; la direccion congelada mientras dura el salto
 	jr z,L_97AD		;97a5
 	call 0a84bh		;97a7   ; banco 3
-	ld a,(0e209h)		;97aa
+	ld a,(0e209h)		;97aa   ; hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
 L_97AD:
 	call 0a87ah		;97ad   ; banco 3
 	ld a,(0e003h)		;97b0   ; el contador de cuadros
 	and 003h		;97b3
 	jr nz,L_97F0		;97b5
-	ld a,(0e207h)		;97b7
+	ld a,(0e207h)		;97b7   ; el tramo del salto: 1 subiendo, 2 bajando
 	dec a			;97ba
 	jr nz,L_97CD		;97bb
 	ld hl,0e208h		;97bd
@@ -2692,9 +2959,9 @@ L_97CD:
 	jr nz,L_97E4		;97d4
 	xor a			;97d6
 	ld (hl),a			;97d7
-	ld (0e207h),a		;97d8
-	ld (0e203h),a		;97db   ; por donde va la rotacion de los sprites
-	ld (0e20ah),a		;97de
+	ld (0e207h),a		;97d8   ; el tramo del salto: 1 subiendo, 2 bajando
+	ld (0e203h),a		;97db   ; el ESTADO de lo que se maneja
+	ld (0e20ah),a		;97de   ; la direccion congelada mientras dura el salto
 	jp 0bbd6h		;97e1   ; banco 3
 L_97E4:
 	ld hl,097ffh		;97e4
@@ -2705,7 +2972,7 @@ L_97E4:
 	ld (hl),a			;97ef
 L_97F0:
 	call 0a8dbh		;97f0   ; banco 3
-	ld a,(0e208h)		;97f3
+	ld a,(0e208h)		;97f3   ; el paso dentro del salto
 	rra			;97f6
 	ld a,003h		;97f7
 	jr c,L_97FC		;97f9
@@ -2714,8 +2981,10 @@ L_97FC:
 	jp 0a8f5h		;97fc   ; banco 3
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x97ff..0x9809  (10 bytes)
-DATA_97FF:
+; DATOS arco_del_salto_97FF: diez desplazamientos con signo que p02:97E4 y
+;   9E03 suman a la Y de lo que se maneja (0xE204)
+;   0x97ff..0x9809  (10 bytes)
+DATA_arco_del_salto_97FF:
 	defb 0fch,0fdh,0feh,0ffh,0ffh,001h,001h,002h,003h,004h	; 97ff  ..........
 
 ; ======================================================================
@@ -2726,16 +2995,16 @@ DATA_97FF:
 L_9809:
 	ld hl,0e16fh		;9809
 	bit 0,(hl)		;980c
-	ld a,(0e20ah)		;980e
+	ld a,(0e20ah)		;980e   ; la direccion congelada mientras dura el salto
 	jr z,L_9819		;9811
 	call 0a84bh		;9813   ; banco 3
-	ld a,(0e209h)		;9816
+	ld a,(0e209h)		;9816   ; hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
 L_9819:
 	call 0a87ah		;9819   ; banco 3
-	ld a,(0e207h)		;981c
+	ld a,(0e207h)		;981c   ; el tramo del salto: 1 subiendo, 2 bajando
 	dec a			;981f
 	jr nz,L_985D		;9820
-	ld a,(0e208h)		;9822
+	ld a,(0e208h)		;9822   ; el paso dentro del salto
 	cp 004h		;9825
 	jr c,L_9845		;9827
 	cp 0ffh		;9829
@@ -2743,12 +3012,12 @@ L_9819:
 	ld a,(0e007h)		;982d   ; el estado de los mandos del cuadro anterior
 	and 010h		;9830
 	jr nz,L_9845		;9832
-	ld a,(0e208h)		;9834
+	ld a,(0e208h)		;9834   ; el paso dentro del salto
 	sub 004h		;9837
 	ld hl,09896h		;9839
 	call 04056h		;983c   ; banco 0: a_mas_hl
 	ld a,(hl)			;983f
-	ld (0e208h),a		;9840
+	ld (0e208h),a		;9840   ; el paso dentro del salto
 	jr L_9857		;9843
 L_9845:
 	ld a,(0e003h)		;9845   ; el contador de cuadros
@@ -2775,9 +3044,9 @@ L_985D:
 	jr nz,L_987B		;986b
 	xor a			;986d
 	ld (hl),a			;986e
-	ld (0e207h),a		;986f
-	ld (0e203h),a		;9872   ; por donde va la rotacion de los sprites
-	ld (0e20ah),a		;9875
+	ld (0e207h),a		;986f   ; el tramo del salto: 1 subiendo, 2 bajando
+	ld (0e203h),a		;9872   ; el ESTADO de lo que se maneja
+	ld (0e20ah),a		;9875   ; la direccion congelada mientras dura el salto
 	jp 0bbd6h		;9878   ; banco 3
 L_987B:
 	ld hl,0989ch		;987b
@@ -2788,7 +3057,7 @@ L_987B:
 	ld (hl),a			;9886
 L_9887:
 	call 0a8dbh		;9887   ; banco 3
-	ld a,(0e208h)		;988a
+	ld a,(0e208h)		;988a   ; el paso dentro del salto
 	rra			;988d
 	ld a,003h		;988e
 	jr c,L_9893		;9890
@@ -2797,8 +3066,11 @@ L_9893:
 	jp 0a8f5h		;9893   ; banco 3
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9896..0x98b0  (26 bytes)
-DATA_9896:
+; DATOS empujones_9896: dos tablas pegadas: la de 0x9896, que p02:9839, 9B0B y
+;   9E4E indexan con A - 4 y llevan a 0xE208, y la de 0x989C, que p02:987B,
+;   9B59 y 9E92 suman a la Y (0xE204)
+;   0x9896..0x98b0  (26 bytes)
+DATA_empujones_9896:
 	defb 00eh,00dh,00ch,00bh,00ah,009h,0fah,0fbh,0fbh,0fch,0fdh,0feh,0feh,0ffh,0ffh,0ffh	; 9896  ................
 	defb 001h,001h,001h,002h,002h,003h,004h,005h,005h,006h	; 98a6  ..........
 
@@ -2809,37 +3081,37 @@ DATA_9896:
 
 L_98B0:
 	call 0a083h		;98b0   ; banco 3
-	ld a,(0e20bh)		;98b3
+	ld a,(0e20bh)		;98b3   ; por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
 	and 03fh		;98b6
 	jr nz,L_98CD		;98b8
 	ld a,008h		;98ba
-	ld (0e20ch),a		;98bc
+	ld (0e20ch),a		;98bc   ; la cuenta de cuadros del paso de la caida
 	ld hl,0e20bh		;98bf
 	inc (hl)			;98c2
 	ld a,007h		;98c3
 	call 04145h		;98c5   ; banco 0: pide_sonido
 	ld a,090h		;98c8
-	ld (0e204h),a		;98ca   ; la X en la pantalla de lo que se maneja
+	ld (0e204h),a		;98ca   ; la Y en la pantalla de lo que se maneja
 L_98CD:
 	ld a,(0e003h)		;98cd   ; el contador de cuadros
 	and 003h		;98d0
 	jr nz,L_990B		;98d2
 	ld hl,0e20ch		;98d4
 	dec (hl)			;98d7
-	ld a,(0e20bh)		;98d8
+	ld a,(0e20bh)		;98d8   ; por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
 	and 03fh		;98db
 	dec a			;98dd
 	ld hl,09953h		;98de
 	jr z,L_98E6		;98e1
 	ld hl,0995bh		;98e3
 L_98E6:
-	ld a,(0e20ch)		;98e6
+	ld a,(0e20ch)		;98e6   ; la cuenta de cuadros del paso de la caida
 	call 04056h		;98e9   ; banco 0: a_mas_hl
 	ld a,(hl)			;98ec
 	ld hl,0e204h		;98ed
 	add a,(hl)			;98f0
 	ld (hl),a			;98f1
-	ld a,(0e20bh)		;98f2
+	ld a,(0e20bh)		;98f2   ; por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
 	rla			;98f5
 	ld a,004h		;98f6
 	jr nc,L_98FB		;98f8
@@ -2854,18 +3126,18 @@ L_98FB:
 	call 0a87ah		;9905   ; banco 3
 	call 0a8dbh		;9908   ; banco 3
 L_990B:
-	ld a,(0e20bh)		;990b
+	ld a,(0e20bh)		;990b   ; por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
 	rla			;990e
 	ld a,005h		;990f
 	jr nc,L_9914		;9911
 	inc a			;9913
 L_9914:
 	call 0a8f5h		;9914   ; banco 3
-	ld a,(0e20ch)		;9917
+	ld a,(0e20ch)		;9917   ; la cuenta de cuadros del paso de la caida
 	and a			;991a
 	ret nz			;991b
 	ld a,006h		;991c
-	ld (0e20ch),a		;991e
+	ld (0e20ch),a		;991e   ; la cuenta de cuadros del paso de la caida
 	ld hl,0e20bh		;9921
 	inc (hl)			;9924
 	ld a,(hl)			;9925
@@ -2882,10 +3154,10 @@ L_9931:
 	cp 004h		;9938
 	ret nz			;993a
 	xor a			;993b
-	ld (0e203h),a		;993c   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;993c   ; el ESTADO de lo que se maneja
 	xor a			;993f
 	ld (hl),a			;9940
-	ld (0e20ch),a		;9941
+	ld (0e20ch),a		;9941   ; la cuenta de cuadros del paso de la caida
 	ld (0e201h),a		;9944
 	ld (0e202h),a		;9947
 	call 062a4h		;994a   ; banco 1
@@ -2893,9 +3165,13 @@ L_9931:
 	jp 068e2h		;9950   ; banco 1
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9953..0x9961  (14 bytes)
-DATA_9953:
-	defb 003h,002h,002h,001h,0ffh,0feh,0feh,0fdh,002h,002h,001h,0ffh,0feh,0feh	; 9953  ..............
+; DATOS empujones_9953: dos tablas de ocho y seis desplazamientos que p02:98DE
+;   escoge (0x9953 o 0x995B) e indexa con (0xE20C) para sumarlos a la Y
+;   (0xE204)
+;   0x9953..0x9961  (14 bytes)
+DATA_empujones_9953:
+	defb 003h,002h,002h,001h,0ffh,0feh,0feh,0fdh	; 9953  ........
+	defb 002h,002h,001h,0ffh,0feh,0feh	; 995b
 
 ; ======================================================================
 ; CODIGO 0x9961..0x9ad1  (368 bytes)
@@ -2915,19 +3191,19 @@ L_996E:
 	and 010h		;9971
 	jr z,L_999C		;9973
 	ld a,090h		;9975
-	ld (0e204h),a		;9977   ; la X en la pantalla de lo que se maneja
+	ld (0e204h),a		;9977   ; la Y en la pantalla de lo que se maneja
 	call 062a4h		;997a   ; banco 1
 	call 06507h		;997d   ; banco 1
 	call 068e2h		;9980   ; banco 1
 	xor a			;9983
-	ld (0e203h),a		;9984   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;9984   ; el ESTADO de lo que se maneja
 	ld (0e20dh),a		;9987
 	ld (0e20eh),a		;998a
 	ld (0e201h),a		;998d
 	ld (0e202h),a		;9990
 	ld a,0e0h		;9993
-	ld (0ee90h),a		;9995
-	ld (0ee94h),a		;9998
+	ld (0ee90h),a		;9995   ; el hueco de sprite 4
+	ld (0ee94h),a		;9998   ; el hueco de sprite 5
 	ret			;999b
 L_999C:
 	ld a,(0e215h)		;999c
@@ -2937,7 +3213,7 @@ L_999C:
 	and 002h		;99a5
 	jr z,L_99C0		;99a7
 	ld a,012h		;99a9
-	ld (0e203h),a		;99ab   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;99ab   ; el ESTADO de lo que se maneja
 	ld a,(0e215h)		;99ae
 	ld (0e0a2h),a		;99b1   ; el modo en el que esta el juego
 	ld a,(0e0d2h)		;99b4
@@ -2949,21 +3225,21 @@ L_99C0:
 	ld hl,0e20dh		;99c0
 	ld a,(0e003h)		;99c3   ; el contador de cuadros
 	and 007h		;99c6
-	jr nz,L_99CB		;99c8
+	jr nz,la_fila_y_la_pose_por_un_bit		;99c8
 	inc (hl)			;99ca
-L_99CB:
-	ld a,(hl)			;99cb
+la_fila_y_la_pose_por_un_bit:
+	ld a,(hl)			;99cb   ; el contador
 	rra			;99cc
-	ld a,098h		;99cd
+	ld a,098h		;99cd   ; sin el bit, la fila 0x98 y la pose 3...
 	ld b,003h		;99cf
 	jr nc,L_99D6		;99d1
-	ld a,09eh		;99d3
+	ld a,09eh		;99d3   ; ...y con el, la 0x9E y la 4
 	inc b			;99d5
 L_99D6:
-	ld (0e204h),a		;99d6   ; la X en la pantalla de lo que se maneja
-	call 0a8dbh		;99d9   ; banco 3
+	ld (0e204h),a		;99d6   ; la Y en la pantalla de lo que se maneja
+	call 0a8dbh		;99d9   ; banco 3: los cuatro sprites, colocados
 	ld a,b			;99dc
-	jp 0a8f5h		;99dd   ; banco 3
+	jp 0a8f5h		;99dd   ; banco 3: y la pose
 L_99E0:
 	call 0a84bh		;99e0   ; banco 3
 	ld a,(0e0a5h)		;99e3   ; por que vuelta de la fase va
@@ -2973,46 +3249,46 @@ L_99E0:
 	and 010h		;99ed
 	jr z,L_9A17		;99ef
 	ld a,0ffh		;99f1
-	ld (0e208h),a		;99f3
+	ld (0e208h),a		;99f3   ; el paso dentro del salto
 	ld a,001h		;99f6
-	ld (0e207h),a		;99f8
-	ld a,(0e209h)		;99fb
-	ld (0e20ah),a		;99fe
+	ld (0e207h),a		;99f8   ; el tramo del salto: 1 subiendo, 2 bajando
+	ld a,(0e209h)		;99fb   ; hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
+	ld (0e20ah),a		;99fe   ; la direccion congelada mientras dura el salto
 	ld a,090h		;9a01
-	ld (0e204h),a		;9a03   ; la X en la pantalla de lo que se maneja
+	ld (0e204h),a		;9a03   ; la Y en la pantalla de lo que se maneja
 	ld a,(0e161h)		;9a06
 	and a			;9a09
 	ld a,006h		;9a0a
 	jr z,L_9A0F		;9a0c
 	inc a			;9a0e
 L_9A0F:
-	ld (0e203h),a		;9a0f   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;9a0f   ; el ESTADO de lo que se maneja
 	ld a,005h		;9a12
 	jp 04145h		;9a14   ; banco 0: pide_sonido
 L_9A17:
-	ld a,(0e209h)		;9a17
+	ld a,(0e209h)		;9a17   ; hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
 	call 0a87ah		;9a1a   ; banco 3
 L_9A1D:
-	ld hl,(0e204h)		;9a1d   ; la X en la pantalla de lo que se maneja
+	ld hl,(0e204h)		;9a1d   ; la Y en la pantalla de lo que se maneja
 	ld d,h			;9a20
-	ld (0ee88h),hl		;9a21
+	ld (0ee88h),hl		;9a21   ; el sprite 2 de lo que se maneja: abajo a la izquierda
 	ld a,010h		;9a24
 	add a,h			;9a26
 	ld h,a			;9a27
-	ld (0ee8ch),hl		;9a28
+	ld (0ee8ch),hl		;9a28   ; el sprite 3 de lo que se maneja: abajo a la derecha
 	ld a,008h		;9a2b
 	add a,l			;9a2d
 	ld l,a			;9a2e
-	ld (0ee84h),hl		;9a2f
+	ld (0ee84h),hl		;9a2f   ; el sprite 1 de lo que se maneja: arriba a la derecha
 	ld h,d			;9a32
 	ld (0ee80h),hl		;9a33   ; la tabla de atributos de los 32 sprites
 	ld a,(0e003h)		;9a36   ; el contador de cuadros
 	and 020h		;9a39
 	jr z,L_9A48		;9a3b
-	ld a,(0ee88h)		;9a3d
+	ld a,(0ee88h)		;9a3d   ; el sprite 2 de lo que se maneja: abajo a la izquierda
 	add a,002h		;9a40
-	ld (0ee88h),a		;9a42
-	ld (0ee8ch),a		;9a45
+	ld (0ee88h),a		;9a42   ; el sprite 2 de lo que se maneja: abajo a la izquierda
+	ld (0ee8ch),a		;9a45   ; el sprite 3 de lo que se maneja: abajo a la derecha
 L_9A48:
 	ld a,00ah		;9a48
 	call 0a8f5h		;9a4a   ; banco 3
@@ -3030,16 +3306,16 @@ L_9A5A:
 L_9A63:
 	ld hl,0e16fh		;9a63
 	bit 0,(hl)		;9a66
-	ld a,(0e20ah)		;9a68
+	ld a,(0e20ah)		;9a68   ; la direccion congelada mientras dura el salto
 	jr z,L_9A73		;9a6b
 	call 0a84bh		;9a6d   ; banco 3
-	ld a,(0e209h)		;9a70
+	ld a,(0e209h)		;9a70   ; hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
 L_9A73:
 	call 0a87ah		;9a73   ; banco 3
 	ld a,(0e003h)		;9a76   ; el contador de cuadros
 	and 003h		;9a79
 	jr nz,L_9AC2		;9a7b
-	ld a,(0e207h)		;9a7d
+	ld a,(0e207h)		;9a7d   ; el tramo del salto: 1 subiendo, 2 bajando
 	dec a			;9a80
 	jr nz,L_9A93		;9a81
 	ld hl,0e208h		;9a83
@@ -3059,12 +3335,12 @@ L_9A93:
 	jr nz,L_9AB6		;9a9a
 	xor a			;9a9c
 	ld (hl),a			;9a9d
-	ld (0e207h),a		;9a9e
-	ld (0e20ah),a		;9aa1
+	ld (0e207h),a		;9a9e   ; el tramo del salto: 1 subiendo, 2 bajando
+	ld (0e20ah),a		;9aa1   ; la direccion congelada mientras dura el salto
 	ld a,005h		;9aa4
-	ld (0e203h),a		;9aa6   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;9aa6   ; el ESTADO de lo que se maneja
 	ld a,0a0h		;9aa9
-	ld (0e204h),a		;9aab   ; la X en la pantalla de lo que se maneja
+	ld (0e204h),a		;9aab   ; la Y en la pantalla de lo que se maneja
 	ld a,006h		;9aae
 	call 04145h		;9ab0   ; banco 0: pide_sonido
 	jp 0bbd6h		;9ab3   ; banco 3
@@ -3077,7 +3353,7 @@ L_9AB6:
 	ld (hl),a			;9ac1
 L_9AC2:
 	call 0a8dbh		;9ac2   ; banco 3
-	ld a,(0e208h)		;9ac5
+	ld a,(0e208h)		;9ac5   ; el paso dentro del salto
 	rra			;9ac8
 	ld a,003h		;9ac9
 	jr c,L_9ACE		;9acb
@@ -3086,8 +3362,10 @@ L_9ACE:
 	jp 0a8f5h		;9ace   ; banco 3
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9ad1..0x9adb  (10 bytes)
-DATA_9AD1:
+; DATOS arco_del_salto_9AD1: diez desplazamientos con signo que p02:9AB6 suma
+;   a la Y (0xE204)
+;   0x9ad1..0x9adb  (10 bytes)
+DATA_arco_del_salto_9AD1:
 	defb 0fbh,0fch,0fdh,0feh,0ffh,001h,002h,003h,004h,005h	; 9ad1  ..........
 
 ; ======================================================================
@@ -3098,16 +3376,16 @@ DATA_9AD1:
 L_9ADB:
 	ld hl,0e16fh		;9adb
 	bit 0,(hl)		;9ade
-	ld a,(0e20ah)		;9ae0
+	ld a,(0e20ah)		;9ae0   ; la direccion congelada mientras dura el salto
 	jr z,L_9AEB		;9ae3
 	call 0a84bh		;9ae5   ; banco 3
-	ld a,(0e209h)		;9ae8
+	ld a,(0e209h)		;9ae8   ; hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
 L_9AEB:
 	call 0a87ah		;9aeb   ; banco 3
-	ld a,(0e207h)		;9aee
+	ld a,(0e207h)		;9aee   ; el tramo del salto: 1 subiendo, 2 bajando
 	dec a			;9af1
 	jr nz,L_9B2F		;9af2
-	ld a,(0e208h)		;9af4
+	ld a,(0e208h)		;9af4   ; el paso dentro del salto
 	cp 004h		;9af7
 	jr c,L_9B17		;9af9
 	cp 0ffh		;9afb
@@ -3115,12 +3393,12 @@ L_9AEB:
 	ld a,(0e007h)		;9aff   ; el estado de los mandos del cuadro anterior
 	and 010h		;9b02
 	jr nz,L_9B17		;9b04
-	ld a,(0e208h)		;9b06
+	ld a,(0e208h)		;9b06   ; el paso dentro del salto
 	sub 004h		;9b09
 	ld hl,09896h		;9b0b
 	call 04056h		;9b0e   ; banco 0: a_mas_hl
 	ld a,(hl)			;9b11
-	ld (0e208h),a		;9b12
+	ld (0e208h),a		;9b12   ; el paso dentro del salto
 	jr L_9B29		;9b15
 L_9B17:
 	ld a,(0e003h)		;9b17   ; el contador de cuadros
@@ -3147,12 +3425,12 @@ L_9B2F:
 	jr nz,L_9B59		;9b3d
 	xor a			;9b3f
 	ld (hl),a			;9b40
-	ld (0e207h),a		;9b41
-	ld (0e20ah),a		;9b44
+	ld (0e207h),a		;9b41   ; el tramo del salto: 1 subiendo, 2 bajando
+	ld (0e20ah),a		;9b44   ; la direccion congelada mientras dura el salto
 	ld a,005h		;9b47
-	ld (0e203h),a		;9b49   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;9b49   ; el ESTADO de lo que se maneja
 	ld a,0a0h		;9b4c
-	ld (0e204h),a		;9b4e   ; la X en la pantalla de lo que se maneja
+	ld (0e204h),a		;9b4e   ; la Y en la pantalla de lo que se maneja
 	ld a,006h		;9b51
 	call 04145h		;9b53   ; banco 0: pide_sonido
 	jp 0bbd6h		;9b56   ; banco 3
@@ -3165,7 +3443,7 @@ L_9B59:
 	ld (hl),a			;9b64
 L_9B65:
 	call 0a8dbh		;9b65   ; banco 3
-	ld a,(0e208h)		;9b68
+	ld a,(0e208h)		;9b68   ; el paso dentro del salto
 	rra			;9b6b
 	ld a,003h		;9b6c
 	jr c,L_9B71		;9b6e
@@ -3174,24 +3452,24 @@ L_9B71:
 	jp 0a8f5h		;9b71   ; banco 3
 L_9B74:
 	call 0a083h		;9b74   ; banco 3
-	ld a,(0e20bh)		;9b77
+	ld a,(0e20bh)		;9b77   ; por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
 	and 03fh		;9b7a
 	jr nz,L_9B91		;9b7c
 	ld a,008h		;9b7e
-	ld (0e20ch),a		;9b80
+	ld (0e20ch),a		;9b80   ; la cuenta de cuadros del paso de la caida
 	ld hl,0e20bh		;9b83
 	inc (hl)			;9b86
 	ld a,007h		;9b87
 	call 04145h		;9b89   ; banco 0: pide_sonido
 	ld a,0a0h		;9b8c
-	ld (0e204h),a		;9b8e   ; la X en la pantalla de lo que se maneja
+	ld (0e204h),a		;9b8e   ; la Y en la pantalla de lo que se maneja
 L_9B91:
 	ld a,(0e003h)		;9b91   ; el contador de cuadros
 	and 003h		;9b94
 	jr nz,L_9BB2		;9b96
 	ld hl,0e20ch		;9b98
 	dec (hl)			;9b9b
-	ld a,(0e20bh)		;9b9c
+	ld a,(0e20bh)		;9b9c   ; por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
 	rla			;9b9f
 	ld a,004h		;9ba0
 	jr nc,L_9BA5		;9ba2
@@ -3206,11 +3484,11 @@ L_9BA5:
 	call 0a87ah		;9baf   ; banco 3
 L_9BB2:
 	call L_9A1D		;9bb2
-	ld a,(0e20ch)		;9bb5
+	ld a,(0e20ch)		;9bb5   ; la cuenta de cuadros del paso de la caida
 	and a			;9bb8
 	ret nz			;9bb9
 	ld a,006h		;9bba
-	ld (0e20ch),a		;9bbc
+	ld (0e20ch),a		;9bbc   ; la cuenta de cuadros del paso de la caida
 	ld hl,0e20bh		;9bbf
 	inc (hl)			;9bc2
 	ld a,(hl)			;9bc3
@@ -3227,10 +3505,10 @@ L_9BCF:
 	cp 004h		;9bd6
 	ret nz			;9bd8
 	ld a,005h		;9bd9
-	ld (0e203h),a		;9bdb   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;9bdb   ; el ESTADO de lo que se maneja
 	xor a			;9bde
 	ld (hl),a			;9bdf
-	ld (0e20ch),a		;9be0
+	ld (0e20ch),a		;9be0   ; la cuenta de cuadros del paso de la caida
 	ld (0e201h),a		;9be3
 	ld (0e202h),a		;9be6
 	call 062a4h		;9be9   ; banco 1
@@ -3246,49 +3524,53 @@ L_9BF2:
 L_9C00:
 	ld a,(0e003h)		;9c00   ; el contador de cuadros
 	and 003h		;9c03
-	jr nz,L_9C31		;9c05
+	jr nz,y_luego_el_mando		;9c05
 	ld hl,0e212h		;9c07
 	ld a,(hl)			;9c0a
 	cp 00ch		;9c0b
-	jr nc,L_9C1B		;9c0d
+	jr nc,mueve_de_fila_con_topes		;9c0d
 	ld a,(hl)			;9c0f
 	inc (hl)			;9c10
 	ld hl,09c74h		;9c11
 	call 04056h		;9c14   ; banco 0: a_mas_hl
 	ld a,(hl)			;9c17
 	ld (0e214h),a		;9c18
-L_9C1B:
-	ld a,(0e214h)		;9c1b
-	ld hl,0e204h		;9c1e
+
+; ----------------------------------------------------------------------
+; MOVERSE ARRIBA Y ABAJO, ENTRE LA 0x40 Y LA 0x90. Le suma a la fila el empujon de 0xE214 y la deja clavada entre esas dos: son los topes de este tramo del juego, mas estrechos que los de 0x14 y 0xCC del movimiento de lado.
+; ----------------------------------------------------------------------
+mueve_de_fila_con_topes:
+	ld a,(0e214h)		;9c1b   ; el empujon
+	ld hl,0e204h		;9c1e   ; la fila
 	add a,(hl)			;9c21
-	ld (hl),a			;9c22
-	cp 040h		;9c23
+	ld (hl),a			;9c22   ; sumado
+	cp 040h		;9c23   ; por arriba, la fila 0x40...
 	jr nc,L_9C2B		;9c25
 	ld (hl),040h		;9c27
-	jr L_9C31		;9c29
+	jr y_luego_el_mando		;9c29
 L_9C2B:
-	cp 091h		;9c2b
-	jr c,L_9C31		;9c2d
+	cp 091h		;9c2b   ; ...y por abajo, la 0x90
+	jr c,y_luego_el_mando		;9c2d
 	ld (hl),090h		;9c2f
-L_9C31:
-	call 0a84bh		;9c31   ; banco 3
-	ld a,(0e209h)		;9c34
+y_luego_el_mando:
+	call 0a84bh		;9c31   ; banco 3: hacia donde se pide ir
+	ld a,(0e209h)		;9c34   ; hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
 	call 0a87ah		;9c37   ; banco 3
 L_9C3A:
-	ld hl,(0e204h)		;9c3a   ; la X en la pantalla de lo que se maneja
+	ld hl,(0e204h)		;9c3a   ; la Y en la pantalla de lo que se maneja
 	ld d,h			;9c3d
-	ld (0ee84h),hl		;9c3e
+	ld (0ee84h),hl		;9c3e   ; el sprite 1 de lo que se maneja: arriba a la derecha
 	ld a,010h		;9c41
 	add a,h			;9c43
 	ld h,a			;9c44
-	ld (0ee88h),hl		;9c45
+	ld (0ee88h),hl		;9c45   ; el sprite 2 de lo que se maneja: abajo a la izquierda
 	ld a,h			;9c48
 	sub 008h		;9c49
 	ld h,a			;9c4b
 	ld a,00dh		;9c4c
 	add a,l			;9c4e
 	ld l,a			;9c4f
-	ld (0ee8ch),hl		;9c50
+	ld (0ee8ch),hl		;9c50   ; el sprite 3 de lo que se maneja: abajo a la derecha
 	ld a,003h		;9c53
 	add a,l			;9c55
 	ld l,a			;9c56
@@ -3296,12 +3578,12 @@ L_9C3A:
 	ld hl,0e213h		;9c5a
 	ld a,(0e003h)		;9c5d   ; el contador de cuadros
 	and 007h		;9c60
-	jr nz,L_9C65		;9c62
+	jr nz,la_pose_por_los_dos_bits_desde_la_7		;9c62
 	inc (hl)			;9c64
-L_9C65:
-	ld a,(hl)			;9c65
+la_pose_por_los_dos_bits_desde_la_7:
+	ld a,(hl)			;9c65   ; el contador de la animacion
 	rra			;9c66
-	ld c,007h		;9c67
+	ld c,007h		;9c67   ; aqui las poses empiezan en la 7
 	jr nc,L_9C70		;9c69
 	inc c			;9c6b
 	rra			;9c6c
@@ -3312,8 +3594,10 @@ L_9C70:
 	jp 0a8f5h		;9c71   ; banco 3
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9c74..0x9c80  (12 bytes)
-DATA_9C74:
+; DATOS empujon_E214: doce desplazamientos que p02:9C11, 9F29 y p03:A719
+;   indexan y dejan en 0xE214 antes de sumarlos a la X
+;   0x9c74..0x9c80  (12 bytes)
+DATA_empujon_E214:
 	defb 0fch,0fdh,0fdh,0feh,0feh,0ffh,0ffh,0ffh,001h,002h,003h,004h	; 9c74  ............
 
 ; ======================================================================
@@ -3323,11 +3607,11 @@ DATA_9C74:
 
 L_9C80:
 	call 0a083h		;9c80   ; banco 3
-	ld a,(0e20bh)		;9c83
+	ld a,(0e20bh)		;9c83   ; por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
 	and 03fh		;9c86
 	jr nz,L_9C98		;9c88
 	ld a,008h		;9c8a
-	ld (0e20ch),a		;9c8c
+	ld (0e20ch),a		;9c8c   ; la cuenta de cuadros del paso de la caida
 	ld hl,0e20bh		;9c8f
 	inc (hl)			;9c92
 	ld a,007h		;9c93
@@ -3338,14 +3622,14 @@ L_9C98:
 	jr nz,L_9CF7		;9c9d
 	ld hl,0e20ch		;9c9f
 	dec (hl)			;9ca2
-	ld a,(0e20bh)		;9ca3
+	ld a,(0e20bh)		;9ca3   ; por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
 	and 03fh		;9ca6
 	dec a			;9ca8
 	ld hl,09d4ah		;9ca9
 	jr z,L_9CB1		;9cac
 	ld hl,09d52h		;9cae
 L_9CB1:
-	ld a,(0e20ch)		;9cb1
+	ld a,(0e20ch)		;9cb1   ; la cuenta de cuadros del paso de la caida
 	call 04056h		;9cb4   ; banco 0: a_mas_hl
 	ld a,(hl)			;9cb7
 	ld hl,0e204h		;9cb8
@@ -3354,7 +3638,7 @@ L_9CB1:
 	jr nc,L_9CC1		;9cbe
 	ld (hl),a			;9cc0
 L_9CC1:
-	ld a,(0e20bh)		;9cc1
+	ld a,(0e20bh)		;9cc1   ; por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
 	rla			;9cc4
 	ld a,004h		;9cc5
 	jr nc,L_9CCA		;9cc7
@@ -3367,43 +3651,43 @@ L_9CCA:
 	call 0a87ah		;9cd0   ; banco 3
 	pop af			;9cd3
 	call 0a87ah		;9cd4   ; banco 3
-	ld hl,(0e204h)		;9cd7   ; la X en la pantalla de lo que se maneja
+	ld hl,(0e204h)		;9cd7   ; la Y en la pantalla de lo que se maneja
 	ld d,h			;9cda
-	ld (0ee84h),hl		;9cdb
+	ld (0ee84h),hl		;9cdb   ; el sprite 1 de lo que se maneja: arriba a la derecha
 	ld a,010h		;9cde
 	add a,h			;9ce0
 	ld h,a			;9ce1
-	ld (0ee88h),hl		;9ce2
+	ld (0ee88h),hl		;9ce2   ; el sprite 2 de lo que se maneja: abajo a la izquierda
 	ld a,h			;9ce5
 	sub 008h		;9ce6
 	ld h,a			;9ce8
 	ld a,00dh		;9ce9
 	add a,l			;9ceb
 	ld l,a			;9cec
-	ld (0ee8ch),hl		;9ced
+	ld (0ee8ch),hl		;9ced   ; el sprite 3 de lo que se maneja: abajo a la derecha
 	ld a,003h		;9cf0
 	add a,l			;9cf2
 	ld l,a			;9cf3
 	ld (0ee80h),hl		;9cf4   ; la tabla de atributos de los 32 sprites
 L_9CF7:
-	ld a,(0e20bh)		;9cf7
+	ld a,(0e20bh)		;9cf7   ; por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
 	rla			;9cfa
 	ld c,008h		;9cfb
 	jr nc,L_9D00		;9cfd
 	inc c			;9cff
 L_9D00:
-	ld a,(0e20ch)		;9d00
+	ld a,(0e20ch)		;9d00   ; la cuenta de cuadros del paso de la caida
 	and 004h		;9d03
 	jr z,L_9D09		;9d05
 	ld c,007h		;9d07
 L_9D09:
 	ld a,c			;9d09
 	call 0a8f5h		;9d0a   ; banco 3
-	ld a,(0e20ch)		;9d0d
+	ld a,(0e20ch)		;9d0d   ; la cuenta de cuadros del paso de la caida
 	and a			;9d10
 	ret nz			;9d11
 	ld a,006h		;9d12
-	ld (0e20ch),a		;9d14
+	ld (0e20ch),a		;9d14   ; la cuenta de cuadros del paso de la caida
 	ld hl,0e20bh		;9d17
 	inc (hl)			;9d1a
 	ld a,(hl)			;9d1b
@@ -3420,10 +3704,10 @@ L_9D27:
 	cp 004h		;9d2e
 	ret nz			;9d30
 	ld a,009h		;9d31
-	ld (0e203h),a		;9d33   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;9d33   ; el ESTADO de lo que se maneja
 	xor a			;9d36
 	ld (hl),a			;9d37
-	ld (0e20ch),a		;9d38
+	ld (0e20ch),a		;9d38   ; la cuenta de cuadros del paso de la caida
 	ld (0e201h),a		;9d3b
 	ld (0e202h),a		;9d3e
 	call 062a4h		;9d41   ; banco 1
@@ -3431,9 +3715,12 @@ L_9D27:
 	jp 068e2h		;9d47   ; banco 1
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9d4a..0x9d58  (14 bytes)
-DATA_9D4A:
-	defb 005h,004h,004h,003h,001h,000h,000h,0ffh,004h,004h,003h,001h,000h,000h	; 9d4a  ..............
+; DATOS empujones_9D4A: dos tablas de ocho y seis valores que p02:9CA9 escoge
+;   (0x9D4A o 0x9D52) e indexa con (0xE20C) sobre la Y (0xE204)
+;   0x9d4a..0x9d58  (14 bytes)
+DATA_empujones_9D4A:
+	defb 005h,004h,004h,003h,001h,000h,000h,0ffh	; 9d4a  ........
+	defb 004h,004h,003h,001h,000h,000h	; 9d52
 
 ; ======================================================================
 ; CODIGO 0x9d58..0x9fff  (679 bytes)
@@ -3457,11 +3744,11 @@ L_9D69:
 	and 010h		;9d6f
 	jr z,L_9D97		;9d71
 	ld a,0ffh		;9d73
-	ld (0e208h),a		;9d75
+	ld (0e208h),a		;9d75   ; el paso dentro del salto
 	ld a,001h		;9d78
-	ld (0e207h),a		;9d7a
-	ld a,(0e209h)		;9d7d
-	ld (0e20ah),a		;9d80
+	ld (0e207h),a		;9d7a   ; el tramo del salto: 1 subiendo, 2 bajando
+	ld a,(0e209h)		;9d7d   ; hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
+	ld (0e20ah),a		;9d80   ; la direccion congelada mientras dura el salto
 	ld a,(0e161h)		;9d83
 	and a			;9d86
 	ld a,00dh		;9d87
@@ -3470,22 +3757,22 @@ L_9D69:
 	inc a			;9d8d
 	ld b,004h		;9d8e
 L_9D90:
-	ld (0e203h),a		;9d90   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;9d90   ; el ESTADO de lo que se maneja
 	ld a,b			;9d93
 	jp 0413ah		;9d94   ; banco 0: pide_sonido_si_esta_activo
 L_9D97:
-	ld a,(0e209h)		;9d97
+	ld a,(0e209h)		;9d97   ; hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
 	call 0a87ah		;9d9a   ; banco 3
 	call 0a8dbh		;9d9d   ; banco 3
 	ld hl,0e206h		;9da0
 	ld a,(0e003h)		;9da3   ; el contador de cuadros
 	and 007h		;9da6
-	jr nz,L_9DAB		;9da8
+	jr nz,la_pose_por_los_dos_bits_bis		;9da8
 	inc (hl)			;9daa
-L_9DAB:
-	ld a,(hl)			;9dab
+la_pose_por_los_dos_bits_bis:
+	ld a,(hl)			;9dab   ; el contador de la animacion
 	rra			;9dac
-	ld c,000h		;9dad
+	ld c,000h		;9dad   ; sin ningun bit, la pose 0
 	jr nc,L_9DB6		;9daf
 	inc c			;9db1
 	rra			;9db2
@@ -3493,20 +3780,20 @@ L_9DAB:
 	inc c			;9db5
 L_9DB6:
 	ld a,c			;9db6
-	jp 0a8f5h		;9db7   ; banco 3
+	jp 0a8f5h		;9db7   ; banco 3: a ponerla
 L_9DBA:
 	ld hl,0e16fh		;9dba
 	bit 0,(hl)		;9dbd
-	ld a,(0e20ah)		;9dbf
+	ld a,(0e20ah)		;9dbf   ; la direccion congelada mientras dura el salto
 	jr z,L_9DCA		;9dc2
 	call 0a84bh		;9dc4   ; banco 3
-	ld a,(0e209h)		;9dc7
+	ld a,(0e209h)		;9dc7   ; hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
 L_9DCA:
 	call 0a87ah		;9dca   ; banco 3
 	ld a,(0e003h)		;9dcd   ; el contador de cuadros
 	and 003h		;9dd0
 	jr nz,L_9E0F		;9dd2
-	ld a,(0e207h)		;9dd4
+	ld a,(0e207h)		;9dd4   ; el tramo del salto: 1 subiendo, 2 bajando
 	dec a			;9dd7
 	jr nz,L_9DEA		;9dd8
 	ld hl,0e208h		;9dda
@@ -3526,10 +3813,10 @@ L_9DEA:
 	jr nz,L_9E03		;9df1
 	xor a			;9df3
 	ld (hl),a			;9df4
-	ld (0e207h),a		;9df5
-	ld (0e20ah),a		;9df8
+	ld (0e207h),a		;9df5   ; el tramo del salto: 1 subiendo, 2 bajando
+	ld (0e20ah),a		;9df8   ; la direccion congelada mientras dura el salto
 	ld a,00ch		;9dfb
-	ld (0e203h),a		;9dfd   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;9dfd   ; el ESTADO de lo que se maneja
 	jp 0b48dh		;9e00   ; banco 3
 L_9E03:
 	ld hl,097ffh		;9e03
@@ -3540,7 +3827,7 @@ L_9E03:
 	ld (hl),a			;9e0e
 L_9E0F:
 	call 0a8dbh		;9e0f   ; banco 3
-	ld a,(0e208h)		;9e12
+	ld a,(0e208h)		;9e12   ; el paso dentro del salto
 	rra			;9e15
 	ld a,003h		;9e16
 	jr c,L_9E1B		;9e18
@@ -3550,16 +3837,16 @@ L_9E1B:
 L_9E1E:
 	ld hl,0e16fh		;9e1e
 	bit 0,(hl)		;9e21
-	ld a,(0e20ah)		;9e23
+	ld a,(0e20ah)		;9e23   ; la direccion congelada mientras dura el salto
 	jr z,L_9E2E		;9e26
 	call 0a84bh		;9e28   ; banco 3
-	ld a,(0e209h)		;9e2b
+	ld a,(0e209h)		;9e2b   ; hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
 L_9E2E:
 	call 0a87ah		;9e2e   ; banco 3
-	ld a,(0e207h)		;9e31
+	ld a,(0e207h)		;9e31   ; el tramo del salto: 1 subiendo, 2 bajando
 	dec a			;9e34
 	jr nz,L_9E72		;9e35
-	ld a,(0e208h)		;9e37
+	ld a,(0e208h)		;9e37   ; el paso dentro del salto
 	cp 004h		;9e3a
 	jr c,L_9E5A		;9e3c
 	cp 0ffh		;9e3e
@@ -3567,12 +3854,12 @@ L_9E2E:
 	ld a,(0e007h)		;9e42   ; el estado de los mandos del cuadro anterior
 	and 010h		;9e45
 	jr nz,L_9E5A		;9e47
-	ld a,(0e208h)		;9e49
+	ld a,(0e208h)		;9e49   ; el paso dentro del salto
 	sub 004h		;9e4c
 	ld hl,09896h		;9e4e
 	call 04056h		;9e51   ; banco 0: a_mas_hl
 	ld a,(hl)			;9e54
-	ld (0e208h),a		;9e55
+	ld (0e208h),a		;9e55   ; el paso dentro del salto
 	jr L_9E6C		;9e58
 L_9E5A:
 	ld a,(0e003h)		;9e5a   ; el contador de cuadros
@@ -3599,10 +3886,10 @@ L_9E72:
 	jr nz,L_9E92		;9e80
 	xor a			;9e82
 	ld (hl),a			;9e83
-	ld (0e207h),a		;9e84
-	ld (0e20ah),a		;9e87
+	ld (0e207h),a		;9e84   ; el tramo del salto: 1 subiendo, 2 bajando
+	ld (0e20ah),a		;9e87   ; la direccion congelada mientras dura el salto
 	ld a,00ch		;9e8a
-	ld (0e203h),a		;9e8c   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;9e8c   ; el ESTADO de lo que se maneja
 	jp 0b48dh		;9e8f   ; banco 3
 L_9E92:
 	ld hl,0989ch		;9e92
@@ -3613,41 +3900,45 @@ L_9E92:
 	ld (hl),a			;9e9d
 L_9E9E:
 	call 0a8dbh		;9e9e   ; banco 3
-	ld a,(0e208h)		;9ea1
+	ld a,(0e208h)		;9ea1   ; el paso dentro del salto
 	rra			;9ea4
 	ld a,003h		;9ea5
 	jr c,L_9EAA		;9ea7
 	inc a			;9ea9
 L_9EAA:
 	jp 0a8f5h		;9eaa   ; banco 3
-L_9EAD:
-	ld hl,(0e1f4h)		;9ead
-	dec hl			;9eb0
+descuenta_la_cuenta_de_0xE1F4:
+	ld hl,(0e1f4h)		;9ead   ; la cuenta de 16 bits
+	dec hl			;9eb0   ; uno menos
 	ld (0e1f4h),hl		;9eb1
 	ld a,l			;9eb4
-	or h			;9eb5
+	or h			;9eb5   ; y hasta cero, se sigue
 	jr nz,L_9EEB		;9eb6
 L_9EB8:
 	ld a,0e0h		;9eb8
-	ld (0ee90h),a		;9eba
-	ld (0ee94h),a		;9ebd
+	ld (0ee90h),a		;9eba   ; el hueco de sprite 4
+	ld (0ee94h),a		;9ebd   ; el hueco de sprite 5
 	ld a,011h		;9ec0
-	ld (0e203h),a		;9ec2   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;9ec2   ; el ESTADO de lo que se maneja
 	xor a			;9ec5
 	ld (0e1f0h),a		;9ec6
 	ld (0e1f4h),a		;9ec9
 	call L_9493		;9ecc
-L_9ECF:
-	ld a,(0e0a1h)		;9ecf   ; el DECORADO, de 0 a 9
-	cp 002h		;9ed2
+
+; ----------------------------------------------------------------------
+; AVISAR AL DECORADO. Solo cinco de los diez decorados tienen algo que hacer aqui: el 2, el 3 y el 6 van a 0x592C y el 4 y el 5 a 0x58F0. Los otros cinco no hacen nada.
+; ----------------------------------------------------------------------
+avisa_al_decorado:
+	ld a,(0e0a1h)		;9ecf   ; el decorado
+	cp 002h		;9ed2   ; el 2...
 	jr z,L_9EE8		;9ed4
-	cp 003h		;9ed6
+	cp 003h		;9ed6   ; ...el 3...
 	jr z,L_9EE8		;9ed8
-	cp 006h		;9eda
+	cp 006h		;9eda   ; ...y el 6 por un lado
 	jr z,L_9EE8		;9edc
-	cp 004h		;9ede
+	cp 004h		;9ede   ; el 4...
 	jr z,L_9EE5		;9ee0
-	cp 005h		;9ee2
+	cp 005h		;9ee2   ; ...y el 5 por otro; y los demas, nada
 	ret nz			;9ee4
 L_9EE5:
 	jp 058f0h		;9ee5
@@ -3682,42 +3973,42 @@ L_9F18:
 	ld hl,0e212h		;9f1f
 	ld a,(hl)			;9f22
 	cp 00ch		;9f23
-	jr nc,L_9F33		;9f25
+	jr nc,mueve_de_fila_con_topes_bis		;9f25
 	ld a,(hl)			;9f27
 	inc (hl)			;9f28
 	ld hl,09c74h		;9f29
 	call 04056h		;9f2c   ; banco 0: a_mas_hl
 	ld a,(hl)			;9f2f
 	ld (0e214h),a		;9f30
-L_9F33:
-	ld a,(0e214h)		;9f33
-	ld hl,0e204h		;9f36
+mueve_de_fila_con_topes_bis:
+	ld a,(0e214h)		;9f33   ; el empujon
+	ld hl,0e204h		;9f36   ; la fila
 	add a,(hl)			;9f39
-	ld (hl),a			;9f3a
-	cp 040h		;9f3b
+	ld (hl),a			;9f3a   ; sumado
+	cp 040h		;9f3b   ; por arriba, la fila 0x40...
 	jr nc,L_9F43		;9f3d
 	ld (hl),040h		;9f3f
 	jr L_9F48		;9f41
 L_9F43:
-	cp 091h		;9f43
+	cp 091h		;9f43   ; ...y por abajo, la 0x90, que aqui acaba el tramo
 	jp nc,L_9EB8		;9f45
 L_9F48:
 	call 0a84bh		;9f48   ; banco 3
-	ld a,(0e209h)		;9f4b
+	ld a,(0e209h)		;9f4b   ; hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
 	call 0a87ah		;9f4e   ; banco 3
-	ld hl,(0e204h)		;9f51   ; la X en la pantalla de lo que se maneja
+	ld hl,(0e204h)		;9f51   ; la Y en la pantalla de lo que se maneja
 	ld a,01dh		;9f54
 	add a,l			;9f56
 	ld l,a			;9f57
 	ld (0e20fh),hl		;9f58
 	call 0a8dbh		;9f5b   ; banco 3
 	ld hl,(0e20fh)		;9f5e
-	ld (0ee90h),hl		;9f61
+	ld (0ee90h),hl		;9f61   ; el hueco de sprite 4
 	ld a,010h		;9f64
 	add a,h			;9f66
 	ld h,a			;9f67
-	ld (0ee94h),hl		;9f68
-	ld a,(0e209h)		;9f6b
+	ld (0ee94h),hl		;9f68   ; el hueco de sprite 5
+	ld a,(0e209h)		;9f6b   ; hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
 	bit 2,a		;9f6e
 	ld c,001h		;9f70
 	jr nz,L_9F7C		;9f72
@@ -3733,28 +4024,28 @@ L_9F80:
 	ld a,(0e003h)		;9f83   ; el contador de cuadros
 	rra			;9f86
 	ret c			;9f87
-	ld a,(0e204h)		;9f88   ; la X en la pantalla de lo que se maneja
+	ld a,(0e204h)		;9f88   ; la Y en la pantalla de lo que se maneja
 	cp 0f8h		;9f8b
 	jr nz,L_9F9A		;9f8d
 	ld a,0e0h		;9f8f
-	ld (0ee98h),a		;9f91
+	ld (0ee98h),a		;9f91   ; el hueco de sprite 6, el del bicho que vuela
 	ld a,019h		;9f94
-	ld (0e203h),a		;9f96   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;9f96   ; el ESTADO de lo que se maneja
 	ret			;9f99
 L_9F9A:
 	dec a			;9f9a
-	ld (0e204h),a		;9f9b   ; la X en la pantalla de lo que se maneja
-	ld hl,(0e204h)		;9f9e   ; la X en la pantalla de lo que se maneja
+	ld (0e204h),a		;9f9b   ; la Y en la pantalla de lo que se maneja
+	ld hl,(0e204h)		;9f9e   ; la Y en la pantalla de lo que se maneja
 	ld a,l			;9fa1
 	add a,008h		;9fa2
 	ld l,a			;9fa4
 	ld a,h			;9fa5
 	add a,008h		;9fa6
 	ld h,a			;9fa8
-	ld (0e0bbh),hl		;9fa9
+	ld (0e0bbh),hl		;9fa9   ; la fila del bicho que vuela
 	call 0a8dbh		;9fac   ; banco 3
-	ld hl,(0e0bbh)		;9faf
-	ld (0ee98h),hl		;9fb2
+	ld hl,(0e0bbh)		;9faf   ; la fila del bicho que vuela
+	ld (0ee98h),hl		;9fb2   ; el hueco de sprite 6, el del bicho que vuela
 	ld a,004h		;9fb5
 	call 0a8f5h		;9fb7   ; banco 3
 	ld a,(0e003h)		;9fba   ; el contador de cuadros
@@ -3766,9 +4057,9 @@ L_9FC5:
 	ld (0ee9ah),a		;9fc5
 	ret			;9fc8
 L_9FC9:
-	ld a,(0e204h)		;9fc9   ; la X en la pantalla de lo que se maneja
+	ld a,(0e204h)		;9fc9   ; la Y en la pantalla de lo que se maneja
 	add a,003h		;9fcc
-	ld (0e204h),a		;9fce   ; la X en la pantalla de lo que se maneja
+	ld (0e204h),a		;9fce   ; la Y en la pantalla de lo que se maneja
 	cp 0f8h		;9fd1
 	jr nc,L_9FFC		;9fd3
 	cp 090h		;9fd5
@@ -3786,15 +4077,19 @@ L_9FC9:
 	ld e,020h		;9fee
 L_9FF0:
 	ld a,c			;9ff0
-	ld (0e203h),a		;9ff1   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;9ff1   ; el ESTADO de lo que se maneja
 	ld a,b			;9ff4
-	ld (0e204h),a		;9ff5   ; la X en la pantalla de lo que se maneja
+	ld (0e204h),a		;9ff5   ; la Y en la pantalla de lo que se maneja
 	ld a,e			;9ff8
 	jp 0413ah		;9ff9   ; banco 0: pide_sonido_si_esta_activo
 L_9FFC:
 	call 0a8dbh		;9ffc   ; banco 3
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x9fff..0xa000  (1 bytes)
-DATA_9FFF:
+; DATOS medio_ld_a: el 0x3E de un `ld a,4` partido entre dos bancos: el 0x04
+;   es el primer byte del banco 3, que va detras en 0xA000. El trazador de un
+;   solo banco no puede listar una instruccion a caballo (tools/bancos.py,
+;   `partidas`)
+;   0x9fff..0xa000  (1 bytes)
+DATA_medio_ld_a:
 	defb 03eh	; 9fff

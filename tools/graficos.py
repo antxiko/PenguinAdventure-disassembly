@@ -198,6 +198,39 @@ def pinta_en_los_tres(cart, bancos, de, lienzo, dest, c=0, bajo=(), alto=()):
         pinta(cart, bancos, de, lienzo, dest + k * 0x800, c, bajo, alto)
 
 
+def pinta_con_mascara(cart, bancos, de, lienzo, mascara=0xFF):
+    """p00:42BC y p00:42BE. EL OTRO FORMATO DE GUION, el que este cartucho usa
+    para las pantallas de rotulos: aqui no hay compresion ninguna.
+
+        una palabra   la direccion de VRAM donde empieza el tramo
+        0xFF          se acabo el guion
+        0xFE          detras viene otra palabra de destino: otro tramo
+        lo demas      ese byte tal cual, y la direccion avanza una
+
+    La mascara es el registro C de p00:42C9 (`and c`). La puerta de 0x42BC
+    entra con 0xFF -todo pasa- y la de 0x42BE deja que la ponga quien llame:
+    con C a cero lo que se escribe son ceros, o sea que el MISMO guion sirve
+    para pintar un rotulo y para borrarlo. Eso es lo que hace la tienda al
+    cerrarse (p01:6F2E).
+    """
+    hl = _palabra_de(cart, bancos, de)
+    de += 2
+    while True:
+        b, de = _manda(cart, bancos, de)
+        if b == 0xFF:
+            return de
+        if b == 0xFE:
+            hl = _palabra_de(cart, bancos, de)
+            de += 2
+            continue
+        lienzo.escribe(hl, b & mascara)
+        hl += 1
+
+
+def _palabra_de(cart, bancos, de):
+    return cart.leer(de, bancos) | (cart.leer(de + 1, bancos) << 8)
+
+
 def descomprime(cart, bancos, hl, ram):
     """p00:418C. El mismo formato, pero a la RAM en vez de a la VRAM.
 
@@ -316,6 +349,102 @@ def titulo(cart, internacional):
         pinta(cart, (7, 8, 9), 0xA463, li)
     pinta(cart, (1, 12, 13), 0xBAB2, li)
     return li
+
+
+# ===================================================== la maquina de apostar
+# p00:4C38 carga los caracteres de esta pantalla: seis guiones de patrones y
+# los seis de colores que les hacen juego, todos del trio 4-5-6. La lista sale
+# de leer la rutina de arriba abajo; los que llevan destino a mano son los que
+# el guion no trae dentro.
+CARACTERES_DE_APOSTAR = (
+    (0xB0C8, None, 1), (0xB0FE, 0x2440, 1), (0xB13C, None, 1),
+    (0xB1DC, 0x2CD8, 1), (0xB260, None, 1), (0xB36E, 0x3558, 1),
+    (0xB110, None, 0), (0xB129, 0x0440, 0), (0xB200, None, 0),
+    (0xB24D, 0x0CD8, 0), (0xB38F, None, 0), (0xB407, 0x1558, 0),
+)
+
+# Los seis simbolos de los rodillos. p01:79AE lee el primer caracter de cada
+# uno de la tabla de 0x7B2E, y p01:6D4B pinta cuatro en cuadro: c y c+1 arriba,
+# c+2 y c+3 debajo. El numero de simbolo es lo que p01:79A6 saca de la tabla de
+# dieciseis de 0x7B34 con los cuatro bits bajos del registro R.
+TABLA_DE_SIMBOLOS = 0x7B2E
+TABLA_DE_16 = 0x7B34
+FILA_DE_LOS_RODILLOS = 0x3A1A          # p01:799C, y de cuatro en cuatro atras
+
+
+def simbolos_de_la_maquina(cart):
+    """(primer caracter, de cuantas de las 16 casillas sale) por simbolo."""
+    tabla = [cart.leer(TABLA_DE_16 + i, (1, 2, 3)) for i in range(16)]
+    return [(cart.leer(TABLA_DE_SIMBOLOS + s, (1, 2, 3)), tabla.count(s))
+            for s in range(6)]
+
+
+def pantalla_de_apostar(cart, rodillos=(0, 0, 0)):
+    """La pantalla de la maquina, con los tres rodillos donde se diga.
+
+    Los caracteres los carga p00:4C38 y la tabla de nombres la pintan los
+    guiones del banco 11 que p01:7809 y p01:781E sueltan con el pintor con
+    mascara. Los rodillos no estan en ningun guion: los escribe p01:799F uno a
+    uno mientras giran, asi que aqui se ponen a mano.
+    """
+    li = Lienzo()
+    for guion, dest, c in CARACTERES_DE_APOSTAR:
+        pinta(cart, (4, 5, 6), guion, li, dest=dest, c=c)
+    for guion in (0xB1FB, 0xB387, 0xB15E):
+        pinta_con_mascara(cart, (1, 10, 11), guion, li)
+    simbolos = simbolos_de_la_maquina(cart)
+    for i, s in enumerate(rodillos):
+        ch = simbolos[s][0]
+        sitio = FILA_DE_LOS_RODILLOS - i * 4
+        for k, d in enumerate((0, 1, 0x20, 0x21)):
+            li.escribe(NOMBRES + (sitio - NOMBRES) + d, ch + k)
+    return li
+
+
+# Las TRECE poses de p03:0xA91D, ocho bytes cada una: cuatro parejas de
+# (patron, color) para la figura de dos por dos. p03:A8F5 las lleva a los
+# sprites 0 a 3 -lo que se maneja- y p03:A778 a los sprites 6, 7, 8 y 5.
+POSES = 0xA91D
+N_POSES = 13
+# OJO: los numeros de patron de la tabla son RELATIVOS a la hoja de sprites que
+# tenga cargada cada escena, no absolutos. La misma pose numero 1 es una cosa
+# distinta segun que guion se haya soltado antes en 0x1800, asi que dibujar las
+# trece juntas no significa nada. Y hay un cabo suelto: los patrones 0x00, 0x04,
+# 0x08 y 0x0C, que piden ocho de las trece poses, NO los carga ninguno de los
+# diecinueve guiones de sprite conocidos ni ninguno de los guiones con mascara.
+
+
+def poses_de_lo_que_se_maneja(cart):
+    """(patron, color) x4 por pose, tal como estan en la ROM."""
+    fuera = []
+    for i in range(N_POSES):
+        b = [cart.leer(POSES + i * 8 + k, (1, 2, 3)) for k in range(8)]
+        fuera.append([(b[0], b[1]), (b[2], b[3]), (b[4], b[5]), (b[6], b[7])])
+    return fuera
+
+
+def hoja_de_los_simbolos(cart, escala_texto=True):
+    """Los seis simbolos de los rodillos, uno al lado del otro."""
+    li = Lienzo()
+    for guion, dest, c in CARACTERES_DE_APOSTAR:
+        pinta(cart, (4, 5, 6), guion, li, dest=dest, c=c)
+    simbolos = simbolos_de_la_maquina(cart)
+    alto = 16 + (7 if escala_texto else 0)
+    img = [[1] * (6 * 22) for _ in range(alto)]
+    for s, (ch, veces) in enumerate(simbolos):
+        x0 = s * 22 + 3
+        for k, (dy, dx) in enumerate(((0, 0), (0, 8), (8, 0), (8, 8))):
+            base = 0x1000 + (ch + k) * 8          # el tercer tercio de la pantalla
+            for y in range(8):
+                pat = li.v[PATRONES + base + y]
+                col8 = li.v[COLORES + base + y]
+                tinta, fondo = col8 >> 4, col8 & 0x0F
+                for x in range(8):
+                    v = tinta if (pat >> (7 - x)) & 1 else fondo
+                    img[dy + y][x0 + dx + x] = v if v else 1
+        if escala_texto:
+            _texto(img, x0, 17, "%d/16" % veces, 15)
+    return img
 
 
 # p00:4995, p00:49FC y p00:49D2 cargan los caracteres de un decorado, uno por
@@ -557,6 +686,10 @@ def main():
         _li, img = hoja_de_sprites_de(cart, guion)
         hechas.append(guarda_png(img, os.path.join(
             IMAGENES, "sprites_%04X.png" % guion), escala=3))
+    hechas.append(guarda_png(pinta_pantalla(pantalla_de_apostar(cart, (0, 0, 0))),
+                             os.path.join(IMAGENES, "apostar.png")))
+    hechas.append(guarda_png(hoja_de_los_simbolos(cart),
+                             os.path.join(IMAGENES, "simbolos.png"), escala=4))
     for f in hechas:
         print("  %s" % os.path.relpath(f, RAIZ))
     print("%d imagenes en docs/imagenes/" % len(hechas))

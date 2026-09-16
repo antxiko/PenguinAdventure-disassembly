@@ -92,24 +92,24 @@ C 0x82C3 el valor 1-2-3 de la fase; el 1-2-3 del decorado
 C 0x82CA la FASE, de 1 a 24
 C 0x836B el valor 1-2-3 de la fase; el 1-2-3 del decorado
 C 0x8378 el DECORADO, de 0 a 9
-C 0x839B por donde va la rotacion de los sprites; por que hueco se parte la tabla de sprites
-C 0x83B4 por donde va la rotacion de los sprites; por que hueco se parte la tabla de sprites
+C 0x839B el ESTADO de lo que se maneja
+C 0x83B4 el ESTADO de lo que se maneja
 C 0x844E el contador de cuadros
-C 0x847D por donde va la rotacion de los sprites; por que hueco se parte la tabla de sprites
-C 0x8484 el largo de la fase
-C 0x84C8 por donde va la rotacion de los sprites; por que hueco se parte la tabla de sprites
-C 0x84EF por donde va la rotacion de los sprites; el paso de la transicion
-C 0x85A1 por donde va la rotacion de los sprites; el paso de la transicion
-C 0x85C7 por donde va la rotacion de los sprites; el paso de la transicion, a 0x1A
-C 0x85DA por donde va la rotacion de los sprites; el paso de la transicion
-C 0x862B por donde va la rotacion de los sprites; el paso de la transicion
-C 0x8653 por donde va la rotacion de los sprites; el paso de la transicion
-C 0x8699 por donde va la rotacion de los sprites; el paso de la transicion, a 0x1B
-C 0x86CE por donde va la rotacion de los sprites; el paso de la transicion
-C 0x86F8 por donde va la rotacion de los sprites; el paso de la transicion
+C 0x847D el ESTADO de lo que se maneja
+C 0x8484 el TIEMPO que queda
+C 0x84C8 el ESTADO de lo que se maneja
+C 0x84EF el ESTADO de lo que se maneja
+C 0x85A1 el ESTADO de lo que se maneja
+C 0x85C7 el ESTADO de lo que se maneja, a 0x1A
+C 0x85DA el ESTADO de lo que se maneja
+C 0x862B el ESTADO de lo que se maneja
+C 0x8653 el ESTADO de lo que se maneja
+C 0x8699 el ESTADO de lo que se maneja, a 0x1B
+C 0x86CE el ESTADO de lo que se maneja
+C 0x86F8 el ESTADO de lo que se maneja
 C 0x8702 el modo en el que esta el juego
 C 0x878E el modo en el que esta el juego; el modo, otra vez con sus tres efectos
-C 0x87E4 por donde va la rotacion de los sprites; el paso de la transicion
+C 0x87E4 el ESTADO de lo que se maneja
 C 0x8825 el modo en el que esta el juego
 C 0x88BC el valor 1-2-3 de la fase
 C 0x88F7 la variable de fase; al estado 7...
@@ -123,83 +123,83 @@ C 0x91AD el DECORADO, de 0 a 9
 C 0x91B4 el estado de los mandos del cuadro anterior
 C 0x921B el modo en el que esta el juego
 C 0x9227 el contador de cuadros
-C 0x923B el largo de la fase
+C 0x923B el TIEMPO que queda
 C 0x9253 el modo en el que esta el juego
-C 0x925D por donde va la rotacion de los sprites
-C 0x9278 por donde va la rotacion de los sprites
+C 0x925D el ESTADO de lo que se maneja
+C 0x9278 el ESTADO de lo que se maneja
 C 0x92BB el contador de cuadros
 C 0x92EC el DECORADO, de 0 a 9
 C 0x9384 los datos del juego
 C 0x9440 el modo en el que esta el juego
 C 0x944F el contador de cuadros
 C 0x9453 el modo en el que esta el juego
-C 0x9485 por donde va la rotacion de los sprites
+C 0x9485 el ESTADO de lo que se maneja
 C 0x9493 el DECORADO, de 0 a 9
 C 0x94B0 el contador de cuadros
-C 0x94D1 el largo de la fase
+C 0x94D1 el TIEMPO que queda
 C 0x94D8 el contador de cuadros
-C 0x94F4 el largo de la fase
+C 0x94F4 el TIEMPO que queda
 C 0x9508 las teclas recien pulsadas
 C 0x968C la FASE, de 1 a 24
-C 0x96F9 por donde va la rotacion de los sprites
+C 0x96F9 el ESTADO de lo que se maneja
 C 0x9741 el DECORADO, de 0 a 9
 C 0x9748 las teclas recien pulsadas
-C 0x976C por donde va la rotacion de los sprites
+C 0x976C el ESTADO de lo que se maneja
 C 0x9773 el DECORADO, de 0 a 9
 C 0x9786 el contador de cuadros
 C 0x97B0 el contador de cuadros
-C 0x97DB por donde va la rotacion de los sprites
+C 0x97DB el ESTADO de lo que se maneja
 C 0x982D el estado de los mandos del cuadro anterior
 C 0x9845 el contador de cuadros
 C 0x985D el contador de cuadros
-C 0x9872 por donde va la rotacion de los sprites
+C 0x9872 el ESTADO de lo que se maneja
 C 0x98CD el contador de cuadros
-C 0x993C por donde va la rotacion de los sprites
+C 0x993C el ESTADO de lo que se maneja
 C 0x996E las teclas recien pulsadas
-C 0x9984 por donde va la rotacion de los sprites
+C 0x9984 el ESTADO de lo que se maneja
 C 0x99A2 las teclas recien pulsadas
-C 0x99AB por donde va la rotacion de los sprites
+C 0x99AB el ESTADO de lo que se maneja
 C 0x99B1 el modo en el que esta el juego
 C 0x99C3 el contador de cuadros
 C 0x99EA las teclas recien pulsadas
-C 0x9A0F por donde va la rotacion de los sprites
+C 0x9A0F el ESTADO de lo que se maneja
 C 0x9A33 la tabla de atributos de los 32 sprites
 C 0x9A36 el contador de cuadros
 C 0x9A4D el contador de cuadros
 C 0x9A76 el contador de cuadros
-C 0x9AA6 por donde va la rotacion de los sprites
+C 0x9AA6 el ESTADO de lo que se maneja
 C 0x9AFF el estado de los mandos del cuadro anterior
 C 0x9B17 el contador de cuadros
 C 0x9B2F el contador de cuadros
-C 0x9B49 por donde va la rotacion de los sprites
+C 0x9B49 el ESTADO de lo que se maneja
 C 0x9B91 el contador de cuadros
-C 0x9BDB por donde va la rotacion de los sprites
+C 0x9BDB el ESTADO de lo que se maneja
 C 0x9BF2 las teclas recien pulsadas
 C 0x9C00 el contador de cuadros
 C 0x9C57 la tabla de atributos de los 32 sprites
 C 0x9C5D el contador de cuadros
 C 0x9C98 el contador de cuadros
 C 0x9CF4 la tabla de atributos de los 32 sprites
-C 0x9D33 por donde va la rotacion de los sprites
+C 0x9D33 el ESTADO de lo que se maneja
 C 0x9D6C las teclas recien pulsadas
-C 0x9D90 por donde va la rotacion de los sprites
+C 0x9D90 el ESTADO de lo que se maneja
 C 0x9DA3 el contador de cuadros
 C 0x9DCD el contador de cuadros
-C 0x9DFD por donde va la rotacion de los sprites
+C 0x9DFD el ESTADO de lo que se maneja
 C 0x9E42 el estado de los mandos del cuadro anterior
 C 0x9E5A el contador de cuadros
 C 0x9E72 el contador de cuadros
-C 0x9E8C por donde va la rotacion de los sprites
-C 0x9EC2 por donde va la rotacion de los sprites
+C 0x9E8C el ESTADO de lo que se maneja
+C 0x9EC2 el ESTADO de lo que se maneja
 C 0x9ECF el DECORADO, de 0 a 9
 C 0x9EF7 el contador de cuadros
 C 0x9F0A las teclas recien pulsadas
 C 0x9F18 el contador de cuadros
 C 0x9F83 el contador de cuadros
-C 0x9F96 por donde va la rotacion de los sprites
+C 0x9F96 el ESTADO de lo que se maneja
 C 0x9FBA el contador de cuadros
 C 0x9FD9 el DECORADO, de 0 a 9
-C 0x9FF1 por donde va la rotacion de los sprites
+C 0x9FF1 el ESTADO de lo que se maneja
 
 L 0x8133 estado_3_arranca_la_partida
 C 0x8135 borrar la pantalla
@@ -489,26 +489,26 @@ C 0x9501 los avisos que deja el cuadro
 C 0x9514 uno o dos jugadores
 C 0x951A uno o dos jugadores
 C 0x973A por que vuelta de la fase va
-C 0x98CA la X en la pantalla de lo que se maneja
-C 0x9977 la X en la pantalla de lo que se maneja
+C 0x98CA la Y en la pantalla de lo que se maneja
+C 0x9977 la Y en la pantalla de lo que se maneja
 C 0x99BC los avisos que deja el cuadro
-C 0x99D6 la X en la pantalla de lo que se maneja
+C 0x99D6 la Y en la pantalla de lo que se maneja
 C 0x99E3 por que vuelta de la fase va
-C 0x9A03 la X en la pantalla de lo que se maneja
-C 0x9A1D la X en la pantalla de lo que se maneja
-C 0x9AAB la X en la pantalla de lo que se maneja
-C 0x9B4E la X en la pantalla de lo que se maneja
-C 0x9B8E la X en la pantalla de lo que se maneja
-C 0x9C3A la X en la pantalla de lo que se maneja
-C 0x9CD7 la X en la pantalla de lo que se maneja
+C 0x9A03 la Y en la pantalla de lo que se maneja
+C 0x9A1D la Y en la pantalla de lo que se maneja
+C 0x9AAB la Y en la pantalla de lo que se maneja
+C 0x9B4E la Y en la pantalla de lo que se maneja
+C 0x9B8E la Y en la pantalla de lo que se maneja
+C 0x9C3A la Y en la pantalla de lo que se maneja
+C 0x9CD7 la Y en la pantalla de lo que se maneja
 C 0x9EFE por que vuelta de la fase va
-C 0x9F51 la X en la pantalla de lo que se maneja
-C 0x9F88 la X en la pantalla de lo que se maneja
-C 0x9F9B la X en la pantalla de lo que se maneja
-C 0x9F9E la X en la pantalla de lo que se maneja
-C 0x9FC9 la X en la pantalla de lo que se maneja
-C 0x9FCE la X en la pantalla de lo que se maneja
-C 0x9FF5 la X en la pantalla de lo que se maneja
+C 0x9F51 la Y en la pantalla de lo que se maneja
+C 0x9F88 la Y en la pantalla de lo que se maneja
+C 0x9F9B la Y en la pantalla de lo que se maneja
+C 0x9F9E la Y en la pantalla de lo que se maneja
+C 0x9FC9 la Y en la pantalla de lo que se maneja
+C 0x9FCE la Y en la pantalla de lo que se maneja
+C 0x9FF5 la Y en la pantalla de lo que se maneja
 
 B 0x8278 ESTADO 6: SE ACABO LA FASE. Nueve subestados que llevan del "se acabo" al "empieza la siguiente", y en medio esta la cuenta de la fase: 0x8317 sube el numero que se pinta EN BCD, 0x831D hace girar el 1-2-3 del decorado y 0x8326 sube la fase de verdad. Cuando esa llega a 0x19 -o sea 25- se acaba el juego, y ahi esta escrito que las fases son VEINTICUATRO.
 L 0x8278 estado_6
@@ -980,3 +980,547 @@ C 0x8AE9 seis pasadas y se acabo
 # --- Las llamadas al banco 0, que esta fijo en 0x4000-0x5FFF. Los nombres los
 # saca tools/anota_llamadas.py de las directivas L de src/p00.notes.
 C 0x8A87 banco 0: pide_sonido
+
+# --- Las tablas pequenas que quedaban sin declarar (2026-09-15), cada una con
+# la instruccion que la carga con el banco 2 puesto de verdad.
+D 0x8D09 0x8D85 listas_de_sprites_para_IX  ocho listas que p02:8B9A, 8BA2, 8C01, 8C0A, 8C14, 8C1D, 8C24 y 8C2D ponen en IX: un byte con la cuenta B y B atributos de sprite de 4 bytes que p02:8BA6 manda a 0x3B00 (las de 13 bytes llevan tres, las de 17 cuatro)
+F 0x8D09 17
+D 0x8D85 0x8DAF entradas_de_7_8D85  seis entradas de 7 bytes: p02:8B20 multiplica A por siete sobre 0x8D85
+F 0x8D85 7
+D 0x8DD1 0x8DE7 dos_rotulos_8DD1  dos guiones de bytes (0xFF acaba) que p02:93EB y 93F0 pasan en DE a p00:42C1 con HL = 0x3869: uno u otro segun A
+F 0x8DD1 11
+D 0x8E07 0x8E0A tres_bytes_8E07  el guion `1B 1C FF` que p02:9215 pasa a p00:42C1: dos caracteres y el 0xFF que acaba
+F 0x8E07 3
+D 0x8E66 0x8E71 rotulo_8E66  guion con su destino delante (0x380A) y bytes hasta el 0xFF, que p02:9457 carga en DE para el pintor con mascara
+F 0x8E66 11
+D 0x8E7C 0x8FE8 imagen_de_14_filas  una imagen de 14 filas de 26 caracteres: p02:8C83 copia la fila (0xE126) - 1 con copia_a_vram a 0x3923 + 0x20 por fila, y a la fila 15 lo deja (p02:8C79)
+F 0x8E7C 26
+D 0x8FE8 0x917B tira_de_E11F  la tira que p02:8B51 va leyendo byte a byte con (0xE11F): p02:8CDD pone el puntero en 0x8FE7, el byte ANTERIOR, porque 0x8B55 incrementa antes de leer. Lleva direcciones de VRAM y valores; llega hasta la tabla de 0x917B
+F 0x8FE8 16
+D 0x917B 0x91AD palabras_por_fase_917B  25 palabras: p02:8CD0 lleva a 0xE122 la de la fase (0xE092) - 1
+F 0x917B 2
+D 0x935F 0x9367 ocho_bytes_a_E090  ocho bytes que p02:9353 copia con ldir a 0xE090
+F 0x935F 8
+D 0x94A0 0x94AA sonido_por_decorado  diez numeros de sonido, uno por decorado: p02:9496 coge el de (0xE0A1) y lo pide (p00:413A)
+F 0x94A0 10
+D 0x965F 0x966B las_dos_claves  LAS DOS CLAVES SECRETAS, seis teclas cada una, que p02:9637 y p02:964D comparan con la cola de 0xF0F8. Con los numeros que reparte p02:9522 (0=A 1=I 2=K 3=M 4=N 5=O 6=R 7=U 8=Z), la primera es 4-5-6-1-2-5 = NORIKO y la segunda 2-0-8-7-3-1 = KAZUMI
+F 0x965F 6
+F 0x965F 6
+D 0x97FF 0x9809 arco_del_salto_97FF  diez desplazamientos con signo que p02:97E4 y 9E03 suman a la Y de lo que se maneja (0xE204)
+F 0x97FF 10
+D 0x9896 0x98B0 empujones_9896  dos tablas pegadas: la de 0x9896, que p02:9839, 9B0B y 9E4E indexan con A - 4 y llevan a 0xE208, y la de 0x989C, que p02:987B, 9B59 y 9E92 suman a la Y (0xE204)
+F 0x9896 16
+D 0x9953 0x9961 empujones_9953  dos tablas de ocho y seis desplazamientos que p02:98DE escoge (0x9953 o 0x995B) e indexa con (0xE20C) para sumarlos a la Y (0xE204)
+F 0x9953 8
+D 0x9AD1 0x9ADB arco_del_salto_9AD1  diez desplazamientos con signo que p02:9AB6 suma a la Y (0xE204)
+F 0x9AD1 10
+D 0x9C74 0x9C80 empujon_E214  doce desplazamientos que p02:9C11, 9F29 y p03:A719 indexan y dejan en 0xE214 antes de sumarlos a la X
+F 0x9C74 12
+D 0x9D4A 0x9D58 empujones_9D4A  dos tablas de ocho y seis valores que p02:9CA9 escoge (0x9D4A o 0x9D52) e indexa con (0xE20C) sobre la Y (0xE204)
+F 0x9D4A 8
+D 0x9FFF 0xA000 medio_ld_a  el 0x3E de un `ld a,4` partido entre dos bancos: el 0x04 es el primer byte del banco 3, que va detras en 0xA000. El trazador de un solo banco no puede listar una instruccion a caballo (tools/bancos.py, `partidas`)
+F 0x9FFF 1
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x8DAF 0x8DC1 tira_8DAF  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que lee pinta_guion_con_mascara; lo cargan p02:93D1 (18 bytes)
+F 0x8DAF 16
+D 0x8DC1 0x8DD1 tira_8DC1  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que lee pinta_guion_con_mascara; se entra por 0x8DC1, 0x8DC9; lo cargan p02:93FE, p02:940C (16 bytes)
+F 0x8DC1 16
+D 0x8DE7 0x8DF8 tira_8DE7  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que lee pinta_guion_con_mascara y pinta_guion_lee_destino; lo cargan p02:80A6, p02:80AB (17 bytes)
+F 0x8DE7 16
+D 0x8DF8 0x8E07 tira_8DF8  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que lee pinta_guion_con_mascara; lo cargan p02:80C0 (15 bytes)
+F 0x8DF8 16
+D 0x8E0A 0x8E14 tira_8E0A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que lee pinta_guion_con_mascara y pinta_guion_lee_destino; lo cargan p02:80C6, p02:8103 (10 bytes)
+F 0x8E0A 16
+D 0x8E14 0x8E1E tira_8E14  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que lee pinta_guion_con_mascara y pinta_guion_lee_destino; lo cargan p02:80CC, p02:812A (10 bytes)
+F 0x8E14 16
+D 0x8E1E 0x8E30 tira_8E1E  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que lee pinta_guion_con_mascara y pinta_guion_lee_destino; lo cargan p02:8A3C, p02:8A52 (18 bytes)
+F 0x8E1E 16
+D 0x8E30 0x8E4F tira_8E30  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que lee pinta_guion_con_mascara; lo cargan p02:8A1D (31 bytes)
+F 0x8E30 16
+D 0x8E4F 0x8E66 tira_8E4F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que lee pinta_guion_con_mascara; lo cargan p02:9434 (23 bytes)
+F 0x8E4F 16
+D 0x8E71 0x8E7C tira_8E71  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que lee pinta_guion_lee_destino; lo cargan p02:9466 (11 bytes)
+F 0x8E71 16
+D 0x91BC 0x91C4 despacho_de_91B9  4 punteros pegados detras del `call despacha` de p02:91B9: la rutina a la que se salta con A
+F 0x91BC 2
+D 0x9693 0x96C3 despacho_de_9690  24 punteros pegados detras del `call despacha` de p02:9690: la rutina a la que se salta con A
+F 0x9693 2
+D 0x96FF 0x9737 despacho_de_96FC  28 punteros pegados detras del `call despacha` de p02:96FC: la rutina a la que se salta con A
+F 0x96FF 2
+# --- fin de los bloques de bloques.py ---
+
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0x92FB el arrastre de lado que se lleva solo
+C 0x9751 el paso dentro del salto
+C 0x9756 el tramo del salto: 1 subiendo, 2 bajando
+C 0x9759 hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
+C 0x975C la direccion congelada mientras dura el salto
+C 0x977A hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
+C 0x97A2 la direccion congelada mientras dura el salto
+C 0x97AA hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
+C 0x97B7 el tramo del salto: 1 subiendo, 2 bajando
+C 0x97D8 el tramo del salto: 1 subiendo, 2 bajando
+C 0x97DE la direccion congelada mientras dura el salto
+C 0x97F3 el paso dentro del salto
+C 0x980E la direccion congelada mientras dura el salto
+C 0x9816 hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
+C 0x981C el tramo del salto: 1 subiendo, 2 bajando
+C 0x9822 el paso dentro del salto
+C 0x9834 el paso dentro del salto
+C 0x9840 el paso dentro del salto
+C 0x986F el tramo del salto: 1 subiendo, 2 bajando
+C 0x9875 la direccion congelada mientras dura el salto
+C 0x988A el paso dentro del salto
+C 0x9995 el hueco de sprite 4
+C 0x9998 el hueco de sprite 5
+C 0x99F3 el paso dentro del salto
+C 0x99F8 el tramo del salto: 1 subiendo, 2 bajando
+C 0x99FB hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
+C 0x99FE la direccion congelada mientras dura el salto
+C 0x9A17 hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
+C 0x9A21 el sprite 2 de lo que se maneja: abajo a la izquierda
+C 0x9A28 el sprite 3 de lo que se maneja: abajo a la derecha
+C 0x9A2F el sprite 1 de lo que se maneja: arriba a la derecha
+C 0x9A3D el sprite 2 de lo que se maneja: abajo a la izquierda
+C 0x9A42 el sprite 2 de lo que se maneja: abajo a la izquierda
+C 0x9A45 el sprite 3 de lo que se maneja: abajo a la derecha
+C 0x9A68 la direccion congelada mientras dura el salto
+C 0x9A70 hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
+C 0x9A7D el tramo del salto: 1 subiendo, 2 bajando
+C 0x9A9E el tramo del salto: 1 subiendo, 2 bajando
+C 0x9AA1 la direccion congelada mientras dura el salto
+C 0x9AC5 el paso dentro del salto
+C 0x9AE0 la direccion congelada mientras dura el salto
+C 0x9AE8 hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
+C 0x9AEE el tramo del salto: 1 subiendo, 2 bajando
+C 0x9AF4 el paso dentro del salto
+C 0x9B06 el paso dentro del salto
+C 0x9B12 el paso dentro del salto
+C 0x9B41 el tramo del salto: 1 subiendo, 2 bajando
+C 0x9B44 la direccion congelada mientras dura el salto
+C 0x9B68 el paso dentro del salto
+C 0x9C34 hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
+C 0x9C3E el sprite 1 de lo que se maneja: arriba a la derecha
+C 0x9C45 el sprite 2 de lo que se maneja: abajo a la izquierda
+C 0x9C50 el sprite 3 de lo que se maneja: abajo a la derecha
+C 0x9CDB el sprite 1 de lo que se maneja: arriba a la derecha
+C 0x9CE2 el sprite 2 de lo que se maneja: abajo a la izquierda
+C 0x9CED el sprite 3 de lo que se maneja: abajo a la derecha
+C 0x9D75 el paso dentro del salto
+C 0x9D7A el tramo del salto: 1 subiendo, 2 bajando
+C 0x9D7D hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
+C 0x9D80 la direccion congelada mientras dura el salto
+C 0x9D97 hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
+C 0x9DBF la direccion congelada mientras dura el salto
+C 0x9DC7 hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
+C 0x9DD4 el tramo del salto: 1 subiendo, 2 bajando
+C 0x9DF5 el tramo del salto: 1 subiendo, 2 bajando
+C 0x9DF8 la direccion congelada mientras dura el salto
+C 0x9E12 el paso dentro del salto
+C 0x9E23 la direccion congelada mientras dura el salto
+C 0x9E2B hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
+C 0x9E31 el tramo del salto: 1 subiendo, 2 bajando
+C 0x9E37 el paso dentro del salto
+C 0x9E49 el paso dentro del salto
+C 0x9E55 el paso dentro del salto
+C 0x9E84 el tramo del salto: 1 subiendo, 2 bajando
+C 0x9E87 la direccion congelada mientras dura el salto
+C 0x9EA1 el paso dentro del salto
+C 0x9EBA el hueco de sprite 4
+C 0x9EBD el hueco de sprite 5
+C 0x9F4B hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
+C 0x9F61 el hueco de sprite 4
+C 0x9F68 el hueco de sprite 5
+C 0x9F6B hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha
+C 0x9F91 el hueco de sprite 6, el del bicho que vuela
+C 0x9FA9 la fila del bicho que vuela
+C 0x9FAF la fila del bicho que vuela
+C 0x9FB2 el hueco de sprite 6, el del bicho que vuela
+
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0x85F3 el nivel de la barra de nueve
+C 0x8923 por que paso va la secuencia
+C 0x8926 la cuenta de cuadros del paso en el que va la secuencia
+C 0x927C por que paso va la secuencia
+
+# --- Los accesos a la RAM ya identificada. Los anota tools/anota_ram.py con la
+# tabla que ese fichero lleva dentro, y cada entrada de esa tabla dice de donde
+# se sabe lo que dice.
+C 0x8694 por que tiempo va la otra secuencia
+C 0x86A1 el paso de montar y desmontar la figura
+C 0x98B3 por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
+C 0x98BC la cuenta de cuadros del paso de la caida
+C 0x98D8 por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
+C 0x98E6 la cuenta de cuadros del paso de la caida
+C 0x98F2 por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
+C 0x990B por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
+C 0x9917 la cuenta de cuadros del paso de la caida
+C 0x991E la cuenta de cuadros del paso de la caida
+C 0x9941 la cuenta de cuadros del paso de la caida
+C 0x9B77 por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
+C 0x9B80 la cuenta de cuadros del paso de la caida
+C 0x9B9C por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
+C 0x9BB5 la cuenta de cuadros del paso de la caida
+C 0x9BBC la cuenta de cuadros del paso de la caida
+C 0x9BE0 la cuenta de cuadros del paso de la caida
+C 0x9C83 por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
+C 0x9C8C la cuenta de cuadros del paso de la caida
+C 0x9CA3 por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
+C 0x9CB1 la cuenta de cuadros del paso de la caida
+C 0x9CC1 por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
+C 0x9CF7 por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
+C 0x9D00 la cuenta de cuadros del paso de la caida
+C 0x9D0D la cuenta de cuadros del paso de la caida
+C 0x9D14 la cuenta de cuadros del paso de la caida
+C 0x9D38 la cuenta de cuadros del paso de la caida
+
+# --- LAS DOS CLAVES DE TECLADO (2026-09-16). Descubiertas leyendo p02:9522.
+B 0x9505 UNO O DOS JUGADORES, Y DE PASO LAS CLAVES. Los bits 0 y 1 de las teclas recien pulsadas dan la vuelta a 0xE082 con el efecto 0x23. Pero antes llama a 0x9522, que es donde esta lo bueno: el vigilante de las dos claves secretas.
+L 0x9505 uno_o_dos_jugadores
+C 0x9505 primero, el vigilante de las claves
+C 0x9508 las teclas
+C 0x950C el bit 0...
+C 0x9511 ...o el bit 1
+C 0x9513 sin ninguno, nada
+L 0x9514 cambia_de_uno_a_dos
+C 0x9517 se le da la vuelta
+C 0x951D y el efecto 0x23
+B 0x9522 EL VIGILANTE DE LAS CLAVES. Mira NUEVE teclas, una a una, con SNSMAT de la BIOS -que devuelve un bit a CERO por tecla pulsada- y a cada una le guarda su estado del cuadro anterior en un byte propio. Cuando una acaba de pulsarse -antes suelta, ahora pulsada- se apunta su numero en la cola de seis de 0xF0F8. Las nueve teclas, en orden alfabetico y con el numero que les toca, son: 0 = A (fila 2, bit 6), 1 = I (fila 3, bit 6), 2 = K (fila 4, bit 0), 3 = M (fila 4, bit 2), 4 = N (fila 4, bit 3), 5 = O (fila 4, bit 4), 6 = R (fila 4, bit 7), 7 = U (fila 5, bit 2) y 8 = Z (fila 5, bit 7). Y no son nueve cualesquiera: son exactamente las letras que hacen falta para escribir las dos claves de 0x965F.
+L 0x9522 vigila_las_claves
+C 0x9522 fila 2 de la matriz
+C 0x9524 BIOS SNSMAT: un bit a CERO por tecla pulsada
+C 0x9527 esta es la tecla numero 0: la A
+C 0x9529 dos rotaciones para sacar el bit 6...
+C 0x952D ...y si esta a cero, esta pulsada
+L 0x9530 mira_si_acaba_de_pulsarse_la_A
+C 0x9530 como estaba antes
+C 0x9535 y como esta ahora
+C 0x9538 ¿ha cambiado?
+C 0x9539 si no, a la tecla siguiente
+C 0x953B y si antes estaba suelta, es que ACABA de pulsarse
+L 0x9540 la_tecla_I
+C 0x9540 fila 3
+C 0x9545 la numero 1: la I
+C 0x9547 su bit 6
+L 0x954E mira_si_acaba_de_pulsarse_la_I
+L 0x955E la_tecla_K
+C 0x955E fila 4
+C 0x9563 la numero 2: la K
+C 0x9565 su bit 0
+L 0x956B mira_si_acaba_de_pulsarse_la_K
+L 0x957B la_tecla_M
+C 0x9580 la numero 3: la M
+C 0x9582 su bit 2
+L 0x9589 mira_si_acaba_de_pulsarse_la_M
+L 0x9599 la_tecla_N
+C 0x959E la numero 4: la N
+C 0x95A0 su bit 3
+L 0x95A7 mira_si_acaba_de_pulsarse_la_N
+L 0x95B6 la_tecla_O
+C 0x95BB la numero 5: la O
+C 0x95BD su bit 4
+L 0x95C4 mira_si_acaba_de_pulsarse_la_O
+L 0x95D3 la_tecla_R
+C 0x95D8 la numero 6: la R
+C 0x95DA su bit 7
+L 0x95E0 mira_si_acaba_de_pulsarse_la_R
+L 0x95EF la_tecla_U
+C 0x95EF fila 5
+C 0x95F4 la numero 7: la U
+C 0x95F6 su bit 2
+L 0x95FD mira_si_acaba_de_pulsarse_la_U
+L 0x960C la_tecla_Z
+C 0x9611 la numero 8: la Z
+C 0x9613 su bit 7
+L 0x9619 mira_si_acaba_de_pulsarse_la_Z
+B 0x9626 APUNTAR LA TECLA EN LA COLA. Seis bytes de 0xF0F8 a 0xF0FD: se corren todos uno a la izquierda y la tecla nueva entra por el final. O sea que ahi estan siempre las SEIS ULTIMAS teclas pulsadas, en orden.
+L 0x9626 apunta_la_tecla_en_la_cola
+C 0x9626 la tecla que acaba de pulsarse
+C 0x9627 la cola de seis
+C 0x962D los cinco de atras se corren
+C 0x9632 y la nueva, al final
+B 0x9634 ¿ES UNA DE LAS DOS CLAVES? Compara las seis ultimas teclas con las dos secuencias de 0x965F. Con los numeros de arriba, la primera es 4-5-6-1-2-5 = **NORIKO** y la segunda 2-0-8-7-3-1 = **KAZUMI**. La primera deja 0xFE en 0xF0F7 y la segunda 0xFF; con cualquiera de las dos aparece el CONTINUE al acabarse la partida (p02:8937 y p02:8A32). Y hay una diferencia entre ellas: con 0xFE justo, el borrado del fin de partida se salta los 143 bytes de 0xE160 y los 64 del espejo de pantalla (p02:8985), asi que NORIKO conserva ademas lo que se llevara encima.
+L 0x9634 mira_si_es_una_de_las_dos_claves
+C 0x9634 las seis ultimas teclas
+C 0x9637 contra la primera clave: NORIKO
+C 0x963C byte a byte
+C 0x9644 0xFE: continue Y lo que se lleva
+L 0x964A mira_si_es_la_segunda_clave
+C 0x964A las seis ultimas teclas
+C 0x964D contra la segunda: KAZUMI
+L 0x9652 compara_la_segunda_clave
+C 0x9659 0xFF: continue a secas
+B 0x9367 SUMAR PUNTOS. El marcador son TRES bytes en BCD -0xE086, 0xE087 y 0xE088-, o sea seis cifras, y topa en 999999. Se entra por 0x9367 con DE y C a cero, o por 0x9369 con los tres. Y aqui esta la VIDA EXTRA: cuando el byte alto del marcador alcanza a 0xE095, ese umbral sube 5 EN BCD -o sea 50.000 puntos mas- y se da una vida. Con 0xE002 en negativo no se suma nada.
+L 0x9367 suma_puntos
+C 0x9367 el byte alto, a cero
+L 0x9369 suma_puntos_con_los_tres
+C 0x9369 la bandera de 0xE002
+C 0x936C si tiene el bit 7 puesto, no se suma nada
+C 0x936E el marcador, tres bytes
+C 0x9372 las cifras bajas, EN BCD
+C 0x9377 las de en medio, con su acarreo
+C 0x937C y las altas
+C 0x937F ¿se ha pasado de 999999?
+C 0x9381 pues clavado en 999999
+L 0x938B mira_la_vida_extra
+C 0x938C el umbral de la vida extra
+C 0x938F ¿lo ha alcanzado el byte alto?
+C 0x9390 si no, nada
+C 0x9393 el umbral sube 5: otros 50.000
+C 0x9396 y si se desborda...
+C 0x9398 ...se queda en 0xFF, que no se alcanza nunca
+C 0x939B las vidas
+B 0x9346 BORRAR LA PARTIDA. Los 0xE7A bytes de 0xE086 en adelante a cero, y luego los ocho de 0x935F a 0xE090: dos vidas, y unos y ceros que son con lo que se empieza.
+L 0x9346 borra_la_partida
+C 0x9346 desde el marcador
+C 0x9349 3.706 bytes
+C 0x9353 y los ocho de partida
+C 0x9356 a 0xE090
+
+# --- Las ocho copias del detector de flanco de las claves.
+C 0x954E como estaba la I antes
+C 0x9553 y como esta ahora
+C 0x9556 ¿ha cambiado?
+C 0x9559 y si antes estaba suelta, ACABA de pulsarse
+C 0x956B como estaba la K antes
+C 0x9570 y como esta ahora
+C 0x9573 ¿ha cambiado?
+C 0x9576 y si antes estaba suelta, ACABA de pulsarse
+C 0x9589 como estaba la M antes
+C 0x958E y como esta ahora
+C 0x9591 ¿ha cambiado?
+C 0x9594 y si antes estaba suelta, ACABA de pulsarse
+C 0x95A7 como estaba la N antes
+C 0x95AC y como esta ahora
+C 0x95AF ¿ha cambiado?
+C 0x95B2 y si antes estaba suelta, ACABA de pulsarse
+C 0x95C4 como estaba la O antes
+C 0x95C9 y como esta ahora
+C 0x95CC ¿ha cambiado?
+C 0x95CF y si antes estaba suelta, ACABA de pulsarse
+C 0x95E0 como estaba la R antes
+C 0x95E5 y como esta ahora
+C 0x95E8 ¿ha cambiado?
+C 0x95EB y si antes estaba suelta, ACABA de pulsarse
+C 0x95FD como estaba la U antes
+C 0x9602 y como esta ahora
+C 0x9605 ¿ha cambiado?
+C 0x9608 y si antes estaba suelta, ACABA de pulsarse
+C 0x9619 como estaba la Z antes
+C 0x961E y como esta ahora
+C 0x9621 ¿ha cambiado?
+C 0x9624 y si antes estaba suelta, ACABA de pulsarse
+
+# --- El reproductor de escenas: un guion de bytes en 0xE11F (2026-09-16).
+B 0x8B15 EL GUION DE LA ESCENA, PASO 1: LA ENTRADA. Lee un byte del guion, lo usa de indice en la tabla de SIETE bytes de 0x8D85 -hasta seis entradas- y de ahi saca una cuenta (0xE126), un puntero de texto (0xE124) y otro puntero que se queda en 0xE11F. Si el destino esta a cero, la escena se acaba.
+L 0x8B15 escena_paso_1
+C 0x8B15 si no es el paso 1, al siguiente
+C 0x8B17 el byte siguiente del guion
+C 0x8B1B solo hay seis entradas
+C 0x8B20 la tabla de siete bytes
+C 0x8B24 por siete
+C 0x8B29 la entrada que toca
+C 0x8B2C la cuenta
+C 0x8B2E el puntero del texto
+C 0x8B32 y el del guion
+C 0x8B3C la cuenta, guardada
+C 0x8B40 con el destino a cero, se acabo
+C 0x8B44 el texto...
+C 0x8B48 ...y el guion
+C 0x8B4C y al paso 6
+B 0x8B51 EL BYTE SIGUIENTE DEL GUION. El puntero vive en 0xE11F y se adelanta ANTES de leer, o sea que apunta siempre al ultimo byte servido, no al siguiente.
+L 0x8B51 lee_el_byte_del_guion
+C 0x8B51 el puntero del guion
+L 0x8B55 adelanta_y_lee
+C 0x8B55 se adelanta primero...
+C 0x8B5A ...y se lee despues
+B 0x8B5C EL PASO 2: RETOCAR OCHO COLORES. Lee ocho bytes de la VRAM uno a uno y, a los que tengan 1 en el nibble alto, les mete 9: o sea que un color se cambia por otro sin volver a pintar nada.
+L 0x8B5C escena_paso_2
+C 0x8B5C si no es el paso 2, al siguiente
+C 0x8B5E de donde
+C 0x8B61 ocho bytes
+L 0x8B68 retoca_un_color
+C 0x8B68 BIOS RDVRM: el que hay
+C 0x8B6C su nibble alto
+C 0x8B6E ¿es el 1?
+C 0x8B72 pues el 9
+C 0x8B75 y devuelto
+B 0x8B83 EL PASO 3: LOS SPRITES DE LA ESCENA. Una cuenta larga en 0xE141 que baja de 0x200, y el bit 4 del byte bajo escoge entre dos juegos de sprites: eso es lo que hace que la figura se mueva sola. 0xE143 dice cual de las cuatro parejas de juegos toca -0x8D09/0x8D16, 0x8D23/0x8D34, 0x8D41/0x8D52 y 0x8D63/0x8D74- y da la vuelta al llegar a cuatro.
+L 0x8B83 escena_paso_3
+C 0x8B83 si no es el paso 3, al siguiente
+C 0x8B87 la cuenta larga
+C 0x8B8A uno menos
+C 0x8B8F al llegar a cero, se cambia de pareja
+C 0x8B93 que pareja toca
+C 0x8B9A la primera...
+C 0x8B9E ...y su bit 4 escoge cual de las dos
+L 0x8BA6 pinta_los_sprites_de_la_escena
+C 0x8BA6 cuantos sprites
+C 0x8BAC la tabla de atributos, en la VRAM
+L 0x8BAF pinta_un_sprite_de_la_escena
+C 0x8BAF los dos desplazamientos
+C 0x8BB6 ¿va mirando al otro lado?
+C 0x8BBD pues el desplazamiento, cambiado de signo
+L 0x8BC2 escribe_el_sprite_en_la_vram
+C 0x8BC2 la fila
+C 0x8BC6 y la columna
+C 0x8BCA BIOS WRTVRM: la fila
+C 0x8BCF y la columna
+C 0x8BD2 el dibujo
+C 0x8BD6 mirando al otro lado...
+C 0x8BDC ...son cuatro dibujos mas alla
+C 0x8BE2 el dibujo
+C 0x8BE5 y el color
+C 0x8BEE cuatro bytes por sprite
+C 0x8BF8 y al acabar, 0xD0 en la fila del siguiente: los demas no se pintan
+L 0x8BFE la_segunda_pareja_de_juegos
+L 0x8C11 la_tercera_pareja_de_juegos
+L 0x8C24 la_cuarta_pareja_de_juegos
+L 0x8C34 cambia_de_pareja_de_juegos
+C 0x8C34 la cuenta, otra vez a 0x200
+C 0x8C3D la pareja siguiente
+C 0x8C3F y a la cuarta...
+C 0x8C42 ...vuelta a la primera
+B 0x8C44 EL PASO 4: EL TEXTO, CARACTER A CARACTER. Uno de cada cuatro cuadros: lee del guion de 0xE124 una direccion de pantalla y un caracter, y lo escribe con WRTVRM. Cuando se acaba la cuenta de 0xE126, al paso 2.
+L 0x8C44 escena_paso_4
+C 0x8C44 si no es el paso 4, al siguiente
+C 0x8C49 uno de cada cuatro
+C 0x8C4E el guion del texto
+C 0x8C52 la direccion de pantalla...
+C 0x8C58 ...y el caracter
+C 0x8C59 BIOS WRTVRM
+C 0x8C5D el guion, adelantado
+C 0x8C67 un caracter menos
+C 0x8C6A y al acabarse, al paso 2
+B 0x8C70 EL PASO 5: LA LINEA SIGUIENTE. Copia de un tiron los 26 bytes de una linea a la tabla de nombres: la linea de origen esta 0x1A mas alla de la anterior en 0x8E7C y la de destino 0x20 mas alla en la pantalla, empezando en 0x3923. Se llega hasta la linea 15, y alli se acaba.
+L 0x8C70 escena_paso_5
+C 0x8C71 mirando hacia el lado de siempre
+C 0x8C77 una linea mas
+C 0x8C79 ¿la quince?
+C 0x8C7D la primera linea de la pantalla
+C 0x8C83 y el primer texto
+C 0x8C86 la primera va directa
+L 0x8C8A salta_a_la_linea_que_toca
+C 0x8C8A 26 bytes por linea de texto...
+C 0x8C92 ...y 32 por linea de pantalla
+L 0x8C9C copia_la_linea
+C 0x8CA0 los 26 caracteres
+C 0x8CA3 banco 0: de un tiron a la VRAM
+L 0x8CA6 se_acabo_el_texto
+C 0x8CA6 0x40 de espera...
+C 0x8CA8 ...o solo 1 si 0xE10E esta puesto
+L 0x8CB0 arranca_la_espera_del_final
+C 0x8CB1 la espera
+C 0x8CB4 la cuenta larga, otra vez a 0x200
+C 0x8CBB la pareja de juegos, a la primera
+C 0x8CBE y la fase
+
+B 0x91C4 SUBIR LA BARRA CADA SEIS PASOS. Borra 0xE202, cuenta en 0xE201 y, cada seis, mira 0xE160 para decidir el tope: 7 si esta a cero y 5 si no. Eso es lo que hace que la barra suba antes o despues segun lo que se lleve.
+L 0x91C4 sube_la_barra_cada_seis
+C 0x91C4 el otro contador, a cero
+C 0x91CA uno mas
+C 0x91CC ¿ya van seis?
+C 0x91CF vuelta a cero
+C 0x91D0 y 0xE160 escoge el tope
+C 0x91D4 sin el, el 7...
+C 0x91D8 ...y con el, el 5
+C 0x91DA el nivel de la barra
+B 0x91E2 BAJAR LA BARRA CADA CUATRO PASOS. La pareja de la anterior, con el otro contador: cada cuatro pasos sube el nivel de 0xE4C0, con tope en 0x19. Ojo al sentido: un numero MAS ALTO es un periodo mas largo, o sea que se anda mas despacio.
+L 0x91E2 baja_la_barra_cada_cuatro
+C 0x91E2 el otro contador, a cero
+C 0x91E8 uno mas
+C 0x91EA ¿ya van cuatro?
+C 0x91ED vuelta a cero
+C 0x91EE el nivel de la barra
+C 0x91F2 con tope en 0x19
+C 0x91F5 uno mas
+B 0x94E6 EL TIEMPO SE CAMBIA POR PUNTOS. Un cuadro de cada dos: le quita uno al tiempo EN BCD y suma 0x20 puntos. Asi es como se vacia el reloj al acabar la fase, y por eso se oye ese repiqueteo.
+L 0x94E6 el_tiempo_a_puntos
+C 0x94E6 un cuadro de cada dos
+C 0x94E9 uno menos, EN BCD
+C 0x94EF y el byte alto, con su prestamo
+L 0x94F4 guarda_el_tiempo_y_suma
+C 0x94F7 0x20 puntos por unidad de tiempo
+B 0x9ECF AVISAR AL DECORADO. Solo cinco de los diez decorados tienen algo que hacer aqui: el 2, el 3 y el 6 van a 0x592C y el 4 y el 5 a 0x58F0. Los otros cinco no hacen nada.
+L 0x9ECF avisa_al_decorado
+C 0x9ECF el decorado
+C 0x9ED2 el 2...
+C 0x9ED6 ...el 3...
+C 0x9EDA ...y el 6 por un lado
+C 0x9EDE el 4...
+C 0x9EE2 ...y el 5 por otro; y los demas, nada
+L 0x978E la_pose_por_los_dos_bits
+C 0x978E el contador de la animacion
+C 0x9790 sin ningun bit, la pose 0
+C 0x9794 con el bit 0, la 1
+C 0x9798 y con los dos, la 2
+C 0x979A banco 3: a ponerla
+L 0x9C65 la_pose_por_los_dos_bits_desde_la_7
+C 0x9C65 el contador de la animacion
+C 0x9C67 aqui las poses empiezan en la 7
+L 0x9DAB la_pose_por_los_dos_bits_bis
+C 0x9DAB el contador de la animacion
+C 0x9DAD sin ningun bit, la pose 0
+C 0x9DB7 banco 3: a ponerla
+B 0x9C1B MOVERSE ARRIBA Y ABAJO, ENTRE LA 0x40 Y LA 0x90. Le suma a la fila el empujon de 0xE214 y la deja clavada entre esas dos: son los topes de este tramo del juego, mas estrechos que los de 0x14 y 0xCC del movimiento de lado.
+L 0x9C1B mueve_de_fila_con_topes
+C 0x9C1B el empujon
+C 0x9C1E la fila
+C 0x9C22 sumado
+C 0x9C23 por arriba, la fila 0x40...
+C 0x9C2B ...y por abajo, la 0x90
+L 0x9C31 y_luego_el_mando
+C 0x9C31 banco 3: hacia donde se pide ir
+L 0x9F33 mueve_de_fila_con_topes_bis
+C 0x9F33 el empujon
+C 0x9F36 la fila
+C 0x9F3A sumado
+C 0x9F3B por arriba, la fila 0x40...
+C 0x9F43 ...y por abajo, la 0x90, que aqui acaba el tramo
+B 0x966B MONTAR LA PANTALLA ENTERA. Nueve llamadas seguidas al banco 0, una por trozo, y la decima se salta. Aqui no hay bucle ni tabla: estan escritas una detras de otra, que es lo mas corto cuando son siempre las mismas.
+L 0x966B monta_la_pantalla_entera
+C 0x966B el primer trozo
+C 0x9686 y el ultimo, con salto en vez de llamada
+
+C 0x8BFE ¿la segunda pareja?
+C 0x8C01 el primer juego...
+C 0x8C05 ...y su bit 4 escoge cual de los dos
+C 0x8C11 ¿la tercera pareja?
+C 0x8C14 el primer juego...
+C 0x8C18 ...y su bit 4 escoge
+C 0x8C24 la cuarta, la que queda
+C 0x8C28 y su bit 4 escoge
+B 0x93B2 ¿ES RECORD? Compara el marcador con el record cifra a cifra, de la mas alta a la mas baja. Si el marcador es menor se sale; si es mayor, los tres bytes del marcador se copian al record con `lddr`.
+L 0x93B2 mira_si_es_record
+C 0x93B2 la cifra del marcador
+C 0x93B3 menos la del record
+C 0x93B4 si el marcador es menor, no es record
+C 0x93B6 si es mayor, es record
+C 0x93B7 y si son iguales, a la cifra siguiente
+L 0x93BB guarda_el_record
+C 0x93BB los tres bytes
+C 0x93C2 copiados hacia atras
+L 0x99CB la_fila_y_la_pose_por_un_bit
+C 0x99CB el contador
+C 0x99CD sin el bit, la fila 0x98 y la pose 3...
+C 0x99D3 ...y con el, la 0x9E y la 4
+C 0x99D9 banco 3: los cuatro sprites, colocados
+C 0x99DD banco 3: y la pose
+L 0x8AEC escena_despacha_por_0xE0B5
+C 0x8AEC por que paso va la escena
+C 0x8AF0 el 1 es el primero
+C 0x8AF2 y si no hay paso, se descuenta la cuenta
+C 0x8AF6 al acabarse, se acaba la escena
+L 0x8AF9 escena_avanza_el_subestado
+C 0x8AFC un subestado mas
+L 0x92DC al_sprite_siguiente
+C 0x92DC cuatro bytes por sprite
+L 0x9EAD descuenta_la_cuenta_de_0xE1F4
+C 0x9EAD la cuenta de 16 bits
+C 0x9EB0 uno menos
+C 0x9EB5 y hasta cero, se sigue

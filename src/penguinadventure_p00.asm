@@ -163,7 +163,7 @@ init:
 	pop hl			;4084
 	ei			;4085
 	call 00138h		;4086   ; BIOS RSLREG - Reads the primary slot register | BIOS RSLREG: el registro de ranuras primarias
-	rrca			;4089   ; se queda con los dos bits de la pagina 3, que es donde hay RAM seguro
+	rrca			;4089   ; dos rotaciones: los bits 2 y 3 del registro, que son los de la PAGINA 1
 	rrca			;408a
 	and 003h		;408b
 	ld c,a			;408d
@@ -178,11 +178,11 @@ init:
 	inc l			;4099
 	inc l			;409a
 	inc l			;409b
-	ld a,(hl)			;409c   ; y los dos bits de la subranura de la pagina 3
+	ld a,(hl)			;409c   ; y los dos bits de la subranura de la pagina 1
 	and 00ch		;409d
 	or c			;409f
 	ld h,080h		;40a0   ; H = 0x80: la pagina 2, que es la que se va a conectar
-	call 00024h		;40a2   ; BIOS ENASLT - Switches to specified slot and page definitively | BIOS ENASLT: mete en la pagina 2 la misma ranura donde esta la RAM
+	call 00024h		;40a2   ; BIOS ENASLT - Switches to specified slot and page definitively | BIOS ENASLT: mete en la pagina 2 la ranura donde esta el CARTUCHO, y con eso ocupa de 0x4000 a 0xBFFF
 	ld a,0c3h		;40a5   ; el 0xC3 de un `jp`
 	ld (0fd9ah),a		;40a7   ; en H.KEYI, el gancho que la BIOS ejecuta en cada interrupcion
 	ld hl,interrupcion		;40aa   ; y detras la direccion del manejador
@@ -431,7 +431,7 @@ trae_un_caracter_del_banco_6:
 	ld bc,00008h		;41f4
 	call copia_a_vram		;41f7   ; y para alla van los ocho bytes
 	pop af			;41fa
-	ld de,0bda9h		;41fb   ; la tabla de colores, veinte bytes mas abajo
+	ld de,0bda9h		;41fb   ; la tabla de colores, 0x20 bytes -treinta y dos- mas abajo: 0xBDA9
 	call a_mas_de		;41fe
 	ld hl,01718h		;4201   ; 0x1718, que en este cartucho es zona de sprites
 	ld bc,00008h		;4204
@@ -464,8 +464,11 @@ borra_la_pantalla_entera:
 	jr $+11		;422d
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x422f..0x4232  (3 bytes)
-DATA_422F:
+; DATOS llamada_huerfana: Los tres bytes CD ED 42, `call 0x42ED`
+;   (esconde_los_sprites), entre borra_la_pantalla_entera y
+;   borra_el_area_de_juego. Ningun salto ni llamada llega aqui
+;   0x422f..0x4232  (3 bytes)
+DATA_llamada_huerfana:
 	defb 0cdh,0edh,042h	; 422f
 
 ; ======================================================================
@@ -635,19 +638,19 @@ esconde_los_sprites:
 	ld b,020h		;42f0   ; los treinta y dos
 	ld a,0e0h		;42f2   ; con la Y fuera de la pantalla
 esconde_todos_vuelta:
-	ld (hl),a			;42f4
-	inc l			;42f5
+	ld (hl),a			;42f4   ; 0xE0 en la fila del sprite
+	inc l			;42f5   ; y cuatro bytes hasta el siguiente
 	inc l			;42f6
 	inc l			;42f7
 	inc l			;42f8
 	djnz esconde_todos_vuelta		;42f9
 
 ; ----------------------------------------------------------------------
-; SUBIR LOS SPRITES, ROTANDO CUAL VA PRIMERO. El VDP del MSX1 solo pinta cuatro sprites por linea y descarta los demas por orden de tabla, asi que el que este siempre el ultimo desaparece siempre. La solucion de la casa es no subir la tabla del tiron: se parte en trozos y se sube desplazada, de modo que el que hoy va el primero manana va el ultimo y el parpadeo se reparte. Cuanto se desplaza lo dice (0xE203).
+; SUBIR LOS SPRITES, CON DOS ESTADOS QUE SE SALTAN EL ORDEN. Lo normal es subir los 128 bytes de la tabla de un tiron. Pero mira el estado de lo que se maneja (0xE203) y hay dos en los que no: en el 4 adelanta los ocho bytes de 0xEE90 -los sprites 4 y 5- al principio de la tabla, y en el 16 se adelantan los ocho sprites de 0xEEE0 y detras va uno suelto de 0xEE98. El VDP del MSX1 solo pinta cuatro sprites por linea y descarta los siguientes POR ORDEN DE TABLA, asi que adelantar uno es darle prioridad para que no parpadee.
 ; ----------------------------------------------------------------------
 sube_los_sprites:
-	ld a,(0e203h)		;42fb   ; por donde va la rotacion
-	cp 004h		;42fe   ; en el 4 se reparte de otra manera
+	ld a,(0e203h)		;42fb   ; el ESTADO de lo que se maneja
+	cp 004h		;42fe   ; en el 4, los sprites 4 y 5 van delante
 	jr z,sube_los_sprites_rotado_4		;4300
 	ld hl,03b00h		;4302   ; la tabla de atributos, en la VRAM
 	ld de,0ee80h		;4305   ; y su copia en RAM
@@ -667,8 +670,8 @@ sube_los_sprites_rotado_4:
 	ld bc,00068h		;432c
 	jp copia_a_vram		;432f
 sube_los_sprites_desde_arriba:
-	ld a,(0e203h)		;4332   ; la misma rotacion, pero para la otra mitad de la tabla
-	cp 010h		;4335   ; en el 16 se reparte de otra manera
+	ld a,(0e203h)		;4332   ; el mismo estado, pero esta version empieza la tabla por 0xEEE0
+	cp 010h		;4335   ; y en el 16 se parte en cuatro trozos
 	jr z,sube_los_sprites_rotado_16		;4337
 	ld hl,03b00h		;4339   ; los 32 primeros bytes desde 0xEEE0
 	ld de,0eee0h		;433c
@@ -1175,21 +1178,21 @@ monta_la_fase:
 	ld (0e0d4h),a		;467f
 	ld (0e166h),a		;4682
 	ld (0e16ch),a		;4685
-	ld (0e0bdh),a		;4688
+	ld (0e0bdh),a		;4688   ; en que tiempo va el bicho que vuela: 0 nada, 1 aparecer, 2 mover
 	ld (0e0bbh),a		;468b   ; las diez de 0xE0BB a 0xE0C4, seguidas
-	ld (0e0bch),a		;468e
-	ld (0e0beh),a		;4691
-	ld (0e0bfh),a		;4694
-	ld (0e0c0h),a		;4697
+	ld (0e0bch),a		;468e   ; la columna del bicho que vuela
+	ld (0e0beh),a		;4691   ; el paso del vaiven del que vuela, de 32
+	ld (0e0bfh),a		;4694   ; hacia que lado cruza el que vuela
+	ld (0e0c0h),a		;4697   ; cual de las cuatro cosas que se cogen esta puesta
 	ld (0e0c1h),a		;469a
 	ld (0e0c2h),a		;469d
-	ld (0e0c3h),a		;46a0
-	ld (0e0c4h),a		;46a3
+	ld (0e0c3h),a		;46a0   ; la fila de eso que se coge
+	ld (0e0c4h),a		;46a3   ; la columna de eso que se coge
 	ld (0e0d7h),a		;46a6   ; y las cinco de 0xE0D7 a 0xE0DB
 	ld (0e0d8h),a		;46a9
 	ld (0e0d9h),a		;46ac
-	ld (0e0dah),a		;46af
-	ld (0e0dbh),a		;46b2
+	ld (0e0dah),a		;46af   ; la fila de ese otro objeto
+	ld (0e0dbh),a		;46b2   ; la columna de ese otro objeto
 	ld (0e0a9h),a		;46b5
 	ld (0e0dch),a		;46b8   ; la pausa
 	ld c,006h		;46bb   ; el objeto 6
@@ -1248,7 +1251,7 @@ reempieza:
 	ldir		;472a
 	pop af			;472c   ; y se devuelve lo salvado
 	pop hl			;472d
-	ld (0e301h),hl		;472e   ; lo andado en la fase
+	ld (0e301h),hl		;472e   ; la distancia a la que toca el objeto siguiente
 	ld (0e300h),a		;4731   ; por que pareja del guion de la fase va
 	di			;4734
 	ld a,00ah		;4735   ; el banco 10 a 0x8000
@@ -1325,7 +1328,7 @@ reparte_siguiente:
 	ei			;479c
 
 ; ----------------------------------------------------------------------
-; DE QUE TAMANO ES LA FASE. Mete los bancos 12 y 13 solo para leer cuatro bytes: la tabla de 0xACBA lleva una entrada por fase, indexada por (0xE092), y de ella salen los doce bits que van a 0xE08B. La rutina es un ejemplo limpio de lo que hacen los bancos 12 y 13 en este cartucho: se mapean, se lee y se devuelven, sin ejecutar en ellos ni una instruccion.
+; CUANTO TIEMPO DA LA FASE. Mete los bancos 12 y 13 solo para leer cuatro bytes: la tabla de 0xACBA lleva una entrada por fase, indexada por (0xE092), y de ella salen los doce bits del tiempo (0xE08B). La rutina es un ejemplo limpio de lo que hacen los bancos 12 y 13 en este cartucho: se mapean, se lee y se devuelven, sin ejecutar en ellos ni una instruccion.
 ; ----------------------------------------------------------------------
 lee_los_datos_de_la_fase:
 	di			;479d
@@ -1351,7 +1354,7 @@ lee_los_datos_de_la_fase:
 	ld a,(hl)			;47c0   ; y del siguiente solo el nibble de abajo: son DOCE bits
 	and 00fh		;47c1
 	ld d,a			;47c3
-	ld (0e08bh),de		;47c4   ; y de ahi sale el largo de la fase
+	ld (0e08bh),de		;47c4   ; y de ahi sale el TIEMPO de la fase
 	di			;47c8
 	ld a,002h		;47c9   ; el 2 y el 3, de vuelta
 	ld (08000h),a		;47cb
@@ -1737,28 +1740,78 @@ L_4A24:
 	ret			;4a88
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x4a89..0x4bbf  (310 bytes)
-DATA_4A89:
-	defb 007h,007h,007h,007h,007h,007h,001h,004h,001h,001h,000h,060h,000h,060h,000h,022h	; 4a89  ...........`.`."
-	defb 001h,060h,001h,060h,051h,062h,05eh,062h,028h,023h,06eh,063h,070h,063h,024h,066h	; 4a99  .`.`Qb^b(#ncpc$f
-	defb 024h,066h,000h,022h,025h,066h,025h,066h,051h,062h,05eh,062h,028h,023h,08fh,069h	; 4aa9  $f."%f%fQb^b(#.i
-	defb 091h,069h,02eh,06ah,02eh,06ah,000h,022h,02fh,06ah,02fh,06ah,023h,06eh,084h,06eh	; 4ab9  .i.j.j."/j/j#n.n
-	defb 0c0h,023h,07eh,06fh,08ch,06fh,060h,073h,096h,073h,0c0h,023h,0f0h,074h,00dh,075h	; 4ac9  .#~o.o`s.s.#.t.u
-	defb 01ch,079h,00bh,07ch,000h,022h,00ch,07ch,01ah,07ch,025h,07fh,025h,07fh,000h,022h	; 4ad9  .y.|.".|.|%.%.."
-	defb 026h,07fh,026h,07fh,060h,073h,096h,073h,0c0h,023h,08ch,087h,0a9h,087h,002h,060h	; 4ae9  &.&.`s.s.#.....`
-	defb 059h,060h,040h,02ah,0a7h,061h,0d2h,061h,07fh,063h,098h,063h,058h,02ah,07dh,065h	; 4af9  Y`@*.a.a.c.cX*}e
-	defb 085h,065h,026h,066h,053h,066h,060h,02ah,01fh,068h,035h,068h,07fh,063h,098h,063h	; 4b09  .e&fSf`*.h5h.c.c
-	defb 058h,02ah,0a0h,069h,0ach,069h,030h,06ah,08fh,06ah,0e8h,02ah,0b4h,06ch,0e3h,06ch	; 4b19  X*.i.i0j.j.*.l.l
-	defb 0a1h,06fh,0d0h,06fh,0d8h,02ah,0f5h,071h,009h,072h,08ah,075h,0a3h,075h,090h,02ah	; 4b29  .o.o.*.q.r.u.u.*
-	defb 0cch,077h,0d0h,077h,01bh,07ch,035h,07ch,048h,02ah,009h,07eh,011h,07eh,027h,07fh	; 4b39  .w.w.|5|H*.~.~'.
-	defb 029h,07fh,008h,028h,02ah,07fh,02ch,07fh,08ah,075h,0a3h,075h,090h,02ah,026h,088h	; 4b49  )..(*.,..u.u.*&.
-	defb 02ah,088h,04bh,062h,04dh,062h,008h,030h,04eh,062h,050h,062h,0ceh,065h,0d0h,065h	; 4b59  *.KbMb.0NbPb.e.e
-	defb 070h,030h,01fh,066h,021h,066h,013h,069h,015h,069h,078h,030h,06eh,069h,070h,069h	; 4b69  p0.f!f.i.ix0nipi
-	defb 0ceh,065h,0d0h,065h,070h,030h,029h,06ah,02bh,06ah,012h,06eh,014h,06eh,018h,030h	; 4b79  .e.ep0)j+j.n.n.0
-	defb 01eh,06eh,020h,06eh,0feh,072h,000h,073h,050h,030h,03ch,073h,03eh,073h,042h,078h	; 4b89  .n n.r.sP0<s>sBx
-	defb 048h,078h,0d8h,030h,0eeh,078h,0f0h,078h,091h,07eh,093h,07eh,0a8h,030h,01eh,07fh	; 4b99  Hx.0.x.x.~.~.0..
-	defb 020h,07fh,02dh,07fh,0cch,085h,0b0h,037h,0feh,085h,07fh,087h,042h,078h,048h,078h	; 4ba9   .-....7....BxHx
-	defb 0d8h,030h,09ch,088h,09eh,088h	; 4bb9
+; DATOS color_del_fondo_por_decorado: un byte por decorado (0xE0A1, de 0 a 9):
+;   el color con que p00:49BE llena los ocho primeros de la tabla de colores
+;   (FILVRM en 0x0008)
+;   0x4a89..0x4a93  (10 bytes)
+DATA_color_del_fondo_por_decorado:
+	defb 007h	; 4a89
+	defb 007h	; 4a8a
+	defb 007h	; 4a8b
+	defb 007h	; 4a8c
+	defb 007h	; 4a8d
+	defb 007h	; 4a8e
+	defb 001h	; 4a8f
+	defb 004h	; 4a90
+	defb 001h	; 4a91
+	defb 001h	; 4a92
+
+; ----------------------------------------------------------------------
+; DATOS tercio_arriba_por_decorado: diez entradas de 10 bytes, una por
+;   decorado (0xE0A1), para el tercio de arriba de la pantalla: guion de
+;   patrones, guion de patrones con espejo, destino de ese espejo, guion de
+;   colores y guion de colores con espejo, todos del trio 4-5-6. La carga
+;   p00:49CD y la recorre p00:4A24
+;   0x4a93..0x4af7  (100 bytes)
+DATA_tercio_arriba_por_decorado:
+	defb 000h,060h,000h,060h,000h,022h,001h,060h,001h,060h	; 4a93  .`.`.".`.`
+	defb 051h,062h,05eh,062h,028h,023h,06eh,063h,070h,063h	; 4a9d  Qb^b(#ncpc
+	defb 024h,066h,024h,066h,000h,022h,025h,066h,025h,066h	; 4aa7  $f$f."%f%f
+	defb 051h,062h,05eh,062h,028h,023h,08fh,069h,091h,069h	; 4ab1  Qb^b(#.i.i
+	defb 02eh,06ah,02eh,06ah,000h,022h,02fh,06ah,02fh,06ah	; 4abb  .j.j."/j/j
+	defb 023h,06eh,084h,06eh,0c0h,023h,07eh,06fh,08ch,06fh	; 4ac5  #n.n.#~o.o
+	defb 060h,073h,096h,073h,0c0h,023h,0f0h,074h,00dh,075h	; 4acf  `s.s.#.t.u
+	defb 01ch,079h,00bh,07ch,000h,022h,00ch,07ch,01ah,07ch	; 4ad9  .y.|.".|.|
+	defb 025h,07fh,025h,07fh,000h,022h,026h,07fh,026h,07fh	; 4ae3  %.%.."&.&.
+	defb 060h,073h,096h,073h,0c0h,023h,08ch,087h,0a9h,087h	; 4aed  `s.s.#....
+
+; ----------------------------------------------------------------------
+; DATOS tercio_medio_por_decorado: diez entradas de 10 bytes, una por decorado
+;   (0xE0A1), para el tercio del medio de la pantalla: guion de patrones,
+;   guion de patrones con espejo, destino de ese espejo, guion de colores y
+;   guion de colores con espejo, todos del trio 4-5-6. La carga p00:4A21 y la
+;   recorre p00:4A24
+;   0x4af7..0x4b5b  (100 bytes)
+DATA_tercio_medio_por_decorado:
+	defb 002h,060h,059h,060h,040h,02ah,0a7h,061h,0d2h,061h	; 4af7  .`Y`@*.a.a
+	defb 07fh,063h,098h,063h,058h,02ah,07dh,065h,085h,065h	; 4b01  .c.cX*}e.e
+	defb 026h,066h,053h,066h,060h,02ah,01fh,068h,035h,068h	; 4b0b  &fSf`*.h5h
+	defb 07fh,063h,098h,063h,058h,02ah,0a0h,069h,0ach,069h	; 4b15  .c.cX*.i.i
+	defb 030h,06ah,08fh,06ah,0e8h,02ah,0b4h,06ch,0e3h,06ch	; 4b1f  0j.j.*.l.l
+	defb 0a1h,06fh,0d0h,06fh,0d8h,02ah,0f5h,071h,009h,072h	; 4b29  .o.o.*.q.r
+	defb 08ah,075h,0a3h,075h,090h,02ah,0cch,077h,0d0h,077h	; 4b33  .u.u.*.w.w
+	defb 01bh,07ch,035h,07ch,048h,02ah,009h,07eh,011h,07eh	; 4b3d  .|5|H*.~.~
+	defb 027h,07fh,029h,07fh,008h,028h,02ah,07fh,02ch,07fh	; 4b47  '.)..(*.,.
+	defb 08ah,075h,0a3h,075h,090h,02ah,026h,088h,02ah,088h	; 4b51  .u.u.*&.*.
+
+; ----------------------------------------------------------------------
+; DATOS tercio_abajo_por_decorado: diez entradas de 10 bytes, una por decorado
+;   (0xE0A1), para el tercio de abajo de la pantalla: guion de patrones, guion
+;   de patrones con espejo, destino de ese espejo, guion de colores y guion de
+;   colores con espejo, todos del trio 4-5-6. La carga p00:49F7 y la recorre
+;   p00:4A24
+;   0x4b5b..0x4bbf  (100 bytes)
+DATA_tercio_abajo_por_decorado:
+	defb 04bh,062h,04dh,062h,008h,030h,04eh,062h,050h,062h	; 4b5b  KbMb.0NbPb
+	defb 0ceh,065h,0d0h,065h,070h,030h,01fh,066h,021h,066h	; 4b65  .e.ep0.f!f
+	defb 013h,069h,015h,069h,078h,030h,06eh,069h,070h,069h	; 4b6f  .i.ix0nipi
+	defb 0ceh,065h,0d0h,065h,070h,030h,029h,06ah,02bh,06ah	; 4b79  .e.ep0)j+j
+	defb 012h,06eh,014h,06eh,018h,030h,01eh,06eh,020h,06eh	; 4b83  .n.n.0.n n
+	defb 0feh,072h,000h,073h,050h,030h,03ch,073h,03eh,073h	; 4b8d  .r.sP0<s>s
+	defb 042h,078h,048h,078h,0d8h,030h,0eeh,078h,0f0h,078h	; 4b97  BxHx.0.x.x
+	defb 091h,07eh,093h,07eh,0a8h,030h,01eh,07fh,020h,07fh	; 4ba1  .~.~.0.. .
+	defb 02dh,07fh,0cch,085h,0b0h,037h,0feh,085h,07fh,087h	; 4bab  -....7....
+	defb 042h,078h,048h,078h,0d8h,030h,09ch,088h,09eh,088h	; 4bb5  BxHx.0....
 
 ; ======================================================================
 ; CODIGO 0x4bbf..0x565f  (2720 bytes)
@@ -3118,24 +3171,28 @@ L_55F7:
 	call pinta_sin_color		;5613   ; el guion 0x7E3A del banco 7: 704 bytes de patrones de sprite (0x19A0-0x1C5F)
 	ld de,082ddh		;5616
 	call pinta_sin_color		;5619   ; el guion 0x82DD del banco 8: 544 bytes de patrones de sprite (0x1C60-0x1E7F)
-	ld a,(0e08bh)		;561c   ; el largo de la fase
+	ld a,(0e08bh)		;561c   ; el TIEMPO que queda
 	and 00fh		;561f
 	cp 007h		;5621
-	jr z,L_5630		;5623
+	jr z,el_fondo_al_azar		;5623
 	cp 005h		;5625
-	jr z,L_5630		;5627
+	jr z,el_fondo_al_azar		;5627
 	cp 003h		;5629
 	ld de,08416h		;562b
 	jr nz,L_5642		;562e
-L_5630:
-	ld a,r		;5630
-	rra			;5632
+
+; ----------------------------------------------------------------------
+; EL FONDO SALE AL AZAR. Otra vez el registro R -el de refresco, que va cambiando solo- y de ahi, dos rotaciones y dos bits: uno de los cuatro guiones de 0x565F, que se queda apuntado en 0xE0E2. Es el mismo truco de azar que usa el centelleo.
+; ----------------------------------------------------------------------
+el_fondo_al_azar:
+	ld a,r		;5630   ; el registro R: el azar de la casa
+	rra			;5632   ; dos rotaciones...
 	rra			;5633
-	and 003h		;5634
-	ld (0e0e2h),a		;5636
-	ld hl,0565fh		;5639
+	and 003h		;5634   ; ...y dos bits: uno de cuatro
+	ld (0e0e2h),a		;5636   ; apuntado
+	ld hl,0565fh		;5639   ; los cuatro guiones
 	call dos_por_a_mas_hl		;563c
-	ld e,(hl)			;563f
+	ld e,(hl)			;563f   ; el que ha salido
 	inc hl			;5640
 	ld d,(hl)			;5641
 L_5642:
@@ -3159,9 +3216,15 @@ L_5642:
 	ret			;565e
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x565f..0x5667  (8 bytes)
-DATA_565F:
-	defb 052h,084h,092h,084h,0d6h,084h,009h,085h	; 565f  R.......
+; DATOS cuatro_guiones_al_azar: cuatro punteros a guiones de pinta_sin_color
+;   del trio 7-8-9; p00:5630 elige uno con `ld a,r / rra / rra / and 3`, lo
+;   apunta en 0xE0E2 y lo pinta en p00:5642
+;   0x565f..0x5667  (8 bytes)
+DATA_cuatro_guiones_al_azar:
+	defb 052h,084h	; 565f
+	defb 092h,084h	; 5661
+	defb 0d6h,084h	; 5663
+	defb 009h,085h	; 5665
 
 ; ======================================================================
 ; CODIGO 0x5667..0x5e3a  (2003 bytes)
@@ -3441,9 +3504,9 @@ L_57FB:
 	ei			;5813   ; el mapa ya esta entero
 	ld a,(0e0a1h)		;5814   ; el DECORADO, de 0 a 9
 	cp 007h		;5817
-	jr z,L_585B		;5819
+	jr z,pinta_dos_bloques_de_0x79C7		;5819
 	cp 008h		;581b
-	jr z,L_585B		;581d
+	jr z,pinta_dos_bloques_de_0x79C7		;581d
 	cp 002h		;581f
 	jr z,L_5839		;5821
 	cp 003h		;5823
@@ -3465,24 +3528,24 @@ L_5845:
 	cp 004h		;5848
 	jr z,L_5850		;584a
 	cp 005h		;584c
-	jr nz,L_586D		;584e
+	jr nz,pinta_dos_bloques_de_0x7B34		;584e
 L_5850:
 	ld de,07af2h		;5850
 	ld bc,00201h		;5853
 	call pinta_bloque		;5856
-	jr L_586D		;5859
-L_585B:
-	ld de,079c7h		;585b
-	ld bc,00200h		;585e
+	jr pinta_dos_bloques_de_0x7B34		;5859
+pinta_dos_bloques_de_0x79C7:
+	ld de,079c7h		;585b   ; el guion de 0x79C7
+	ld bc,00200h		;585e   ; dos filas de bloque...
 	call pinta_bloque		;5861
-	ld bc,00101h		;5864
+	ld bc,00101h		;5864   ; ...y una de una
 	call pinta_bloque		;5867
 	call pinta_sin_color		;586a
-L_586D:
-	ld de,07b34h		;586d
-	ld bc,00800h		;5870
+pinta_dos_bloques_de_0x7B34:
+	ld de,07b34h		;586d   ; el guion de 0x7B34
+	ld bc,00800h		;5870   ; ocho filas de bloque...
 	call pinta_bloque		;5873
-	ld bc,00301h		;5876
+	ld bc,00301h		;5876   ; ...y tres de una
 	call pinta_bloque		;5879
 	call pinta_sin_color		;587c
 	ld a,(0e0a1h)		;587f   ; el DECORADO, de 0 a 9
@@ -3647,7 +3710,7 @@ L_5974:
 	ld (hl),a			;598a   ; apuntado en 0xF0F3
 	pop hl			;598b   ; HL, como estaba
 	ei			;598c   ; el mapa ya esta entero
-	jp L_586D		;598d
+	jp pinta_dos_bloques_de_0x7B34		;598d
 L_5990:
 	di			;5990   ; sin interrupciones mientras cambia el mapa
 	push hl			;5991   ; HL va a apuntar a las copias
@@ -4136,9 +4199,9 @@ monta_la_presentacion:
 	ld a,017h		;5cab   ; el paso de la animacion
 	ld (0e155h),a		;5cad
 	ld hl,048e0h		;5cb0   ; la Y y la X del sprite 7
-	ld (0ee9ch),hl		;5cb3
+	ld (0ee9ch),hl		;5cb3   ; el hueco de sprite 7
 	ld h,058h		;5cb6   ; y la del 8
-	ld (0eea0h),hl		;5cb8
+	ld (0eea0h),hl		;5cb8   ; el hueco de sprite 8
 	ld hl,00a2ch		;5cbb   ; el patron y el color del 7
 	ld (0ee9eh),hl		;5cbe
 	ld l,028h		;5cc1   ; y los del 8
@@ -4161,7 +4224,7 @@ presentacion_cuadro:
 	and 007h		;5ce9   ; uno de cada ocho
 	ret nz			;5ceb
 	ld hl,03f73h		;5cec   ; patron nuevo para el sprite 7
-	ld (0ee9ch),hl		;5cef
+	ld (0ee9ch),hl		;5cef   ; el hueco de sprite 7
 	call posicion_del_sprite		;5cf2   ; y su posicion, que sale de la tabla
 	ld (0ee9eh),hl		;5cf5
 	call avanza_el_recorrido		;5cf8   ; ¿se acabo el recorrido?
@@ -4182,7 +4245,7 @@ presentacion_subestado_3:
 	and 007h		;5d12
 	ret nz			;5d14
 	ld hl,03b73h		;5d15   ; ahora el que cambia es el sprite 8
-	ld (0eea0h),hl		;5d18
+	ld (0eea0h),hl		;5d18   ; el hueco de sprite 8
 	call posicion_del_sprite		;5d1b   ; su posicion
 	ld (0eea2h),hl		;5d1e
 	call avanza_el_recorrido		;5d21   ; ¿ha llegado?
@@ -4192,7 +4255,7 @@ presentacion_subestado_4:
 	dec a			;5d27   ; el 4
 	jr nz,presentacion_subestado_5		;5d28
 	ld a,0e0h		;5d2a   ; 0xE0 en la Y: el sprite 8 se va de la pantalla
-	ld (0eea0h),a		;5d2c
+	ld (0eea0h),a		;5d2c   ; el hueco de sprite 8
 	ld hl,0e004h		;5d2f   ; un contador que baja
 	dec (hl)			;5d32
 	ret nz			;5d33   ; y hasta que no llegue a cero no se toca nada mas
@@ -4219,8 +4282,8 @@ presentacion_estado_2:
 	call baja_el_contador		;5d56   ; avanza y mira si ha llegado
 	ret nz			;5d59
 	xor a			;5d5a   ; los dos sprites, a la esquina de arriba
-	ld (0ee9ch),a		;5d5b
-	ld (0eea0h),a		;5d5e
+	ld (0ee9ch),a		;5d5b   ; el hueco de sprite 7
+	ld (0eea0h),a		;5d5e   ; el hueco de sprite 8
 	jr presentacion_estado_siguiente		;5d61
 presentacion_se_van_volando:
 	dec a			;5d63   ; el subestado 1
@@ -4235,7 +4298,7 @@ presentacion_se_van_volando:
 	ld a,e			;5d74
 	add a,002h		;5d75   ; y dos hacia abajo
 	ld e,a			;5d77
-	ld (0ee9ch),de		;5d78
+	ld (0ee9ch),de		;5d78   ; el hueco de sprite 7
 	ld de,(0eea0h)		;5d7c   ; lo mismo con el 8
 	ld a,d			;5d80
 	add a,005h		;5d81
@@ -4243,7 +4306,7 @@ presentacion_se_van_volando:
 	ld a,e			;5d84
 	add a,002h		;5d85
 	ld e,a			;5d87
-	ld (0eea0h),de		;5d88
+	ld (0eea0h),de		;5d88   ; el hueco de sprite 8
 	ld hl,0e155h		;5d8c   ; y un contador que dice cuanto dura el vuelo
 	dec (hl)			;5d8f
 	ret nz			;5d90   ; mientras no llegue a cero, siguen andando
@@ -4481,7 +4544,7 @@ L_5EDD:
 	djnz L_5EE1		;5edd
 	jr sube_una_fila		;5edf
 L_5EE1:
-	djnz L_5F01		;5ee1
+	djnz prepara_el_texto_que_sube		;5ee1
 	ld a,(0e012h)		;5ee3
 	and a			;5ee6
 	ret nz			;5ee7
@@ -4497,20 +4560,20 @@ L_5EEC:
 	ld a,003h		;5ef7
 	ld (0a000h),a		;5ef9   ; el banco 3 a 0xA000
 	ld (0f0f3h),a		;5efc   ; y en su copia de RAM
-	ei			;5eff   ; el mapa ya esta entero1098 comentarios
+	ei			;5eff   ; el mapa ya esta entero
 	ret			;5f00
-L_5F01:
-	ld a,006h		;5f01
+prepara_el_texto_que_sube:
+	ld a,006h		;5f01   ; tres velocidades del texto
 	ld (0e140h),a		;5f03
 	ld a,004h		;5f06
 	ld (0e13fh),a		;5f08
 	ld a,004h		;5f0b
 	ld (0e13eh),a		;5f0d
-	ld hl,0bcf8h		;5f10
-	call 07e2dh		;5f13
+	ld hl,0bcf8h		;5f10   ; el guion fijo de 0xBCF8
+	call 07e2dh		;5f13   ; banco 11: a descomprimirlo
 	call L_5B91		;5f16
-	ld a,(0e0b9h)		;5f19
-	ld hl,05f35h		;5f1c
+	ld a,(0e0b9h)		;5f19   ; y por que linea va
+	ld hl,05f35h		;5f1c   ; la tabla de lineas de 0x5F35
 	ld de,05f63h		;5f1f
 	and a			;5f22
 	jr z,L_5F28		;5f23
@@ -4524,12 +4587,57 @@ L_5F2F:
 	jr L_5EEC		;5f33
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x5f35..0x5f77  (66 bytes)
-DATA_5F35:
-	defb 0e0h,0bch,0d2h,0bch,0b8h,0bch,09dh,0bch,091h,0bch,01ah,0bch,082h,0bch,072h,0bch	; 5f35  ..............r.
-	defb 065h,0bch,051h,0bch,042h,0bch,033h,0bch,028h,0bch,01ah,0bch,003h,0bch,0f5h,0bbh	; 5f45  e.Q.B.3.(.......
-	defb 0e2h,0bbh,0d7h,0bbh,0cbh,0bbh,0b6h,0bbh,0aah,0bbh,094h,0bbh,086h,0bbh,027h,0bbh	; 5f55  ..............'.
-	defb 007h,0bbh,0e9h,0bah,0cfh,0bah,0c0h,0bah,082h,0bbh,06ch,0bbh,053h,0bbh,03ch,0bbh	; 5f65  ..........l.S.<.
+; DATOS lineas_que_suben_5F35: punteros a las lineas del texto que sube: las
+;   23 del tramo largo (0xE149, p00:5ED5). Cada una apunta a un byte de
+;   duracion y un guion de descomprime de los bancos 10/11
+;   0x5f35..0x5f63  (46 bytes)
+DATA_lineas_que_suben_5F35:
+	defb 0e0h,0bch	; 5f35
+	defb 0d2h,0bch	; 5f37
+	defb 0b8h,0bch	; 5f39
+	defb 09dh,0bch	; 5f3b
+	defb 091h,0bch	; 5f3d
+	defb 01ah,0bch	; 5f3f
+	defb 082h,0bch	; 5f41
+	defb 072h,0bch	; 5f43
+	defb 065h,0bch	; 5f45
+	defb 051h,0bch	; 5f47
+	defb 042h,0bch	; 5f49
+	defb 033h,0bch	; 5f4b
+	defb 028h,0bch	; 5f4d
+	defb 01ah,0bch	; 5f4f
+	defb 003h,0bch	; 5f51
+	defb 0f5h,0bbh	; 5f53
+	defb 0e2h,0bbh	; 5f55
+	defb 0d7h,0bbh	; 5f57
+	defb 0cbh,0bbh	; 5f59
+	defb 0b6h,0bbh	; 5f5b
+	defb 0aah,0bbh	; 5f5d
+	defb 094h,0bbh	; 5f5f
+	defb 086h,0bbh	; 5f61
+
+; ----------------------------------------------------------------------
+; DATOS lineas_que_suben_5F63: punteros a las lineas del texto que sube: las 5
+;   de un tramo corto (0xE147 si (0xE0B9) es cero, p00:5F1F). Cada una apunta
+;   a un byte de duracion y un guion de descomprime de los bancos 10/11
+;   0x5f63..0x5f6d  (10 bytes)
+DATA_lineas_que_suben_5F63:
+	defb 027h,0bbh	; 5f63
+	defb 007h,0bbh	; 5f65
+	defb 0e9h,0bah	; 5f67
+	defb 0cfh,0bah	; 5f69
+	defb 0c0h,0bah	; 5f6b
+
+; ----------------------------------------------------------------------
+; DATOS lineas_que_suben_5F6D: punteros a las lineas del texto que sube: las 5
+;   del otro tramo corto (p00:5F25). Cada una apunta a un byte de duracion y
+;   un guion de descomprime de los bancos 10/11
+;   0x5f6d..0x5f77  (10 bytes)
+DATA_lineas_que_suben_5F6D:
+	defb 082h,0bbh	; 5f6d
+	defb 06ch,0bbh	; 5f6f
+	defb 053h,0bbh	; 5f71
+	defb 03ch,0bbh	; 5f73
 	defb 0c0h,0bah	; 5f75
 
 ; ======================================================================
@@ -4539,7 +4647,7 @@ DATA_5F35:
 
 L_5F77:
 	ld de,05f99h		;5f77
-	ld a,(0e4c0h)		;5f7a
+	ld a,(0e4c0h)		;5f7a   ; el nivel de la barra de nueve
 	and a			;5f7d
 	jr z,L_5F96		;5f7e
 	ld de,05fa0h		;5f80
@@ -4558,12 +4666,89 @@ L_5F96:
 	jp pinta_guion_con_mascara		;5f96
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x5f99..0x6000  (103 bytes)
-DATA_5F99:
-	defb 01ah,038h,000h,000h,000h,000h,0ffh,01ah,038h,03fh,03fh,03fh,00eh,0ffh,01ah,038h	; 5f99  .8......8???...8
-	defb 03fh,03fh,03fh,00dh,0ffh,01ah,038h,03fh,03fh,03fh,000h,0ffh,01ah,038h,03fh,03fh	; 5fa9  ???...8???...8??
-	defb 03eh,000h,0ffh,01ah,038h,03fh,03fh,000h,000h,0ffh,01ah,038h,03fh,03eh,000h,000h	; 5fb9  >...8??....8?>..
-	defb 0ffh,01ah,038h,03fh,000h,000h,000h,0ffh,01ah,038h,03eh,000h,000h,000h,0ffh,000h	; 5fc9  ..8?.....8>.....
-	defb 007h,00eh,015h,015h,01ch,01ch,01ch,023h,023h,023h,023h,02ah,02ah,02ah,02ah,02ah	; 5fd9  .......####*****
-	defb 031h,031h,031h,031h,031h,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5fe9  11111...........
-	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5ff9
+; DATOS tira_5F99: guion de bytes sueltos (0xFF acaba, 0xFE otro destino)
+;   (nivel 0 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan
+;   p00:5F96 (7 bytes)
+;   0x5f99..0x5fa0  (7 bytes)
+DATA_tira_5F99:
+	defb 01ah,038h,000h,000h,000h,000h,0ffh	; 5f99
+
+; ----------------------------------------------------------------------
+; DATOS tira_5FA0: guion de bytes sueltos (0xFF acaba, 0xFE otro destino)
+;   (nivel 1 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan
+;   p00:5F96 (7 bytes)
+;   0x5fa0..0x5fa7  (7 bytes)
+DATA_tira_5FA0:
+	defb 01ah,038h,03fh,03fh,03fh,00eh,0ffh	; 5fa0
+
+; ----------------------------------------------------------------------
+; DATOS tira_5FA7: guion de bytes sueltos (0xFF acaba, 0xFE otro destino)
+;   (nivel 2 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan
+;   p00:5F96 (7 bytes)
+;   0x5fa7..0x5fae  (7 bytes)
+DATA_tira_5FA7:
+	defb 01ah,038h,03fh,03fh,03fh,00dh,0ffh	; 5fa7
+
+; ----------------------------------------------------------------------
+; DATOS tira_5FAE: guion de bytes sueltos (0xFF acaba, 0xFE otro destino)
+;   (nivel 3 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan
+;   p00:5F96 (7 bytes)
+;   0x5fae..0x5fb5  (7 bytes)
+DATA_tira_5FAE:
+	defb 01ah,038h,03fh,03fh,03fh,000h,0ffh	; 5fae
+
+; ----------------------------------------------------------------------
+; DATOS tira_5FB5: guion de bytes sueltos (0xFF acaba, 0xFE otro destino)
+;   (nivel 4 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan
+;   p00:5F96 (7 bytes)
+;   0x5fb5..0x5fbc  (7 bytes)
+DATA_tira_5FB5:
+	defb 01ah,038h,03fh,03fh,03eh,000h,0ffh	; 5fb5
+
+; ----------------------------------------------------------------------
+; DATOS tira_5FBC: guion de bytes sueltos (0xFF acaba, 0xFE otro destino)
+;   (nivel 5 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan
+;   p00:5F96 (7 bytes)
+;   0x5fbc..0x5fc3  (7 bytes)
+DATA_tira_5FBC:
+	defb 01ah,038h,03fh,03fh,000h,000h,0ffh	; 5fbc
+
+; ----------------------------------------------------------------------
+; DATOS tira_5FC3: guion de bytes sueltos (0xFF acaba, 0xFE otro destino)
+;   (nivel 6 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan
+;   p00:5F96 (7 bytes)
+;   0x5fc3..0x5fca  (7 bytes)
+DATA_tira_5FC3:
+	defb 01ah,038h,03fh,03eh,000h,000h,0ffh	; 5fc3
+
+; ----------------------------------------------------------------------
+; DATOS tira_5FCA: guion de bytes sueltos (0xFF acaba, 0xFE otro destino)
+;   (nivel 7 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan
+;   p00:5F96 (7 bytes)
+;   0x5fca..0x5fd1  (7 bytes)
+DATA_tira_5FCA:
+	defb 01ah,038h,03fh,000h,000h,000h,0ffh	; 5fca
+
+; ----------------------------------------------------------------------
+; DATOS tira_5FD1: guion de bytes sueltos (0xFF acaba, 0xFE otro destino)
+;   (nivel 8 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan
+;   p00:5F96 (7 bytes)
+;   0x5fd1..0x5fd8  (7 bytes)
+DATA_tira_5FD1:
+	defb 01ah,038h,03eh,000h,000h,000h,0ffh	; 5fd1
+
+; ----------------------------------------------------------------------
+; DATOS escalera_de_la_barra: 22 desplazamientos (0x00 a 0x31, de siete en
+;   siete) sobre 0x5FA0: p00:5F8C los indexa con (0xE4C0) - 4 para elegir cual
+;   de los ocho guiones llenos pinta. Cada escalon dura mas que el anterior
+;   0x5fd8..0x5fee  (22 bytes)
+DATA_escalera_de_la_barra:
+	defb 000h,007h,00eh,015h,015h,01ch,01ch,01ch,023h,023h,023h	; 5fd8  ........###
+	defb 023h,02ah,02ah,02ah,02ah,02ah,031h,031h,031h,031h,031h	; 5fe3  #*****11111
+
+; ----------------------------------------------------------------------
+; DATOS relleno_del_banco_0: 18 bytes a 0xFF hasta el final del banco 0
+;   0x5fee..0x6000  (18 bytes)
+DATA_relleno_del_banco_0:
+	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 5fee  ................
+	defb 0ffh,0ffh	; 5ffe

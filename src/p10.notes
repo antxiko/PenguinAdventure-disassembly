@@ -1,2 +1,873 @@
 # Banco 10 (se ejecuta en 0x8000). Directivas: L etiqueta, C comentario de
 # linea, B cabecera de bloque, D rango de datos, F anchura de fila.
+
+# --- BLOQUES QUE LEE EL CODIGO (seccion que reescribe tools/bloques.py; no editar a mano) ---
+D 0x8000 0x8030 tiras_de_terreno_un  24 punteros, uno por fase (0xE092 - 1), a las tiras de terreno con un jugador; los lee p01:6767. Van en orden y la primera tira empieza donde acaba la tabla
+F 0x8000 2
+D 0x8030 0x8036 terreno_fase_1_un  la tira de terreno de la fase 1 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8030 16
+D 0x8036 0x803C terreno_fase_2_un  la tira de terreno de la fase 2 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8036 16
+D 0x803C 0x8044 terreno_fase_3_un  la tira de terreno de la fase 3 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x803C 16
+D 0x8044 0x8049 terreno_fase_4_un  la tira de terreno de la fase 4 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8044 16
+D 0x8049 0x804E terreno_fase_5_un  la tira de terreno de la fase 5 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8049 16
+D 0x804E 0x8054 terreno_fase_6_un  la tira de terreno de la fase 6 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x804E 16
+D 0x8054 0x805C terreno_fase_7_un  la tira de terreno de la fase 7 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8054 16
+D 0x805C 0x8062 terreno_fase_8_un  la tira de terreno de la fase 8 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x805C 16
+D 0x8062 0x8069 terreno_fase_9_un  la tira de terreno de la fase 9 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8062 16
+D 0x8069 0x8070 terreno_fase_10_un  la tira de terreno de la fase 10 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8069 16
+D 0x8070 0x8077 terreno_fase_11_un  la tira de terreno de la fase 11 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8070 16
+D 0x8077 0x8080 terreno_fase_12_un  la tira de terreno de la fase 12 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8077 16
+D 0x8080 0x8087 terreno_fase_13_un  la tira de terreno de la fase 13 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8080 16
+D 0x8087 0x808D terreno_fase_14_un  la tira de terreno de la fase 14 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8087 16
+D 0x808D 0x8095 terreno_fase_15_un  la tira de terreno de la fase 15 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x808D 16
+D 0x8095 0x80A0 terreno_fase_16_un  la tira de terreno de la fase 16 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8095 16
+D 0x80A0 0x80A7 terreno_fase_17_un  la tira de terreno de la fase 17 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x80A0 16
+D 0x80A7 0x80B2 terreno_fase_18_un  la tira de terreno de la fase 18 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x80A7 16
+D 0x80B2 0x80BE terreno_fase_19_un  la tira de terreno de la fase 19 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x80B2 16
+D 0x80BE 0x80C6 terreno_fase_20_un  la tira de terreno de la fase 20 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x80BE 16
+D 0x80C6 0x80D4 terreno_fase_21_un  la tira de terreno de la fase 21 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x80C6 16
+D 0x80D4 0x80E1 terreno_fase_22_un  la tira de terreno de la fase 22 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x80D4 16
+D 0x80E1 0x80EB terreno_fase_23_un  la tira de terreno de la fase 23 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x80E1 16
+D 0x80EB 0x80F9 terreno_fase_24_un  la tira de terreno de la fase 24 con un jugador: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la tabla de 0x80F9
+F 0x80EB 16
+D 0x80F9 0x8129 tiras_de_terreno_dos  24 punteros, uno por fase (0xE092 - 1), a las tiras de terreno con dos jugadores; los lee p01:6767. Van en orden y la primera tira empieza donde acaba la tabla
+F 0x80F9 2
+D 0x8129 0x812F terreno_fase_1_dos  la tira de terreno de la fase 1 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8129 16
+D 0x812F 0x8135 terreno_fase_2_dos  la tira de terreno de la fase 2 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x812F 16
+D 0x8135 0x813D terreno_fase_3_dos  la tira de terreno de la fase 3 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8135 16
+D 0x813D 0x8142 terreno_fase_4_dos  la tira de terreno de la fase 4 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x813D 16
+D 0x8142 0x8147 terreno_fase_5_dos  la tira de terreno de la fase 5 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8142 16
+D 0x8147 0x814D terreno_fase_6_dos  la tira de terreno de la fase 6 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8147 16
+D 0x814D 0x8155 terreno_fase_7_dos  la tira de terreno de la fase 7 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x814D 16
+D 0x8155 0x815B terreno_fase_8_dos  la tira de terreno de la fase 8 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8155 16
+D 0x815B 0x8162 terreno_fase_9_dos  la tira de terreno de la fase 9 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x815B 16
+D 0x8162 0x8169 terreno_fase_10_dos  la tira de terreno de la fase 10 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8162 16
+D 0x8169 0x8170 terreno_fase_11_dos  la tira de terreno de la fase 11 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8169 16
+D 0x8170 0x8179 terreno_fase_12_dos  la tira de terreno de la fase 12 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8170 16
+D 0x8179 0x8180 terreno_fase_13_dos  la tira de terreno de la fase 13 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8179 16
+D 0x8180 0x8186 terreno_fase_14_dos  la tira de terreno de la fase 14 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8180 16
+D 0x8186 0x818E terreno_fase_15_dos  la tira de terreno de la fase 15 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8186 16
+D 0x818E 0x8199 terreno_fase_16_dos  la tira de terreno de la fase 16 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x818E 16
+D 0x8199 0x81A0 terreno_fase_17_dos  la tira de terreno de la fase 17 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x8199 16
+D 0x81A0 0x81AB terreno_fase_18_dos  la tira de terreno de la fase 18 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x81A0 16
+D 0x81AB 0x81B7 terreno_fase_19_dos  la tira de terreno de la fase 19 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x81AB 16
+D 0x81B7 0x81BF terreno_fase_20_dos  la tira de terreno de la fase 20 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x81B7 16
+D 0x81BF 0x81CD terreno_fase_21_dos  la tira de terreno de la fase 21 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x81BF 16
+D 0x81CD 0x81DA terreno_fase_22_dos  la tira de terreno de la fase 22 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x81CD 16
+D 0x81DA 0x81E4 terreno_fase_23_dos  la tira de terreno de la fase 23 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la de la fase siguiente
+F 0x81DA 16
+D 0x81E4 0x81F2 terreno_fase_24_dos  la tira de terreno de la fase 24 con dos jugadores: un byte por tramo, que p01:6773 va gastando con (0xE404). No lleva fin: acaba donde empieza la tabla de 0x81F2
+F 0x81E4 16
+D 0x81F2 0x8206 listas_del_modo_1  10 punteros a las listas de lo que sale en el modo 1 (0xE0A2 = 1); p01:67C5 escoge una con (0xE0A3)
+F 0x81F2 2
+D 0x8206 0x8247 lista_del_modo_1_0  lo que sale en el modo 1 con (0xE0A3) = 0: 64 bytes que p01:67D3 lee con (0xE403) y un 0xFF que la cierra y la hace empezar otra vez (p01:67E0)
+F 0x8206 16
+D 0x8247 0x8288 lista_del_modo_1_1  lo que sale en el modo 1 con (0xE0A3) = 1: 64 bytes que p01:67D3 lee con (0xE403) y un 0xFF que la cierra y la hace empezar otra vez (p01:67E0)
+F 0x8247 16
+D 0x8288 0x82C9 lista_del_modo_1_2  lo que sale en el modo 1 con (0xE0A3) = 2: 64 bytes que p01:67D3 lee con (0xE403) y un 0xFF que la cierra y la hace empezar otra vez (p01:67E0)
+F 0x8288 16
+D 0x82C9 0x830A lista_del_modo_1_3  lo que sale en el modo 1 con (0xE0A3) = 3: 64 bytes que p01:67D3 lee con (0xE403) y un 0xFF que la cierra y la hace empezar otra vez (p01:67E0)
+F 0x82C9 16
+D 0x830A 0x834B lista_del_modo_1_4  lo que sale en el modo 1 con (0xE0A3) = 4: 64 bytes que p01:67D3 lee con (0xE403) y un 0xFF que la cierra y la hace empezar otra vez (p01:67E0)
+F 0x830A 16
+D 0x834B 0x838C lista_del_modo_1_5  lo que sale en el modo 1 con (0xE0A3) = 5: 64 bytes que p01:67D3 lee con (0xE403) y un 0xFF que la cierra y la hace empezar otra vez (p01:67E0)
+F 0x834B 16
+D 0x838C 0x83CD lista_del_modo_1_6  lo que sale en el modo 1 con (0xE0A3) = 6: 64 bytes que p01:67D3 lee con (0xE403) y un 0xFF que la cierra y la hace empezar otra vez (p01:67E0)
+F 0x838C 16
+D 0x83CD 0x840E lista_del_modo_1_7  lo que sale en el modo 1 con (0xE0A3) = 7: 64 bytes que p01:67D3 lee con (0xE403) y un 0xFF que la cierra y la hace empezar otra vez (p01:67E0)
+F 0x83CD 16
+D 0x840E 0x844F lista_del_modo_1_8  lo que sale en el modo 1 con (0xE0A3) = 8: 64 bytes que p01:67D3 lee con (0xE403) y un 0xFF que la cierra y la hace empezar otra vez (p01:67E0)
+F 0x840E 16
+D 0x844F 0x8490 lista_del_modo_1_9  lo que sale en el modo 1 con (0xE0A3) = 9: 64 bytes que p01:67D3 lee con (0xE403) y un 0xFF que la cierra y la hace empezar otra vez (p01:67E0)
+F 0x844F 16
+D 0x8490 0x84A0 tira_de_terreno_fuera_del_juego  la tira que p01:6756 usa cuando el modo (0xE0A2) no es cero, en vez de la de la fase: 16 bytes, hasta la tabla de 0x84A0
+F 0x8490 16
+D 0x84A0 0x84B2 parejas_27  nueve parejas de bytes (C, E) que p01:6888 indexa con A - 0x27; si C no es 4 ni 0x0F, la X de lo que se maneja (0xE205) decide cual de los dos va
+F 0x84A0 2
+D 0x84B2 0x84EA palabras_30  28 palabras que p01:68BB indexa con A - 0x30 y manda a busca_ranura_libre en DE
+F 0x84B2 2
+D 0x84EA 0x8682 tramos_de_terreno  51 tramos de ocho cosas cada uno: p01:67EA salta a (0xE402) * 8 y lee la cosa (0xE403), que da la vuelta a las ocho (p01:67FE). Llega hasta la tabla de tablas de 0x8682
+F 0x84EA 8
+D 0x8682 0x86CE tabla_de_tablas_8682  38 punteros a tablas de 16 palabras (de las ranuras de 0xE440), con repetidas. La indexa p00:4760, p01:6910 y p01:6985 con el primer byte de la ranura menos uno
+F 0x8682 2
+D 0x86CE 0x8ACE tablas_internas_8682  las 32 tablas de 16 palabras de tabla_de_tablas_8682, seguidas: cada palabra apunta a un guion de bytes sueltos; p00:4760, p01:6910 y p01:6985 las indexa con el segundo byte menos uno
+F 0x86CE 32
+D 0x8ACE 0x8AD3 tira_8ACE  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86CE[0] (5 bytes)
+F 0x8ACE 16
+D 0x8AD3 0x8AD8 tira_8AD3  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86CE[1] (5 bytes)
+F 0x8AD3 16
+D 0x8AD8 0x8AE0 tira_8AD8  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86CE[2] (8 bytes)
+F 0x8AD8 16
+D 0x8AE0 0x8AE4 tira_8AE0  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86CE[3] (4 bytes)
+F 0x8AE0 16
+D 0x8AE4 0x8AE9 tira_8AE4  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86CE[4] (5 bytes)
+F 0x8AE4 16
+D 0x8AE9 0x8AEE tira_8AE9  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86CE[5] (5 bytes)
+F 0x8AE9 16
+D 0x8AEE 0x8AF3 tira_8AEE  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86CE[6] (5 bytes)
+F 0x8AEE 16
+D 0x8AF3 0x8AF8 tira_8AF3  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86CE[7] (5 bytes)
+F 0x8AF3 16
+D 0x8AF8 0x8B03 tira_8AF8  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86CE[8] (11 bytes)
+F 0x8AF8 16
+D 0x8B03 0x8B0A tira_8B03  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86CE[9] (7 bytes)
+F 0x8B03 16
+D 0x8B0A 0x8B11 tira_8B0A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86CE[10] (7 bytes)
+F 0x8B0A 16
+D 0x8B11 0x8B1F tira_8B11  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86CE[11] (14 bytes)
+F 0x8B11 16
+D 0x8B1F 0x8B2C tira_8B1F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86CE[12] (13 bytes)
+F 0x8B1F 16
+D 0x8B2C 0x8B39 tira_8B2C  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86CE[13] (13 bytes)
+F 0x8B2C 16
+D 0x8B39 0x8B48 tira_8B39  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86CE[14] (15 bytes)
+F 0x8B39 16
+D 0x8B48 0x8B4F tira_8B48  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86CE[15] (7 bytes)
+F 0x8B48 16
+D 0x8B4F 0x8B54 tira_8B4F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86EE[0] (5 bytes)
+F 0x8B4F 16
+D 0x8B54 0x8B59 tira_8B54  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86EE[1] (5 bytes)
+F 0x8B54 16
+D 0x8B59 0x8B61 tira_8B59  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86EE[2] (8 bytes)
+F 0x8B59 16
+D 0x8B61 0x8B65 tira_8B61  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86EE[3] (4 bytes)
+F 0x8B61 16
+D 0x8B65 0x8B6A tira_8B65  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86EE[4] (5 bytes)
+F 0x8B65 16
+D 0x8B6A 0x8B6F tira_8B6A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86EE[5] (5 bytes)
+F 0x8B6A 16
+D 0x8B6F 0x8B74 tira_8B6F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86EE[6] (5 bytes)
+F 0x8B6F 16
+D 0x8B74 0x8B79 tira_8B74  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86EE[7] (5 bytes)
+F 0x8B74 16
+D 0x8B79 0x8B84 tira_8B79  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86EE[8] (11 bytes)
+F 0x8B79 16
+D 0x8B84 0x8B8A tira_8B84  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86EE[9] (6 bytes)
+F 0x8B84 16
+D 0x8B8A 0x8B91 tira_8B8A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86EE[10] (7 bytes)
+F 0x8B8A 16
+D 0x8B91 0x8B9F tira_8B91  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86EE[11] (14 bytes)
+F 0x8B91 16
+D 0x8B9F 0x8BAC tira_8B9F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86EE[12] (13 bytes)
+F 0x8B9F 16
+D 0x8BAC 0x8BB9 tira_8BAC  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86EE[13] (13 bytes)
+F 0x8BAC 16
+D 0x8BB9 0x8BC8 tira_8BB9  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86EE[14] (15 bytes)
+F 0x8BB9 16
+D 0x8BC8 0x8BCF tira_8BC8  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x86EE[15] (7 bytes)
+F 0x8BC8 16
+D 0x8BCF 0x8BD4 tira_8BCF  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x870E[0], p00:4760, p01:6910 y p01:6985 por 0x89EE[0] (5 bytes)
+F 0x8BCF 16
+D 0x8BD4 0x8BD9 tira_8BD4  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x870E[1], p00:4760, p01:6910 y p01:6985 por 0x89EE[1] (5 bytes)
+F 0x8BD4 16
+D 0x8BD9 0x8BDE tira_8BD9  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x870E[2], p00:4760, p01:6910 y p01:6985 por 0x89EE[2] (5 bytes)
+F 0x8BD9 16
+D 0x8BDE 0x8BE3 tira_8BDE  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x870E[3], p00:4760, p01:6910 y p01:6985 por 0x89EE[3] (5 bytes)
+F 0x8BDE 16
+D 0x8BE3 0x8BE8 tira_8BE3  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x870E[4], p00:4760, p01:6910 y p01:6985 por 0x89EE[4] (5 bytes)
+F 0x8BE3 16
+D 0x8BE8 0x8BED tira_8BE8  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x870E[5], p00:4760, p01:6910 y p01:6985 por 0x89EE[5] (5 bytes)
+F 0x8BE8 16
+D 0x8BED 0x8BF7 tira_8BED  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x870E[6], p00:4760, p01:6910 y p01:6985 por 0x89EE[6] (10 bytes)
+F 0x8BED 16
+D 0x8BF7 0x8C01 tira_8BF7  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x870E[7], p00:4760, p01:6910 y p01:6985 por 0x89EE[7] (10 bytes)
+F 0x8BF7 16
+D 0x8C01 0x8C14 tira_8C01  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x870E[8], p00:4760, p01:6910 y p01:6985 por 0x89EE[8] (19 bytes)
+F 0x8C01 16
+D 0x8C14 0x8C27 tira_8C14  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x870E[9], p00:4760, p01:6910 y p01:6985 por 0x89EE[9] (19 bytes)
+F 0x8C14 16
+D 0x8C27 0x8C3C tira_8C27  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x870E[10], p00:4760, p01:6910 y p01:6985 por 0x89EE[10] (21 bytes)
+F 0x8C27 16
+D 0x8C3C 0x8C51 tira_8C3C  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x870E[11], p00:4760, p01:6910 y p01:6985 por 0x89EE[11] (21 bytes)
+F 0x8C3C 16
+D 0x8C51 0x8C72 tira_8C51  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x870E[12], p00:4760, p01:6910 y p01:6985 por 0x89EE[12] (33 bytes)
+F 0x8C51 16
+D 0x8C72 0x8C93 tira_8C72  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x870E[13], p00:4760, p01:6910 y p01:6985 por 0x89EE[13] (33 bytes)
+F 0x8C72 16
+D 0x8C93 0x8CA8 tira_8C93  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x870E[14] (21 bytes)
+F 0x8C93 16
+D 0x8CA8 0x8CB1 tira_8CA8  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x870E[15] (9 bytes)
+F 0x8CA8 16
+D 0x8CB1 0x8CB6 tira_8CB1  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x872E[0], p00:4760, p01:6910 y p01:6985 por 0x8A0E[0] (5 bytes)
+F 0x8CB1 16
+D 0x8CB6 0x8CBA tira_8CB6  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x872E[1], p00:4760, p01:6910 y p01:6985 por 0x8A0E[1] (4 bytes)
+F 0x8CB6 16
+D 0x8CBA 0x8CBE tira_8CBA  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x872E[2], p00:4760, p01:6910 y p01:6985 por 0x8A0E[2] (4 bytes)
+F 0x8CBA 16
+D 0x8CBE 0x8CC2 tira_8CBE  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x872E[3], p00:4760, p01:6910 y p01:6985 por 0x8A0E[3] (4 bytes)
+F 0x8CBE 16
+D 0x8CC2 0x8CC7 tira_8CC2  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x872E[4], p00:4760, p01:6910 y p01:6985 por 0x8A0E[4] (5 bytes)
+F 0x8CC2 16
+D 0x8CC7 0x8CCC tira_8CC7  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x872E[5], p00:4760, p01:6910 y p01:6985 por 0x8A0E[5] (5 bytes)
+F 0x8CC7 16
+D 0x8CCC 0x8CD6 tira_8CCC  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x872E[6], p00:4760, p01:6910 y p01:6985 por 0x8A0E[6] (10 bytes)
+F 0x8CCC 16
+D 0x8CD6 0x8CE0 tira_8CD6  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x872E[7], p00:4760, p01:6910 y p01:6985 por 0x8A0E[7] (10 bytes)
+F 0x8CD6 16
+D 0x8CE0 0x8CF3 tira_8CE0  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x872E[8], p00:4760, p01:6910 y p01:6985 por 0x8A0E[8] (19 bytes)
+F 0x8CE0 16
+D 0x8CF3 0x8D06 tira_8CF3  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x872E[9], p00:4760, p01:6910 y p01:6985 por 0x8A0E[9] (19 bytes)
+F 0x8CF3 16
+D 0x8D06 0x8D1B tira_8D06  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x872E[10], p00:4760, p01:6910 y p01:6985 por 0x8A0E[10] (21 bytes)
+F 0x8D06 16
+D 0x8D1B 0x8D30 tira_8D1B  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x872E[11], p00:4760, p01:6910 y p01:6985 por 0x8A0E[11] (21 bytes)
+F 0x8D1B 16
+D 0x8D30 0x8D51 tira_8D30  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x872E[12], p00:4760, p01:6910 y p01:6985 por 0x8A0E[12] (33 bytes)
+F 0x8D30 16
+D 0x8D51 0x8D72 tira_8D51  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x872E[13], p00:4760, p01:6910 y p01:6985 por 0x8A0E[13] (33 bytes)
+F 0x8D51 16
+D 0x8D72 0x8D82 tira_8D72  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x872E[14] (16 bytes)
+F 0x8D72 16
+D 0x8D82 0x8D89 tira_8D82  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x872E[15] (7 bytes)
+F 0x8D82 16
+D 0x8D89 0x8D8E tira_8D89  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x874E[0], p00:4760, p01:6910 y p01:6985 por 0x8A2E[0] (5 bytes)
+F 0x8D89 16
+D 0x8D8E 0x8D92 tira_8D8E  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x874E[1], p00:4760, p01:6910 y p01:6985 por 0x8A2E[1] (4 bytes)
+F 0x8D8E 16
+D 0x8D92 0x8D96 tira_8D92  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x874E[2], p00:4760, p01:6910 y p01:6985 por 0x8A2E[2] (4 bytes)
+F 0x8D92 16
+D 0x8D96 0x8D9A tira_8D96  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x874E[3], p00:4760, p01:6910 y p01:6985 por 0x8A2E[3] (4 bytes)
+F 0x8D96 16
+D 0x8D9A 0x8D9F tira_8D9A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x874E[4], p00:4760, p01:6910 y p01:6985 por 0x8A2E[4] (5 bytes)
+F 0x8D9A 16
+D 0x8D9F 0x8DA4 tira_8D9F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x874E[5], p00:4760, p01:6910 y p01:6985 por 0x8A2E[5] (5 bytes)
+F 0x8D9F 16
+D 0x8DA4 0x8DAE tira_8DA4  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x874E[6], p00:4760, p01:6910 y p01:6985 por 0x8A2E[6] (10 bytes)
+F 0x8DA4 16
+D 0x8DAE 0x8DB8 tira_8DAE  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x874E[7], p00:4760, p01:6910 y p01:6985 por 0x8A2E[7] (10 bytes)
+F 0x8DAE 16
+D 0x8DB8 0x8DCB tira_8DB8  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x874E[8], p00:4760, p01:6910 y p01:6985 por 0x8A2E[8] (19 bytes)
+F 0x8DB8 16
+D 0x8DCB 0x8DDE tira_8DCB  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x874E[9], p00:4760, p01:6910 y p01:6985 por 0x8A2E[9] (19 bytes)
+F 0x8DCB 16
+D 0x8DDE 0x8DF3 tira_8DDE  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x874E[10], p00:4760, p01:6910 y p01:6985 por 0x8A2E[10] (21 bytes)
+F 0x8DDE 16
+D 0x8DF3 0x8E08 tira_8DF3  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x874E[11], p00:4760, p01:6910 y p01:6985 por 0x8A2E[11] (21 bytes)
+F 0x8DF3 16
+D 0x8E08 0x8E29 tira_8E08  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x874E[12], p00:4760, p01:6910 y p01:6985 por 0x8A2E[12] (33 bytes)
+F 0x8E08 16
+D 0x8E29 0x8E4A tira_8E29  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x874E[13], p00:4760, p01:6910 y p01:6985 por 0x8A2E[13] (33 bytes)
+F 0x8E29 16
+D 0x8E4A 0x8E5B tira_8E4A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x874E[14] (17 bytes)
+F 0x8E4A 16
+D 0x8E5B 0x8E62 tira_8E5B  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x874E[15] (7 bytes)
+F 0x8E5B 16
+D 0x8E62 0x8E65 tira_8E62  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x876E[0], p00:4760, p01:6910 y p01:6985 por 0x87AE[0], p00:4760, p01:6910 y p01:6985 por 0x8A4E[0] (3 bytes)
+F 0x8E62 16
+D 0x8E65 0x8E68 tira_8E65  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x876E[1], p00:4760, p01:6910 y p01:6985 por 0x87AE[1], p00:4760, p01:6910 y p01:6985 por 0x8A4E[1] (3 bytes)
+F 0x8E65 16
+D 0x8E68 0x8E6D tira_8E68  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x876E[2], p00:4760, p01:6910 y p01:6985 por 0x87AE[2], p00:4760, p01:6910 y p01:6985 por 0x8A4E[2] (5 bytes)
+F 0x8E68 16
+D 0x8E6D 0x8E72 tira_8E6D  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x876E[3], p00:4760, p01:6910 y p01:6985 por 0x87AE[3], p00:4760, p01:6910 y p01:6985 por 0x8A4E[3] (5 bytes)
+F 0x8E6D 16
+D 0x8E72 0x8E77 tira_8E72  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x876E[4] (5 bytes)
+F 0x8E72 16
+D 0x8E77 0x8E81 tira_8E77  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x876E[5] (10 bytes)
+F 0x8E77 16
+D 0x8E81 0x8E87 tira_8E81  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x876E[6] (6 bytes)
+F 0x8E81 16
+D 0x8E87 0x8E8C tira_8E87  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x876E[7] (5 bytes)
+F 0x8E87 16
+D 0x8E8C 0x8E92 tira_8E8C  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x876E[8] (6 bytes)
+F 0x8E8C 16
+D 0x8E92 0x8E99 tira_8E92  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x876E[9] (7 bytes)
+F 0x8E92 16
+D 0x8E99 0x8EA5 tira_8E99  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x876E[10] (12 bytes)
+F 0x8E99 16
+D 0x8EA5 0x8EB2 tira_8EA5  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x876E[11] (13 bytes)
+F 0x8EA5 16
+D 0x8EB2 0x8EC0 tira_8EB2  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x876E[12] (14 bytes)
+F 0x8EB2 16
+D 0x8EC0 0x8ED1 tira_8EC0  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x876E[13] (17 bytes)
+F 0x8EC0 16
+D 0x8ED1 0x8ED4 tira_8ED1  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x876E[14] (3 bytes)
+F 0x8ED1 16
+D 0x8ED4 0x8ED7 tira_8ED4  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x876E[15] (3 bytes)
+F 0x8ED4 16
+D 0x8ED7 0x8EDA tira_8ED7  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x878E[0], p00:4760, p01:6910 y p01:6985 por 0x87CE[0], p00:4760, p01:6910 y p01:6985 por 0x8A6E[0] (3 bytes)
+F 0x8ED7 16
+D 0x8EDA 0x8EDD tira_8EDA  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x878E[1], p00:4760, p01:6910 y p01:6985 por 0x87CE[1], p00:4760, p01:6910 y p01:6985 por 0x8A6E[1] (3 bytes)
+F 0x8EDA 16
+D 0x8EDD 0x8EE2 tira_8EDD  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x878E[2], p00:4760, p01:6910 y p01:6985 por 0x87CE[2], p00:4760, p01:6910 y p01:6985 por 0x8A6E[2] (5 bytes)
+F 0x8EDD 16
+D 0x8EE2 0x8EE7 tira_8EE2  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x878E[3], p00:4760, p01:6910 y p01:6985 por 0x87CE[3], p00:4760, p01:6910 y p01:6985 por 0x8A6E[3] (5 bytes)
+F 0x8EE2 16
+D 0x8EE7 0x8EEC tira_8EE7  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x878E[4] (5 bytes)
+F 0x8EE7 16
+D 0x8EEC 0x8EF6 tira_8EEC  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x878E[5] (10 bytes)
+F 0x8EEC 16
+D 0x8EF6 0x8EFC tira_8EF6  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x878E[6] (6 bytes)
+F 0x8EF6 16
+D 0x8EFC 0x8F01 tira_8EFC  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x878E[7] (5 bytes)
+F 0x8EFC 16
+D 0x8F01 0x8F07 tira_8F01  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x878E[8] (6 bytes)
+F 0x8F01 16
+D 0x8F07 0x8F0E tira_8F07  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x878E[9] (7 bytes)
+F 0x8F07 16
+D 0x8F0E 0x8F1A tira_8F0E  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x878E[10] (12 bytes)
+F 0x8F0E 16
+D 0x8F1A 0x8F27 tira_8F1A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x878E[11] (13 bytes)
+F 0x8F1A 16
+D 0x8F27 0x8F36 tira_8F27  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x878E[12] (15 bytes)
+F 0x8F27 16
+D 0x8F36 0x8F47 tira_8F36  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x878E[13] (17 bytes)
+F 0x8F36 16
+D 0x8F47 0x8F4A tira_8F47  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x878E[14] (3 bytes)
+F 0x8F47 16
+D 0x8F4A 0x8F4D tira_8F4A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x878E[15] (3 bytes)
+F 0x8F4A 16
+D 0x8F4D 0x8F52 tira_8F4D  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87AE[4], p00:4760, p01:6910 y p01:6985 por 0x8A4E[4] (5 bytes)
+F 0x8F4D 16
+D 0x8F52 0x8F5C tira_8F52  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87AE[5], p00:4760, p01:6910 y p01:6985 por 0x8A4E[5] (10 bytes)
+F 0x8F52 16
+D 0x8F5C 0x8F62 tira_8F5C  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87AE[6], p00:4760, p01:6910 y p01:6985 por 0x8A4E[6] (6 bytes)
+F 0x8F5C 16
+D 0x8F62 0x8F67 tira_8F62  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87AE[7], p00:4760, p01:6910 y p01:6985 por 0x8A4E[7] (5 bytes)
+F 0x8F62 16
+D 0x8F67 0x8F73 tira_8F67  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87AE[8], p00:4760, p01:6910 y p01:6985 por 0x8A4E[8] (12 bytes)
+F 0x8F67 16
+D 0x8F73 0x8F7F tira_8F73  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87AE[9], p00:4760, p01:6910 y p01:6985 por 0x8A4E[9] (12 bytes)
+F 0x8F73 16
+D 0x8F7F 0x8F92 tira_8F7F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87AE[10], p00:4760, p01:6910 y p01:6985 por 0x8A4E[10] (19 bytes)
+F 0x8F7F 16
+D 0x8F92 0x8FA6 tira_8F92  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87AE[11], p00:4760, p01:6910 y p01:6985 por 0x8A4E[11] (20 bytes)
+F 0x8F92 16
+D 0x8FA6 0x8FC4 tira_8FA6  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87AE[12], p00:4760, p01:6910 y p01:6985 por 0x8A4E[12] (30 bytes)
+F 0x8FA6 16
+D 0x8FC4 0x8FEA tira_8FC4  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87AE[13], p00:4760, p01:6910 y p01:6985 por 0x8A4E[13] (38 bytes)
+F 0x8FC4 16
+D 0x8FEA 0x8FFC tira_8FEA  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87AE[14] (18 bytes)
+F 0x8FEA 16
+D 0x8FFC 0x9006 tira_8FFC  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87AE[15] (10 bytes)
+F 0x8FFC 16
+D 0x9006 0x900B tira_9006  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87CE[4], p00:4760, p01:6910 y p01:6985 por 0x8A6E[4] (5 bytes)
+F 0x9006 16
+D 0x900B 0x9015 tira_900B  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87CE[5], p00:4760, p01:6910 y p01:6985 por 0x8A6E[5] (10 bytes)
+F 0x900B 16
+D 0x9015 0x901B tira_9015  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87CE[6], p00:4760, p01:6910 y p01:6985 por 0x8A6E[6] (6 bytes)
+F 0x9015 16
+D 0x901B 0x9020 tira_901B  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87CE[7], p00:4760, p01:6910 y p01:6985 por 0x8A6E[7] (5 bytes)
+F 0x901B 16
+D 0x9020 0x902C tira_9020  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87CE[8], p00:4760, p01:6910 y p01:6985 por 0x8A6E[8] (12 bytes)
+F 0x9020 16
+D 0x902C 0x9038 tira_902C  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87CE[9], p00:4760, p01:6910 y p01:6985 por 0x8A6E[9] (12 bytes)
+F 0x902C 16
+D 0x9038 0x904B tira_9038  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87CE[10], p00:4760, p01:6910 y p01:6985 por 0x8A6E[10] (19 bytes)
+F 0x9038 16
+D 0x904B 0x905F tira_904B  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87CE[11], p00:4760, p01:6910 y p01:6985 por 0x8A6E[11] (20 bytes)
+F 0x904B 16
+D 0x905F 0x907D tira_905F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87CE[12], p00:4760, p01:6910 y p01:6985 por 0x8A6E[12] (30 bytes)
+F 0x905F 16
+D 0x907D 0x90A3 tira_907D  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87CE[13], p00:4760, p01:6910 y p01:6985 por 0x8A6E[13] (38 bytes)
+F 0x907D 16
+D 0x90A3 0x90B5 tira_90A3  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87CE[14] (18 bytes)
+F 0x90A3 16
+D 0x90B5 0x90BF tira_90B5  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87CE[15] (10 bytes)
+F 0x90B5 16
+D 0x90BF 0x90C2 tira_90BF  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87EE[0] (3 bytes)
+F 0x90BF 16
+D 0x90C2 0x90C5 tira_90C2  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87EE[1] (3 bytes)
+F 0x90C2 16
+D 0x90C5 0x90C8 tira_90C5  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87EE[2] (3 bytes)
+F 0x90C5 16
+D 0x90C8 0x90CD tira_90C8  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87EE[3] (5 bytes)
+F 0x90C8 16
+D 0x90CD 0x90D3 tira_90CD  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87EE[4] (6 bytes)
+F 0x90CD 16
+D 0x90D3 0x90DA tira_90D3  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87EE[5] (7 bytes)
+F 0x90D3 16
+D 0x90DA 0x90E2 tira_90DA  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87EE[6] (8 bytes)
+F 0x90DA 16
+D 0x90E2 0x90EA tira_90E2  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87EE[7] (8 bytes)
+F 0x90E2 16
+D 0x90EA 0x90F3 tira_90EA  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87EE[8] (9 bytes)
+F 0x90EA 16
+D 0x90F3 0x9107 tira_90F3  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87EE[9] (20 bytes)
+F 0x90F3 16
+D 0x9107 0x911D tira_9107  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87EE[10] (22 bytes)
+F 0x9107 16
+D 0x911D 0x9133 tira_911D  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87EE[11] (22 bytes)
+F 0x911D 16
+D 0x9133 0x914B tira_9133  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87EE[12] (24 bytes)
+F 0x9133 16
+D 0x914B 0x9165 tira_914B  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87EE[13] (26 bytes)
+F 0x914B 16
+D 0x9165 0x9183 tira_9165  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87EE[14] (30 bytes)
+F 0x9165 16
+D 0x9183 0x9191 tira_9183  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x87EE[15] (14 bytes)
+F 0x9183 16
+D 0x9191 0x9194 tira_9191  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x880E[0] (3 bytes)
+F 0x9191 16
+D 0x9194 0x9197 tira_9194  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x880E[1] (3 bytes)
+F 0x9194 16
+D 0x9197 0x919A tira_9197  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x880E[2] (3 bytes)
+F 0x9197 16
+D 0x919A 0x919F tira_919A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x880E[3] (5 bytes)
+F 0x919A 16
+D 0x919F 0x91A5 tira_919F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x880E[4] (6 bytes)
+F 0x919F 16
+D 0x91A5 0x91AC tira_91A5  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x880E[5] (7 bytes)
+F 0x91A5 16
+D 0x91AC 0x91B4 tira_91AC  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x880E[6] (8 bytes)
+F 0x91AC 16
+D 0x91B4 0x91BC tira_91B4  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x880E[7] (8 bytes)
+F 0x91B4 16
+D 0x91BC 0x91C5 tira_91BC  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x880E[8] (9 bytes)
+F 0x91BC 16
+D 0x91C5 0x91D9 tira_91C5  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x880E[9] (20 bytes)
+F 0x91C5 16
+D 0x91D9 0x91EF tira_91D9  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x880E[10] (22 bytes)
+F 0x91D9 16
+D 0x91EF 0x9205 tira_91EF  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x880E[11] (22 bytes)
+F 0x91EF 16
+D 0x9205 0x921D tira_9205  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x880E[12] (24 bytes)
+F 0x9205 16
+D 0x921D 0x9237 tira_921D  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x880E[13] (26 bytes)
+F 0x921D 16
+D 0x9237 0x9255 tira_9237  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x880E[14] (30 bytes)
+F 0x9237 16
+D 0x9255 0x9263 tira_9255  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x880E[15] (14 bytes)
+F 0x9255 16
+D 0x9263 0x9267 tira_9263  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x882E[0] (4 bytes)
+F 0x9263 16
+D 0x9267 0x926B tira_9267  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x882E[1] (4 bytes)
+F 0x9267 16
+D 0x926B 0x9271 tira_926B  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x882E[2] (6 bytes)
+F 0x926B 16
+D 0x9271 0x9277 tira_9271  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x882E[3] (6 bytes)
+F 0x9271 16
+D 0x9277 0x927E tira_9277  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x882E[4] (7 bytes)
+F 0x9277 16
+D 0x927E 0x9286 tira_927E  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x882E[5] (8 bytes)
+F 0x927E 16
+D 0x9286 0x928F tira_9286  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x882E[6] (9 bytes)
+F 0x9286 16
+D 0x928F 0x929A tira_928F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x882E[7] (11 bytes)
+F 0x928F 16
+D 0x929A 0x92A6 tira_929A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x882E[8] (12 bytes)
+F 0x929A 16
+D 0x92A6 0x92C0 tira_92A6  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x882E[9] (26 bytes)
+F 0x92A6 16
+D 0x92C0 0x92DE tira_92C0  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x882E[10] (30 bytes)
+F 0x92C0 16
+D 0x92DE 0x92FF tira_92DE  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x882E[11] (33 bytes)
+F 0x92DE 16
+D 0x92FF 0x9323 tira_92FF  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x882E[12] (36 bytes)
+F 0x92FF 16
+D 0x9323 0x934A tira_9323  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x882E[13] (39 bytes)
+F 0x9323 16
+D 0x934A 0x9374 tira_934A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x882E[14] (42 bytes)
+F 0x934A 16
+D 0x9374 0x938B tira_9374  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x882E[15] (23 bytes)
+F 0x9374 16
+D 0x938B 0x938F tira_938B  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x884E[0] (4 bytes)
+F 0x938B 16
+D 0x938F 0x9393 tira_938F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x884E[1] (4 bytes)
+F 0x938F 16
+D 0x9393 0x9399 tira_9393  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x884E[2] (6 bytes)
+F 0x9393 16
+D 0x9399 0x939F tira_9399  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x884E[3] (6 bytes)
+F 0x9399 16
+D 0x939F 0x93A6 tira_939F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x884E[4] (7 bytes)
+F 0x939F 16
+D 0x93A6 0x93AE tira_93A6  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x884E[5] (8 bytes)
+F 0x93A6 16
+D 0x93AE 0x93B7 tira_93AE  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x884E[6] (9 bytes)
+F 0x93AE 16
+D 0x93B7 0x93C2 tira_93B7  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x884E[7] (11 bytes)
+F 0x93B7 16
+D 0x93C2 0x93CE tira_93C2  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x884E[8] (12 bytes)
+F 0x93C2 16
+D 0x93CE 0x93E8 tira_93CE  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x884E[9] (26 bytes)
+F 0x93CE 16
+D 0x93E8 0x9406 tira_93E8  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x884E[10] (30 bytes)
+F 0x93E8 16
+D 0x9406 0x9427 tira_9406  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x884E[11] (33 bytes)
+F 0x9406 16
+D 0x9427 0x944B tira_9427  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x884E[12] (36 bytes)
+F 0x9427 16
+D 0x944B 0x9472 tira_944B  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x884E[13] (39 bytes)
+F 0x944B 16
+D 0x9472 0x949C tira_9472  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x884E[14] (42 bytes)
+F 0x9472 16
+D 0x949C 0x94B3 tira_949C  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x884E[15] (23 bytes)
+F 0x949C 16
+D 0x94B3 0x94B8 tira_94B3  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x886E[0] (5 bytes)
+F 0x94B3 16
+D 0x94B8 0x94BD tira_94B8  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x886E[1] (5 bytes)
+F 0x94B8 16
+D 0x94BD 0x94C2 tira_94BD  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x886E[2] (5 bytes)
+F 0x94BD 16
+D 0x94C2 0x94C7 tira_94C2  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x886E[3] (5 bytes)
+F 0x94C2 16
+D 0x94C7 0x94CC tira_94C7  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x886E[4] (5 bytes)
+F 0x94C7 16
+D 0x94CC 0x94DA tira_94CC  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x886E[5] (14 bytes)
+F 0x94CC 16
+D 0x94DA 0x94E1 tira_94DA  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x886E[6] (7 bytes)
+F 0x94DA 16
+D 0x94E1 0x94EF tira_94E1  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x886E[7] (14 bytes)
+F 0x94E1 16
+D 0x94EF 0x94FD tira_94EF  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x886E[8] (14 bytes)
+F 0x94EF 16
+D 0x94FD 0x9516 tira_94FD  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x886E[9] (25 bytes)
+F 0x94FD 16
+D 0x9516 0x952F tira_9516  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x886E[10] (25 bytes)
+F 0x9516 16
+D 0x952F 0x9548 tira_952F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x886E[11] (25 bytes)
+F 0x952F 16
+D 0x9548 0x9567 tira_9548  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x886E[12] (31 bytes)
+F 0x9548 16
+D 0x9567 0x9586 tira_9567  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x886E[13] (31 bytes)
+F 0x9567 16
+D 0x9586 0x95A5 tira_9586  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x886E[14] (31 bytes)
+F 0x9586 16
+D 0x95A5 0x95BD tira_95A5  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x886E[15] (24 bytes)
+F 0x95A5 16
+D 0x95BD 0x95C1 tira_95BD  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x888E[0] (4 bytes)
+F 0x95BD 16
+D 0x95C1 0x95C6 tira_95C1  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x888E[1] (5 bytes)
+F 0x95C1 16
+D 0x95C6 0x95CA tira_95C6  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x888E[2] (4 bytes)
+F 0x95C6 16
+D 0x95CA 0x95CF tira_95CA  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x888E[3] (5 bytes)
+F 0x95CA 16
+D 0x95CF 0x95D4 tira_95CF  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x888E[4] (5 bytes)
+F 0x95CF 16
+D 0x95D4 0x95E0 tira_95D4  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x888E[5] (12 bytes)
+F 0x95D4 16
+D 0x95E0 0x95E6 tira_95E0  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x888E[6] (6 bytes)
+F 0x95E0 16
+D 0x95E6 0x95F4 tira_95E6  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x888E[7] (14 bytes)
+F 0x95E6 16
+D 0x95F4 0x9602 tira_95F4  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x888E[8] (14 bytes)
+F 0x95F4 16
+D 0x9602 0x9618 tira_9602  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x888E[9] (22 bytes)
+F 0x9602 16
+D 0x9618 0x9631 tira_9618  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x888E[10] (25 bytes)
+F 0x9618 16
+D 0x9631 0x964A tira_9631  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x888E[11] (25 bytes)
+F 0x9631 16
+D 0x964A 0x9669 tira_964A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x888E[12] (31 bytes)
+F 0x964A 16
+D 0x9669 0x9688 tira_9669  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x888E[13] (31 bytes)
+F 0x9669 16
+D 0x9688 0x96A7 tira_9688  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x888E[14] (31 bytes)
+F 0x9688 16
+D 0x96A7 0x96BF tira_96A7  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x888E[15] (24 bytes)
+F 0x96A7 16
+D 0x96BF 0x96C3 tira_96BF  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88AE[0] (4 bytes)
+F 0x96BF 16
+D 0x96C3 0x96C8 tira_96C3  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88AE[1] (5 bytes)
+F 0x96C3 16
+D 0x96C8 0x96CC tira_96C8  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88AE[2] (4 bytes)
+F 0x96C8 16
+D 0x96CC 0x96D1 tira_96CC  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88AE[3] (5 bytes)
+F 0x96CC 16
+D 0x96D1 0x96D6 tira_96D1  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88AE[4] (5 bytes)
+F 0x96D1 16
+D 0x96D6 0x96E2 tira_96D6  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88AE[5] (12 bytes)
+F 0x96D6 16
+D 0x96E2 0x96E8 tira_96E2  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88AE[6] (6 bytes)
+F 0x96E2 16
+D 0x96E8 0x96F6 tira_96E8  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88AE[7] (14 bytes)
+F 0x96E8 16
+D 0x96F6 0x9704 tira_96F6  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88AE[8] (14 bytes)
+F 0x96F6 16
+D 0x9704 0x971A tira_9704  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88AE[9] (22 bytes)
+F 0x9704 16
+D 0x971A 0x9733 tira_971A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88AE[10] (25 bytes)
+F 0x971A 16
+D 0x9733 0x974C tira_9733  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88AE[11] (25 bytes)
+F 0x9733 16
+D 0x974C 0x976B tira_974C  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88AE[12] (31 bytes)
+F 0x974C 16
+D 0x976B 0x978A tira_976B  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88AE[13] (31 bytes)
+F 0x976B 16
+D 0x978A 0x97A9 tira_978A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88AE[14] (31 bytes)
+F 0x978A 16
+D 0x97A9 0x97C1 tira_97A9  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88AE[15] (24 bytes)
+F 0x97A9 16
+D 0x97C1 0x97C5 tira_97C1  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88CE[0], p00:4760, p01:6910 y p01:6985 por 0x8A8E[0] (4 bytes)
+F 0x97C1 16
+D 0x97C5 0x97CB tira_97C5  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88CE[1], p00:4760, p01:6910 y p01:6985 por 0x8A8E[1] (6 bytes)
+F 0x97C5 16
+D 0x97CB 0x97D2 tira_97CB  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88CE[2], p00:4760, p01:6910 y p01:6985 por 0x8A8E[2] (7 bytes)
+F 0x97CB 16
+D 0x97D2 0x97DA tira_97D2  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88CE[3], p00:4760, p01:6910 y p01:6985 por 0x8A8E[3] (8 bytes)
+F 0x97D2 16
+D 0x97DA 0x97E3 tira_97DA  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88CE[4], p00:4760, p01:6910 y p01:6985 por 0x8A8E[4] (9 bytes)
+F 0x97DA 16
+D 0x97E3 0x97ED tira_97E3  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88CE[5], p00:4760, p01:6910 y p01:6985 por 0x8A8E[5] (10 bytes)
+F 0x97E3 16
+D 0x97ED 0x97F8 tira_97ED  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88CE[6], p00:4760, p01:6910 y p01:6985 por 0x8A8E[6] (11 bytes)
+F 0x97ED 16
+D 0x97F8 0x9804 tira_97F8  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88CE[7], p00:4760, p01:6910 y p01:6985 por 0x8A8E[7] (12 bytes)
+F 0x97F8 16
+D 0x9804 0x9810 tira_9804  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88CE[8], p00:4760, p01:6910 y p01:6985 por 0x8A8E[8] (12 bytes)
+F 0x9804 16
+D 0x9810 0x981F tira_9810  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88CE[9], p00:4760, p01:6910 y p01:6985 por 0x8A8E[9] (15 bytes)
+F 0x9810 16
+D 0x981F 0x9844 tira_981F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88CE[10], p00:4760, p01:6910 y p01:6985 por 0x8A8E[10] (37 bytes)
+F 0x981F 16
+D 0x9844 0x9871 tira_9844  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88CE[11], p00:4760, p01:6910 y p01:6985 por 0x8A8E[11] (45 bytes)
+F 0x9844 16
+D 0x9871 0x98A0 tira_9871  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88CE[12], p00:4760, p01:6910 y p01:6985 por 0x8A8E[12] (47 bytes)
+F 0x9871 16
+D 0x98A0 0x98D3 tira_98A0  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88CE[13], p00:4760, p01:6910 y p01:6985 por 0x8A8E[13] (51 bytes)
+F 0x98A0 16
+D 0x98D3 0x9908 tira_98D3  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88CE[14] (53 bytes)
+F 0x98D3 16
+D 0x9908 0x9941 tira_9908  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88CE[15] (57 bytes)
+F 0x9908 16
+D 0x9941 0x9945 tira_9941  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88EE[0], p00:4760, p01:6910 y p01:6985 por 0x8AAE[0] (4 bytes)
+F 0x9941 16
+D 0x9945 0x994B tira_9945  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88EE[1], p00:4760, p01:6910 y p01:6985 por 0x8AAE[1] (6 bytes)
+F 0x9945 16
+D 0x994B 0x9952 tira_994B  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88EE[2], p00:4760, p01:6910 y p01:6985 por 0x8AAE[2] (7 bytes)
+F 0x994B 16
+D 0x9952 0x995A tira_9952  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88EE[3], p00:4760, p01:6910 y p01:6985 por 0x8AAE[3] (8 bytes)
+F 0x9952 16
+D 0x995A 0x9963 tira_995A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88EE[4], p00:4760, p01:6910 y p01:6985 por 0x8AAE[4] (9 bytes)
+F 0x995A 16
+D 0x9963 0x996D tira_9963  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88EE[5], p00:4760, p01:6910 y p01:6985 por 0x8AAE[5] (10 bytes)
+F 0x9963 16
+D 0x996D 0x9978 tira_996D  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88EE[6], p00:4760, p01:6910 y p01:6985 por 0x8AAE[6] (11 bytes)
+F 0x996D 16
+D 0x9978 0x9984 tira_9978  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88EE[7], p00:4760, p01:6910 y p01:6985 por 0x8AAE[7] (12 bytes)
+F 0x9978 16
+D 0x9984 0x9990 tira_9984  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88EE[8], p00:4760, p01:6910 y p01:6985 por 0x8AAE[8] (12 bytes)
+F 0x9984 16
+D 0x9990 0x999F tira_9990  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88EE[9], p00:4760, p01:6910 y p01:6985 por 0x8AAE[9] (15 bytes)
+F 0x9990 16
+D 0x999F 0x99C4 tira_999F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88EE[10], p00:4760, p01:6910 y p01:6985 por 0x8AAE[10] (37 bytes)
+F 0x999F 16
+D 0x99C4 0x99F1 tira_99C4  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88EE[11], p00:4760, p01:6910 y p01:6985 por 0x8AAE[11] (45 bytes)
+F 0x99C4 16
+D 0x99F1 0x9A20 tira_99F1  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88EE[12], p00:4760, p01:6910 y p01:6985 por 0x8AAE[12] (47 bytes)
+F 0x99F1 16
+D 0x9A20 0x9A53 tira_9A20  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88EE[13], p00:4760, p01:6910 y p01:6985 por 0x8AAE[13] (51 bytes)
+F 0x9A20 16
+D 0x9A53 0x9A88 tira_9A53  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88EE[14] (53 bytes)
+F 0x9A53 16
+D 0x9A88 0x9AC1 tira_9A88  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x88EE[15] (57 bytes)
+F 0x9A88 16
+D 0x9AC1 0x9AC4 tira_9AC1  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x890E[0] (3 bytes)
+F 0x9AC1 16
+D 0x9AC4 0x9AC7 tira_9AC4  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x890E[1] (3 bytes)
+F 0x9AC4 16
+D 0x9AC7 0x9ACA tira_9AC7  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x890E[2] (3 bytes)
+F 0x9AC7 16
+D 0x9ACA 0x9ACE tira_9ACA  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x890E[3] (4 bytes)
+F 0x9ACA 16
+D 0x9ACE 0x9AD2 tira_9ACE  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x890E[4] (4 bytes)
+F 0x9ACE 16
+D 0x9AD2 0x9AD6 tira_9AD2  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x890E[5] (4 bytes)
+F 0x9AD2 16
+D 0x9AD6 0x9ADE tira_9AD6  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x890E[6] (8 bytes)
+F 0x9AD6 16
+D 0x9ADE 0x9AE3 tira_9ADE  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x890E[7] (5 bytes)
+F 0x9ADE 16
+D 0x9AE3 0x9AEC tira_9AE3  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x890E[8] (9 bytes)
+F 0x9AE3 16
+D 0x9AEC 0x9AF4 tira_9AEC  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x890E[9] (8 bytes)
+F 0x9AEC 16
+D 0x9AF4 0x9B03 tira_9AF4  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x890E[10] (15 bytes)
+F 0x9AF4 16
+D 0x9B03 0x9B19 tira_9B03  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x890E[11] (22 bytes)
+F 0x9B03 16
+D 0x9B19 0x9B31 tira_9B19  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x890E[12] (24 bytes)
+F 0x9B19 16
+D 0x9B31 0x9B4E tira_9B31  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x890E[13] (29 bytes)
+F 0x9B31 16
+D 0x9B4E 0x9B6D tira_9B4E  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x890E[14] (31 bytes)
+F 0x9B4E 16
+D 0x9B6D 0x9B79 tira_9B6D  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x890E[15] (12 bytes)
+F 0x9B6D 16
+D 0x9B79 0x9B7C tira_9B79  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x892E[0] (3 bytes)
+F 0x9B79 16
+D 0x9B7C 0x9B7F tira_9B7C  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x892E[1] (3 bytes)
+F 0x9B7C 16
+D 0x9B7F 0x9B82 tira_9B7F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x892E[2] (3 bytes)
+F 0x9B7F 16
+D 0x9B82 0x9B86 tira_9B82  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x892E[3] (4 bytes)
+F 0x9B82 16
+D 0x9B86 0x9B8A tira_9B86  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x892E[4] (4 bytes)
+F 0x9B86 16
+D 0x9B8A 0x9B8E tira_9B8A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x892E[5] (4 bytes)
+F 0x9B8A 16
+D 0x9B8E 0x9B96 tira_9B8E  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x892E[6] (8 bytes)
+F 0x9B8E 16
+D 0x9B96 0x9B9B tira_9B96  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x892E[7] (5 bytes)
+F 0x9B96 16
+D 0x9B9B 0x9BA4 tira_9B9B  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x892E[8] (9 bytes)
+F 0x9B9B 16
+D 0x9BA4 0x9BAC tira_9BA4  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x892E[9] (8 bytes)
+F 0x9BA4 16
+D 0x9BAC 0x9BBB tira_9BAC  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x892E[10] (15 bytes)
+F 0x9BAC 16
+D 0x9BBB 0x9BD1 tira_9BBB  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x892E[11] (22 bytes)
+F 0x9BBB 16
+D 0x9BD1 0x9BE9 tira_9BD1  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x892E[12] (24 bytes)
+F 0x9BD1 16
+D 0x9BE9 0x9C06 tira_9BE9  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x892E[13] (29 bytes)
+F 0x9BE9 16
+D 0x9C06 0x9C25 tira_9C06  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x892E[14] (31 bytes)
+F 0x9C06 16
+D 0x9C25 0x9C31 tira_9C25  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x892E[15] (12 bytes)
+F 0x9C25 16
+D 0x9C31 0x9C39 tira_9C31  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x894E[0] (8 bytes)
+F 0x9C31 16
+D 0x9C39 0x9C41 tira_9C39  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x894E[1] (8 bytes)
+F 0x9C39 16
+D 0x9C41 0x9C4B tira_9C41  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x894E[2] (10 bytes)
+F 0x9C41 16
+D 0x9C4B 0x9C55 tira_9C4B  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x894E[3] (10 bytes)
+F 0x9C4B 16
+D 0x9C55 0x9C5F tira_9C55  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x894E[4] (10 bytes)
+F 0x9C55 16
+D 0x9C5F 0x9C6F tira_9C5F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x894E[5] (16 bytes)
+F 0x9C5F 16
+D 0x9C6F 0x9C81 tira_9C6F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x894E[6] (18 bytes)
+F 0x9C6F 16
+D 0x9C81 0x9C94 tira_9C81  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x894E[7] (19 bytes)
+F 0x9C81 16
+D 0x9C94 0x9CA7 tira_9C94  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x894E[8] (19 bytes)
+F 0x9C94 16
+D 0x9CA7 0x9CC1 tira_9CA7  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x894E[9] (26 bytes)
+F 0x9CA7 16
+D 0x9CC1 0x9CDE tira_9CC1  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x894E[10] (29 bytes)
+F 0x9CC1 16
+D 0x9CDE 0x9CFC tira_9CDE  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x894E[11] (30 bytes)
+F 0x9CDE 16
+D 0x9CFC 0x9D1A tira_9CFC  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x894E[12] (30 bytes)
+F 0x9CFC 16
+D 0x9D1A 0x9D3F tira_9D1A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x894E[13] (37 bytes)
+F 0x9D1A 16
+D 0x9D3F 0x9D4F tira_9D3F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x894E[14] (16 bytes)
+F 0x9D3F 16
+D 0x9D4F 0x9D57 tira_9D4F  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x894E[15] (8 bytes)
+F 0x9D4F 16
+D 0x9D57 0x9D5C tira_9D57  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x896E[0] (5 bytes)
+F 0x9D57 16
+D 0x9D5C 0x9D61 tira_9D5C  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x896E[1] (5 bytes)
+F 0x9D5C 16
+D 0x9D61 0x9D66 tira_9D61  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x896E[2] (5 bytes)
+F 0x9D61 16
+D 0x9D66 0x9D6B tira_9D66  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x896E[3] (5 bytes)
+F 0x9D66 16
+D 0x9D6B 0x9D76 tira_9D6B  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x896E[4] (11 bytes)
+F 0x9D6B 16
+D 0x9D76 0x9D82 tira_9D76  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x896E[5] (12 bytes)
+F 0x9D76 16
+D 0x9D82 0x9D94 tira_9D82  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x896E[6] (18 bytes)
+F 0x9D82 16
+D 0x9D94 0x9DA7 tira_9D94  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x896E[7] (19 bytes)
+F 0x9D94 16
+D 0x9DA7 0x9DC0 tira_9DA7  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x896E[8] (25 bytes)
+F 0x9DA7 16
+D 0x9DC0 0x9DDB tira_9DC0  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x896E[9] (27 bytes)
+F 0x9DC0 16
+D 0x9DDB 0x9DF7 tira_9DDB  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x896E[10] (28 bytes)
+F 0x9DDB 16
+D 0x9DF7 0x9E15 tira_9DF7  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x896E[11] (30 bytes)
+F 0x9DF7 16
+D 0x9E15 0x9E33 tira_9E15  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x896E[12] (30 bytes)
+F 0x9E15 16
+D 0x9E33 0x9E58 tira_9E33  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x896E[13] (37 bytes)
+F 0x9E33 16
+D 0x9E58 0x9E68 tira_9E58  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x896E[14] (16 bytes)
+F 0x9E58 16
+D 0x9E68 0x9E70 tira_9E68  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x896E[15] (8 bytes)
+F 0x9E68 16
+D 0x9E70 0x9E7A tira_9E70  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x898E[0] (10 bytes)
+F 0x9E70 16
+D 0x9E7A 0x9E84 tira_9E7A  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x898E[1] (10 bytes)
+F 0x9E7A 16
+D 0x9E84 0x9E8E tira_9E84  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x898E[2] (10 bytes)
+F 0x9E84 16
+D 0x9E8E 0x9E99 tira_9E8E  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x898E[3] (11 bytes)
+F 0x9E8E 16
+D 0x9E99 0x9EA5 tira_9E99  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x898E[4] (12 bytes)
+F 0x9E99 16
+D 0x9EA5 0x9EB1 tira_9EA5  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x898E[5] (12 bytes)
+F 0x9EA5 16
+D 0x9EB1 0x9EC3 tira_9EB1  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x898E[6] (18 bytes)
+F 0x9EB1 16
+D 0x9EC3 0x9ED8 tira_9EC3  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x898E[7] (21 bytes)
+F 0x9EC3 16
+D 0x9ED8 0x9EED tira_9ED8  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x898E[8] (21 bytes)
+F 0x9ED8 16
+D 0x9EED 0x9F02 tira_9EED  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x898E[9] (21 bytes)
+F 0x9EED 16
+D 0x9F02 0x9F17 tira_9F02  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x898E[10] (21 bytes)
+F 0x9F02 16
+D 0x9F17 0x9F34 tira_9F17  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x898E[11] (29 bytes)
+F 0x9F17 16
+D 0x9F34 0x9F59 tira_9F34  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x898E[12] (37 bytes)
+F 0x9F34 16
+D 0x9F59 0x9F7E tira_9F59  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x898E[13] (37 bytes)
+F 0x9F59 16
+D 0x9F7E 0x9FA5 tira_9F7E  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x898E[14] (39 bytes)
+F 0x9F7E 16
+D 0x9FA5 0x9FB9 tira_9FA5  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x898E[15] (20 bytes)
+F 0x9FA5 16
+D 0x9FB9 0x9FC3 tira_9FB9  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x89AE[0] (10 bytes)
+F 0x9FB9 16
+D 0x9FC3 0x9FCD tira_9FC3  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x89AE[1] (10 bytes)
+F 0x9FC3 16
+D 0x9FCD 0x9FD7 tira_9FCD  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x89AE[2] (10 bytes)
+F 0x9FCD 16
+D 0x9FD7 0x9FE1 tira_9FD7  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x89AE[3] (10 bytes)
+F 0x9FD7 16
+D 0x9FE1 0x9FEB tira_9FE1  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x89AE[4] (10 bytes)
+F 0x9FE1 16
+D 0x9FEB 0x9FFC tira_9FEB  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x89AE[5] (17 bytes)
+F 0x9FEB 16
+D 0x9FFC 0xA000 tira_9FFC  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (de las ranuras de 0xE440) que lee rellena_de_unos y copia_bloques; lo cargan p00:4760, p01:6910 y p01:6985 por 0x89AE[6]; sigue en el banco 11, en la ranura de al lado (4 bytes)
+F 0x9FFC 16
+# --- fin de los bloques de bloques.py ---

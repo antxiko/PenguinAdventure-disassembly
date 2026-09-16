@@ -95,9 +95,45 @@ def anota(banco, mapa):
             if b == banco:
                 continue                     # dentro del propio banco: ya lo
                                              # resuelve la etiqueta del listado
+            b = comprueba(b, destino)
+            if b is None:
+                continue
             ya.add(dir_)
             salida.append("C 0x%04X banco %d" % (dir_, b))
     return salida, notas
+
+
+# El banco que sale de seguir el mapper LINEA A LINEA no vale por si solo: el
+# listado se recorre de arriba abajo pero el programa no, y una rutina hereda
+# el banco de QUIEN LA LLAMA, no del codigo que tiene escrito encima. Asi se
+# colaron 28 llamadas anotadas "banco 10", que es un banco sin una sola
+# instruccion. Se comprueba contra el codigo trazado de verdad:
+#   - si el banco que sale del mapper tiene codigo en esa direccion, vale;
+#   - si no, y solo UN banco de los que caben en esa ranura lo tiene, es ese;
+#   - y si hay dos candidatos, no se dice nada, que es mejor que decir algo
+#     que puede ser mentira.
+CODIGO = {}
+
+
+def carga_el_codigo_trazado():
+    import json
+    for b in range(16):
+        ruta = os.path.join(RAIZ, "work", "%s.trace.json" % nombre(b))
+        if not os.path.exists(ruta):
+            continue
+        d = json.load(io.open(ruta, encoding="utf-8"))
+        CODIGO[b] = [(i, f) for t, i, f in d.get("blocks", []) if t == "c"]
+
+
+def hay_codigo(b, destino):
+    return any(i <= destino < f for i, f in CODIGO.get(b, ()))
+
+
+def comprueba(b, destino):
+    if hay_codigo(b, destino):
+        return b
+    cabe = [x for x in CODIGO if x and hay_codigo(x, destino)]
+    return cabe[0] if len(cabe) == 1 else None
 
 
 def main():
@@ -106,6 +142,9 @@ def main():
     mapa = nombres_del_banco_0()
     if not mapa:
         sys.exit("src/p00.notes no bautiza ninguna rutina")
+    carga_el_codigo_trazado()
+    if not CODIGO:
+        sys.exit("faltan los work/pNN.trace.json: corre antes `make trace`")
     bancos = BANCOS_CON_CODIGO if "--todos" in sys.argv else [int(sys.argv[1], 10)]
     for b in bancos:
         salida, notas = anota(b, mapa)

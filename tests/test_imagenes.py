@@ -274,11 +274,14 @@ class Imagenes(unittest.TestCase):
         self.assertNotIn(8, decorados, "el espacio no es una fase")
         self.assertNotIn(9, decorados)
 
-    def test_el_bonus_devuelve_el_largo_de_la_fase(self):
-        """p03:B5E1 guarda (0xE08B) en 0xE0CC antes de cambiarlo.
+    def test_el_bonus_devuelve_el_tiempo(self):
+        """p03:B605 guarda (0xE08B) en 0xE0CC antes de cambiarlo.
 
-        Es lo que dice que el bonus es un prestamo y no una fase: el largo de
-        la fase de verdad se aparta para poder devolverlo.
+        0xE08B es el TIEMPO que queda -p02:922D lo baja uno cada 32 cuadros se
+        ande o no se ande, y p02:94D1 lo cambia por puntos al acabar la fase-,
+        no "el largo de la fase" como decia antes este test. Y esto es lo que
+        dice que el bonus es un PRESTAMO: el tiempo de verdad se aparta para
+        poder devolverlo cuando se vuelva.
         """
         banco3 = 3 * 0x2000
         o = banco3 + (0xB605 - 0xA000)

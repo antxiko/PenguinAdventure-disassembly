@@ -14,29 +14,33 @@
 ; ======================================================================
 
 
-L_6000:
-	ld a,(0e0a1h)		;6000   ; el DECORADO, de 0 a 9
+
+; ----------------------------------------------------------------------
+; EL DECORADO MANDA. Una escalera de `dec a` con los diez decorados: cada uno tiene su rutina de montaje y el 9 comparte la del 6. Esta es la puerta por la que el juego entra a armar la pantalla, y de aqui salen los cambios de banco que llevan a los decorados de los bancos 12 y 13.
+; ----------------------------------------------------------------------
+monta_el_decorado:
+	ld a,(0e0a1h)		;6000   ; que decorado toca
 	and a			;6003
-	jr z,L_602A		;6004
+	jr z,L_602A		;6004   ; el 0
 	dec a			;6006
-	jr z,L_605C		;6007
+	jr z,L_605C		;6007   ; el 1
 	dec a			;6009
-	jp z,L_608B		;600a
+	jp z,L_608B		;600a   ; el 2
 	dec a			;600d
-	jp z,L_60BD		;600e
+	jp z,L_60BD		;600e   ; el 3
 	dec a			;6011
-	jp z,L_60EC		;6012
+	jp z,L_60EC		;6012   ; el 4
 	dec a			;6015
-	jp z,L_611E		;6016
+	jp z,L_611E		;6016   ; el 5
 	dec a			;6019
-	jp z,L_614D		;601a
+	jp z,L_614D		;601a   ; el 6
 	dec a			;601d
-	jp z,L_617C		;601e
+	jp z,L_617C		;601e   ; el 7
 	dec a			;6021
-	jp z,L_61AB		;6022
+	jp z,L_61AB		;6022   ; el 8
 	dec a			;6025
-	jp z,L_614D		;6026
-	ret			;6029
+	jp z,L_614D		;6026   ; y el 9, que comparte rutina con el 6
+	ret			;6029   ; y de un decadecimo no hay nada
 L_602A:
 	di			;602a   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;602b
@@ -295,7 +299,7 @@ L_61FF:
 	ld a,(hl)			;621d
 	and 00fh		;621e
 	ld d,a			;6220
-	ld (0e08bh),de		;6221   ; el largo de la fase
+	ld (0e08bh),de		;6221   ; el TIEMPO que queda
 	ld a,(hl)			;6225
 	and 0f0h		;6226
 	rra			;6228
@@ -307,7 +311,7 @@ L_61FF:
 	ld e,(hl)			;6230
 	inc hl			;6231
 	ld d,(hl)			;6232
-	ld (0e08dh),de		;6233   ; la distancia a la que sale el objeto siguiente
+	ld (0e08dh),de		;6233   ; lo que queda de fase
 	di			;6237   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6238
 	ld (08000h),a		;623a   ; el banco 2 a 0x8000
@@ -351,10 +355,10 @@ L_627A:
 	ld e,(hl)			;6283
 	inc hl			;6284
 	ld d,(hl)			;6285
-	ld (0e204h),de		;6286   ; la X en la pantalla de lo que se maneja
+	ld (0e204h),de		;6286   ; la Y en la pantalla de lo que se maneja
 	inc hl			;628a
 	ld a,(hl)			;628b
-	ld (0e203h),a		;628c   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;628c   ; el ESTADO de lo que se maneja
 	di			;628f   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6290
 	ld (08000h),a		;6292   ; el banco 2 a 0x8000
@@ -368,7 +372,7 @@ L_627A:
 	ret			;62a3
 L_62A4:
 	ld a,017h		;62a4
-	ld (0e4c0h),a		;62a6
+	ld (0e4c0h),a		;62a6   ; el nivel de la barra de nueve
 	ld (0e4c1h),a		;62a9
 	ret			;62ac
 L_62AD:
@@ -379,24 +383,24 @@ L_62AD:
 	ret			;62b7
 L_62B8:
 	ld a,008h		;62b8
-	jr L_62BE		;62ba
+	jr los_cuatro_contadores_de_partida		;62ba
 L_62BC:
 	ld a,020h		;62bc
-L_62BE:
-	ld (0e401h),a		;62be
-	ld a,006h		;62c1
+los_cuatro_contadores_de_partida:
+	ld (0e401h),a		;62be   ; el primero, el que venga
+	ld a,006h		;62c1   ; el segundo, a 6
 	ld (0e400h),a		;62c3
-	xor a			;62c6
+	xor a			;62c6   ; y el tercero, a cero
 	ld (0e404h),a		;62c7
 	ret			;62ca
-L_62CB:
-	ld a,008h		;62cb
+los_cuatro_pasos_de_color_de_partida:
+	ld a,008h		;62cb   ; la primera tabla empieza en el 8...
 	ld (0e409h),a		;62cd
-	ld a,004h		;62d0
+	ld a,004h		;62d0   ; ...la segunda en el 4...
 	ld (0e408h),a		;62d2
-	ld a,002h		;62d5
+	ld a,002h		;62d5   ; ...la tercera en el 2...
 	ld (0e407h),a		;62d7
-	ld a,006h		;62da
+	ld a,006h		;62da   ; ...y la cuarta en el 6
 	ld (0e406h),a		;62dc
 	ret			;62df
 L_62E0:
@@ -407,8 +411,9 @@ L_62E0:
 	ret			;62eb
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x62ec..0x62ef  (3 bytes)
-DATA_62EC:
+; DATOS tres_bytes_a_E40A: tres bytes que p01:62E0 copia con ldir a 0xE40A
+;   0x62ec..0x62ef  (3 bytes)
+DATA_tres_bytes_a_E40A:
 	defb 004h,00ch,008h	; 62ec
 
 ; ======================================================================
@@ -611,7 +616,7 @@ L_643F:
 	ld e,(hl)			;645a
 	inc hl			;645b
 	ld d,(hl)			;645c
-	ld (0e301h),de		;645d   ; lo andado en la fase
+	ld (0e301h),de		;645d   ; la distancia a la que toca el objeto siguiente
 	di			;6461   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6462
 	ld (08000h),a		;6464   ; el banco 2 a 0x8000
@@ -623,19 +628,19 @@ L_643F:
 	ld (0f0f3h),a		;6471   ; y en su copia de RAM
 	ei			;6474   ; el mapa ya esta entero
 	ret			;6475
-L_6476:
-	and a			;6476
+escoge_el_registro_de_once:
+	and a			;6476   ; el 0...
 	ld hl,064c6h		;6477
-	jr z,L_6485		;647a
-	dec a			;647c
+	jr z,lee_el_registro_de_once		;647a
+	dec a			;647c   ; ...el 1...
 	ld hl,064d1h		;647d
-	jr z,L_6485		;6480
-	ld hl,064dch		;6482
-L_6485:
-	ld e,(hl)			;6485
+	jr z,lee_el_registro_de_once		;6480
+	ld hl,064dch		;6482   ; ...o los demas
+lee_el_registro_de_once:
+	ld e,(hl)			;6485   ; la primera palabra
 	inc hl			;6486
 	ld d,(hl)			;6487
-	ld (0e08dh),de		;6488   ; la distancia a la que sale el objeto siguiente
+	ld (0e08dh),de		;6488   ; lo que queda de fase
 	inc hl			;648c
 	ld a,(hl)			;648d
 	ld (0e0b6h),a		;648e
@@ -643,7 +648,7 @@ L_6485:
 	ld a,(hl)			;6492
 	ld (0e0a9h),a		;6493
 	xor a			;6496
-	ld (0e0a6h),a		;6497
+	ld (0e0a6h),a		;6497   ; el arrastre de lado que se lleva solo
 	inc hl			;649a
 	ld e,(hl)			;649b
 	inc hl			;649c
@@ -656,7 +661,7 @@ L_6485:
 	ld e,(hl)			;64a8
 	inc hl			;64a9
 	ld d,(hl)			;64aa
-	ld (0e301h),de		;64ab   ; lo andado en la fase
+	ld (0e301h),de		;64ab   ; la distancia a la que toca el objeto siguiente
 	inc hl			;64af
 	ld a,(hl)			;64b0
 	ld (0e300h),a		;64b1   ; por que pareja del guion de la fase va
@@ -670,11 +675,14 @@ L_6485:
 	jp L_63FD		;64c3
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x64c6..0x64e7  (33 bytes)
-DATA_64C6:
-	defb 015h,005h,001h,004h,080h,003h,003h,080h,004h,011h,002h,090h,004h,001h,008h,094h	; 64c6  ................
-	defb 003h,006h,050h,004h,01ch,003h,055h,007h,001h,006h,004h,004h,006h,050h,007h,02ah	; 64d6  ..P...U......P.*
-	defb 003h	; 64e6
+; DATOS tres_registros_de_11: tres registros de 11 bytes: p01:6477 escoge
+;   0x64C6, 0x64D1 o 0x64DC segun A (0, 1 u otro) y p01:6485 empieza por
+;   llevar la primera palabra a 0xE08D, lo que queda de fase
+;   0x64c6..0x64e7  (33 bytes)
+DATA_tres_registros_de_11:
+	defb 015h,005h,001h,004h,080h,003h,003h,080h,004h,011h,002h	; 64c6  ...........
+	defb 090h,004h,001h,008h,094h,003h,006h,050h,004h,01ch,003h	; 64d1  .......P...
+	defb 055h,007h,001h,006h,004h,004h,006h,050h,007h,02ah,003h	; 64dc  U......P.*.
 
 ; ======================================================================
 ; CODIGO 0x64e7..0x6cc0  (2009 bytes)
@@ -688,53 +696,61 @@ L_64E7:
 	ld h,000h		;64ec
 	add hl,hl			;64ee
 	ret			;64ef
-L_64F0:
-	ld a,(0e203h)		;64f0   ; por donde va la rotacion de los sprites
-	cp 003h		;64f3
+
+; ----------------------------------------------------------------------
+; CADA CUANTO SE ANDA. Aqui esta el paso del juego: 0xE4C1 baja un cuadro cada vez y, cuando llega a cero, se recarga con (0xE4C0) y SE CAE dentro de la rutina de abajo, la que descuenta lo que queda de fase. O sea que el terreno avanza un paso cada (0xE4C0) cuadros, que es el mismo numero que pinta la barra de nueve. En los estados 3, 4, 8 y 10 no se anda.
+; ----------------------------------------------------------------------
+cada_cuanto_se_anda:
+	ld a,(0e203h)		;64f0   ; el ESTADO de lo que se maneja
+	cp 003h		;64f3   ; en el 3...
 	ret z			;64f5
-	cp 004h		;64f6
+	cp 004h		;64f6   ; ...en el 4...
 	ret z			;64f8
-	cp 008h		;64f9
+	cp 008h		;64f9   ; ...en el 8...
 	ret z			;64fb
-	cp 00ah		;64fc
+	cp 00ah		;64fc   ; ...y en el 10 no se anda
 	ret z			;64fe
-	ld hl,0e4c0h		;64ff
-	ld c,(hl)			;6502
+	ld hl,0e4c0h		;64ff   ; el nivel de la barra, que es el periodo
+	ld c,(hl)			;6502   ; guardado
 	inc hl			;6503
-	dec (hl)			;6504
-	ret nz			;6505
-	ld (hl),c			;6506
-L_6507:
-	ld hl,0e08dh		;6507
+	dec (hl)			;6504   ; un cuadro menos
+	ret nz			;6505   ; y hasta cero, nada
+	ld (hl),c			;6506   ; recargado, y se cae en la rutina de abajo
+
+; ----------------------------------------------------------------------
+; LO QUE QUEDA DE FASE, CUADRO A CUADRO. Descuenta uno EN BCD de los dos bytes de 0xE08D, y cuando el byte bajo llega a cero pide el trozo siguiente del terreno. De ahi salen las dos cuentas atras que llevan la fase: a 0x50 de la meta empieza el final, y de 0x30 para abajo van cayendo los pasos uno a uno. Ojo: esto NO es el tiempo, que corre aparte en 0xE08B y no mira lo que se ande.
+; ----------------------------------------------------------------------
+lo_que_queda_de_fase:
+	ld hl,0e08dh		;6507   ; lo que queda
 	ld a,(hl)			;650a
-	sub 001h		;650b
+	sub 001h		;650b   ; uno menos, EN BCD
 	daa			;650d
 	ld (hl),a			;650e
 	ld e,a			;650f
-	inc l			;6510
+	inc l			;6510   ; y el byte alto, con su acarreo
 	ld a,(hl)			;6511
 	sbc a,000h		;6512
 	daa			;6514
 	ld (hl),a			;6515
 	ld d,a			;6516
 	ld a,e			;6517
-	and a			;6518
+	and a			;6518   ; ¿el byte bajo ha llegado a cero?
 	push de			;6519
-	call z,el_guion_del_terreno		;651a
+	call z,el_guion_del_terreno		;651a   ; entonces toca trozo nuevo de terreno
 	call L_6B92		;651d
 	pop de			;6520
-	ld hl,0e401h		;6521
+	ld hl,0e401h		;6521   ; y un paso menos de 0xE401
 	dec (hl)			;6524
-	ld a,(0e0a2h)		;6525   ; el modo en el que esta el juego
+	ld a,(0e0a2h)		;6525   ; fuera del modo de jugar, por otro lado
 	and a			;6528
 	jp nz,L_66C6		;6529
-	ld hl,00050h		;652c
+	ld hl,00050h		;652c   ; ¿quedan 0x50 justos?
 	rst 20h			;652f
-	jp z,L_65A7		;6530
-	jp nc,L_65CF		;6533
-L_6536:
-	call 092ech		;6536   ; banco 2
-L_6539:
+	jp z,a_0x50_de_la_meta		;6530   ; pues ahi empieza el final
+	jp nc,cuenta_atras_del_final		;6533   ; y por debajo de 0x50, la cuenta atras
+sigue_la_fase:
+	call 092ech		;6536   ; banco 2: lo de cada cuadro
+anima_el_fondo:
 	di			;6539   ; sin interrupciones mientras cambia el mapa
 	ld a,00ch		;653a
 	ld (08000h),a		;653c   ; el banco 12 a 0x8000
@@ -745,35 +761,35 @@ L_6539:
 	ld (0a000h),a		;6546   ; el banco 13 a 0xA000
 	ld (0f0f3h),a		;6549   ; y en su copia de RAM
 	ei			;654c   ; el mapa ya esta entero
-	ld hl,0e4c2h		;654d
+	ld hl,0e4c2h		;654d   ; el paso de la animacion
 	inc (hl)			;6550
 	ld a,(hl)			;6551
-	and 003h		;6552
+	and 003h		;6552   ; de cuatro en cuatro, en circulo
 	ld c,a			;6554
-	ld a,(0e0a1h)		;6555   ; el DECORADO, de 0 a 9
+	ld a,(0e0a1h)		;6555   ; y el decorado
 	ld b,a			;6558
 	push bc			;6559
-	ld hl,08000h		;655a
+	ld hl,08000h		;655a   ; la tabla de dos niveles de 0x8000
 	call 04055h		;655d   ; banco 0: dos_por_a_mas_hl
 	ld e,(hl)			;6560
 	inc hl			;6561
 	ld d,(hl)			;6562
 	ex de,hl			;6563
-	ld a,c			;6564
+	ld a,c			;6564   ; el paso de dentro
 	call 04055h		;6565   ; banco 0: dos_por_a_mas_hl
 	ld e,(hl)			;6568
 	inc hl			;6569
 	ld d,(hl)			;656a
 	ex de,hl			;656b
-	call 041bfh		;656c   ; banco 0: copia_bloques
+	call 041bfh		;656c   ; banco 0: y a soltar sus bloques
 	pop bc			;656f
-	ld a,(0e0a6h)		;6570
+	ld a,(0e0a6h)		;6570   ; ¿hay arrastre?
 	and a			;6573
 	jr z,L_6592		;6574
-	ld hl,0a613h		;6576
+	ld hl,0a613h		;6576   ; con el 1, la tabla de 0xA613...
 	dec a			;6579
 	jr z,L_657F		;657a
-	ld hl,0a627h		;657c
+	ld hl,0a627h		;657c   ; ...y con los demas, la de 0xA627
 L_657F:
 	ld a,b			;657f
 	call 04055h		;6580   ; banco 0: dos_por_a_mas_hl
@@ -787,7 +803,7 @@ L_657F:
 	inc hl			;658c
 	ld d,(hl)			;658d
 	ex de,hl			;658e
-	call 041bfh		;658f   ; banco 0: copia_bloques
+	call 041bfh		;658f   ; banco 0: y los bloques de esa
 L_6592:
 	di			;6592   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6593
@@ -800,61 +816,69 @@ L_6592:
 	ld (0f0f3h),a		;65a2   ; y en su copia de RAM
 	ei			;65a5   ; el mapa ya esta entero
 	ret			;65a6
-L_65A7:
-	ld a,(0e092h)		;65a7   ; la FASE, de 1 a 24
-	cp 00ch		;65aa
+
+; ----------------------------------------------------------------------
+; A 0x50 DE LA META. Aqui se mira si la fase es la 12, la 18 o la 24 -las tres que cierran vuelta- y, si ademas 0xE16C esta a cero, se llama a 0x6476 con 0, 1 o 2: una cosa distinta para cada una de las tres. En las otras veintiuna fases lo unico que pasa es que 0xE0A5 se pone a 1.
+; ----------------------------------------------------------------------
+a_0x50_de_la_meta:
+	ld a,(0e092h)		;65a7   ; la fase
+	cp 00ch		;65aa   ; ¿la 12?
 	ld c,000h		;65ac
-	jr z,L_65C2		;65ae
+	jr z,el_final_de_las_tres_fases		;65ae
 	inc c			;65b0
-	cp 012h		;65b1
-	jr z,L_65C2		;65b3
+	cp 012h		;65b1   ; ¿la 18?
+	jr z,el_final_de_las_tres_fases		;65b3
 	inc c			;65b5
-	cp 018h		;65b6
-	jr z,L_65C2		;65b8
-L_65BA:
-	ld a,001h		;65ba
+	cp 018h		;65b6   ; ¿o la 24?
+	jr z,el_final_de_las_tres_fases		;65b8
+el_final_de_siempre:
+	ld a,001h		;65ba   ; la vuelta, a 1
 	ld (0e0a5h),a		;65bc   ; por que vuelta de la fase va
-	jp L_6536		;65bf
-L_65C2:
-	ld a,(0e16ch)		;65c2
+	jp sigue_la_fase		;65bf
+el_final_de_las_tres_fases:
+	ld a,(0e16ch)		;65c2   ; y 0xE16C lo puede impedir
 	and a			;65c5
-	jr nz,L_65BA		;65c6
-	ld a,c			;65c8
-	call L_6476		;65c9
-	jp L_6536		;65cc
-L_65CF:
-	ld hl,00030h		;65cf
-	rst 20h			;65d2
+	jr nz,el_final_de_siempre		;65c6
+	ld a,c			;65c8   ; 0, 1 o 2 segun cual de las tres sea
+	call escoge_el_registro_de_once		;65c9
+	jp sigue_la_fase		;65cc
+
+; ----------------------------------------------------------------------
+; LA CUENTA ATRAS DEL FINAL. Nueve cortes: a 0x30, 0x25, 0x20, 0x15, 0x10, 8, 5, 2 y 0 de la meta, cada uno con su rutina. Es una escalera de `rst 20h`, que en el MSX es DCOMPR: compara HL con DE y pone Z si son iguales. Entre corte y corte no pasa nada, se sigue la fase por 0x6536.
+; ----------------------------------------------------------------------
+cuenta_atras_del_final:
+	ld hl,00030h		;65cf   ; ¿quedan 0x30?
+	rst 20h			;65d2   ; DCOMPR: compara HL con DE
 	jr z,L_661A		;65d3
-	ld hl,00025h		;65d5
+	ld hl,00025h		;65d5   ; ¿0x25?
 	rst 20h			;65d8
 	jp z,L_663E		;65d9
-	ld hl,00020h		;65dc
+	ld hl,00020h		;65dc   ; ¿0x20?
 	rst 20h			;65df
 	jp z,L_6651		;65e0
-	ld hl,00015h		;65e3
+	ld hl,00015h		;65e3   ; ¿0x15?
 	rst 20h			;65e6
 	jp z,L_6659		;65e7
-	ld hl,00010h		;65ea
+	ld hl,00010h		;65ea   ; ¿0x10?
 	rst 20h			;65ed
 	jp z,L_666C		;65ee
-	ld hl,00008h		;65f1
+	ld hl,00008h		;65f1   ; ¿8?
 	rst 20h			;65f4
 	jp z,L_6674		;65f5
-	ld hl,00005h		;65f8
+	ld hl,00005h		;65f8   ; ¿5?
 	rst 20h			;65fb
 	jp z,L_6687		;65fc
-	ld hl,00002h		;65ff
+	ld hl,00002h		;65ff   ; ¿2?
 	rst 20h			;6602
 	jp z,L_668F		;6603
-	ld hl,00000h		;6606
+	ld hl,00000h		;6606   ; ¿y cero?
 	rst 20h			;6609
-	jp nz,L_6536		;660a
-	ld c,008h		;660d
+	jp nz,sigue_la_fase		;660a   ; si no es ninguno, la fase sigue
+	ld c,008h		;660d   ; y en cero, el paso 8
 	call L_6697		;660f
 	ld a,001h		;6612
 	ld (0e096h),a		;6614   ; los avisos que deja el cuadro
-	jp L_6536		;6617
+	jp sigue_la_fase		;6617
 L_661A:
 	ld a,002h		;661a
 	ld (0e0a5h),a		;661c   ; por que vuelta de la fase va
@@ -868,53 +892,53 @@ L_662B:
 	cp 003h		;662e
 	jr z,L_6638		;6630
 	call 05212h		;6632
-	jp L_6536		;6635
+	jp sigue_la_fase		;6635
 L_6638:
 	call 0537ah		;6638
-	jp L_6536		;663b
+	jp sigue_la_fase		;663b
 L_663E:
 	ld a,(0e093h)		;663e   ; el valor 1-2-3 de la fase
 	cp 003h		;6641
 	jr z,L_664B		;6643
 	call 0529ah		;6645
-	jp L_6536		;6648
+	jp sigue_la_fase		;6648
 L_664B:
 	call 05424h		;664b
-	jp L_6536		;664e
+	jp sigue_la_fase		;664e
 L_6651:
 	ld c,000h		;6651
 	call L_6697		;6653
-	jp L_6536		;6656
+	jp sigue_la_fase		;6656
 L_6659:
 	ld a,(0e093h)		;6659   ; el valor 1-2-3 de la fase
 	cp 003h		;665c
 	jr z,L_6666		;665e
 	call 05256h		;6660
-	jp L_6536		;6663
+	jp sigue_la_fase		;6663
 L_6666:
 	call 053cfh		;6666
-	jp L_6536		;6669
+	jp sigue_la_fase		;6669
 L_666C:
 	ld c,002h		;666c
 	call L_6697		;666e
-	jp L_6536		;6671
+	jp sigue_la_fase		;6671
 L_6674:
 	ld a,(0e093h)		;6674   ; el valor 1-2-3 de la fase
 	cp 003h		;6677
 	jr z,L_6681		;6679
 	call 0530ah		;667b
-	jp L_6536		;667e
+	jp sigue_la_fase		;667e
 L_6681:
 	call 05498h		;6681
-	jp L_6536		;6684
+	jp sigue_la_fase		;6684
 L_6687:
 	ld c,004h		;6687
 	call L_6697		;6689
-	jp L_6536		;668c
+	jp sigue_la_fase		;668c
 L_668F:
 	ld c,006h		;668f
 	call L_6697		;6691
-	jp L_6536		;6694
+	jp sigue_la_fase		;6694
 L_6697:
 	di			;6697   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;6698
@@ -942,13 +966,13 @@ L_66B8:
 	jp L_6592		;66c3
 L_66C6:
 	cp 002h		;66c6
-	jp nz,L_6536		;66c8
+	jp nz,sigue_la_fase		;66c8
 	ld hl,00000h		;66cb
 	rst 20h			;66ce
-	jp nz,L_6536		;66cf
+	jp nz,sigue_la_fase		;66cf
 	ld a,010h		;66d2
 	ld (0e096h),a		;66d4   ; los avisos que deja el cuadro
-	jp L_6536		;66d7
+	jp sigue_la_fase		;66d7
 
 ; ----------------------------------------------------------------------
 ; EL SEGUNDO GUION: LO QUE PASA A CADA DISTANCIA. Igual que el de los enemigos pero en el banco 13, y con entradas de tres bytes en vez de dos. Se dispara comparando la distancia andada con la apuntada, y al dispararse deja la siguiente ya preparada.
@@ -957,7 +981,7 @@ el_segundo_guion:
 	ld a,(0e0a2h)		;66da   ; el modo del juego; el modo en el que esta el juego
 	and a			;66dd
 	ret nz			;66de   ; fuera del de jugar, nada
-	ld hl,(0e08dh)		;66df   ; lo andado; la distancia a la que sale el objeto siguiente
+	ld hl,(0e08dh)		;66df   ; lo que queda de fase
 	ld de,(0e0a7h)		;66e2   ; y la distancia a la que toca
 	rst 20h			;66e6   ; DCOMPR: ¿hemos llegado?
 	ret nz			;66e7
@@ -994,7 +1018,7 @@ lee_la_entrada_del_segundo_guion:
 	ld (0e0a7h),de		;6719   ; apuntada para la proxima
 	inc hl			;671d
 	ld a,(hl)			;671e   ; y el byte que dice que pasa
-	ld (0e0a6h),a		;671f
+	ld (0e0a6h),a		;671f   ; el arrastre de lado que se lleva solo
 	di			;6722   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6723   ; el 2 y el 3, de vuelta
 	ld (08000h),a		;6725   ; el banco 2 a 0x8000
@@ -1232,7 +1256,7 @@ L_6888:
 	jr z,L_68A9		;6896
 	cp 00fh		;6898
 	jr z,L_68A9		;689a
-	ld a,(0e205h)		;689c   ; la Y en la pantalla de lo que se maneja
+	ld a,(0e205h)		;689c   ; la X en la pantalla de lo que se maneja
 	cp 070h		;689f
 	jr c,L_68A4		;68a1
 	ld c,e			;68a3
@@ -1240,7 +1264,7 @@ L_68A4:
 	ld d,000h		;68a4
 	jp busca_ranura_libre		;68a6
 L_68A9:
-	ld a,(0e205h)		;68a9   ; la Y en la pantalla de lo que se maneja
+	ld a,(0e205h)		;68a9   ; la X en la pantalla de lo que se maneja
 	cp 050h		;68ac
 	jr c,L_68B6		;68ae
 	dec c			;68b0
@@ -1260,7 +1284,7 @@ L_68BB:
 	ld c,e			;68c6
 	jp busca_ranura_libre		;68c7
 L_68CA:
-	ld a,(0e203h)		;68ca   ; por donde va la rotacion de los sprites
+	ld a,(0e203h)		;68ca   ; el ESTADO de lo que se maneja
 	cp 003h		;68cd
 	ret z			;68cf
 	cp 004h		;68d0
@@ -1269,7 +1293,7 @@ L_68CA:
 	ret z			;68d5
 	cp 00ah		;68d6
 	ret z			;68d8
-	ld a,(0e4c0h)		;68d9
+	ld a,(0e4c0h)		;68d9   ; el nivel de la barra de nueve
 	ld c,a			;68dc
 	ld a,(0e4c1h)		;68dd
 	cp c			;68e0
@@ -1289,20 +1313,20 @@ L_68E2:
 	ld b,005h		;68f9
 	xor a			;68fb
 	ld (0e0e3h),a		;68fc   ; que hueco de sprite toca
-L_68FF:
-	push bc			;68ff
+lee_el_guion_del_decorado:
+	push bc			;68ff   ; el byte del guion
 	ld a,(de)			;6900
 	inc e			;6901
-	and a			;6902
+	and a			;6902   ; el cero lo cierra
 	jr z,L_6938		;6903
 	ld a,(de)			;6905
-	cp 01ah		;6906
+	cp 01ah		;6906   ; por debajo de 0x1A va por un lado...
 	jr c,L_690F		;6908
-	cp 020h		;690a
+	cp 020h		;690a   ; ...y del 0x1A al 0x1F, por otro
 	jp c,L_69D0		;690c
 L_690F:
 	dec a			;690f
-	ld hl,08682h		;6910
+	ld hl,08682h		;6910   ; la tabla de dos niveles de 0x8682
 	call 04055h		;6913   ; banco 0: dos_por_a_mas_hl
 	ld a,(hl)			;6916
 	inc hl			;6917
@@ -1339,7 +1363,7 @@ L_693A:
 	pop bc			;693c
 	ld hl,0e0e3h		;693d
 	inc (hl)			;6940
-	djnz L_68FF		;6941
+	djnz lee_el_guion_del_decorado		;6941
 	di			;6943   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6944
 	ld (08000h),a		;6946   ; el banco 2 a 0x8000
@@ -1364,20 +1388,20 @@ L_693A:
 	ld b,005h		;696e
 	xor a			;6970
 	ld (0e0e3h),a		;6971   ; que hueco de sprite toca
-L_6974:
-	push bc			;6974
+lee_el_otro_guion_del_decorado:
+	push bc			;6974   ; el byte del guion
 	ld a,(de)			;6975
 	inc e			;6976
-	and a			;6977
+	and a			;6977   ; el cero lo cierra
 	jr z,L_699F		;6978
 	ld a,(de)			;697a
-	cp 01ah		;697b
+	cp 01ah		;697b   ; por debajo de 0x1A va por un lado...
 	jr c,L_6984		;697d
-	cp 020h		;697f
+	cp 020h		;697f   ; ...y del 0x1A al 0x1F, por otro
 	jp c,L_6A3F		;6981
 L_6984:
 	dec a			;6984
-	ld hl,08682h		;6985
+	ld hl,08682h		;6985   ; la tabla de dos niveles de 0x8682
 	call 04055h		;6988   ; banco 0: dos_por_a_mas_hl
 	ld a,(hl)			;698b
 	inc hl			;698c
@@ -1403,7 +1427,7 @@ L_69A1:
 	pop bc			;69a3
 	ld hl,0e0e3h		;69a4
 	inc (hl)			;69a7
-	djnz L_6974		;69a8
+	djnz lee_el_otro_guion_del_decorado		;69a8
 	di			;69aa   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;69ab
 	ld (08000h),a		;69ad   ; el banco 2 a 0x8000
@@ -1421,12 +1445,12 @@ L_69BF:
 	push de			;69c1
 	ex de,hl			;69c2
 	ld b,010h		;69c3
-L_69C5:
-	ld (hl),000h		;69c5
+borra_y_sigue_el_guion:
+	ld (hl),000h		;69c5   ; a cero
 	inc hl			;69c7
-	djnz L_69C5		;69c8
+	djnz borra_y_sigue_el_guion		;69c8
 	pop de			;69ca
-	ld a,010h		;69cb
+	ld a,010h		;69cb   ; y el byte 0x10 del guion
 	jp L_693A		;69cd
 L_69D0:
 	sub 01ah		;69d0
@@ -1441,7 +1465,7 @@ L_69D0:
 	inc a			;69e0
 	ld (de),a			;69e1
 	cp 011h		;69e2
-	jr z,L_6A16		;69e4
+	jr z,borra_el_hueco_y_su_sprite		;69e4
 	dec a			;69e6
 	ld l,a			;69e7
 	ld h,000h		;69e8
@@ -1475,19 +1499,19 @@ L_6A0E:
 L_6A11:
 	ld a,006h		;6a11
 	jp L_693A		;6a13
-L_6A16:
-	dec e			;6a16
+borra_el_hueco_y_su_sprite:
+	dec e			;6a16   ; atras, al principio del hueco
 	dec e			;6a17
 	push de			;6a18
 	ex de,hl			;6a19
-	ld b,010h		;6a1a
+	ld b,010h		;6a1a   ; sus dieciseis bytes
 	xor a			;6a1c
-L_6A1D:
+borra_el_hueco_vuelta_de_0xE440:
 	ld (hl),a			;6a1d
 	inc hl			;6a1e
-	djnz L_6A1D		;6a1f
-	ld a,(0e0e3h)		;6a21   ; que hueco de sprite toca
-	add a,a			;6a24
+	djnz borra_el_hueco_vuelta_de_0xE440		;6a1f
+	ld a,(0e0e3h)		;6a21   ; que hueco de sprite tenia
+	add a,a			;6a24   ; por cuatro
 	ld hl,0ee80h		;6a25
 	call 04055h		;6a28   ; banco 0: dos_por_a_mas_hl
 	ld (hl),0e0h		;6a2b
@@ -1560,8 +1584,12 @@ L_6A96:
 	ld (hl),0e0h		;6aa1
 	ld a,006h		;6aa3
 	jp L_69A1		;6aa5
-L_6AA8:
-	ld a,(0e203h)		;6aa8   ; por donde va la rotacion de los sprites
+
+; ----------------------------------------------------------------------
+; LOS COLORES QUE DAN VUELTAS. Solo en cinco de los diez decorados, y con dos anchos distintos: cuatro tablas en los decorados 0, 2 y 4, y dos en el 1 y el 3. Cuando la barra de nueve esta clavada -0xE4C0 y 0xE4C1 iguales- cuenta cuadros en 0xE405 y, uno de cada dos, gira las tablas de color de 0xA420 (banco 10) por 0xE409: cada una sube una posicion y vuelve a cero al llegar a diez. Eso es lo que hace que el decorado parezca moverse sin mover un solo byte de la pantalla.
+; ----------------------------------------------------------------------
+los_colores_que_dan_vueltas:
+	ld a,(0e203h)		;6aa8   ; el ESTADO de lo que se maneja
 	cp 003h		;6aab
 	ret z			;6aad
 	cp 004h		;6aae
@@ -1570,31 +1598,31 @@ L_6AA8:
 	ret z			;6ab3
 	cp 00ah		;6ab4
 	ret z			;6ab6
-	ld a,(0e0a1h)		;6ab7   ; el DECORADO, de 0 a 9
+	ld a,(0e0a1h)		;6ab7   ; el decorado
 	and a			;6aba
-	ld b,004h		;6abb
+	ld b,004h		;6abb   ; el 0, el 2 y el 4 giran cuatro tablas...
 	jr z,L_6AD0		;6abd
 	cp 002h		;6abf
 	jr z,L_6AD0		;6ac1
 	cp 004h		;6ac3
 	jr z,L_6AD0		;6ac5
-	ld b,002h		;6ac7
+	ld b,002h		;6ac7   ; ...y el 1 y el 3, dos
 	cp 001h		;6ac9
 	jr z,L_6AD0		;6acb
 	cp 003h		;6acd
-	ret nz			;6acf
+	ret nz			;6acf   ; en los demas no gira nada
 L_6AD0:
 	ld a,b			;6ad0
-	ld (0e4e0h),a		;6ad1   ; la tabla de cambio de color, nibble alto
-	ld a,(0e4c0h)		;6ad4
+	ld (0e4e0h),a		;6ad1   ; cuantas tablas
+	ld a,(0e4c0h)		;6ad4   ; el nivel de la barra
 	ld c,a			;6ad7
-	ld a,(0e4c1h)		;6ad8
+	ld a,(0e4c1h)		;6ad8   ; contra su contador
 	cp c			;6adb
-	ret nz			;6adc
+	ret nz			;6adc   ; si no esta clavada, no se gira nada
 	ld hl,0e405h		;6add
-	inc (hl)			;6ae0
+	inc (hl)			;6ae0   ; un cuadro mas
 	ld a,(hl)			;6ae1
-	rra			;6ae2
+	rra			;6ae2   ; y solo uno de cada dos
 	ret nc			;6ae3
 	di			;6ae4   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;6ae5
@@ -1606,29 +1634,29 @@ L_6AD0:
 	ld (0a000h),a		;6af1   ; el banco 11 a 0xA000
 	ld (0f0f3h),a		;6af4   ; y en su copia de RAM
 	ei			;6af7   ; el mapa ya esta entero
-	ld de,0e409h		;6af8
-	ld a,(0e4e0h)		;6afb   ; la tabla de cambio de color, nibble alto
+	ld de,0e409h		;6af8   ; los pasos de cada tabla
+	ld a,(0e4e0h)		;6afb   ; cuantas tablas
 	ld b,a			;6afe
-L_6AFF:
+gira_una_tabla_de_color:
 	push bc			;6aff
 	dec b			;6b00
 	ld a,b			;6b01
-	ld hl,0a420h		;6b02
+	ld hl,0a420h		;6b02   ; las tablas de color del banco 10
 	call 04055h		;6b05   ; banco 0: dos_por_a_mas_hl
-	ld a,(hl)			;6b08
+	ld a,(hl)			;6b08   ; la que toca
 	inc hl			;6b09
 	ld h,(hl)			;6b0a
 	ld l,a			;6b0b
-	ld a,(de)			;6b0c
+	ld a,(de)			;6b0c   ; su paso de ahora
 	ld c,a			;6b0d
-	inc a			;6b0e
-	cp 00ah		;6b0f
+	inc a			;6b0e   ; uno mas
+	cp 00ah		;6b0f   ; y al llegar a diez...
 	jr nz,L_6B14		;6b11
-	xor a			;6b13
+	xor a			;6b13   ; ...vuelta a empezar
 L_6B14:
-	ld (de),a			;6b14
+	ld (de),a			;6b14   ; apuntado
 	ld a,c			;6b15
-	and a			;6b16
+	and a			;6b16   ; con el paso a cero no se pinta nada
 	jr z,L_6B28		;6b17
 	push af			;6b19
 	dec a			;6b1a
@@ -1644,7 +1672,7 @@ L_6B14:
 L_6B28:
 	dec e			;6b28
 	pop bc			;6b29
-	djnz L_6AFF		;6b2a
+	djnz gira_una_tabla_de_color		;6b2a
 	di			;6b2c   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6b2d
 	ld (08000h),a		;6b2f   ; el banco 2 a 0x8000
@@ -1722,11 +1750,11 @@ L_6B92:
 	ld hl,0e40ah		;6bab
 	ld de,0eeb8h		;6bae
 	ld bc,0aed0h		;6bb1
-	call L_6BD8		;6bb4
+	call gira_los_cuatro_bytes_de_la_tabla		;6bb4
 	ld bc,0af10h		;6bb7
-	call L_6BD8		;6bba
+	call gira_los_cuatro_bytes_de_la_tabla		;6bba
 	ld bc,0af50h		;6bbd
-	call L_6BD8		;6bc0
+	call gira_los_cuatro_bytes_de_la_tabla		;6bc0
 	di			;6bc3   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6bc4
 	ld (08000h),a		;6bc6   ; el banco 2 a 0x8000
@@ -1738,20 +1766,20 @@ L_6B92:
 	ld (0f0f3h),a		;6bd3   ; y en su copia de RAM
 	ei			;6bd6   ; el mapa ya esta entero
 	ret			;6bd7
-L_6BD8:
+gira_los_cuatro_bytes_de_la_tabla:
 	push hl			;6bd8
-	inc (hl)			;6bd9
+	inc (hl)			;6bd9   ; un paso mas
 	ld a,(hl)			;6bda
-	cp 010h		;6bdb
+	cp 010h		;6bdb   ; al llegar a 16...
 	jr nz,L_6BE1		;6bdd
-	xor a			;6bdf
+	xor a			;6bdf   ; ...vuelta a cero
 	ld (hl),a			;6be0
 L_6BE1:
-	add a,a			;6be1
+	add a,a			;6be1   ; dos bytes por entrada
 	ld l,c			;6be2
 	ld h,b			;6be3
 	call 04055h		;6be4   ; banco 0: dos_por_a_mas_hl
-	ld bc,00004h		;6be7
+	ld bc,00004h		;6be7   ; y cuatro bytes copiados
 	ldir		;6bea
 	pop hl			;6bec
 	inc hl			;6bed
@@ -1762,19 +1790,19 @@ L_6BEF:
 	ld bc,00010h		;6bf5
 	ld (hl),000h		;6bf8
 	ldir		;6bfa
-	ld a,(0e205h)		;6bfc   ; la Y en la pantalla de lo que se maneja
+	ld a,(0e205h)		;6bfc   ; la X en la pantalla de lo que se maneja
 	ld (0e0aah),a		;6bff
 	ld a,003h		;6c02
 	ld (0e134h),a		;6c04
 	ld hl,06cc0h		;6c07
 	ld a,(hl)			;6c0a
-	ld (0e203h),a		;6c0b   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;6c0b   ; el ESTADO de lo que se maneja
 	inc hl			;6c0e
 	ld a,(hl)			;6c0f
-	ld (0e204h),a		;6c10   ; la X en la pantalla de lo que se maneja
+	ld (0e204h),a		;6c10   ; la Y en la pantalla de lo que se maneja
 	inc hl			;6c13
 	ld a,(hl)			;6c14
-	ld (0e205h),a		;6c15   ; la Y en la pantalla de lo que se maneja
+	ld (0e205h),a		;6c15   ; la X en la pantalla de lo que se maneja
 	ld a,004h		;6c18
 	ld (0ee83h),a		;6c1a
 	ld (0ee87h),a		;6c1d
@@ -1808,31 +1836,31 @@ L_6C3A:
 	ld de,0a5d7h		;6c5e
 L_6C61:
 	call 042bch		;6c61   ; banco 0: pinta_guion_con_mascara
-	call L_6F5C		;6c64
+	call pon_los_bancos_2_y_3		;6c64
 	call L_6CC3		;6c67
-L_6C6A:
+repinta_la_tienda_entera:
 	call L_6D1B		;6c6a
-	call L_6E06		;6c6d
-	call L_6DD1		;6c70
+	call el_marcador_por_uno_de_los_dos_puentes		;6c6d   ; el marcador
+	call repasa_las_seis_casillas		;6c70   ; las seis casillas
 	call L_6C84		;6c73
-	ld (0e10ch),a		;6c76
-	ld de,039c3h		;6c79
-	jp L_6EA0		;6c7c
+	ld (0e10ch),a		;6c76   ; donde queda el cursor
+	ld de,039c3h		;6c79   ; y su sitio en la pantalla
+	jp pinta_el_cursor		;6c7c
 L_6C7F:
 	call 04bbfh		;6c7f
 	jr L_6C3A		;6c82
 L_6C84:
 	xor a			;6c84
-L_6C85:
-	ld c,a			;6c85
-	ld hl,0e100h		;6c86
-	ld a,(0e128h)		;6c89
+mueve_el_cursor_por_las_casillas:
+	ld c,a			;6c85   ; a que casilla se quiere ir
+	ld hl,0e100h		;6c86   ; las seis casillas
+	ld a,(0e128h)		;6c89   ; y hacia que lado se va
 	ld b,a			;6c8c
 	and a			;6c8d
 	ld a,c			;6c8e
-	jr z,L_6C97		;6c8f
-	cp 0ffh		;6c91
-	jr z,L_6CB4		;6c93
+	jr z,L_6C97		;6c8f   ; sin lado, se mira el tope de arriba
+	cp 0ffh		;6c91   ; y con el, el de abajo
+	jr z,el_cursor_a_la_casilla_7		;6c93
 	jr L_6C9B		;6c95
 L_6C97:
 	cp 008h		;6c97
@@ -1847,29 +1875,32 @@ L_6C9B:
 	and a			;6ca6
 	ld a,c			;6ca7
 	ret nz			;6ca8
-L_6CA9:
-	ld a,b			;6ca9
+el_cursor_arriba_o_abajo:
+	ld a,b			;6ca9   ; hacia que lado
 	and a			;6caa
 	ld a,c			;6cab
 	jr z,L_6CB1		;6cac
-	dec a			;6cae
-	jr L_6C85		;6caf
+	dec a			;6cae   ; hacia atras...
+	jr mueve_el_cursor_por_las_casillas		;6caf
 L_6CB1:
-	inc a			;6cb1
-	jr L_6C85		;6cb2
-L_6CB4:
-	ld a,007h		;6cb4
-	jr L_6C85		;6cb6
+	inc a			;6cb1   ; ...o hacia delante
+	jr mueve_el_cursor_por_las_casillas		;6cb2
+el_cursor_a_la_casilla_7:
+	ld a,007h		;6cb4   ; la 7 es la de cerrar
+	jr mueve_el_cursor_por_las_casillas		;6cb6
 L_6CB8:
 	ld a,(0e134h)		;6cb8
 	and a			;6cbb
 	ld a,c			;6cbc
-	jr z,L_6CA9		;6cbd
+	jr z,el_cursor_arriba_o_abajo		;6cbd
 	ret			;6cbf
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x6cc0..0x6cc3  (3 bytes)
-DATA_6CC0:
+; DATOS salida_de_lo_que_se_maneja: tres bytes que p01:6C07 reparte: el estado
+;   de lo que se maneja (0xE203), la Y (0xE204) y la X (0xE205) de lo que se
+;   maneja
+;   0x6cc0..0x6cc3  (3 bytes)
+DATA_salida_de_lo_que_se_maneja:
 	defb 011h,0f8h,070h	; 6cc0
 
 ; ======================================================================
@@ -1878,8 +1909,8 @@ DATA_6CC0:
 
 
 L_6CC3:
-	call L_6FC4		;6cc3
-	call L_6F71		;6cc6
+	call borra_las_seis_casillas		;6cc3
+	call pon_los_bancos_10_y_11		;6cc6
 	ld ix,06fd5h		;6cc9
 	ld a,(0e0a2h)		;6ccd   ; el modo en el que esta el juego
 	sub 003h		;6cd0
@@ -1927,325 +1958,353 @@ L_6D11:
 	xor a			;6d11
 	ld (0e11dh),a		;6d12
 	ld (0e158h),a		;6d15
-	jp L_6F5C		;6d18
+	jp pon_los_bancos_2_y_3		;6d18
 L_6D1B:
 	ld b,000h		;6d1b
-L_6D1D:
-	ld de,0e100h		;6d1d
-	call L_6D2A		;6d20
+pinta_las_seis_casillas:
+	ld de,0e100h		;6d1d   ; las seis casillas
+	call pinta_una_casilla		;6d20
 	inc b			;6d23
 	ld a,b			;6d24
-	cp 006h		;6d25
-	jr nz,L_6D1D		;6d27
+	cp 006h		;6d25   ; hasta la sexta
+	jr nz,pinta_las_seis_casillas		;6d27
 	ret			;6d29
-L_6D2A:
-	ld a,b			;6d2a
-	ld hl,06dc5h		;6d2b
+
+; ----------------------------------------------------------------------
+; PINTAR UNA CASILLA DE LO QUE SE LLEVA. Cada casilla son cuatro caracteres en cuadro -dos seguidos y otros dos justo debajo, que es lo que significa el salto de 0x1F mas el `inc`-, y el primero de los cuatro sale de 0xB2 mas el valor por cuatro. Con 0xFF en el valor se pintan cuatro ceros: la casilla vacia. Se escribe con WRTVRM de la BIOS, uno a uno.
+; ----------------------------------------------------------------------
+pinta_una_casilla:
+	ld a,b			;6d2a   ; que casilla
+	ld hl,06dc5h		;6d2b   ; las seis direcciones de la tabla de nombres
 	call 04055h		;6d2e   ; banco 0: dos_por_a_mas_hl
-	ld a,(hl)			;6d31
+	ld a,(hl)			;6d31   ; la suya
 	inc hl			;6d32
 	ld h,(hl)			;6d33
 	ld l,a			;6d34
 	ld a,b			;6d35
 	add a,a			;6d36
-	call 0405bh		;6d37   ; banco 0: a_mas_de
+	call 0405bh		;6d37   ; y su valor, de dos en dos
 	ld a,(de)			;6d3a
-	dec a			;6d3b
+	dec a			;6d3b   ; los valores van desde 1
 	ld c,a			;6d3c
 	ld a,c			;6d3d
-	cp 0ffh		;6d3e
-	jp z,L_6D65		;6d40
-	ld a,0b2h		;6d43
-	sla c		;6d45
+	cp 0ffh		;6d3e   ; el 0xFF es la casilla vacia
+	jp z,borra_una_casilla		;6d40
+	ld a,0b2h		;6d43   ; los dibujos empiezan en el 0xB2...
+	sla c		;6d45   ; ...y van de cuatro en cuatro
 	sla c		;6d47
 	add a,c			;6d49
 	ld c,a			;6d4a
-L_6D4B:
+pinta_los_cuatro_caracteres:
 	ld a,c			;6d4b
-	call 0004dh		;6d4c   ; BIOS WRTVRM - Writes data in VRAM
+	call 0004dh		;6d4c   ; BIOS WRTVRM - Writes data in VRAM | el de arriba a la izquierda
 	inc hl			;6d4f
 	inc c			;6d50
 	ld a,c			;6d51
-	call 0004dh		;6d52   ; BIOS WRTVRM - Writes data in VRAM
-	ld a,01fh		;6d55
+	call 0004dh		;6d52   ; BIOS WRTVRM - Writes data in VRAM | el de arriba a la derecha
+	ld a,01fh		;6d55   ; 0x1F mas el `inc hl`: una fila entera
 	call 04056h		;6d57   ; banco 0: a_mas_hl
 	inc c			;6d5a
 	ld a,c			;6d5b
-	call 0004dh		;6d5c   ; BIOS WRTVRM - Writes data in VRAM
+	call 0004dh		;6d5c   ; BIOS WRTVRM - Writes data in VRAM | el de abajo a la izquierda
 	inc hl			;6d5f
 	inc c			;6d60
 	ld a,c			;6d61
-	jp 0004dh		;6d62   ; BIOS WRTVRM - Writes data in VRAM
-L_6D65:
+	jp 0004dh		;6d62   ; BIOS WRTVRM - Writes data in VRAM | y el de abajo a la derecha
+borra_una_casilla:
 	xor a			;6d65
-	call 0004dh		;6d66   ; BIOS WRTVRM - Writes data in VRAM
+	call 0004dh		;6d66   ; BIOS WRTVRM - Writes data in VRAM | cuatro ceros en cuadro: casilla vacia
 	inc hl			;6d69
 	xor a			;6d6a
 	call 0004dh		;6d6b   ; BIOS WRTVRM - Writes data in VRAM
-	ld a,01fh		;6d6e
+	ld a,01fh		;6d6e   ; la fila de abajo
 	call 04056h		;6d70   ; banco 0: a_mas_hl
 	xor a			;6d73
 	call 0004dh		;6d74   ; BIOS WRTVRM - Writes data in VRAM
 	inc hl			;6d77
 	xor a			;6d78
 	jp 0004dh		;6d79   ; BIOS WRTVRM - Writes data in VRAM
-L_6D7C:
+pinta_una_casilla_traducida:
 	ld a,c			;6d7c
-	call L_6FB8		;6d7d
+	call apunta_el_caracter_en_0xB380		;6d7d   ; la misma cuenta, pero cada caracter pasa antes por 0x6FB8
 	call 0004dh		;6d80   ; BIOS WRTVRM - Writes data in VRAM
 	inc hl			;6d83
 	inc c			;6d84
 	ld a,c			;6d85
-	call L_6FB8		;6d86
+	call apunta_el_caracter_en_0xB380		;6d86
 	call 0004dh		;6d89   ; BIOS WRTVRM - Writes data in VRAM
 	ld a,01fh		;6d8c
 	call 04056h		;6d8e   ; banco 0: a_mas_hl
 	inc c			;6d91
 	ld a,c			;6d92
-	call L_6FB8		;6d93
+	call apunta_el_caracter_en_0xB380		;6d93
 	call 0004dh		;6d96   ; BIOS WRTVRM - Writes data in VRAM
 	inc hl			;6d99
 	inc c			;6d9a
 	ld a,c			;6d9b
-	call L_6FB8		;6d9c
+	call apunta_el_caracter_en_0xB380		;6d9c
 	jp 0004dh		;6d9f   ; BIOS WRTVRM - Writes data in VRAM
-L_6DA2:
+borra_una_casilla_traducida:
 	xor a			;6da2
-	call L_6FB8		;6da3
+	call apunta_el_caracter_en_0xB380		;6da3
 	call 0004dh		;6da6   ; BIOS WRTVRM - Writes data in VRAM
 	inc hl			;6da9
 	xor a			;6daa
-	call L_6FB8		;6dab
+	call apunta_el_caracter_en_0xB380		;6dab
 	call 0004dh		;6dae   ; BIOS WRTVRM - Writes data in VRAM
 	ld a,01fh		;6db1
 	call 04056h		;6db3   ; banco 0: a_mas_hl
 	xor a			;6db6
-	call L_6FB8		;6db7
+	call apunta_el_caracter_en_0xB380		;6db7
 	call 0004dh		;6dba   ; BIOS WRTVRM - Writes data in VRAM
 	inc hl			;6dbd
 	xor a			;6dbe
-	call L_6FB8		;6dbf
+	call apunta_el_caracter_en_0xB380		;6dbf
 	jp 0004dh		;6dc2   ; BIOS WRTVRM - Writes data in VRAM
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x6dc5..0x6dd1  (12 bytes)
-DATA_6DC5:
-	defb 087h,039h,08ah,039h,08dh,039h,091h,039h,094h,039h,097h,039h	; 6dc5  .9.9.9.9.9.9
+; DATOS seis_direcciones_de_nombres: seis palabras, direcciones de la tabla de
+;   nombres (0x3987, 0x398A...): p01:6D2B coge la de B y p01:6DD6 las recorre
+;   las seis
+;   0x6dc5..0x6dd1  (12 bytes)
+DATA_seis_direcciones_de_nombres:
+	defb 087h,039h	; 6dc5
+	defb 08ah,039h	; 6dc7
+	defb 08dh,039h	; 6dc9
+	defb 091h,039h	; 6dcb
+	defb 094h,039h	; 6dcd
+	defb 097h,039h	; 6dcf
 
 ; ======================================================================
 ; CODIGO 0x6dd1..0x6fd5  (516 bytes)
 ; ======================================================================
 
 
-L_6DD1:
-	ld de,0e101h		;6dd1
-	ld b,006h		;6dd4
-	ld hl,06dc5h		;6dd6
-L_6DD9:
+
+; ----------------------------------------------------------------------
+; REPASAR LAS SEIS CASILLAS. Los seis valores estan en 0xE101 y siguientes, de dos en dos, y las seis direcciones de pantalla en 0x6DC5. Lo que se pinta cae dos filas por debajo de la direccion de la tabla, que es lo que suma el 0x40 de 0x6DE9.
+; ----------------------------------------------------------------------
+repasa_las_seis_casillas:
+	ld de,0e101h		;6dd1   ; los seis valores
+	ld b,006h		;6dd4   ; seis
+	ld hl,06dc5h		;6dd6   ; y las seis direcciones
+repasa_una_casilla_vuelta:
 	push bc			;6dd9
-	call L_6DE4		;6dda
+	call pinta_una_de_las_seis		;6dda
 	inc hl			;6ddd
-	inc de			;6dde
+	inc de			;6dde   ; los valores van de dos en dos
 	inc de			;6ddf
 	pop bc			;6de0
-	djnz L_6DD9		;6de1
+	djnz repasa_una_casilla_vuelta		;6de1
 	ret			;6de3
-L_6DE4:
-	ld a,(hl)			;6de4
+pinta_una_de_las_seis:
+	ld a,(hl)			;6de4   ; su direccion de pantalla
 	inc hl			;6de5
 	push hl			;6de6
 	ld h,(hl)			;6de7
 	ld l,a			;6de8
-	ld a,040h		;6de9
+	ld a,040h		;6de9   ; dos filas mas abajo
 	call 04056h		;6deb   ; banco 0: a_mas_hl
-	ld a,(de)			;6dee
-	or a			;6def
-	jr z,L_6DFB		;6df0
+	ld a,(de)			;6dee   ; su valor
+	or a			;6def   ; a cero, casilla vacia
+	jr z,deja_la_casilla_vacia		;6df0
 	ld b,001h		;6df2
 	push de			;6df4
-	call 09417h		;6df5   ; banco 12
+	call 09417h		;6df5   ; banco 2: y si no, a pintarlo
 	pop de			;6df8
 	pop hl			;6df9
 	ret			;6dfa
-L_6DFB:
+deja_la_casilla_vacia:
 	xor a			;6dfb
-	call 0004dh		;6dfc   ; BIOS WRTVRM - Writes data in VRAM
+	call 0004dh		;6dfc   ; BIOS WRTVRM - Writes data in VRAM | dos ceros arriba...
 	inc hl			;6dff
 	xor a			;6e00
-	call 0004dh		;6e01   ; BIOS WRTVRM - Writes data in VRAM
+	call 0004dh		;6e01   ; BIOS WRTVRM - Writes data in VRAM | ...y el segundo
 	pop hl			;6e04
 	ret			;6e05
-L_6E06:
+el_marcador_por_uno_de_los_dos_puentes:
 	ld de,0b124h		;6e06
-	ld a,(0e134h)		;6e09
+	ld a,(0e134h)		;6e09   ; segun 0xE134, por un puente o por el otro
 	and a			;6e0c
 	jp z,L_7E11		;6e0d
 	jp L_7DF7		;6e10
-L_6E13:
-	ld hl,(0e089h)		;6e13   ; el marcador, cifras bajas (BCD)
+si_el_marcador_esta_a_cero:
+	ld hl,(0e089h)		;6e13   ; el marcador
 	ld a,l			;6e16
 	or h			;6e17
-	ret nz			;6e18
+	ret nz			;6e18   ; si no esta a cero, nada
 	xor a			;6e19
-	ld (0e134h),a		;6e1a
+	ld (0e134h),a		;6e1a   ; y si lo esta, 0xE134 tambien
 	ret			;6e1d
-L_6E1E:
-	ld a,(0e11dh)		;6e1e
+
+; ----------------------------------------------------------------------
+; LA TIENDA. Tres juegos de guiones distintos segun el modo del juego (0xE0A2 = 3, 4 u otro), y cada uno con su efecto de fondo. Monta la pantalla con los bancos 10 y 11 puestos, pinta el guion de 0xB12E y devuelve los bancos 2 y 3. A partir de ahi, izquierda y derecha mueven el cursor y el disparo compra.
+; ----------------------------------------------------------------------
+la_tienda:
+	ld a,(0e11dh)		;6e1e   ; ¿ya se esta cerrando?
 	and a			;6e21
-	jp nz,L_6F4C		;6e22
-	ld a,(0e158h)		;6e25
+	jp nz,la_tienda_espera_a_cerrarse		;6e22
+	ld a,(0e158h)		;6e25   ; ¿o ya se ha comprado?
 	and a			;6e28
-	jp nz,L_6F29		;6e29
-	ld a,(0e0a2h)		;6e2c   ; el modo en el que esta el juego
-	ld de,0b038h		;6e2f
+	jp nz,la_tienda_se_cierra		;6e29
+	ld a,(0e0a2h)		;6e2c   ; el modo del juego
+	ld de,0b038h		;6e2f   ; los dos guiones y el efecto del modo 3...
 	ld hl,0b094h		;6e32
 	ld b,09bh		;6e35
 	sub 003h		;6e37
 	jr z,L_6E4E		;6e39
-	ld de,0b065h		;6e3b
+	ld de,0b065h		;6e3b   ; ...los del 4...
 	ld hl,0b0beh		;6e3e
 	ld b,09eh		;6e41
 	dec a			;6e43
 	jr z,L_6E4E		;6e44
-	ld de,0b0ddh		;6e46
+	ld de,0b0ddh		;6e46   ; ...y los de los demas
 	ld hl,0b105h		;6e49
 	ld b,09bh		;6e4c
 L_6E4E:
-	ld (0e119h),de		;6e4e
+	ld (0e119h),de		;6e4e   ; guardados los dos guiones...
 	ld (0e11bh),hl		;6e52
 	ld a,b			;6e55
-	ld (0e10dh),a		;6e56
+	ld (0e10dh),a		;6e56   ; ...y el efecto
 	call L_7DF7		;6e59
-	call L_6F71		;6e5c
-	ld de,0b12eh		;6e5f
-	call 04381h		;6e62   ; banco 0: pinta_sin_color
-	call L_6F5C		;6e65
-	ld a,(0e006h)		;6e68   ; las teclas recien pulsadas
+	call pon_los_bancos_10_y_11		;6e5c
+	ld de,0b12eh		;6e5f   ; el guion de la tienda
+	call 04381h		;6e62   ; banco 0: y a pintarlo
+	call pon_los_bancos_2_y_3		;6e65   ; devueltos los bancos 2 y 3
+	ld a,(0e006h)		;6e68   ; las teclas
 	ld c,a			;6e6b
-	and 010h		;6e6c
-	jr nz,L_6EC4		;6e6e
-L_6E70:
-	ld a,(0e10ch)		;6e70
-	ld hl,07005h		;6e73
+	and 010h		;6e6c   ; el disparo compra
+	jr nz,comprar		;6e6e
+
+; ----------------------------------------------------------------------
+; MOVER EL CURSOR. El bit 3 del mando lo lleva a la derecha y el bit 2 a la izquierda; si de verdad ha cambiado de casilla suena el efecto 0x23. Borra los dos caracteres de donde estaba y pinta el 0x44 y el 0x45 donde esta ahora.
+; ----------------------------------------------------------------------
+mueve_el_cursor_de_la_tienda:
+	ld a,(0e10ch)		;6e70   ; en que casilla esta
+	ld hl,07005h		;6e73   ; las seis posiciones del cursor
 	call 04055h		;6e76   ; banco 0: dos_por_a_mas_hl
 	ld e,(hl)			;6e79
 	inc hl			;6e7a
 	ld d,(hl)			;6e7b
-	ld a,(0e10ch)		;6e7c
+	ld a,(0e10ch)		;6e7c   ; la casilla otra vez
 	ld hl,0e128h		;6e7f
-	bit 3,c		;6e82
+	bit 3,c		;6e82   ; el bit 3: a la derecha
 	ld (hl),000h		;6e84
 	jr nz,L_6E90		;6e86
-	bit 2,c		;6e88
-	ret z			;6e8a
+	bit 2,c		;6e88   ; el bit 2: a la izquierda
+	ret z			;6e8a   ; y sin ninguno de los dos, no se mueve
 	ld (hl),001h		;6e8b
 	dec a			;6e8d
 	jr L_6E91		;6e8e
 L_6E90:
 	inc a			;6e90
 L_6E91:
-	call L_6C85		;6e91
+	call mueve_el_cursor_por_las_casillas		;6e91
 	ld hl,0e10ch		;6e94
-	cp (hl)			;6e97
+	cp (hl)			;6e97   ; ¿ha cambiado de casilla?
 	ld (hl),a			;6e98
-	jr z,L_6EA0		;6e99
-	ld a,023h		;6e9b
+	jr z,pinta_el_cursor		;6e99
+	ld a,023h		;6e9b   ; si ha cambiado, el efecto 0x23
 	call 0413ah		;6e9d   ; banco 0: pide_sonido_si_esta_activo
-L_6EA0:
-	ld a,(0e10ch)		;6ea0
-	ld hl,07005h		;6ea3
+pinta_el_cursor:
+	ld a,(0e10ch)		;6ea0   ; la casilla de ahora
+	ld hl,07005h		;6ea3   ; y su posicion
 	call 04055h		;6ea6   ; banco 0: dos_por_a_mas_hl
 	ld a,(hl)			;6ea9
 	inc hl			;6eaa
 	ld h,(hl)			;6eab
 	ld l,a			;6eac
-L_6EAD:
+borra_y_pinta_el_cursor:
 	ex de,hl			;6ead
 	xor a			;6eae
-	call 0004dh		;6eaf   ; BIOS WRTVRM - Writes data in VRAM
+	call 0004dh		;6eaf   ; BIOS WRTVRM - Writes data in VRAM | dos ceros donde estaba
 	xor a			;6eb2
 	inc hl			;6eb3
 	call 0004dh		;6eb4   ; BIOS WRTVRM - Writes data in VRAM
 	ex de,hl			;6eb7
-	ld c,044h		;6eb8
+	ld c,044h		;6eb8   ; y el 0x44 y el 0x45 donde esta
 	ld a,c			;6eba
 	call 0004dh		;6ebb   ; BIOS WRTVRM - Writes data in VRAM
 	inc hl			;6ebe
 	ld a,c			;6ebf
 	inc a			;6ec0
 	jp 0004dh		;6ec1   ; BIOS WRTVRM - Writes data in VRAM
-L_6EC4:
-	ld a,(0e10ch)		;6ec4
-	cp 006h		;6ec7
-	jp z,L_6FB2		;6ec9
-	cp 007h		;6ecc
-	jp z,L_6F29		;6ece
-	ld hl,0e101h		;6ed1
+
+; ----------------------------------------------------------------------
+; COMPRAR. La casilla 6 deja el aviso 2 y la 7 cierra la tienda; las demas cuestan lo que diga su segundo byte, restado EN BCD del marcador. Si no llega el dinero suena el efecto 0x25 y no pasa nada mas. Si llega, la casilla se borra -sus dos bytes a cero-, se repinta vacia y el banco 3 se queda con el objeto.
+; ----------------------------------------------------------------------
+comprar:
+	ld a,(0e10ch)		;6ec4   ; en que casilla esta
+	cp 006h		;6ec7   ; la 6 solo deja el aviso 2...
+	jp z,deja_el_aviso_2		;6ec9
+	cp 007h		;6ecc   ; ...y la 7 cierra la tienda
+	jp z,la_tienda_se_cierra		;6ece
+	ld hl,0e101h		;6ed1   ; las seis casillas, de dos en dos
 	call 04055h		;6ed4   ; banco 0: dos_por_a_mas_hl
-	ld c,(hl)			;6ed7
-	ld d,001h		;6ed8
-	ld ix,0e089h		;6eda
-	call L_6F86		;6ede
-	jr c,L_6F57		;6ee1
-	dec hl			;6ee3
+	ld c,(hl)			;6ed7   ; lo que cuesta
+	ld d,001h		;6ed8   ; y el 1 que se lleva al byte alto si hay que pedir prestado
+	ld ix,0e089h		;6eda   ; el dinero es el marcador
+	call resta_en_bcd_de_dos_bytes		;6ede   ; a ver si llega
+	jr c,no_llega_el_dinero		;6ee1   ; si no llega, nada
+	dec hl			;6ee3   ; atras, a que es
 	ld a,(0e10ch)		;6ee4
 	ld b,a			;6ee7
-	ld a,(hl)			;6ee8
+	ld a,(hl)			;6ee8   ; lo que se lleva
 	ld c,a			;6ee9
 	dec c			;6eea
 	push bc			;6eeb
 	push hl			;6eec
-	call 0ba2fh		;6eed   ; banco 13
+	call 0ba2fh		;6eed   ; banco 3: y ahi se apunta
 	pop hl			;6ef0
-	ld (hl),000h		;6ef1
+	ld (hl),000h		;6ef1   ; la casilla, vacia
 	inc hl			;6ef3
 	ld (hl),000h		;6ef4
 	ld de,0e100h		;6ef6
 	pop bc			;6ef9
-	call L_6D2A		;6efa
-	call L_6DD1		;6efd
-	call 0947bh		;6f00   ; banco 12
-	call L_6E13		;6f03
-	call L_6E06		;6f06
+	call pinta_una_casilla		;6efa   ; y repintada
+	call repasa_las_seis_casillas		;6efd
+	call 0947bh		;6f00   ; banco 2
+	call si_el_marcador_esta_a_cero		;6f03
+	call el_marcador_por_uno_de_los_dos_puentes		;6f06
 	ld a,(0e0a2h)		;6f09   ; el modo en el que esta el juego
 	cp 005h		;6f0c
-	jr z,L_6F15		;6f0e
+	jr z,la_tienda_se_cierra_del_todo		;6f0e
 	ld c,008h		;6f10
-	jp L_6E70		;6f12
-L_6F15:
+	jp mueve_el_cursor_de_la_tienda		;6f12
+la_tienda_se_cierra_del_todo:
 	xor a			;6f15
-	ld (0e134h),a		;6f16
-	call L_6FC4		;6f19
-	ld c,008h		;6f1c
-	call L_6E70		;6f1e
-	call L_6C6A		;6f21
-	ld a,001h		;6f24
+	ld (0e134h),a		;6f16   ; sin marcador que pintar
+	call borra_las_seis_casillas		;6f19   ; las seis casillas, vacias
+	ld c,008h		;6f1c   ; el cursor, a la casilla 8
+	call mueve_el_cursor_de_la_tienda		;6f1e
+	call repinta_la_tienda_entera		;6f21
+	ld a,001h		;6f24   ; y marcada como comprada
 	ld (0e158h),a		;6f26
-L_6F29:
-	ld a,(0e051h)		;6f29   ; la prioridad del efecto que suena
+la_tienda_se_cierra:
+	ld a,(0e051h)		;6f29   ; se espera a que se calle el efecto
 	and a			;6f2c
 	ret nz			;6f2d
-	ld de,(0e119h)		;6f2e
+	ld de,(0e119h)		;6f2e   ; el primero de los dos guiones
 	call L_7E11		;6f32
-	ld de,(0e11bh)		;6f35
+	ld de,(0e11bh)		;6f35   ; y el segundo
 	call L_7DF7		;6f39
-	ld a,(0e10dh)		;6f3c
+	ld a,(0e10dh)		;6f3c   ; con el efecto del modo
 	call 0413ah		;6f3f   ; banco 0: pide_sonido_si_esta_activo
 	ld a,001h		;6f42
-	ld (0e11dh),a		;6f44
-	ld a,080h		;6f47
+	ld (0e11dh),a		;6f44   ; ya se esta cerrando
+	ld a,080h		;6f47   ; y 0x80 cuadros de espera
 	ld (0e159h),a		;6f49
-L_6F4C:
+la_tienda_espera_a_cerrarse:
 	ld hl,0e159h		;6f4c
-	dec (hl)			;6f4f
+	dec (hl)			;6f4f   ; se descuenta la espera
 	ret nz			;6f50
 	ld a,001h		;6f51
-	ld (0e096h),a		;6f53   ; los avisos que deja el cuadro
+	ld (0e096h),a		;6f53   ; y al acabarse, el aviso 1
 	ret			;6f56
-L_6F57:
-	ld a,025h		;6f57
+no_llega_el_dinero:
+	ld a,025h		;6f57   ; el efecto 0x25 y ya
 	jp 0413ah		;6f59   ; banco 0: pide_sonido_si_esta_activo
-L_6F5C:
+pon_los_bancos_2_y_3:
 	di			;6f5c   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;6f5d
 	ld (08000h),a		;6f5f   ; el banco 2 a 0x8000
@@ -2257,7 +2316,7 @@ L_6F5C:
 	ld (0f0f3h),a		;6f6c   ; y en su copia de RAM
 	ei			;6f6f   ; el mapa ya esta entero
 	ret			;6f70
-L_6F71:
+pon_los_bancos_10_y_11:
 	di			;6f71   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;6f72
 	ld (08000h),a		;6f74   ; el banco 10 a 0x8000
@@ -2269,65 +2328,89 @@ L_6F71:
 	ld (0f0f3h),a		;6f81   ; y en su copia de RAM
 	ei			;6f84   ; el mapa ya esta entero
 	ret			;6f85
-L_6F86:
-	ld a,(ix+000h)		;6f86
+
+; ----------------------------------------------------------------------
+; RESTAR EN BCD DE DOS BYTES. IX apunta al numero y C es lo que se le quita. OJO CON LA D: no es el byte alto del importe, es lo que se le resta al byte alto CUANDO HAY QUE PEDIR PRESTADO, y vale 1 en todas las llamadas -o sea que es el acarreo a mano, que es lo que hace falta porque `daa` no se lleva bien con `sbc`-. Si el resultado sale negativo vuelve con el acarreo puesto y SIN tocar nada, que es como se sabe que no llega el dinero.
+; ----------------------------------------------------------------------
+resta_en_bcd_de_dos_bytes:
+	ld a,(ix+000h)		;6f86   ; el numero
 	sub c			;6f89
-	daa			;6f8a
+	daa			;6f8a   ; EN BCD: por eso el `daa`
 	ld c,a			;6f8b
-	jr nc,L_6F97		;6f8c
-	ld a,(ix+001h)		;6f8e
+	jr nc,guarda_el_byte_bajo		;6f8c   ; ¿hizo falta pedir prestado?
+	ld a,(ix+001h)		;6f8e   ; entonces se le quita la D al byte alto
 	sub d			;6f91
 	daa			;6f92
-	ret c			;6f93
+	ret c			;6f93   ; y si tampoco llega, se vuelve sin tocar nada
 	ld (ix+001h),a		;6f94
-L_6F97:
+guarda_el_byte_bajo:
 	ld a,c			;6f97
 	ld (ix+000h),a		;6f98
 	ret			;6f9b
-L_6F9C:
-	ld a,(ix+000h)		;6f9c
+
+; ----------------------------------------------------------------------
+; SUMAR EN BCD DE DOS BYTES. La pareja de la anterior, con la misma D de acarreo a mano: si se desborda, vuelve con el acarreo puesto y sin guardar.
+; ----------------------------------------------------------------------
+suma_en_bcd_de_dos_bytes:
+	ld a,(ix+000h)		;6f9c   ; el numero
 	add a,c			;6f9f
-	daa			;6fa0
+	daa			;6fa0   ; EN BCD
 	ld c,a			;6fa1
-	jr nc,L_6F97		;6fa2
-	ld a,(ix+001h)		;6fa4
+	jr nc,guarda_el_byte_bajo		;6fa2   ; ¿se ha llevado una?
+	ld a,(ix+001h)		;6fa4   ; entonces se le suma la D al byte alto
 	add a,d			;6fa7
 	daa			;6fa8
-	ret c			;6fa9
+	ret c			;6fa9   ; y si se desborda, no se guarda
 	ld (ix+001h),a		;6faa
 	ld a,c			;6fad
 	ld (ix+000h),a		;6fae
 	ret			;6fb1
-L_6FB2:
+deja_el_aviso_2:
 	ld a,002h		;6fb2
 	ld (0e096h),a		;6fb4   ; los avisos que deja el cuadro
 	ret			;6fb7
-L_6FB8:
+apunta_el_caracter_en_0xB380:
 	push hl			;6fb8
 	push de			;6fb9
-	ld de,0b380h		;6fba
+	ld de,0b380h		;6fba   ; la tabla de 0xB380
 	and a			;6fbd
-	adc hl,de		;6fbe
-	ld (hl),a			;6fc0
+	adc hl,de		;6fbe   ; el caracter que sea...
+	ld (hl),a			;6fc0   ; ...apuntado en su casilla
 	pop de			;6fc1
 	pop hl			;6fc2
 	ret			;6fc3
-L_6FC4:
-	call L_6E13		;6fc4
-	ld hl,0e100h		;6fc7
+borra_las_seis_casillas:
+	call si_el_marcador_esta_a_cero		;6fc4
+	ld hl,0e100h		;6fc7   ; los doce bytes de las seis casillas
 	ld de,0e101h		;6fca
 	ld (hl),000h		;6fcd
-	ld bc,0000bh		;6fcf
+	ld bc,0000bh		;6fcf   ; a cero
 	ldir		;6fd2
 	ret			;6fd4
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x6fd5..0x7015  (64 bytes)
-DATA_6FD5:
+; DATOS tablas_de_IX_por_modo: tres tablas de 16 bytes, una por modo (0xE0A2 =
+;   3, 4 u otro): p01:6CC9, 6CD4 y 6CDB ponen IX en 0x6FD5, 0x6FE5 o 0x6FF5, y
+;   p01:6D04 lee de IX con los indices de las listas del banco 11 (0xAF90)
+;   0x6fd5..0x7005  (48 bytes)
+DATA_tablas_de_IX_por_modo:
 	defb 019h,015h,010h,008h,012h,013h,017h,020h,018h,022h,011h,014h,021h,000h,000h,023h	; 6fd5  ....... ."..!..#
 	defb 038h,030h,020h,016h,024h,026h,032h,040h,036h,044h,022h,028h,042h,000h,000h,046h	; 6fe5  80 .$&2@6D"(B..F
 	defb 000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h	; 6ff5  ................
-	defb 0e7h,039h,0eah,039h,0edh,039h,0f1h,039h,0f4h,039h,0f7h,039h,085h,03ah,098h,03ah	; 7005  .9.9.9.9.9.9.:.:
+
+; ----------------------------------------------------------------------
+; DATOS ocho_punteros_E10C: ocho palabras que p01:6E73 y p01:6EA3 indexan con
+;   (0xE10C)
+;   0x7005..0x7015  (16 bytes)
+DATA_ocho_punteros_E10C:
+	defb 0e7h,039h	; 7005
+	defb 0eah,039h	; 7007
+	defb 0edh,039h	; 7009
+	defb 0f1h,039h	; 700b
+	defb 0f4h,039h	; 700d
+	defb 0f7h,039h	; 700f
+	defb 085h,03ah	; 7011
+	defb 098h,03ah	; 7013
 
 ; ======================================================================
 ; CODIGO 0x7015..0x7085  (112 bytes)
@@ -2335,7 +2418,7 @@ DATA_6FD5:
 
 
 L_7015:
-	ld hl,(0e301h)		;7015   ; lo andado en la fase
+	ld hl,(0e301h)		;7015   ; la distancia a la que toca el objeto siguiente
 	ld a,(0e300h)		;7018   ; por que pareja del guion de la fase va
 	push hl			;701b
 	ld hl,0e280h		;701c
@@ -2344,16 +2427,16 @@ L_7015:
 	ld (hl),000h		;7025
 	ldir		;7027
 	pop hl			;7029
-	ld (0e301h),hl		;702a   ; lo andado en la fase
+	ld (0e301h),hl		;702a   ; la distancia a la que toca el objeto siguiente
 	ld (0e300h),a		;702d   ; por que pareja del guion de la fase va
 	call L_6323		;7030
 	ld a,013h		;7033
-	ld (0e203h),a		;7035   ; por donde va la rotacion de los sprites
+	ld (0e203h),a		;7035   ; el ESTADO de lo que se maneja
 	ld a,0c0h		;7038
-	ld (0e204h),a		;703a   ; la X en la pantalla de lo que se maneja
+	ld (0e204h),a		;703a   ; la Y en la pantalla de lo que se maneja
 	call L_7DD5		;703d
 	ld a,(0e0aah)		;7040
-	ld (0e205h),a		;7043   ; la Y en la pantalla de lo que se maneja
+	ld (0e205h),a		;7043   ; la X en la pantalla de lo que se maneja
 	xor a			;7046
 	ld (0e0aah),a		;7047
 	ld (0e201h),a		;704a
@@ -2362,19 +2445,19 @@ L_7015:
 	ld (0e0a3h),a		;7053
 	jp L_62A4		;7056
 L_7059:
-	ld a,(0e203h)		;7059   ; por donde va la rotacion de los sprites
+	ld a,(0e203h)		;7059   ; el ESTADO de lo que se maneja
 	cp 010h		;705c
 	ret z			;705e
 	ld hl,0e440h		;705f
 	ld b,005h		;7062
 	xor a			;7064
 	ld (0e0e3h),a		;7065   ; que hueco de sprite toca
-L_7068:
-	ld a,(hl)			;7068
+repasa_las_cinco_ranuras_de_0xE440:
+	ld a,(hl)			;7068   ; ¿lleva algo esta ranura?
 	and a			;7069
 	push hl			;706a
 	push bc			;706b
-	call nz,L_707C		;706c
+	call nz,L_707C		;706c   ; si lleva, se atiende
 	pop bc			;706f
 	ld hl,0e0e3h		;7070
 	inc (hl)			;7073
@@ -2382,7 +2465,7 @@ L_7068:
 	ld a,010h		;7075
 	add a,l			;7077
 	ld l,a			;7078
-	djnz L_7068		;7079
+	djnz repasa_las_cinco_ranuras_de_0xE440		;7079
 	ret			;707b
 L_707C:
 	push hl			;707c
@@ -2393,105 +2476,150 @@ L_707C:
 	call 04060h		;7082   ; banco 0: despacha
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7085..0x70d1  (76 bytes)
-DATA_7085:
-	defb 0d1h,070h,0d1h,070h,027h,071h,027h,071h,027h,071h,005h,072h,005h,072h,042h,072h	; 7085  .p.p'q'q'q.r.rBr
-	defb 042h,072h,0c4h,072h,0c4h,072h,017h,073h,017h,073h,0a3h,073h,0a3h,073h,0a3h,073h	; 7095  Br.r.r.s.s.s.s.s
-	defb 0a4h,073h,0a4h,073h,0fbh,073h,0fbh,073h,04ah,074h,04ah,074h,04ah,074h,04ah,074h	; 70a5  .s.s.s.sJtJtJtJt
-	defb 04ah,074h,0a5h,074h,0a5h,074h,0a5h,074h,0a5h,074h,0a5h,074h,0a5h,074h,030h,075h	; 70b5  Jt.t.t.t.t.t.t0u
-	defb 030h,075h,030h,075h,030h,075h,030h,075h,030h,075h,030h,075h	; 70c5  0u0u0u0u0u0u
+; DATOS despacho_de_7082: 38 punteros pegados detras del `call despacha` de
+;   p01:7082: la rutina de cada clase de objeto, indexada con (ix+1) - 1.
+;   Varias clases comparten rutina
+;   0x7085..0x70d1  (76 bytes)
+DATA_despacho_de_7082:
+	defb 0d1h,070h	; 7085
+	defb 0d1h,070h	; 7087
+	defb 027h,071h	; 7089
+	defb 027h,071h	; 708b
+	defb 027h,071h	; 708d
+	defb 005h,072h	; 708f
+	defb 005h,072h	; 7091
+	defb 042h,072h	; 7093
+	defb 042h,072h	; 7095
+	defb 0c4h,072h	; 7097
+	defb 0c4h,072h	; 7099
+	defb 017h,073h	; 709b
+	defb 017h,073h	; 709d
+	defb 0a3h,073h	; 709f
+	defb 0a3h,073h	; 70a1
+	defb 0a3h,073h	; 70a3
+	defb 0a4h,073h	; 70a5
+	defb 0a4h,073h	; 70a7
+	defb 0fbh,073h	; 70a9
+	defb 0fbh,073h	; 70ab
+	defb 04ah,074h	; 70ad
+	defb 04ah,074h	; 70af
+	defb 04ah,074h	; 70b1
+	defb 04ah,074h	; 70b3
+	defb 04ah,074h	; 70b5
+	defb 0a5h,074h	; 70b7
+	defb 0a5h,074h	; 70b9
+	defb 0a5h,074h	; 70bb
+	defb 0a5h,074h	; 70bd
+	defb 0a5h,074h	; 70bf
+	defb 0a5h,074h	; 70c1
+	defb 030h,075h	; 70c3
+	defb 030h,075h	; 70c5
+	defb 030h,075h	; 70c7
+	defb 030h,075h	; 70c9
+	defb 030h,075h	; 70cb
+	defb 030h,075h	; 70cd
+	defb 030h,075h	; 70cf
 
 ; ======================================================================
 ; CODIGO 0x70d1..0x711f  (78 bytes)
 ; ======================================================================
 
 
-L_70D1:
-	ld a,(ix+002h)		;70d1
-	cp 00eh		;70d4
+
+; ----------------------------------------------------------------------
+; CAERSE POR UN HUECO (LAS VARIANTES 3, 4 Y 5). Es la mas larga de la familia porque tiene tres salidas distintas: si no se lleva nada, se pierde la vida -estado 0x15, o 0x16 en los decorados 4 y 5, y el efecto 0x8C-; si 0xE1F1 esta puesto, se salva, la variante del hueco sube 0x1D y caen 768 puntos; y si lo que esta puesto es 0xE171, se entra al hueco de verdad, que es lo que lleva al estado 3, 8 o 10 segun el decorado. En los decorados 4, 5 y 7 esta rutina no cuenta.
+; ----------------------------------------------------------------------
+caerse_por_un_hueco:
+	ld a,(ix+002h)		;70d1   ; la clase del objeto
+	cp 00eh		;70d4   ; la 14 son los huecos
 	ret nz			;70d6
 	ld a,(0e0a1h)		;70d7   ; el DECORADO, de 0 a 9
-	cp 004h		;70da
+	cp 004h		;70da   ; en el decorado 4...
 	ret z			;70dc
-	cp 005h		;70dd
+	cp 005h		;70dd   ; ...en el 5...
 	ret z			;70df
-	cp 007h		;70e0
+	cp 007h		;70e0   ; ...y en el 7 no hay nada de esto
 	ret z			;70e2
-	ld a,(0e203h)		;70e3   ; por donde va la rotacion de los sprites
-	cp 003h		;70e6
+	ld a,(0e203h)		;70e3   ; el ESTADO de lo que se maneja
+	cp 003h		;70e6   ; y en el estado 3 tampoco
 	ret z			;70e8
-	ld a,(ix+001h)		;70e9
+	ld a,(ix+001h)		;70e9   ; la variante del hueco
 	dec a			;70ec
-	ld hl,0711fh		;70ed
+	ld hl,0711fh		;70ed   ; la primera ventana...
 	jr z,L_70F5		;70f0
-	ld hl,07123h		;70f2
+	ld hl,07123h		;70f2   ; ...o la segunda
 L_70F5:
-	ld a,(0e205h)		;70f5   ; la Y en la pantalla de lo que se maneja
-	cp (hl)			;70f8
+	ld a,(0e205h)		;70f5   ; la X en la pantalla de lo que se maneja
+	cp (hl)			;70f8   ; por debajo de la ventana, fuera
 	ret c			;70f9
 	inc hl			;70fa
-	cp (hl)			;70fb
+	cp (hl)			;70fb   ; y por encima, tambien
 	ret nc			;70fc
 	inc hl			;70fd
-	ld a,(0e204h)		;70fe   ; la X en la pantalla de lo que se maneja
+	ld a,(0e204h)		;70fe   ; la tercera medida es el punto medio
 	cp (hl)			;7101
 	ret c			;7102
 	inc hl			;7103
-	ld a,(0e205h)		;7104   ; la Y en la pantalla de lo que se maneja
+	ld a,(0e205h)		;7104   ; y de que lado cae decide el bit 7
 	cp (hl)			;7107
 	ld a,000h		;7108
 	jr c,L_710E		;710a
 	ld a,080h		;710c
 L_710E:
-	ld (0e20bh),a		;710e
-	call L_72A0		;7111
-	ld a,(0e203h)		;7114   ; por donde va la rotacion de los sprites
-	cp 011h		;7117
-	call z,09ecfh		;7119
-	jp L_7392		;711c
+	ld (0e20bh),a		;710e   ; por que lado se ha entrado
+	call esconde_los_sprites_4_y_5		;7111
+	ld a,(0e203h)		;7114   ; el ESTADO de lo que se maneja
+	cp 011h		;7117   ; en el estado 0x11...
+	call z,09ecfh		;7119   ; ...hay que avisar al banco 2
+	jp y_al_estado_3		;711c
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x711f..0x7127  (8 bytes)
-DATA_711F:
-	defb 020h,050h,088h,001h,090h,0c0h,088h,0ffh	; 711f   P......
+; DATOS ventanas_711F: dos entradas de 4 bytes que p01:70ED escoge con (ix+1):
+;   la X de lo que se maneja (0xE205) tiene que caer entre las dos primeras
+;   (`cp (hl) / ret c / inc hl / cp (hl) / ret nc`) y el resto se sigue
+;   comparando
+;   0x711f..0x7127  (8 bytes)
+DATA_ventanas_711F:
+	defb 020h,050h,088h,001h	; 711f
+	defb 090h,0c0h,088h,0ffh	; 7123
 
 ; ======================================================================
 ; CODIGO 0x7127..0x71e1  (186 bytes)
 ; ======================================================================
 
 
-L_7127:
-	ld a,(ix+002h)		;7127
-	cp 00eh		;712a
+caerse_por_un_hueco_variantes_del_medio:
+	ld a,(ix+002h)		;7127   ; la clase del objeto
+	cp 00eh		;712a   ; la 14 son los huecos
 	ret nz			;712c
-	ld a,(0e203h)		;712d   ; por donde va la rotacion de los sprites
-	cp 003h		;7130
+	ld a,(0e203h)		;712d   ; el ESTADO de lo que se maneja
+	cp 003h		;7130   ; en el 3 ya se esta dentro
 	ret z			;7132
-	cp 008h		;7133
+	cp 008h		;7133   ; en el 8...
 	ret z			;7135
-	cp 00ah		;7136
+	cp 00ah		;7136   ; ...y en el 10, tampoco
 	ret z			;7138
-	ld a,(ix+001h)		;7139
+	ld a,(ix+001h)		;7139   ; la variante
 	sub 003h		;713c
-	ld hl,071e1h		;713e
-	jr z,L_714C		;7141
+	ld hl,071e1h		;713e   ; la ventana de la primera...
+	jr z,mira_la_ventana_de_doce		;7141
 	dec a			;7143
-	ld hl,071edh		;7144
-	jr z,L_714C		;7147
-	ld hl,071f9h		;7149
-L_714C:
-	ld a,(0e205h)		;714c   ; la Y en la pantalla de lo que se maneja
-	cp (hl)			;714f
+	ld hl,071edh		;7144   ; ...la de la segunda...
+	jr z,mira_la_ventana_de_doce		;7147
+	ld hl,071f9h		;7149   ; ...o la de la tercera
+mira_la_ventana_de_doce:
+	ld a,(0e205h)		;714c   ; la columna del jugador
+	cp (hl)			;714f   ; por debajo de la ventana, fuera
 	ret c			;7150
 	inc hl			;7151
-	cp (hl)			;7152
+	cp (hl)			;7152   ; y por encima, tambien
 	ret nc			;7153
 	inc hl			;7154
-	ld d,(hl)			;7155
+	ld d,(hl)			;7155   ; el punto medio, guardado para luego
 	inc hl			;7156
-	cp (hl)			;7157
+	cp (hl)			;7157   ; y ahora cuatro cortes seguidos, que van dando la fila que hace falta...
 	inc hl			;7158
-	jr c,L_716B		;7159
+	jr c,L_716B		;7159   ; ...y el primero que se pase manda
 	inc hl			;715b
 	cp (hl)			;715c
 	inc hl			;715d
@@ -2506,321 +2634,352 @@ L_714C:
 	jr nc,L_716B		;7168
 	inc hl			;716a
 L_716B:
-	ld a,(0e204h)		;716b   ; la X en la pantalla de lo que se maneja
-	cp (hl)			;716e
+	ld a,(0e204h)		;716b   ; la fila del jugador
+	cp (hl)			;716e   ; si no llega, no ha caido
 	ret c			;716f
-	ld a,(0e1f1h)		;7170
+	ld a,(0e1f1h)		;7170   ; ¿lleva lo de 0xE1F1?
 	and a			;7173
-	jr nz,L_719B		;7174
-	ld a,(0e171h)		;7176
+	jr nz,con_lo_de_0xE1F1_se_salva		;7174
+	ld a,(0e171h)		;7176   ; ¿y lo de 0xE171?
 	and a			;7179
-	jr nz,L_71AE		;717a
-	xor a			;717c
-	ld (0e21dh),a		;717d
+	jr nz,con_lo_de_0xE171_se_entra		;717a
+	xor a			;717c   ; sin nada de eso, se acabo la fase
+	ld (0e21dh),a		;717d   ; por que paso va la secuencia
 	ld (0e097h),a		;7180   ; la bandera de que la fase se ha acabado
-	ld a,(0e0a1h)		;7183   ; el DECORADO, de 0 a 9
-	ld c,016h		;7186
+	ld a,(0e0a1h)		;7183   ; el decorado
+	ld c,016h		;7186   ; en el 4 y en el 5 se pierde con el estado 0x16...
 	cp 004h		;7188
 	jr z,L_7192		;718a
 	cp 005h		;718c
 	jr z,L_7192		;718e
-	ld c,015h		;7190
+	ld c,015h		;7190   ; ...y en el resto con el 0x15
 L_7192:
 	ld a,c			;7192
-	ld (0e203h),a		;7193   ; por donde va la rotacion de los sprites
-	ld a,08ch		;7196
+	ld (0e203h),a		;7193   ; el ESTADO de lo que se maneja
+	ld a,08ch		;7196   ; y el efecto 0x8C, el de perder
 	jp 0413ah		;7198   ; banco 0: pide_sonido_si_esta_activo
-L_719B:
-	ld a,(ix+001h)		;719b
-	add a,01dh		;719e
+con_lo_de_0xE1F1_se_salva:
+	ld a,(ix+001h)		;719b   ; la variante del hueco
+	add a,01dh		;719e   ; sube 0x1D: el hueco pasa a ser otra cosa
 	ld (ix+001h),a		;71a0
-	ld a,01ah		;71a3
+	ld a,01ah		;71a3   ; el efecto 0x1A
 	call 0413ah		;71a5   ; banco 0: pide_sonido_si_esta_activo
-	ld de,00300h		;71a8
-	jp 09367h		;71ab   ; banco 10
-L_71AE:
-	ld a,(0e205h)		;71ae   ; la Y en la pantalla de lo que se maneja
-	cp d			;71b1
-	ld a,000h		;71b2
+	ld de,00300h		;71a8   ; y 768 puntos
+	jp 09367h		;71ab   ; banco 2
+con_lo_de_0xE171_se_entra:
+	ld a,(0e205h)		;71ae   ; la columna del jugador
+	cp d			;71b1   ; contra el punto medio de antes
+	ld a,000h		;71b2   ; por la izquierda...
 	jr c,L_71B8		;71b4
-	ld a,080h		;71b6
+	ld a,080h		;71b6   ; ...o por la derecha
 L_71B8:
-	ld (0e20bh),a		;71b8
-	ld a,(0e0a1h)		;71bb   ; el DECORADO, de 0 a 9
+	ld (0e20bh),a		;71b8   ; por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
+	ld a,(0e0a1h)		;71bb   ; el decorado
 	cp 007h		;71be
-	ld c,00ah		;71c0
+	ld c,00ah		;71c0   ; en el 7 se va al estado 10...
 	jr z,L_71D5		;71c2
 	cp 004h		;71c4
-	ld c,008h		;71c6
+	ld c,008h		;71c6   ; ...en el 4 y en el 5 al 8...
 	jr z,L_71D0		;71c8
 	cp 005h		;71ca
 	jr z,L_71D0		;71cc
-	ld c,003h		;71ce
+	ld c,003h		;71ce   ; ...y en el resto al 3
 L_71D0:
 	push bc			;71d0
-	call 09ecfh		;71d1   ; banco 10
+	call 09ecfh		;71d1   ; banco 2: aviso
 	pop bc			;71d4
 L_71D5:
 	push bc			;71d5
-	call 09485h		;71d6   ; banco 10
+	call 09485h		;71d6   ; banco 2: y el otro aviso
 	pop bc			;71d9
 	ld a,c			;71da
-	ld (0e203h),a		;71db   ; por donde va la rotacion de los sprites
-	jp L_72A0		;71de
+	ld (0e203h),a		;71db   ; el estado que toque
+	jp esconde_los_sprites_4_y_5		;71de
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x71e1..0x7205  (36 bytes)
-DATA_71E1:
-	defb 056h,090h,070h,05dh,080h,060h,07bh,088h,080h,07dh,07bh,075h,001h,030h,001h,001h	; 71e1  V.p].`{..}{u.0..
-	defb 080h,001h,07bh,028h,080h,01dh,07bh,075h,0b6h,0f0h,0ffh,0bdh,080h,0c0h,07bh,0e8h	; 71f1  ..{(..{u......{.
-	defb 080h,0ddh,07bh,075h	; 7201
+; DATOS ventanas_71E1: tres entradas de 12 bytes que p01:713E escoge con
+;   (ix+1) - 3; empiezan por la ventana de X contra (0xE205), como las de
+;   0x711F
+;   0x71e1..0x7205  (36 bytes)
+DATA_ventanas_71E1:
+	defb 056h,090h,070h,05dh,080h,060h,07bh,088h,080h,07dh,07bh,075h	; 71e1  V.p].`{..}{u
+	defb 001h,030h,001h,001h,080h,001h,07bh,028h,080h,01dh,07bh,075h	; 71ed  .0....{(..{u
+	defb 0b6h,0f0h,0ffh,0bdh,080h,0c0h,07bh,0e8h,080h,0ddh,07bh,075h	; 71f9  ......{...{u
 
 ; ======================================================================
 ; CODIGO 0x7205..0x723c  (55 bytes)
 ; ======================================================================
 
 
-L_7205:
-	ld a,(ix+002h)		;7205
-	cp 00eh		;7208
+
+; ----------------------------------------------------------------------
+; CAERSE POR UN HUECO (LAS VARIANTES 6 Y 7). La version corta: una ventana de tres bytes -principio, final y punto medio-, sin fila que valga y sin salvarse de ninguna manera. Cae dentro y al estado 3. Y solo cuenta si el estado es cero: aqui no se entra ni saltando ni cayendo.
+; ----------------------------------------------------------------------
+caerse_por_un_hueco_6_y_7:
+	ld a,(ix+002h)		;7205   ; la clase del objeto
+	cp 00eh		;7208   ; la 14 son los huecos
 	ret nz			;720a
-	ld a,(0e203h)		;720b   ; por donde va la rotacion de los sprites
-	cp 003h		;720e
+	ld a,(0e203h)		;720b   ; el ESTADO de lo que se maneja
+	cp 003h		;720e   ; en el 3 ya se esta dentro
 	ret z			;7210
-	cp 00fh		;7211
+	cp 00fh		;7211   ; y en el 15 tampoco
 	ret z			;7213
-	and a			;7214
+	and a			;7214   ; solo con el estado a cero
 	ret nz			;7215
-	ld a,(ix+001h)		;7216
+	ld a,(ix+001h)		;7216   ; la variante
 	sub 006h		;7219
-	ld hl,0723ch		;721b
-	jr z,L_7223		;721e
-	ld hl,0723fh		;7220
-L_7223:
-	ld a,(0e205h)		;7223   ; la Y en la pantalla de lo que se maneja
-	cp (hl)			;7226
+	ld hl,0723ch		;721b   ; la ventana de la 6...
+	jr z,mira_la_ventana_de_tres		;721e
+	ld hl,0723fh		;7220   ; ...o la de la 7
+mira_la_ventana_de_tres:
+	ld a,(0e205h)		;7223   ; la columna del jugador
+	cp (hl)			;7226   ; por debajo, fuera
 	ret c			;7227
 	inc hl			;7228
-	cp (hl)			;7229
+	cp (hl)			;7229   ; por encima, fuera
 	ret nc			;722a
 	inc hl			;722b
-	cp (hl)			;722c
-	ld a,000h		;722d
+	cp (hl)			;722c   ; y contra el punto medio...
+	ld a,000h		;722d   ; ...a la izquierda...
 	jr c,L_7233		;722f
-	ld a,080h		;7231
+	ld a,080h		;7231   ; ...o a la derecha
 L_7233:
-	ld (0e20bh),a		;7233
-	ld a,003h		;7236
-	ld (0e203h),a		;7238   ; por donde va la rotacion de los sprites
+	ld (0e20bh),a		;7233   ; por que lado se ha entrado
+	ld a,003h		;7236   ; y dentro: el estado 3
+	ld (0e203h),a		;7238   ; el ESTADO de lo que se maneja
 	ret			;723b
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x723c..0x7242  (6 bytes)
-DATA_723C:
-	defb 018h,058h,038h,088h,0c8h,0a8h	; 723c
+; DATOS ventanas_723C: dos entradas de 3 bytes que p01:721B escoge con (ix+1)
+;   - 6, contra la X (0xE205)
+;   0x723c..0x7242  (6 bytes)
+DATA_ventanas_723C:
+	defb 018h,058h,038h	; 723c
+	defb 088h,0c8h,0a8h	; 723f
 
 ; ======================================================================
 ; CODIGO 0x7242..0x72bc  (122 bytes)
 ; ======================================================================
 
 
-L_7242:
-	ld a,(ix+002h)		;7242
-	cp 00eh		;7245
-	ret nz			;7247
-	ld a,(0e203h)		;7248   ; por donde va la rotacion de los sprites
-	cp 003h		;724b
-	ret z			;724d
-	ld a,(ix+001h)		;724e
-	sub 008h		;7251
-	ld hl,072bch		;7253
-	jr z,L_725B		;7256
-	ld hl,072c0h		;7258
-L_725B:
-	ld a,(0e205h)		;725b   ; la Y en la pantalla de lo que se maneja
-	cp (hl)			;725e
-	ret c			;725f
-	inc hl			;7260
-	cp (hl)			;7261
-	ret nc			;7262
-	inc hl			;7263
-	ld d,(hl)			;7264
-	inc hl			;7265
-	ld a,(0e204h)		;7266   ; la X en la pantalla de lo que se maneja
-	cp (hl)			;7269
-	ret c			;726a
-	ld a,(0e1f1h)		;726b
-	and a			;726e
-	jr nz,L_72A9		;726f
-	ld a,(0e172h)		;7271
-	and a			;7274
-	jr nz,L_7288		;7275
-	xor a			;7277
-	ld (0e21dh),a		;7278
-	ld (0e097h),a		;727b   ; la bandera de que la fase se ha acabado
-	ld a,015h		;727e
-	ld (0e203h),a		;7280   ; por donde va la rotacion de los sprites
-	ld a,08ch		;7283
-	jp 0413ah		;7285   ; banco 0: pide_sonido_si_esta_activo
-L_7288:
-	ld a,(0e205h)		;7288   ; la Y en la pantalla de lo que se maneja
-	cp d			;728b
-	ld a,000h		;728c
-	jr c,L_7292		;728e
-	ld a,080h		;7290
-L_7292:
-	ld (0e20bh),a		;7292
-	call 09ecfh		;7295   ; banco 10
-	call 09485h		;7298   ; banco 10
-	ld a,003h		;729b
-	ld (0e203h),a		;729d   ; por donde va la rotacion de los sprites
-L_72A0:
-	ld a,0e0h		;72a0
-	ld (0ee90h),a		;72a2
-	ld (0ee94h),a		;72a5
-	ret			;72a8
-L_72A9:
-	ld a,(ix+001h)		;72a9
-	add a,01bh		;72ac
-	ld (ix+001h),a		;72ae
-	ld a,01ah		;72b1
-	call 0413ah		;72b3   ; banco 0: pide_sonido_si_esta_activo
-	ld de,00300h		;72b6
-	jp 09367h		;72b9   ; banco 10
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x72bc..0x72c4  (8 bytes)
-DATA_72BC:
-	defb 020h,050h,038h,078h,090h,0c0h,0a8h,078h	; 72bc   P8x...x
+; CAERSE POR UN HUECO (LAS VARIANTES 8 Y 9). Como la de 0x70D1 pero con una ventana de cuatro bytes: principio, final, punto medio y la fila a partir de la cual cuenta. Aqui la salvacion es 0xE1F1 -que sube la variante 0x1B y da 768 puntos- y la entrada de verdad es 0xE172. Perder es siempre el estado 0x15.
+; ----------------------------------------------------------------------
+caerse_por_un_hueco_8_y_9:
+	ld a,(ix+002h)		;7242   ; la clase del objeto
+	cp 00eh		;7245   ; la 14 son los huecos
+	ret nz			;7247
+	ld a,(0e203h)		;7248   ; el ESTADO de lo que se maneja
+	cp 003h		;724b   ; en el 3 ya se esta dentro
+	ret z			;724d
+	ld a,(ix+001h)		;724e   ; la variante
+	sub 008h		;7251
+	ld hl,072bch		;7253   ; la ventana de la 8...
+	jr z,mira_la_ventana_de_cuatro		;7256
+	ld hl,072c0h		;7258   ; ...o la de la 9
+mira_la_ventana_de_cuatro:
+	ld a,(0e205h)		;725b   ; la columna del jugador
+	cp (hl)			;725e   ; por debajo, fuera
+	ret c			;725f
+	inc hl			;7260
+	cp (hl)			;7261   ; por encima, fuera
+	ret nc			;7262
+	inc hl			;7263
+	ld d,(hl)			;7264   ; el punto medio, guardado
+	inc hl			;7265
+	ld a,(0e204h)		;7266   ; y la fila
+	cp (hl)			;7269   ; si no llega, no ha caido
+	ret c			;726a
+	ld a,(0e1f1h)		;726b   ; ¿lleva lo de 0xE1F1?
+	and a			;726e
+	jr nz,con_lo_de_0xE1F1_se_salva_8_y_9		;726f
+	ld a,(0e172h)		;7271   ; ¿y lo de 0xE172?
+	and a			;7274
+	jr nz,con_lo_de_0xE172_se_entra		;7275
+	xor a			;7277   ; sin nada de eso, se acabo la fase
+	ld (0e21dh),a		;7278   ; por que paso va la secuencia
+	ld (0e097h),a		;727b   ; la bandera de que la fase se ha acabado
+	ld a,015h		;727e   ; el estado 0x15: perder
+	ld (0e203h),a		;7280   ; el ESTADO de lo que se maneja
+	ld a,08ch		;7283   ; y el efecto 0x8C
+	jp 0413ah		;7285   ; banco 0: pide_sonido_si_esta_activo
+con_lo_de_0xE172_se_entra:
+	ld a,(0e205h)		;7288   ; la columna del jugador
+	cp d			;728b   ; contra el punto medio
+	ld a,000h		;728c   ; por la izquierda...
+	jr c,L_7292		;728e
+	ld a,080h		;7290   ; ...o por la derecha
+L_7292:
+	ld (0e20bh),a		;7292   ; por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
+	call 09ecfh		;7295   ; banco 2
+	call 09485h		;7298   ; banco 2
+	ld a,003h		;729b   ; y dentro: el estado 3
+	ld (0e203h),a		;729d   ; el ESTADO de lo que se maneja
+esconde_los_sprites_4_y_5:
+	ld a,0e0h		;72a0   ; 0xE0 en la fila: fuera de la pantalla
+	ld (0ee90h),a		;72a2   ; el hueco de sprite 4
+	ld (0ee94h),a		;72a5   ; el hueco de sprite 5
+	ret			;72a8
+con_lo_de_0xE1F1_se_salva_8_y_9:
+	ld a,(ix+001h)		;72a9   ; la variante del hueco
+	add a,01bh		;72ac   ; sube 0x1B: el hueco pasa a ser otra cosa
+	ld (ix+001h),a		;72ae
+	ld a,01ah		;72b1   ; el efecto 0x1A
+	call 0413ah		;72b3   ; banco 0: pide_sonido_si_esta_activo
+	ld de,00300h		;72b6   ; y 768 puntos
+	jp 09367h		;72b9   ; banco 2
+
+; ----------------------------------------------------------------------
+; DATOS ventanas_72BC: dos entradas de 4 bytes que p01:7253 escoge con (ix+1)
+;   - 8, contra la X (0xE205)
+;   0x72bc..0x72c4  (8 bytes)
+DATA_ventanas_72BC:
+	defb 020h,050h,038h,078h	; 72bc
+	defb 090h,0c0h,0a8h,078h	; 72c0
 
 ; ======================================================================
 ; CODIGO 0x72c4..0x730f  (75 bytes)
 ; ======================================================================
 
 
-L_72C4:
-	ld a,(ix+002h)		;72c4
+
+; ----------------------------------------------------------------------
+; SUBIRSE A ALGO (LAS VARIANTES 10 Y 11). Otra cosa de la clase 14, y esta no es un hueco: la ventana lleva DOS cortes, y por fuera de ellos se entra de lado -al estado 3- y por dentro se sube encima, que es el estado 0x12. Al subirse se planta en la fila 0x98, el modo del juego pasa a ser el que traiga (ix+4) y se deja el aviso 0x20.
+; ----------------------------------------------------------------------
+subirse_a_algo:
+	ld a,(ix+002h)		;72c4   ; la clase del objeto
 	cp 00eh		;72c7
 	ret nz			;72c9
-	ld a,(0e203h)		;72ca   ; por donde va la rotacion de los sprites
-	and a			;72cd
+	ld a,(0e203h)		;72ca   ; el ESTADO de lo que se maneja
+	and a			;72cd   ; solo con el estado a cero
 	ret nz			;72ce
-	ld a,(ix+001h)		;72cf
+	ld a,(ix+001h)		;72cf   ; la variante
 	sub 00ah		;72d2
-	ld hl,0730fh		;72d4
+	ld hl,0730fh		;72d4   ; la ventana de la 10...
 	jr z,L_72DC		;72d7
-	ld hl,07313h		;72d9
+	ld hl,07313h		;72d9   ; ...o la de la 11
 L_72DC:
-	ld a,(0e205h)		;72dc   ; la Y en la pantalla de lo que se maneja
-	cp (hl)			;72df
+	ld a,(0e205h)		;72dc   ; la columna del jugador
+	cp (hl)			;72df   ; por debajo, fuera
 	ret c			;72e0
 	inc hl			;72e1
-	cp (hl)			;72e2
+	cp (hl)			;72e2   ; por encima, fuera
 	ret nc			;72e3
 	inc hl			;72e4
-	cp (hl)			;72e5
+	cp (hl)			;72e5   ; por delante del primer corte se entra de lado...
 	ld c,000h		;72e6
-	jp c,L_738E		;72e8
+	jp c,entra_de_lado		;72e8
 	inc hl			;72eb
-	cp (hl)			;72ec
+	cp (hl)			;72ec   ; ...y por detras del segundo, tambien
 	ld c,080h		;72ed
-	jp nc,L_738E		;72ef
-	ld a,012h		;72f2
-	ld (0e203h),a		;72f4   ; por donde va la rotacion de los sprites
-	ld a,(ix+004h)		;72f7
+	jp nc,entra_de_lado		;72ef
+	ld a,012h		;72f2   ; en medio: el estado 0x12, encima
+	ld (0e203h),a		;72f4   ; el ESTADO de lo que se maneja
+	ld a,(ix+004h)		;72f7   ; el modo del juego lo trae el objeto
 	ld (0e0a2h),a		;72fa   ; el modo en el que esta el juego
-	ld l,098h		;72fd
-	ld a,(0e205h)		;72ff   ; la Y en la pantalla de lo que se maneja
+	ld l,098h		;72fd   ; la fila 0x98, clavada
+	ld a,(0e205h)		;72ff   ; y la columna, la que hubiera
 	ld h,a			;7302
-	ld (0e204h),hl		;7303   ; la X en la pantalla de lo que se maneja
-	call 0a8dbh		;7306   ; banco 11
-	ld a,020h		;7309
+	ld (0e204h),hl		;7303   ; la Y en la pantalla de lo que se maneja
+	call 0a8dbh		;7306   ; banco 3: y a colocar los cuatro sprites
+	ld a,020h		;7309   ; el aviso 0x20
 	ld (0e096h),a		;730b   ; los avisos que deja el cuadro
 	ret			;730e
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x730f..0x7317  (8 bytes)
-DATA_730F:
-	defb 001h,058h,014h,03ch,090h,0e8h,0a4h,0cch	; 730f  .X.<....
+; DATOS ventanas_730F: dos entradas de 4 bytes que p01:72D4 escoge con (ix+1)
+;   - 0x0A, contra la X (0xE205)
+;   0x730f..0x7317  (8 bytes)
+DATA_ventanas_730F:
+	defb 001h,058h,014h,03ch	; 730f
+	defb 090h,0e8h,0a4h,0cch	; 7313
 
 ; ======================================================================
 ; CODIGO 0x7317..0x739b  (132 bytes)
 ; ======================================================================
 
 
-L_7317:
-	ld a,(ix+002h)		;7317
+
+; ----------------------------------------------------------------------
+; MONTARSE (LAS VARIANTES 12 Y 13). La misma ventana de dos cortes que la de 0x72C4, pero lo que sale de dentro es el estado 4, el que reparte la tabla de sprites de otra manera (p00:42FB). Coloca la figura en la fila 0x98 y le pone debajo los sprites 4 y 5, en la 0xB4, con el color 0x0F o el 9 segun el decorado; suena el efecto 0x0B y se arranca la cuenta de 0xE20E con 0x20.
+; ----------------------------------------------------------------------
+montarse:
+	ld a,(ix+002h)		;7317   ; la clase del objeto
 	cp 00eh		;731a
 	ret nz			;731c
-	ld a,(0e203h)		;731d   ; por donde va la rotacion de los sprites
-	and a			;7320
+	ld a,(0e203h)		;731d   ; el ESTADO de lo que se maneja
+	and a			;7320   ; solo con el estado a cero
 	ret nz			;7321
-	ld a,(ix+001h)		;7322
+	ld a,(ix+001h)		;7322   ; la variante
 	sub 00ch		;7325
-	ld hl,0739bh		;7327
+	ld hl,0739bh		;7327   ; la ventana de la 12...
 	jr z,L_732F		;732a
-	ld hl,0739fh		;732c
+	ld hl,0739fh		;732c   ; ...o la de la 13
 L_732F:
-	ld a,(0e205h)		;732f   ; la Y en la pantalla de lo que se maneja
-	cp (hl)			;7332
+	ld a,(0e205h)		;732f   ; la X en la pantalla de lo que se maneja
+	cp (hl)			;7332   ; por debajo, fuera
 	ret c			;7333
 	inc hl			;7334
-	cp (hl)			;7335
+	cp (hl)			;7335   ; por encima, fuera
 	ret nc			;7336
 	inc hl			;7337
-	cp (hl)			;7338
+	cp (hl)			;7338   ; por delante del primer corte se entra de lado...
 	ld c,000h		;7339
-	jr c,L_738E		;733b
+	jr c,entra_de_lado		;733b
 	inc hl			;733d
-	cp (hl)			;733e
+	cp (hl)			;733e   ; ...y por detras del segundo, tambien
 	ld c,080h		;733f
-	jr nc,L_738E		;7341
-	ld a,004h		;7343
-	ld (0e203h),a		;7345   ; por donde va la rotacion de los sprites
-	ld a,(ix+004h)		;7348
+	jr nc,entra_de_lado		;7341
+	ld a,004h		;7343   ; en medio: el estado 4
+	ld (0e203h),a		;7345   ; el ESTADO de lo que se maneja
+	ld a,(ix+004h)		;7348   ; dos bytes mas que trae el objeto
 	ld (0e215h),a		;734b
 	ld a,(ix+005h)		;734e
 	ld (0e0d2h),a		;7351
-	ld l,098h		;7354
-	ld a,(0e205h)		;7356   ; la Y en la pantalla de lo que se maneja
+	ld l,098h		;7354   ; la fila 0x98
+	ld a,(0e205h)		;7356   ; la X en la pantalla de lo que se maneja
 	ld h,a			;7359
-	ld (0e204h),hl		;735a   ; la X en la pantalla de lo que se maneja
-	call 0a8dbh		;735d   ; banco 11
-	ld l,0b4h		;7360
-	ld a,(0e205h)		;7362   ; la Y en la pantalla de lo que se maneja
+	ld (0e204h),hl		;735a   ; la Y en la pantalla de lo que se maneja
+	call 0a8dbh		;735d   ; banco 3: los cuatro sprites, colocados
+	ld l,0b4h		;7360   ; y debajo, en la fila 0xB4...
+	ld a,(0e205h)		;7362   ; la X en la pantalla de lo que se maneja
 	ld h,a			;7365
-	ld (0ee90h),hl		;7366
+	ld (0ee90h),hl		;7366   ; ...los sprites 4...
 	add a,010h		;7369
 	ld h,a			;736b
-	ld (0ee94h),hl		;736c
-	ld l,04ch		;736f
+	ld (0ee94h),hl		;736c   ; ...y 5, este dieciseis columnas mas alla
+	ld l,04ch		;736f   ; el dibujo 0x4C para los dos
 	ld a,(0e0a1h)		;7371   ; el DECORADO, de 0 a 9
-	cp 002h		;7374
+	cp 002h		;7374   ; hasta el decorado 2 en blanco...
 	ld c,00fh		;7376
 	jr c,L_737C		;7378
-	ld c,009h		;737a
+	ld c,009h		;737a   ; ...y de ahi en adelante en rojo
 L_737C:
 	ld h,c			;737c
-	ld (0ee92h),hl		;737d
+	ld (0ee92h),hl		;737d   ; a los dos sprites
 	ld (0ee96h),hl		;7380
-	ld a,00bh		;7383
+	ld a,00bh		;7383   ; el efecto 0x0B
 	call 0413ah		;7385   ; banco 0: pide_sonido_si_esta_activo
 	ld a,020h		;7388
-	ld (0e20eh),a		;738a
+	ld (0e20eh),a		;738a   ; y la cuenta de 0xE20E, a 0x20
 	ret			;738d
-L_738E:
-	ld a,c			;738e
-	ld (0e20bh),a		;738f
-L_7392:
-	call 09485h		;7392   ; banco 10
-	ld a,003h		;7395
-	ld (0e203h),a		;7397   ; por donde va la rotacion de los sprites
+entra_de_lado:
+	ld a,c			;738e   ; por que lado
+	ld (0e20bh),a		;738f   ; por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
+y_al_estado_3:
+	call 09485h		;7392   ; banco 2: aviso
+	ld a,003h		;7395   ; el estado 3
+	ld (0e203h),a		;7397   ; el ESTADO de lo que se maneja
 	ret			;739a
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x739b..0x73a3  (8 bytes)
-DATA_739B:
-	defb 010h,098h,024h,07ch,050h,0d8h,064h,0bch	; 739b  ..$|P.d.
+; DATOS ventanas_739B: dos entradas de 4 bytes que p01:7327 escoge con (ix+1)
+;   - 0x0C, contra la X (0xE205)
+;   0x739b..0x73a3  (8 bytes)
+DATA_ventanas_739B:
+	defb 010h,098h,024h,07ch	; 739b
+	defb 050h,0d8h,064h,0bch	; 739f
 
 ; ======================================================================
 ; CODIGO 0x73a3..0x73f5  (82 bytes)
@@ -2829,154 +2988,177 @@ DATA_739B:
 
 L_73A3:
 	ret			;73a3
-L_73A4:
-	ld a,(ix+002h)		;73a4
-	cp 00eh		;73a7
-	ret nz			;73a9
-	ld a,(0e203h)		;73aa   ; por donde va la rotacion de los sprites
-	cp 008h		;73ad
-	ret z			;73af
-	ld a,(ix+001h)		;73b0
-	sub 011h		;73b3
-	ld hl,073f5h		;73b5
-	jr z,L_73BD		;73b8
-	ld hl,073f8h		;73ba
-L_73BD:
-	ld a,(0e205h)		;73bd   ; la Y en la pantalla de lo que se maneja
-	cp (hl)			;73c0
-	ret c			;73c1
-	inc hl			;73c2
-	cp (hl)			;73c3
-	ret nc			;73c4
-	inc hl			;73c5
-	ld a,(0e204h)		;73c6   ; la X en la pantalla de lo que se maneja
-	cp (hl)			;73c9
-	ret c			;73ca
-	ld a,(0e1f1h)		;73cb
-	and a			;73ce
-	jr nz,L_73E2		;73cf
-	xor a			;73d1
-	ld (0e21dh),a		;73d2
-	ld (0e097h),a		;73d5   ; la bandera de que la fase se ha acabado
-	ld a,016h		;73d8
-	ld (0e203h),a		;73da   ; por donde va la rotacion de los sprites
-	ld a,08ch		;73dd
-	jp 0413ah		;73df   ; banco 0: pide_sonido_si_esta_activo
-L_73E2:
-	ld a,(ix+001h)		;73e2
-	add a,014h		;73e5
-	ld (ix+001h),a		;73e7
-	ld a,01ah		;73ea
-	call 0413ah		;73ec   ; banco 0: pide_sonido_si_esta_activo
-	ld de,00300h		;73ef
-	jp 09367h		;73f2   ; banco 10
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x73f5..0x73fb  (6 bytes)
-DATA_73F5:
-	defb 010h,0a8h,088h,040h,0d8h,088h	; 73f5
+; CAERSE POR UN HUECO (LAS VARIANTES 0x11 Y 0x12). Ventana de tres bytes con fila, una sola salvacion -0xE1F1, que sube la variante 0x14- y perder con el estado 0x16. En el estado 8 esta rutina no cuenta.
+; ----------------------------------------------------------------------
+caerse_por_un_hueco_11_y_12:
+	ld a,(ix+002h)		;73a4   ; la clase del objeto
+	cp 00eh		;73a7
+	ret nz			;73a9
+	ld a,(0e203h)		;73aa   ; el ESTADO de lo que se maneja
+	cp 008h		;73ad   ; en el 8 no cuenta
+	ret z			;73af
+	ld a,(ix+001h)		;73b0   ; la variante
+	sub 011h		;73b3
+	ld hl,073f5h		;73b5   ; la ventana de la 0x11...
+	jr z,L_73BD		;73b8
+	ld hl,073f8h		;73ba   ; ...o la de la 0x12
+L_73BD:
+	ld a,(0e205h)		;73bd   ; la columna del jugador
+	cp (hl)			;73c0   ; por debajo, fuera
+	ret c			;73c1
+	inc hl			;73c2
+	cp (hl)			;73c3   ; por encima, fuera
+	ret nc			;73c4
+	inc hl			;73c5
+	ld a,(0e204h)		;73c6   ; y la fila
+	cp (hl)			;73c9   ; si no llega, no ha caido
+	ret c			;73ca
+	ld a,(0e1f1h)		;73cb   ; ¿lleva lo de 0xE1F1?
+	and a			;73ce
+	jr nz,con_lo_de_0xE1F1_se_salva_11_y_12		;73cf
+	xor a			;73d1   ; si no, se acabo la fase
+	ld (0e21dh),a		;73d2   ; por que paso va la secuencia
+	ld (0e097h),a		;73d5   ; la bandera de que la fase se ha acabado
+	ld a,016h		;73d8   ; el estado 0x16: perder
+	ld (0e203h),a		;73da   ; el ESTADO de lo que se maneja
+	ld a,08ch		;73dd   ; y el efecto 0x8C
+	jp 0413ah		;73df   ; banco 0: pide_sonido_si_esta_activo
+con_lo_de_0xE1F1_se_salva_11_y_12:
+	ld a,(ix+001h)		;73e2   ; la variante del hueco
+	add a,014h		;73e5   ; sube 0x14
+	ld (ix+001h),a		;73e7
+	ld a,01ah		;73ea   ; el efecto 0x1A
+	call 0413ah		;73ec   ; banco 0: pide_sonido_si_esta_activo
+	ld de,00300h		;73ef   ; y 768 puntos
+	jp 09367h		;73f2   ; banco 2
+
+; ----------------------------------------------------------------------
+; DATOS ventanas_73F5: dos entradas de 3 bytes que p01:73B5 escoge con (ix+1)
+;   - 0x11, contra la X (0xE205)
+;   0x73f5..0x73fb  (6 bytes)
+DATA_ventanas_73F5:
+	defb 010h,0a8h,088h	; 73f5
+	defb 040h,0d8h,088h	; 73f8
 
 ; ======================================================================
 ; CODIGO 0x73fb..0x7442  (71 bytes)
 ; ======================================================================
 
 
-L_73FB:
-	ld a,(ix+002h)		;73fb
+
+; ----------------------------------------------------------------------
+; ENTRAR (LAS VARIANTES 0x13 Y 0x14), SOLO EN EL DECORADO 7. Ventana de cuatro bytes, y ni se pierde ni se salva: se entra y ya, al estado 10. Ademas de estar en el decorado 7 hace falta que 0xE168 este a cero.
+; ----------------------------------------------------------------------
+entrar_en_el_decorado_7:
+	ld a,(ix+002h)		;73fb   ; la clase del objeto
 	cp 00eh		;73fe
 	ret nz			;7400
 	ld a,(0e0a1h)		;7401   ; el DECORADO, de 0 a 9
-	cp 007h		;7404
+	cp 007h		;7404   ; solo en el decorado 7
 	ret nz			;7406
-	ld a,(0e203h)		;7407   ; por donde va la rotacion de los sprites
-	cp 00ah		;740a
+	ld a,(0e203h)		;7407   ; el ESTADO de lo que se maneja
+	cp 00ah		;740a   ; en el 10 ya se esta dentro
 	ret z			;740c
-	ld a,(0e168h)		;740d
+	ld a,(0e168h)		;740d   ; y 0xE168 lo impide
 	and a			;7410
 	ret nz			;7411
-	ld a,(ix+001h)		;7412
+	ld a,(ix+001h)		;7412   ; la variante
 	sub 013h		;7415
-	ld hl,07442h		;7417
+	ld hl,07442h		;7417   ; la ventana de la 0x13...
 	jr z,L_741F		;741a
-	ld hl,07446h		;741c
+	ld hl,07446h		;741c   ; ...o la de la 0x14
 L_741F:
-	ld a,(0e205h)		;741f   ; la Y en la pantalla de lo que se maneja
-	cp (hl)			;7422
+	ld a,(0e205h)		;741f   ; la X en la pantalla de lo que se maneja
+	cp (hl)			;7422   ; por debajo, fuera
 	ret c			;7423
 	inc hl			;7424
-	cp (hl)			;7425
+	cp (hl)			;7425   ; por encima, fuera
 	ret nc			;7426
 	inc hl			;7427
-	ld d,(hl)			;7428
+	ld d,(hl)			;7428   ; el punto medio, guardado
 	inc hl			;7429
-	ld a,(0e204h)		;742a   ; la X en la pantalla de lo que se maneja
-	cp (hl)			;742d
+	ld a,(0e204h)		;742a   ; y la fila
+	cp (hl)			;742d   ; si no llega, no se entra
 	ret c			;742e
-	ld a,(0e205h)		;742f   ; la Y en la pantalla de lo que se maneja
-	cp d			;7432
-	ld a,000h		;7433
+	ld a,(0e205h)		;742f   ; la X en la pantalla de lo que se maneja
+	cp d			;7432   ; contra el punto medio
+	ld a,000h		;7433   ; por la izquierda...
 	jr c,L_7439		;7435
-	ld a,080h		;7437
+	ld a,080h		;7437   ; ...o por la derecha
 L_7439:
-	ld (0e20bh),a		;7439
-	ld a,00ah		;743c
-	ld (0e203h),a		;743e   ; por donde va la rotacion de los sprites
+	ld (0e20bh),a		;7439   ; por que lado se ha entrado: 0 por la izquierda, 0x80 por la derecha
+	ld a,00ah		;743c   ; y dentro: el estado 10
+	ld (0e203h),a		;743e   ; el ESTADO de lo que se maneja
 	ret			;7441
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7442..0x744a  (8 bytes)
-DATA_7442:
-	defb 038h,054h,046h,080h,098h,0b4h,0a6h,080h	; 7442  8TF.....
+; DATOS ventanas_7442: dos entradas de 4 bytes que p01:7417 escoge con (ix+1)
+;   - 0x13, contra la X (0xE205)
+;   0x7442..0x744a  (8 bytes)
+DATA_ventanas_7442:
+	defb 038h,054h,046h,080h	; 7442
+	defb 098h,0b4h,0a6h,080h	; 7446
 
 ; ======================================================================
 ; CODIGO 0x744a..0x7491  (71 bytes)
 ; ======================================================================
 
 
-L_744A:
-	ld a,(ix+002h)		;744a
+
+; ----------------------------------------------------------------------
+; CAERSE (LAS VARIANTES 0x15 A 0x19). Cinco ventanas y ninguna salida: la ventana es un rectangulo entero -dos cortes en columna y dos en fila- y quien caiga dentro pierde la vida, con el estado 0x15 y el efecto 0x8C. No hay nada que se pueda llevar que salve de estas.
+; ----------------------------------------------------------------------
+caerse_15_a_19:
+	ld a,(ix+002h)		;744a   ; la clase del objeto
 	cp 00eh		;744d
 	ret nz			;744f
-	ld a,(ix+001h)		;7450
+	ld a,(ix+001h)		;7450   ; la variante
 	sub 015h		;7453
-	ld hl,07491h		;7455
-	jr z,L_746F		;7458
+	ld hl,07491h		;7455   ; la ventana de la 0x15...
+	jr z,mira_el_rectangulo_entero		;7458
 	dec a			;745a
-	ld hl,07495h		;745b
-	jr z,L_746F		;745e
+	ld hl,07495h		;745b   ; ...la de la 0x16...
+	jr z,mira_el_rectangulo_entero		;745e
 	dec a			;7460
-	ld hl,07499h		;7461
-	jr z,L_746F		;7464
+	ld hl,07499h		;7461   ; ...la de la 0x17...
+	jr z,mira_el_rectangulo_entero		;7464
 	dec a			;7466
-	ld hl,0749dh		;7467
-	jr z,L_746F		;746a
-	ld hl,074a1h		;746c
-L_746F:
-	ld a,(0e205h)		;746f   ; la Y en la pantalla de lo que se maneja
-	cp (hl)			;7472
+	ld hl,0749dh		;7467   ; ...la de la 0x18...
+	jr z,mira_el_rectangulo_entero		;746a
+	ld hl,074a1h		;746c   ; ...o la de la 0x19
+mira_el_rectangulo_entero:
+	ld a,(0e205h)		;746f   ; la columna del jugador
+	cp (hl)			;7472   ; por la izquierda, fuera
 	ret c			;7473
 	inc hl			;7474
-	cp (hl)			;7475
+	cp (hl)			;7475   ; por la derecha, fuera
 	ret nc			;7476
 	inc hl			;7477
-	ld a,(0e204h)		;7478   ; la X en la pantalla de lo que se maneja
-	cp (hl)			;747b
+	ld a,(0e204h)		;7478   ; y ahora la fila
+	cp (hl)			;747b   ; por arriba, fuera
 	ret c			;747c
 	inc hl			;747d
-	cp (hl)			;747e
+	cp (hl)			;747e   ; por abajo, fuera
 	ret nc			;747f
-	xor a			;7480
-	ld (0e21dh),a		;7481
+	xor a			;7480   ; dentro: se acabo la fase
+	ld (0e21dh),a		;7481   ; por que paso va la secuencia
 	ld (0e097h),a		;7484   ; la bandera de que la fase se ha acabado
-	ld a,015h		;7487
-	ld (0e203h),a		;7489   ; por donde va la rotacion de los sprites
-	ld a,08ch		;748c
+	ld a,015h		;7487   ; el estado 0x15: perder
+	ld (0e203h),a		;7489   ; el ESTADO de lo que se maneja
+	ld a,08ch		;748c   ; y el efecto 0x8C
 	jp 0413ah		;748e   ; banco 0: pide_sonido_si_esta_activo
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7491..0x74a5  (20 bytes)
-DATA_7491:
-	defb 040h,070h,018h,040h,090h,0c0h,018h,040h,008h,038h,048h,070h,058h,088h,058h,080h	; 7491  @p.@...@.8HpX.X.
+; DATOS ventanas_7491: cinco entradas de 4 bytes que p01:7455 escoge con
+;   (ix+1) - 0x15, contra la X (0xE205)
+;   0x7491..0x74a5  (20 bytes)
+DATA_ventanas_7491:
+	defb 040h,070h,018h,040h	; 7491
+	defb 090h,0c0h,018h,040h	; 7495
+	defb 008h,038h,048h,070h	; 7499
+	defb 058h,088h,058h,080h	; 749d
 	defb 0b0h,0e0h,048h,070h	; 74a1
 
 ; ======================================================================
@@ -2984,83 +3166,91 @@ DATA_7491:
 ; ======================================================================
 
 
-L_74A5:
-	ld a,(ix+002h)		;74a5
+
+; ----------------------------------------------------------------------
+; COGER ALGO (LAS VARIANTES 0x1A A 0x1F). Las dos mitades de la tabla comparten ventana -0x74B2 le resta 3 a las de arriba para que caigan en las mismas tres- y lo que cambia es el premio: de la 0x1A a la 0x1C suman uno al bonus con el efecto 0x0E, y de la 0x1D a la 0x1F suman UNA VIDA en BCD con el efecto 0x38. Las vidas topan en 0x99: si el `daa` se desborda, se quedan en 99. Y en las dos, el objeto se borra y sus dos sprites se van de la pantalla.
+; ----------------------------------------------------------------------
+coger_algo:
+	ld a,(ix+002h)		;74a5   ; la clase del objeto
 	cp 00eh		;74a8
 	ret nz			;74aa
-	ld a,(ix+001h)		;74ab
-	cp 01dh		;74ae
+	ld a,(ix+001h)		;74ab   ; la variante
+	cp 01dh		;74ae   ; de la 0x1D para arriba...
 	jr c,L_74B4		;74b0
-	sub 003h		;74b2
+	sub 003h		;74b2   ; ...se le quitan 3 y comparte ventana
 L_74B4:
-	sub 01ah		;74b4
+	sub 01ah		;74b4   ; la ventana de la primera...
 	ld hl,07524h		;74b6
 	jr z,L_74C4		;74b9
-	dec a			;74bb
+	dec a			;74bb   ; ...la de la segunda...
 	ld hl,07528h		;74bc
 	jr z,L_74C4		;74bf
-	ld hl,0752ch		;74c1
+	ld hl,0752ch		;74c1   ; ...o la de la tercera
 L_74C4:
-	ld a,(0e205h)		;74c4   ; la Y en la pantalla de lo que se maneja
-	cp (hl)			;74c7
+	ld a,(0e205h)		;74c4   ; la columna del jugador
+	cp (hl)			;74c7   ; por la izquierda, fuera
 	ret c			;74c8
 	inc hl			;74c9
-	cp (hl)			;74ca
+	cp (hl)			;74ca   ; por la derecha, fuera
 	ret nc			;74cb
 	inc hl			;74cc
-	ld a,(0e204h)		;74cd   ; la X en la pantalla de lo que se maneja
-	cp (hl)			;74d0
+	ld a,(0e204h)		;74cd   ; y ahora la fila
+	cp (hl)			;74d0   ; por arriba, fuera
 	ret c			;74d1
 	inc hl			;74d2
-	cp (hl)			;74d3
+	cp (hl)			;74d3   ; por abajo, fuera
 	ret nc			;74d4
-	ld a,(ix+001h)		;74d5
-	cp 01dh		;74d8
-	jr c,L_74F3		;74da
-	ld a,(0e090h)		;74dc   ; las VIDAS, en BCD
-	add a,001h		;74df
+	ld a,(ix+001h)		;74d5   ; la variante otra vez
+	cp 01dh		;74d8   ; ¿de las que dan vida?
+	jr c,coger_algo_da_bonus		;74da
+	ld a,(0e090h)		;74dc   ; las vidas, en BCD
+	add a,001h		;74df   ; una mas
 	daa			;74e1
 	ld (0e090h),a		;74e2   ; las VIDAS, en BCD
-	jr nc,L_74EC		;74e5
-	ld a,099h		;74e7
+	jr nc,L_74EC		;74e5   ; y si se desbordan...
+	ld a,099h		;74e7   ; ...se quedan en 99
 	ld (0e090h),a		;74e9   ; las VIDAS, en BCD
 L_74EC:
-	ld a,038h		;74ec
+	ld a,038h		;74ec   ; el efecto 0x38, el de la vida
 	call 0413ah		;74ee   ; banco 0: pide_sonido_si_esta_activo
-	jr L_7501		;74f1
-L_74F3:
-	ld a,(0e0d0h)		;74f3   ; lo que queda de bonus por pasar al marcador
-	add a,001h		;74f6
+	jr borra_el_objeto_cogido		;74f1
+coger_algo_da_bonus:
+	ld a,(0e0d0h)		;74f3   ; el bonus
+	add a,001h		;74f6   ; uno mas, en BCD
 	daa			;74f8
 	ld (0e0d0h),a		;74f9   ; lo que queda de bonus por pasar al marcador
-	ld a,00eh		;74fc
+	ld a,00eh		;74fc   ; y el efecto 0x0E
 	call 0413ah		;74fe   ; banco 0: pide_sonido_si_esta_activo
-L_7501:
-	push ix		;7501
+borra_el_objeto_cogido:
+	push ix		;7501   ; el registro del objeto
 	pop hl			;7503
-	ld a,010h		;7504
-L_7506:
+	ld a,010h		;7504   ; sus dieciseis bytes
+borra_el_objeto_vuelta:
 	ld (hl),000h		;7506
 	inc l			;7508
 	dec a			;7509
-	jr nz,L_7506		;750a
-	ld a,(0e0e3h)		;750c   ; que hueco de sprite toca
-	add a,a			;750f
+	jr nz,borra_el_objeto_vuelta		;750a
+	ld a,(0e0e3h)		;750c   ; que hueco de sprite tenia
+	add a,a			;750f   ; por cuatro, que es lo que ocupa un sprite
 	add a,a			;7510
 	ld c,a			;7511
 	ld hl,0ee80h		;7512
 	call 04056h		;7515   ; banco 0: a_mas_hl
-	ld (hl),0e0h		;7518
+	ld (hl),0e0h		;7518   ; 0xE0 en la fila: fuera de la pantalla
 	ld a,c			;751a
-	ld hl,0eea4h		;751b
+	ld hl,0eea4h		;751b   ; y su companero de 0xEEA4, tambien
 	call 04056h		;751e   ; banco 0: a_mas_hl
 	ld (hl),0e0h		;7521
 	ret			;7523
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7524..0x7530  (12 bytes)
-DATA_7524:
-	defb 070h,090h,018h,038h,038h,058h,050h,070h,088h,0a8h,050h,070h	; 7524  p..88XPp..Pp
+; DATOS ventanas_7524: tres entradas de 4 bytes que p01:74B6 escoge con (ix+1)
+;   - 0x1D, contra la X (0xE205)
+;   0x7524..0x7530  (12 bytes)
+DATA_ventanas_7524:
+	defb 070h,090h,018h,038h	; 7524
+	defb 038h,058h,050h,070h	; 7528
+	defb 088h,0a8h,050h,070h	; 752c
 
 ; ======================================================================
 ; CODIGO 0x7530..0x7b23  (1523 bytes)
@@ -3069,451 +3259,483 @@ DATA_7524:
 
 L_7530:
 	ret			;7530
-L_7531:
-	ld a,(0e203h)		;7531   ; por donde va la rotacion de los sprites
-	cp 010h		;7534
+
+; ----------------------------------------------------------------------
+; CHOCAR CON LOS TRES DE 0xE310. Los tres huecos de objeto, de 0x20 bytes cada uno. Solo cuentan los que esten puestos y no marcados con 0x10 -que es "ya chocado"- y que ademas tengan su byte 7 entre 0xA8 y 0xB0, o sea a la altura del jugador. El rectangulo es de 0x28 de alto por 0x20 de ancho, y en el decorado 7 de 0x20 por 0x20. En el estado 0x10 no se choca con nada.
+; ----------------------------------------------------------------------
+choca_con_los_tres_de_0xE310:
+	ld a,(0e203h)		;7531   ; el ESTADO de lo que se maneja
+	cp 010h		;7534   ; en el 0x10 no se choca
 	ret z			;7536
-	ld hl,0e310h		;7537
+	ld hl,0e310h		;7537   ; los tres huecos
 	ld b,003h		;753a
-L_753C:
+choca_con_uno_de_los_tres:
 	push bc			;753c
-	ld c,020h		;753d
-	ld a,(hl)			;753f
+	ld c,020h		;753d   ; de entrada, 0x20 al hueco siguiente
+	ld a,(hl)			;753f   ; ¿esta puesto?
 	and a			;7540
-	jr z,L_7595		;7541
-	cp 010h		;7543
-	jr z,L_7595		;7545
+	jr z,choca_al_hueco_siguiente		;7541
+	cp 010h		;7543   ; y el 0x10 es el que ya ha chocado
+	jr z,choca_al_hueco_siguiente		;7545
 	ld a,l			;7547
-	add a,007h		;7548
+	add a,007h		;7548   ; su byte 7
 	ld l,a			;754a
-	ld c,019h		;754b
+	ld c,019h		;754b   ; y este salta 0x19 + 0x07: tambien 0x20
 	ld a,(hl)			;754d
-	cp 0a8h		;754e
-	jr c,L_7595		;7550
-	cp 0b0h		;7552
-	jr nc,L_7595		;7554
+	cp 0a8h		;754e   ; por encima de la 0xA8...
+	jr c,choca_al_hueco_siguiente		;7550
+	cp 0b0h		;7552   ; ...y por debajo de la 0xB0: fuera
+	jr nc,choca_al_hueco_siguiente		;7554
 	ld a,l			;7556
-	sub 005h		;7557
+	sub 005h		;7557   ; atras, a su fila y su columna
 	ld l,a			;7559
 	ld e,(hl)			;755a
 	inc l			;755b
 	ld d,(hl)			;755c
-	ld a,(0e0a1h)		;755d   ; el DECORADO, de 0 a 9
-	cp 007h		;7560
-	jr z,L_757A		;7562
-	ld a,(0e204h)		;7564   ; la X en la pantalla de lo que se maneja
-	add a,01ch		;7567
+	ld a,(0e0a1h)		;755d   ; el decorado
+	cp 007h		;7560   ; el 7 tiene su propia medida
+	jr z,choca_en_el_decorado_7		;7562
+	ld a,(0e204h)		;7564   ; la fila del jugador
+	add a,01ch		;7567   ; el margen en fila
 	sub e			;7569
-	cp 028h		;756a
-	jr nc,L_7593		;756c
-	ld a,(0e205h)		;756e   ; la Y en la pantalla de lo que se maneja
-	add a,018h		;7571
+	cp 028h		;756a   ; 0x28 de alto
+	jr nc,choca_no_le_ha_dado		;756c
+	ld a,(0e205h)		;756e   ; y la columna
+	add a,018h		;7571   ; su margen
 	sub d			;7573
-	cp 020h		;7574
-	jr nc,L_7593		;7576
+	cp 020h		;7574   ; y 0x20 de ancho
+	jr nc,choca_no_le_ha_dado		;7576
 	jr L_758E		;7578
-L_757A:
-	ld a,(0e204h)		;757a   ; la X en la pantalla de lo que se maneja
-	add a,014h		;757d
+choca_en_el_decorado_7:
+	ld a,(0e204h)		;757a   ; la fila del jugador
+	add a,014h		;757d   ; aqui el margen es 0x14...
 	sub e			;757f
-	cp 020h		;7580
-	jr nc,L_7593		;7582
-	ld a,(0e205h)		;7584   ; la Y en la pantalla de lo que se maneja
+	cp 020h		;7580   ; ...y el alto 0x20
+	jr nc,choca_no_le_ha_dado		;7582
+	ld a,(0e205h)		;7584   ; la columna, igual que antes
 	add a,018h		;7587
 	sub d			;7589
 	cp 020h		;758a
-	jr nc,L_7593		;758c
+	jr nc,choca_no_le_ha_dado		;758c
 L_758E:
 	push hl			;758e
-	call L_759C		;758f
+	call que_pasa_al_chocar		;758f   ; han chocado
 	pop hl			;7592
-L_7593:
-	ld c,01dh		;7593
-L_7595:
-	ld a,c			;7595
+choca_no_le_ha_dado:
+	ld c,01dh		;7593   ; 0x1D + 0x03: el hueco siguiente
+choca_al_hueco_siguiente:
+	ld a,c			;7595   ; el salto hasta el hueco siguiente
 	add a,l			;7596
 	ld l,a			;7597
 	pop bc			;7598
-	djnz L_753C		;7599
+	djnz choca_con_uno_de_los_tres		;7599
 	ret			;759b
-L_759C:
-	dec l			;759c
+
+; ----------------------------------------------------------------------
+; QUE PASA AL CHOCAR. Depende de la clase del bicho, y de lo que se lleve encima: las clases 6 y 12 las para lo que cuente 0xE164, las clases 1 y 13 lo que cuente 0xE165, y las clases 5 y 14 la marca de 0xE170. Cada vez que uno de esos para un golpe se GASTA una unidad, el bicho se marca con 0x10 y suena el efecto 0x17. Con 0xE1F1 puesto no hace falta nada de eso: se para cualquier golpe. Y si no hay con que pararlo, se pierde la vida.
+; ----------------------------------------------------------------------
+que_pasa_al_chocar:
+	dec l			;759c   ; atras, a la clase del bicho
 	dec l			;759d
 	dec l			;759e
-	ld a,(0e1f1h)		;759f
+	ld a,(0e1f1h)		;759f   ; ¿lleva lo de 0xE1F1?
 	and a			;75a2
-	jr nz,L_7618		;75a3
-	ld a,(hl)			;75a5
-	cp 006h		;75a6
-	jr z,L_75E4		;75a8
-	cp 00ch		;75aa
-	jr z,L_75E4		;75ac
-	cp 001h		;75ae
-	jr z,L_75FA		;75b0
-	cp 00dh		;75b2
-	jr z,L_75FA		;75b4
-	cp 005h		;75b6
-	jr z,L_7610		;75b8
-	cp 00eh		;75ba
-	jr z,L_7610		;75bc
-L_75BE:
-	xor a			;75be
-	ld (0e21dh),a		;75bf
+	jr nz,parado_y_256_puntos		;75a3   ; con eso se para cualquier golpe
+	ld a,(hl)			;75a5   ; la clase
+	cp 006h		;75a6   ; la 6...
+	jr z,lo_de_0xE164_para_el_golpe		;75a8
+	cp 00ch		;75aa   ; ...y la 12 las para lo de 0xE164
+	jr z,lo_de_0xE164_para_el_golpe		;75ac
+	cp 001h		;75ae   ; la 1...
+	jr z,lo_de_0xE165_para_el_golpe		;75b0
+	cp 00dh		;75b2   ; ...y la 13 las para lo de 0xE165
+	jr z,lo_de_0xE165_para_el_golpe		;75b4
+	cp 005h		;75b6   ; la 5...
+	jr z,lo_de_0xE170_para_el_golpe		;75b8
+	cp 00eh		;75ba   ; ...y la 14 las para lo de 0xE170
+	jr z,lo_de_0xE170_para_el_golpe		;75bc
+chocar_cuesta_la_vida:
+	xor a			;75be   ; se acabo la fase
+	ld (0e21dh),a		;75bf   ; por que paso va la secuencia
 	ld (0e097h),a		;75c2   ; la bandera de que la fase se ha acabado
-	ld a,(0e0a1h)		;75c5   ; el DECORADO, de 0 a 9
-	ld c,016h		;75c8
+	ld a,(0e0a1h)		;75c5   ; el decorado
+	ld c,016h		;75c8   ; en el 4 y en el 5 se pierde con el estado 0x16...
 	cp 004h		;75ca
 	jr z,L_75DB		;75cc
 	cp 005h		;75ce
 	jr z,L_75DB		;75d0
-	ld a,(0e203h)		;75d2   ; por donde va la rotacion de los sprites
+	ld a,(0e203h)		;75d2   ; ...y tambien si se iba en el estado 4...
 	cp 004h		;75d5
 	jr z,L_75DB		;75d7
-	ld c,015h		;75d9
+	ld c,015h		;75d9   ; ...y en el resto con el 0x15
 L_75DB:
 	ld a,c			;75db
-	ld (0e203h),a		;75dc   ; por donde va la rotacion de los sprites
-	ld a,08ch		;75df
+	ld (0e203h),a		;75dc   ; el ESTADO de lo que se maneja
+	ld a,08ch		;75df   ; y el efecto 0x8C
 	jp 0413ah		;75e1   ; banco 0: pide_sonido_si_esta_activo
-L_75E4:
-	ld a,(0e164h)		;75e4
+lo_de_0xE164_para_el_golpe:
+	ld a,(0e164h)		;75e4   ; ¿queda?
 	and a			;75e7
-	jr z,L_75BE		;75e8
-	dec a			;75ea
+	jr z,chocar_cuesta_la_vida		;75e8   ; si no queda, se pierde
+	dec a			;75ea   ; se gasta uno
 	ld (0e164h),a		;75eb
-	ld (hl),010h		;75ee
-	ld a,017h		;75f0
+	ld (hl),010h		;75ee   ; el bicho, marcado como ya chocado
+	ld a,017h		;75f0   ; el efecto 0x17, el de pararlo
 	call 0413ah		;75f2   ; banco 0: pide_sonido_si_esta_activo
-	ld c,004h		;75f5
-	jp 0baa3h		;75f7   ; banco 11
-L_75FA:
-	ld a,(0e165h)		;75fa
+	ld c,004h		;75f5   ; banco 3: y a soltar el objeto 4
+	jp 0baa3h		;75f7   ; banco 3
+lo_de_0xE165_para_el_golpe:
+	ld a,(0e165h)		;75fa   ; ¿queda?
 	and a			;75fd
-	jr z,L_75BE		;75fe
-	dec a			;7600
+	jr z,chocar_cuesta_la_vida		;75fe   ; si no queda, se pierde
+	dec a			;7600   ; se gasta uno
 	ld (0e165h),a		;7601
-	ld (hl),010h		;7604
-	ld a,017h		;7606
+	ld (hl),010h		;7604   ; el bicho, marcado
+	ld a,017h		;7606   ; el efecto 0x17
 	call 0413ah		;7608   ; banco 0: pide_sonido_si_esta_activo
-	ld c,005h		;760b
-	jp 0baa3h		;760d   ; banco 11
-L_7610:
-	ld a,(0e170h)		;7610
+	ld c,005h		;760b   ; banco 3: y el objeto 5
+	jp 0baa3h		;760d   ; banco 3
+lo_de_0xE170_para_el_golpe:
+	ld a,(0e170h)		;7610   ; esta no se gasta: o esta o no esta
 	and a			;7613
-	jr nz,L_7618		;7614
-	jr L_75BE		;7616
-L_7618:
-	ld (hl),010h		;7618
-	ld a,017h		;761a
+	jr nz,parado_y_256_puntos		;7614
+	jr chocar_cuesta_la_vida		;7616   ; y si no esta, se pierde
+parado_y_256_puntos:
+	ld (hl),010h		;7618   ; el bicho, marcado
+	ld a,017h		;761a   ; el efecto 0x17
 	call 0413ah		;761c   ; banco 0: pide_sonido_si_esta_activo
-	ld de,00100h		;761f
-	jp 09367h		;7622   ; banco 10
-L_7625:
-	ld a,(0e203h)		;7625   ; por donde va la rotacion de los sprites
-	cp 010h		;7628
+	ld de,00100h		;761f   ; y 256 puntos por pararlo
+	jp 09367h		;7622   ; banco 2
+
+; ----------------------------------------------------------------------
+; CHOCAR CON LOS TRES DE 0xE370. Los otros tres huecos, estos de 0x10 bytes. El primer byte es la clase y ademas la marca de que este puesto. El rectangulo es mas pequeno que el de los de 0xE310 -0x1C de alto por 0x14 de ancho, y 0x14 por 0x14 en el decorado 7-, que es lo que cabe esperar de bichos mas pequenos.
+; ----------------------------------------------------------------------
+choca_con_los_tres_de_0xE370:
+	ld a,(0e203h)		;7625   ; el ESTADO de lo que se maneja
+	cp 010h		;7628   ; en el 0x10 no se choca
 	ret z			;762a
-	ld hl,0e370h		;762b
+	ld hl,0e370h		;762b   ; los tres huecos
 	ld b,003h		;762e
-L_7630:
+choca_con_uno_de_los_de_0xE370:
 	push bc			;7630
-	ld c,010h		;7631
-	ld a,(hl)			;7633
+	ld c,010h		;7631   ; de entrada, 0x10 al hueco siguiente
+	ld a,(hl)			;7633   ; ¿esta puesto?
 	and a			;7634
-	jr z,L_7676		;7635
-	ld c,a			;7637
+	jr z,al_hueco_siguiente_de_0xE370		;7635
+	ld c,a			;7637   ; la clase, guardada
 	inc l			;7638
 	inc l			;7639
-	ld e,(hl)			;763a
+	ld e,(hl)			;763a   ; su fila...
 	inc l			;763b
 	inc l			;763c
-	ld d,(hl)			;763d
+	ld d,(hl)			;763d   ; ...y su columna
 	ld a,(0e0a1h)		;763e   ; el DECORADO, de 0 a 9
-	cp 007h		;7641
-	jr z,L_765B		;7643
-	ld a,(0e204h)		;7645   ; la X en la pantalla de lo que se maneja
-	add a,010h		;7648
+	cp 007h		;7641   ; el 7 tiene su propia medida
+	jr z,choca_con_los_de_0xE370_en_el_decorado_7		;7643
+	ld a,(0e204h)		;7645   ; la fila del jugador
+	add a,010h		;7648   ; el margen en fila
 	sub e			;764a
-	cp 01ch		;764b
-	jr nc,L_7674		;764d
-	ld a,(0e205h)		;764f   ; la Y en la pantalla de lo que se maneja
-	add a,012h		;7652
+	cp 01ch		;764b   ; 0x1C de alto
+	jr nc,no_le_ha_dado_ninguno_de_0xE370		;764d
+	ld a,(0e205h)		;764f   ; y la columna
+	add a,012h		;7652   ; su margen
 	sub d			;7654
-	cp 014h		;7655
-	jr nc,L_7674		;7657
+	cp 014h		;7655   ; y 0x14 de ancho
+	jr nc,no_le_ha_dado_ninguno_de_0xE370		;7657
 	jr L_766F		;7659
-L_765B:
-	ld a,(0e204h)		;765b   ; la X en la pantalla de lo que se maneja
-	add a,008h		;765e
+choca_con_los_de_0xE370_en_el_decorado_7:
+	ld a,(0e204h)		;765b   ; la fila del jugador
+	add a,008h		;765e   ; aqui el margen es 8...
 	sub e			;7660
-	cp 014h		;7661
-	jr nc,L_7674		;7663
-	ld a,(0e205h)		;7665   ; la Y en la pantalla de lo que se maneja
+	cp 014h		;7661   ; ...y el alto 0x14
+	jr nc,no_le_ha_dado_ninguno_de_0xE370		;7663
+	ld a,(0e205h)		;7665   ; la X en la pantalla de lo que se maneja
 	add a,012h		;7668
 	sub d			;766a
 	cp 014h		;766b
-	jr nc,L_7674		;766d
+	jr nc,no_le_ha_dado_ninguno_de_0xE370		;766d
 L_766F:
 	push hl			;766f
-	call L_767D		;7670
+	call que_pasa_al_chocar_con_uno_de_0xE370		;7670   ; han chocado
 	pop hl			;7673
-L_7674:
-	ld c,00ch		;7674
-L_7676:
-	ld a,c			;7676
+no_le_ha_dado_ninguno_de_0xE370:
+	ld c,00ch		;7674   ; 0x0C + 0x04: el hueco siguiente
+al_hueco_siguiente_de_0xE370:
+	ld a,c			;7676   ; el salto hasta el hueco siguiente
 	add a,l			;7677
 	ld l,a			;7678
 	pop bc			;7679
-	djnz L_7630		;767a
+	djnz choca_con_uno_de_los_de_0xE370		;767a
 	ret			;767c
-L_767D:
-	ld a,(0e1f1h)		;767d
+
+; ----------------------------------------------------------------------
+; QUE PASA AL CHOCAR CON UNO DE 0xE370. Otra vez por la clase: la 4 no mata -si 0xE16B esta puesto no hace nada, y si no, para el juego 0x80 cuadros con el efecto 0x10- y la 6 la para lo que cuente 0xE163, gastando uno. Con 0xE1F1 puesto se para cualquiera, con el efecto 0x18. En todos los casos en que se para, el bicho se borra entero.
+; ----------------------------------------------------------------------
+que_pasa_al_chocar_con_uno_de_0xE370:
+	ld a,(0e1f1h)		;767d   ; ¿lleva lo de 0xE1F1?
 	and a			;7680
-	jr nz,L_76BD		;7681
-	ld a,c			;7683
-	cp 004h		;7684
-	jr z,L_76CE		;7686
-	cp 006h		;7688
-	jr z,L_76E0		;768a
-L_768C:
-	xor a			;768c
-	ld (0e21dh),a		;768d
+	jr nz,lo_de_0xE1F1_para_cualquiera		;7681
+	ld a,c			;7683   ; la clase
+	cp 004h		;7684   ; la 4 no mata...
+	jr z,la_clase_4_no_mata		;7686
+	cp 006h		;7688   ; ...y la 6 la para lo de 0xE163
+	jr z,lo_de_0xE163_para_la_clase_6		;768a
+chocar_con_uno_de_0xE370_cuesta_la_vida:
+	xor a			;768c   ; se acabo la fase
+	ld (0e21dh),a		;768d   ; por que paso va la secuencia
 	ld (0e097h),a		;7690   ; la bandera de que la fase se ha acabado
 	ld a,l			;7693
-	sub 004h		;7694
+	sub 004h		;7694   ; atras, al principio del hueco
 	ld l,a			;7696
-	ld b,010h		;7697
+	ld b,010h		;7697   ; y sus dieciseis bytes...
 	xor a			;7699
-L_769A:
+borra_el_de_0xE370_vuelta:
 	ld (hl),a			;769a
 	inc l			;769b
-	djnz L_769A		;769c
-	ld a,(0e0a1h)		;769e   ; el DECORADO, de 0 a 9
-	ld c,016h		;76a1
+	djnz borra_el_de_0xE370_vuelta		;769c
+	ld a,(0e0a1h)		;769e   ; el decorado
+	ld c,016h		;76a1   ; en el 4 y en el 5 se pierde con el estado 0x16...
 	cp 004h		;76a3
 	jr z,L_76B4		;76a5
 	cp 005h		;76a7
 	jr z,L_76B4		;76a9
-	ld a,(0e203h)		;76ab   ; por donde va la rotacion de los sprites
+	ld a,(0e203h)		;76ab   ; ...y tambien si se iba en el estado 4...
 	cp 004h		;76ae
 	jr z,L_76B4		;76b0
-	ld c,015h		;76b2
+	ld c,015h		;76b2   ; ...y en el resto con el 0x15
 L_76B4:
 	ld a,c			;76b4
-	ld (0e203h),a		;76b5   ; por donde va la rotacion de los sprites
-	ld a,08ch		;76b8
+	ld (0e203h),a		;76b5   ; el ESTADO de lo que se maneja
+	ld a,08ch		;76b8   ; y el efecto 0x8C
 	jp 0413ah		;76ba   ; banco 0: pide_sonido_si_esta_activo
-L_76BD:
-	ld a,018h		;76bd
+lo_de_0xE1F1_para_cualquiera:
+	ld a,018h		;76bd   ; el efecto 0x18
 	call 0413ah		;76bf   ; banco 0: pide_sonido_si_esta_activo
-L_76C2:
+borra_el_de_0xE370:
 	ld a,l			;76c2
-	sub 004h		;76c3
+	sub 004h		;76c3   ; atras, al principio del hueco
 	ld l,a			;76c5
-	ld b,010h		;76c6
+	ld b,010h		;76c6   ; sus dieciseis bytes
 	xor a			;76c8
-L_76C9:
+borra_el_de_0xE370_bucle:
 	ld (hl),a			;76c9
 	inc l			;76ca
-	djnz L_76C9		;76cb
+	djnz borra_el_de_0xE370_bucle		;76cb
 	ret			;76cd
-L_76CE:
-	ld a,(0e16bh)		;76ce
+la_clase_4_no_mata:
+	ld a,(0e16bh)		;76ce   ; ¿esta puesto 0xE16B?
 	and a			;76d1
-	jr nz,L_76C2		;76d2
-	ld a,080h		;76d4
+	jr nz,borra_el_de_0xE370		;76d2   ; si lo esta, no pasa nada de nada
+	ld a,080h		;76d4   ; y si no, 0x80 cuadros de pausa...
 	ld (0e0dch),a		;76d6   ; la pausa que se hace al perder o al cambiar de fase
-	ld a,010h		;76d9
+	ld a,010h		;76d9   ; ...con el efecto 0x10
 	call 0413ah		;76db   ; banco 0: pide_sonido_si_esta_activo
-	jr L_76C2		;76de
-L_76E0:
-	ld a,(0e163h)		;76e0
+	jr borra_el_de_0xE370		;76de
+lo_de_0xE163_para_la_clase_6:
+	ld a,(0e163h)		;76e0   ; ¿queda?
 	and a			;76e3
-	jr z,L_768C		;76e4
-	dec a			;76e6
+	jr z,chocar_con_uno_de_0xE370_cuesta_la_vida		;76e4   ; si no queda, se pierde
+	dec a			;76e6   ; se gasta uno
 	ld (0e163h),a		;76e7
 	push hl			;76ea
-	ld c,003h		;76eb
-	call 0baa3h		;76ed   ; banco 11
+	ld c,003h		;76eb   ; banco 3: y a soltar el objeto 3
+	call 0baa3h		;76ed   ; banco 3
 	pop hl			;76f0
-	jr L_76C2		;76f1
-L_76F3:
-	ld hl,0e540h		;76f3
+	jr borra_el_de_0xE370		;76f1
+
+; ----------------------------------------------------------------------
+; CHOCAR CON LO QUE SE HA LANZADO. El registro de 0xE540, el del banco 3, y solo en su tiempo 4, que es el ultimo tramo de la bajada. Rectangulo de 0x28 de alto por 0x20 de ancho, y aqui no hay nada que salve: se pierde la vida y punto.
+; ----------------------------------------------------------------------
+choca_con_lo_que_se_lanza:
+	ld hl,0e540h		;76f3   ; el registro de lo que se lanza
 	ld a,(hl)			;76f6
-	cp 004h		;76f7
+	cp 004h		;76f7   ; solo en el tiempo 4
 	ret nz			;76f9
-	ld a,007h		;76fa
+	ld a,007h		;76fa   ; su fila...
 	add a,l			;76fc
 	ld l,a			;76fd
 	ld e,(hl)			;76fe
 	inc l			;76ff
 	inc l			;7700
-	ld d,(hl)			;7701
-	ld a,(0e204h)		;7702   ; la X en la pantalla de lo que se maneja
-	add a,018h		;7705
+	ld d,(hl)			;7701   ; ...y su columna
+	ld a,(0e204h)		;7702   ; la fila del jugador
+	add a,018h		;7705   ; el margen
 	sub e			;7707
-	cp 028h		;7708
+	cp 028h		;7708   ; 0x28 de alto
 	ret nc			;770a
-	ld a,(0e205h)		;770b   ; la Y en la pantalla de lo que se maneja
-	add a,018h		;770e
+	ld a,(0e205h)		;770b   ; y la columna
+	add a,018h		;770e   ; su margen
 	sub d			;7710
-	cp 020h		;7711
+	cp 020h		;7711   ; y 0x20 de ancho
 	ret nc			;7713
-	xor a			;7714
-	ld (0e21dh),a		;7715
+	xor a			;7714   ; se acabo la fase
+	ld (0e21dh),a		;7715   ; por que paso va la secuencia
 	ld (0e097h),a		;7718   ; la bandera de que la fase se ha acabado
 	ld a,l			;771b
-	sub 009h		;771c
+	sub 009h		;771c   ; atras, al principio del registro
 	ld l,a			;771e
-	ld b,010h		;771f
+	ld b,010h		;771f   ; y sus dieciseis bytes, borrados
 	xor a			;7721
-L_7722:
+borra_lo_que_se_lanza_vuelta:
 	ld (hl),a			;7722
 	inc l			;7723
-	djnz L_7722		;7724
-	ld a,015h		;7726
-	ld (0e203h),a		;7728   ; por donde va la rotacion de los sprites
-	ld a,08ch		;772b
+	djnz borra_lo_que_se_lanza_vuelta		;7724
+	ld a,015h		;7726   ; el estado 0x15: perder
+	ld (0e203h),a		;7728   ; el ESTADO de lo que se maneja
+	ld a,08ch		;772b   ; y el efecto 0x8C
 	jp 0413ah		;772d   ; banco 0: pide_sonido_si_esta_activo
-L_7730:
-	ld hl,0e310h		;7730
+
+; ----------------------------------------------------------------------
+; LO QUE SE DISPARA, CONTRA LOS TRES DE 0xE310. El mismo recorrido que el de 0x7531, pero quien choca no es el jugador sino lo que ha salido del segundo boton (0xE502 y 0xE503). La franja de altura es otra -de la 0x88 a la 0xA8, mas arriba que la del jugador- y el rectangulo, de 0x18 por 0x18.
+; ----------------------------------------------------------------------
+lo_disparado_contra_los_de_0xE310:
+	ld hl,0e310h		;7730   ; los tres huecos
 	ld b,003h		;7733
-L_7735:
+lo_disparado_contra_uno:
 	push bc			;7735
-	ld c,020h		;7736
-	ld a,(hl)			;7738
+	ld c,020h		;7736   ; de entrada, 0x20 al hueco siguiente
+	ld a,(hl)			;7738   ; ¿esta puesto?
 	and a			;7739
-	jr z,L_7771		;773a
-	cp 010h		;773c
-	jr z,L_7771		;773e
+	jr z,lo_disparado_al_hueco_siguiente		;773a
+	cp 010h		;773c   ; y el 0x10 es el que ya ha chocado
+	jr z,lo_disparado_al_hueco_siguiente		;773e
 	ld a,l			;7740
-	add a,007h		;7741
+	add a,007h		;7741   ; su byte 7
 	ld l,a			;7743
 	ld c,019h		;7744
 	ld a,(hl)			;7746
-	cp 088h		;7747
-	jr c,L_7771		;7749
-	cp 0a8h		;774b
-	jr nc,L_7771		;774d
+	cp 088h		;7747   ; por encima de la 0x88...
+	jr c,lo_disparado_al_hueco_siguiente		;7749
+	cp 0a8h		;774b   ; ...y por debajo de la 0xA8: fuera
+	jr nc,lo_disparado_al_hueco_siguiente		;774d
 	ld a,l			;774f
-	sub 005h		;7750
+	sub 005h		;7750   ; atras, a su fila y su columna
 	ld l,a			;7752
 	ld e,(hl)			;7753
 	inc l			;7754
 	ld d,(hl)			;7755
-	ld a,(0e502h)		;7756
-	add a,00ch		;7759
+	ld a,(0e502h)		;7756   ; la fila de lo disparado
+	add a,00ch		;7759   ; el margen
 	sub e			;775b
-	cp 018h		;775c
-	jr nc,L_776F		;775e
-	ld a,(0e503h)		;7760
-	add a,00ch		;7763
+	cp 018h		;775c   ; 0x18 de alto
+	jr nc,lo_disparado_no_le_ha_dado		;775e
+	ld a,(0e503h)		;7760   ; y su columna
+	add a,00ch		;7763   ; su margen
 	sub d			;7765
-	cp 018h		;7766
-	jr nc,L_776F		;7768
+	cp 018h		;7766   ; y 0x18 de ancho
+	jr nc,lo_disparado_no_le_ha_dado		;7768
 	push hl			;776a
-	call L_7778		;776b
+	call lo_disparado_le_ha_dado		;776b   ; le ha dado
 	pop hl			;776e
-L_776F:
+lo_disparado_no_le_ha_dado:
 	ld c,01dh		;776f
-L_7771:
-	ld a,c			;7771
+lo_disparado_al_hueco_siguiente:
+	ld a,c			;7771   ; el salto hasta el hueco siguiente
 	add a,l			;7772
 	ld l,a			;7773
 	pop bc			;7774
-	djnz L_7735		;7775
+	djnz lo_disparado_contra_uno		;7775
 	ret			;7777
-L_7778:
-	dec l			;7778
+
+; ----------------------------------------------------------------------
+; LE HA DADO. El bicho se marca con 0x10, suena el efecto 0x17, caen 256 puntos y lo disparado se borra: los dieciseis bytes de 0xE500 a cero y 0xE0 en la fila de su sprite, que es lo que lo saca de la pantalla.
+; ----------------------------------------------------------------------
+lo_disparado_le_ha_dado:
+	dec l			;7778   ; atras, a la clase del bicho
 	dec l			;7779
 	dec l			;777a
-	ld (hl),010h		;777b
-	ld a,017h		;777d
+	ld (hl),010h		;777b   ; marcado como ya chocado
+	ld a,017h		;777d   ; el efecto 0x17
 	call 0413ah		;777f   ; banco 0: pide_sonido_si_esta_activo
-	ld de,00100h		;7782
-	call 09367h		;7785   ; banco 10
-	ld b,010h		;7788
+	ld de,00100h		;7782   ; y 256 puntos
+	call 09367h		;7785   ; banco 2
+	ld b,010h		;7788   ; los dieciseis bytes de lo disparado
 	ld hl,0e500h		;778a
-L_778D:
+borra_lo_disparado_vuelta:
 	ld (hl),000h		;778d
 	inc l			;778f
-	djnz L_778D		;7790
+	djnz borra_lo_disparado_vuelta		;7790
 	ld a,l			;7792
-	sub 00eh		;7793
+	sub 00eh		;7793   ; atras, a la fila de su sprite
 	ld l,a			;7795
-	ld (hl),0e0h		;7796
+	ld (hl),0e0h		;7796   ; 0xE0: fuera de la pantalla
 	ret			;7798
-L_7799:
-	ld a,(0e535h)		;7799
-	sub 008h		;779c
+
+; ----------------------------------------------------------------------
+; LO QUE SE DISPARA, CONTRA EL BLANCO DE 0xE535. Un solo blanco, y este NO se muere de un tiro: cada acierto suma uno a 0xE53C y hace falta llegar a VEINTE. El vigesimo es el que arranca la otra cosa: los cuatro registros de 0xE550 se ponen a 5, se llama a dos rutinas de preparacion, 0xE53A apunta a 0xAE0A y 0xE530 pasa a 2. Los diecinueve anteriores solo suenan.
+; ----------------------------------------------------------------------
+lo_disparado_contra_el_blanco:
+	ld a,(0e535h)		;7799   ; la fila del blanco
+	sub 008h		;779c   ; menos ocho: el margen va restado aqui
 	ld e,a			;779e
-	ld a,(0e536h)		;779f
+	ld a,(0e536h)		;779f   ; y su columna
 	sub 008h		;77a2
 	ld d,a			;77a4
-	ld a,(0e502h)		;77a5
-	add a,010h		;77a8
+	ld a,(0e502h)		;77a5   ; la fila de lo disparado
+	add a,010h		;77a8   ; su margen
 	sub e			;77aa
-	cp 020h		;77ab
+	cp 020h		;77ab   ; 0x20 de alto
 	ret nc			;77ad
-	ld a,(0e503h)		;77ae
-	add a,010h		;77b1
+	ld a,(0e503h)		;77ae   ; y su columna
+	add a,010h		;77b1   ; su margen
 	sub d			;77b3
-	cp 020h		;77b4
+	cp 020h		;77b4   ; y 0x20 de ancho
 	ret nc			;77b6
-	ld b,010h		;77b7
+	ld b,010h		;77b7   ; los dieciseis bytes de lo disparado
 	ld hl,0e500h		;77b9
-L_77BC:
+borra_lo_disparado_del_blanco:
 	ld (hl),000h		;77bc
 	inc l			;77be
-	djnz L_77BC		;77bf
+	djnz borra_lo_disparado_del_blanco		;77bf
 	ld a,l			;77c1
-	sub 00eh		;77c2
+	sub 00eh		;77c2   ; atras, a la fila de su sprite
 	ld l,a			;77c4
-	ld (hl),0e0h		;77c5
-	ld a,021h		;77c7
+	ld (hl),0e0h		;77c5   ; 0xE0: fuera de la pantalla
+	ld a,021h		;77c7   ; el efecto 0x21
 	call 0413ah		;77c9   ; banco 0: pide_sonido_si_esta_activo
-	ld hl,0e53ch		;77cc
-	inc (hl)			;77cf
+	ld hl,0e53ch		;77cc   ; la cuenta de aciertos
+	inc (hl)			;77cf   ; uno mas
 	ld a,(hl)			;77d0
-	cp 014h		;77d1
+	cp 014h		;77d1   ; y hasta el VEINTE no pasa nada
 	ret nz			;77d3
-	ld hl,0e550h		;77d4
+	ld hl,0e550h		;77d4   ; los cuatro registros de 0xE550...
 	ld b,004h		;77d7
-L_77D9:
-	ld (hl),005h		;77d9
-	ld a,008h		;77db
+pone_los_cuatro_de_0xE550:
+	ld (hl),005h		;77d9   ; ...a 5
+	ld a,008h		;77db   ; de ocho en ocho
 	call 04056h		;77dd   ; banco 0: a_mas_hl
-	djnz L_77D9		;77e0
-	call L_7CF8		;77e2
+	djnz pone_los_cuatro_de_0xE550		;77e0
+	call las_cuatro_tiras_a_la_vram		;77e2
 	call L_7C9F		;77e5
-	ld hl,0ae0ah		;77e8
+	ld hl,0ae0ah		;77e8   ; y el guion de 0xAE0A
 	ld (0e53ah),hl		;77eb
-	ld a,002h		;77ee
+	ld a,002h		;77ee   ; 0xE530 a 2
 	ld (0e530h),a		;77f0
 	xor a			;77f3
-	ld (0e531h),a		;77f4
+	ld (0e531h),a		;77f4   ; y lo demas a cero
 	ld (0e532h),a		;77f7
 	ld (0e533h),a		;77fa
-	xor a			;77fd
-	call 0a8f5h		;77fe   ; banco 11
+	xor a			;77fd   ; la pose 0
+	call 0a8f5h		;77fe   ; banco 3
 	ld c,001h		;7801
 	ld de,00000h		;7803
-	jp 09369h		;7806   ; banco 10
-L_7809:
+	jp 09369h		;7806   ; banco 2
+apostar_entrada:
 	call 04c38h		;7809
-	ld de,0b1fbh		;780c
+	ld de,0b1fbh		;780c   ; los dos guiones del cartel
 	call L_7DF7		;780f
 	ld de,0b387h		;7812
 	call L_7DF7		;7815
-	ld hl,0e12ah		;7818
+	ld hl,0e12ah		;7818   ; y al paso 1
 	ld (hl),001h		;781b
 	ret			;781d
-L_781E:
-	ld a,(0e12ah)		;781e
+apostar_paso_1:
+	ld a,(0e12ah)		;781e   ; ¿el paso 1?
 	dec a			;7821
 	jr nz,L_7851		;7822
-	ld hl,0e132h		;7824
+	ld hl,0e132h		;7824   ; lo que salga, a cero
 	ld (hl),000h		;7827
-	ld de,0b1cah		;7829
+	ld de,0b1cah		;7829   ; los cuatro guiones del cartel
 	call L_7E11		;782c
 	ld de,0b1e5h		;782f
 	call L_7E11		;7832
@@ -3521,18 +3743,18 @@ L_781E:
 	call L_7E11		;7838
 	ld de,0b15eh		;783b
 	call L_7DF7		;783e
-	xor a			;7841
+	xor a			;7841   ; la cuenta, a cero
 	ld (0e12bh),a		;7842
 	call L_786E		;7845
 	xor a			;7848
-	ld (0e096h),a		;7849   ; los avisos que deja el cuadro
+	ld (0e096h),a		;7849   ; y sin avisos
 L_784C:
 	ld hl,0e12ah		;784c
 	inc (hl)			;784f
 	ret			;7850
 L_7851:
 	dec a			;7851
-	jr nz,L_789B		;7852
+	jr nz,apostar_paso_2		;7852
 	ld a,(0e006h)		;7854   ; las teclas recien pulsadas
 	and 010h		;7857
 	jr nz,L_788A		;7859
@@ -3556,7 +3778,7 @@ L_786E:
 	ld hl,07b2ah		;787e
 	call 04055h		;7881   ; banco 0: dos_por_a_mas_hl
 	call L_7896		;7884
-	jp L_6EAD		;7887
+	jp borra_y_pinta_el_cursor		;7887
 L_788A:
 	ld a,(0e12bh)		;788a
 	and a			;788d
@@ -3570,104 +3792,108 @@ L_7896:
 	ld h,(hl)			;7898
 	ld l,a			;7899
 	ret			;789a
-L_789B:
-	dec a			;789b
+apostar_paso_2:
+	dec a			;789b   ; ¿el paso 2?
 	jr nz,L_78BE		;789c
-	ld de,0b15eh		;789e
+	ld de,0b15eh		;789e   ; los dos guiones de la pantalla
 	call L_7E11		;78a1
 	ld de,0b18ah		;78a4
 	call L_7DF7		;78a7
-	ld hl,0e135h		;78aa
+	ld hl,0e135h		;78aa   ; la bolsa, a cero
 	ld (hl),000h		;78ad
-	ld hl,03989h		;78af
-	call L_78B8		;78b2
+	ld hl,03989h		;78af   ; y el cero, pintado en la pantalla
+	call pinta_la_bolsa		;78b2
 	jp L_784C		;78b5
-L_78B8:
-	ld de,0e136h		;78b8
-	jp 09481h		;78bb   ; banco 10
+pinta_la_bolsa:
+	ld de,0e136h		;78b8   ; la bolsa
+	jp 09481h		;78bb   ; banco 2: y a pintarla
 L_78BE:
 	dec a			;78be
-	jp nz,L_7977		;78bf
+	jp nz,apostar_paso_4		;78bf
 	ld a,(0e006h)		;78c2   ; las teclas recien pulsadas
 	ld b,a			;78c5
 	and 010h		;78c6
 	ld a,(0e007h)		;78c8   ; el estado de los mandos del cuadro anterior
 	ld (0e13ch),a		;78cb
-	jp nz,L_7948		;78ce
+	jp nz,cierra_el_cambio		;78ce
 	ld a,b			;78d1
 	and 00fh		;78d2
-	jr z,L_78DD		;78d4
+	jr z,la_espera_entre_cambios		;78d4
 	ld a,030h		;78d6
 	ld (0e130h),a		;78d8
-	jr L_78F3		;78db
-L_78DD:
-	ld hl,0e130h		;78dd
+	jr cambia_dinero		;78db
+la_espera_entre_cambios:
+	ld hl,0e130h		;78dd   ; la espera
 	ld a,(hl)			;78e0
-	and a			;78e1
-	jr z,L_78E6		;78e2
-	dec (hl)			;78e4
+	and a			;78e1   ; si no hay espera, se atiende al mando
+	jr z,espera_entre_cambios		;78e2
+	dec (hl)			;78e4   ; y si la hay, se descuenta
 	ret			;78e5
-L_78E6:
+espera_entre_cambios:
 	inc hl			;78e6
-	inc (hl)			;78e7
+	inc (hl)			;78e7   ; un cuadro mas
 	ld a,(hl)			;78e8
-	and 003h		;78e9
+	and 003h		;78e9   ; uno de cada cuatro
 	ret nz			;78eb
-	ld a,(0e13ch)		;78ec
+	ld a,(0e13ch)		;78ec   ; las teclas guardadas
 	ld b,a			;78ef
-	and 00fh		;78f0
+	and 00fh		;78f0   ; sin ninguna de las cuatro, nada
 	ret z			;78f2
-L_78F3:
-	ld a,b			;78f3
-	ld ix,0e135h		;78f4
-	ld d,001h		;78f8
-	ld c,001h		;78fa
-	and 008h		;78fc
-	jr nz,L_7924		;78fe
+
+; ----------------------------------------------------------------------
+; CAMBIAR DINERO DE UN SITIO A OTRO. Dos bolsas: el marcador (0xE089) y la de 0xE135, y los cuatro sentidos del mando mueven de una a otra. Arriba y abajo -bits 3 y 2- mueven de UNO en uno, y derecha e izquierda -bits 1 y 0- de DIEZ en diez. Lo que no cabe no se mueve: las dos rutinas de BCD vuelven con el acarreo puesto y nada cambia, y entonces suena el 0x25 en vez del 0x23.
+; ----------------------------------------------------------------------
+cambia_dinero:
+	ld a,b			;78f3   ; las teclas
+	ld ix,0e135h		;78f4   ; la bolsa de 0xE135
+	ld d,001h		;78f8   ; el 1 que se lleva al byte alto
+	ld c,001h		;78fa   ; de uno en uno
+	and 008h		;78fc   ; el bit 3 saca de la bolsa
+	jr nz,saca_de_la_bolsa		;78fe
 	ld a,b			;7900
-	and 004h		;7901
-	jr nz,L_7910		;7903
-	ld c,00ah		;7905
+	and 004h		;7901   ; el bit 2 mete en la bolsa
+	jr nz,mete_en_la_bolsa		;7903
+	ld c,00ah		;7905   ; y los otros dos, de diez en diez
 	ld a,b			;7907
-	and 002h		;7908
-	jr nz,L_7924		;790a
+	and 002h		;7908   ; el bit 1 saca...
+	jr nz,saca_de_la_bolsa		;790a
 	ld a,b			;790c
-	and 001h		;790d
-	ret z			;790f
-L_7910:
-	ld ix,0e089h		;7910
+	and 001h		;790d   ; ...y el bit 0 mete
+	ret z			;790f   ; sin ninguno de los cuatro, nada
+mete_en_la_bolsa:
+	ld ix,0e089h		;7910   ; del marcador...
 	push bc			;7914
-	call L_6F86		;7915
+	call resta_en_bcd_de_dos_bytes		;7915   ; ...se resta
 	pop bc			;7918
-	jr c,L_7970		;7919
-	ld ix,0e135h		;791b
-	call L_6F9C		;791f
-	jr L_7936		;7922
-L_7924:
-	ld ix,0e135h		;7924
+	jr c,L_7970		;7919   ; si no llega, no se mueve nada
+	ld ix,0e135h		;791b   ; y a la bolsa...
+	call suma_en_bcd_de_dos_bytes		;791f   ; ...se suma
+	jr suena_y_repinta_el_cambio		;7922
+saca_de_la_bolsa:
+	ld ix,0e135h		;7924   ; de la bolsa...
 	push bc			;7928
-	call L_6F86		;7929
+	call resta_en_bcd_de_dos_bytes		;7929   ; ...se resta
 	pop bc			;792c
-	jr c,L_7970		;792d
-	ld ix,0e089h		;792f
-	call L_6F9C		;7933
-L_7936:
-	ld a,023h		;7936
+	jr c,L_7970		;792d   ; si no llega, no se mueve nada
+	ld ix,0e089h		;792f   ; y al marcador...
+	call suma_en_bcd_de_dos_bytes		;7933   ; ...se suma
+suena_y_repinta_el_cambio:
+	ld a,023h		;7936   ; el efecto 0x23, el de que si ha entrado
 	call 0413ah		;7938   ; banco 0: pide_sonido_si_esta_activo
 L_793B:
 	push ix		;793b
 	pop de			;793d
 	inc de			;793e
-	call 0947bh		;793f   ; banco 10
-	ld hl,03989h		;7942
-	jp L_78B8		;7945
-L_7948:
-	ld de,(0e135h)		;7948
+	call 0947bh		;793f   ; banco 2: y a repintar la cifra
+	ld hl,03989h		;7942   ; en su sitio de la pantalla
+	jp pinta_la_bolsa		;7945
+cierra_el_cambio:
+	ld de,(0e135h)		;7948   ; la bolsa
 	ld a,d			;794c
 	or e			;794d
-	ld a,025h		;794e
+	ld a,025h		;794e   ; con la bolsa vacia solo suena el 0x25
 	jp z,0413ah		;7950
-	ld a,003h		;7953
+	ld a,003h		;7953   ; y si lleva algo, LOS TRES RODILLOS a girar
 	ld (0e12ch),a		;7955
 	ld de,0b18ah		;7958
 	call L_7E11		;795b
@@ -3682,120 +3908,128 @@ L_7970:
 	ld a,025h		;7970
 	call 0413ah		;7972   ; banco 0: pide_sonido_si_esta_activo
 	jr L_793B		;7975
-L_7977:
-	dec a			;7977
-	jr nz,L_7992		;7978
+apostar_paso_4:
+	dec a			;7977   ; ¿el paso 4?
+	jr nz,los_rodillos		;7978
 	ld hl,0e130h		;797a
-	inc (hl)			;797d
+	inc (hl)			;797d   ; un cuadro mas
 	ld a,(hl)			;797e
-	cp 010h		;797f
+	cp 010h		;797f   ; los dieciseis primeros...
 	jr nc,L_7989		;7981
-	ld de,0b39fh		;7983
+	ld de,0b39fh		;7983   ; ...pintan un guion...
 	jp L_7DF7		;7986
 L_7989:
-	ld de,0b387h		;7989
+	ld de,0b387h		;7989   ; ...y de ahi en adelante, el otro
 	call L_7DF7		;798c
 	jp L_784C		;798f
-L_7992:
-	dec a			;7992
-	jr nz,L_79E1		;7993
-	ld hl,0e12ch		;7995
+
+; ----------------------------------------------------------------------
+; LOS RODILLOS. Cada rodillo saca su dibujo del registro R -`ld a,r / and 0x0F`, o sea uno de dieciseis- y con el lee dos tablas: 0x7B34 da el valor, que se guarda en 0xE12F hacia atras, y 0x7B2E el caracter que se pinta. Los rodillos se paran de uno en uno con el disparo, con el efecto 0x2A, y cuando cae el ultimo suena el 0x2B y se pasa a la cuenta.
+; ----------------------------------------------------------------------
+los_rodillos:
+	dec a			;7992   ; ¿el paso 5?
+	jr nz,la_cuenta_de_lo_apostado		;7993
+	ld hl,0e12ch		;7995   ; cuantos rodillos quedan por parar
 	ld b,(hl)			;7998
-	ld de,0e12fh		;7999
-	ld hl,03a1ah		;799c
-L_799F:
+	ld de,0e12fh		;7999   ; donde se guardan los valores
+	ld hl,03a1ah		;799c   ; y donde se pintan
+gira_un_rodillo:
 	push bc			;799f
 	push hl			;79a0
-	ld a,r		;79a1
-	and 00fh		;79a3
+	ld a,r		;79a1   ; el registro R: el azar de la casa
+	and 00fh		;79a3   ; uno de dieciseis
 	push hl			;79a5
-	ld hl,07b34h		;79a6
+	ld hl,07b34h		;79a6   ; la tabla de valores
 	call 04056h		;79a9   ; banco 0: a_mas_hl
 	ld a,(hl)			;79ac
-	ld (de),a			;79ad
-	ld hl,07b2eh		;79ae
+	ld (de),a			;79ad   ; guardado
+	ld hl,07b2eh		;79ae   ; y la de caracteres
 	call 04056h		;79b1   ; banco 0: a_mas_hl
 	ld c,(hl)			;79b4
 	pop hl			;79b5
-	call L_6D4B		;79b6
+	call pinta_los_cuatro_caracteres		;79b6   ; pintado en su casilla
 	pop hl			;79b9
-	dec hl			;79ba
+	dec hl			;79ba   ; la casilla anterior
 	dec hl			;79bb
 	dec hl			;79bc
 	dec hl			;79bd
 	dec de			;79be
 	pop bc			;79bf
-	djnz L_799F		;79c0
-	ld a,(0e006h)		;79c2   ; las teclas recien pulsadas
-	and 010h		;79c5
+	djnz gira_un_rodillo		;79c0
+	ld a,(0e006h)		;79c2   ; las teclas
+	and 010h		;79c5   ; ¿el disparo?
 	ret z			;79c7
-	ld a,02ah		;79c8
+	ld a,02ah		;79c8   ; el efecto 0x2A: un rodillo parado
 	ld hl,0e12ch		;79ca
-	dec (hl)			;79cd
-	jp nz,0413ah		;79ce
-	ld a,02bh		;79d1
+	dec (hl)			;79cd   ; uno menos
+	jp nz,0413ah		;79ce   ; y si quedan, se sigue girando
+	ld a,02bh		;79d1   ; el efecto 0x2B: ya estan los tres
 	call 0413ah		;79d3   ; banco 0: pide_sonido_si_esta_activo
 	call L_7AF0		;79d6
-	ld a,080h		;79d9
+	ld a,080h		;79d9   ; y 0x80 cuadros de espera
 	ld (0e130h),a		;79db
 	jp L_784C		;79de
-L_79E1:
-	dec a			;79e1
-	jp nz,L_7A6B		;79e2
+
+; ----------------------------------------------------------------------
+; LA CUENTA DE LO APOSTADO. Segun lo que haya salido (0xE132): con 0xFF o con 0 se pierde todo -la bolsa a cero y el rotulo de 0xB1E5- y con cualquier otra cosa se busca el multiplicador en la tabla de 0x7B23 y se multiplica la apuesta a base de SUMARLA a si misma, que es como se multiplica en un Z80.
+; ----------------------------------------------------------------------
+la_cuenta_de_lo_apostado:
+	dec a			;79e1   ; ¿el paso 6?
+	jp nz,apostar_paso_7		;79e2
 	ld hl,0e130h		;79e5
-	dec (hl)			;79e8
+	dec (hl)			;79e8   ; la espera, un cuadro menos
 	ret nz			;79e9
-	ld hl,0b1ddh		;79ea
+	ld hl,0b1ddh		;79ea   ; el rotulo de siempre
 	ld (0e137h),hl		;79ed
-	ld a,(0e132h)		;79f0
-	inc a			;79f3
-	jr z,L_79F9		;79f4
-	dec a			;79f6
-	jr nz,L_7A08		;79f7
-L_79F9:
+	ld a,(0e132h)		;79f0   ; lo que ha salido
+	inc a			;79f3   ; el 0xFF...
+	jr z,se_pierde_lo_apostado		;79f4
+	dec a			;79f6   ; ...y el 0 pierden
+	jr nz,se_gana_lo_apostado		;79f7
+se_pierde_lo_apostado:
 	xor a			;79f9
-	ld (0e135h),a		;79fa
+	ld (0e135h),a		;79fa   ; la bolsa, a cero
 	ld (0e136h),a		;79fd
-	ld hl,0b1e5h		;7a00
+	ld hl,0b1e5h		;7a00   ; y el rotulo de perder
 	ld (0e137h),hl		;7a03
-	jr L_7A39		;7a06
-L_7A08:
+	jr pinta_el_resultado		;7a06
+se_gana_lo_apostado:
 	dec a			;7a08
-	ld hl,07b23h		;7a09
+	ld hl,07b23h		;7a09   ; los multiplicadores
 	call 04056h		;7a0c   ; banco 0: a_mas_hl
-	ld b,(hl)			;7a0f
-	ld ix,0e135h		;7a10
+	ld b,(hl)			;7a0f   ; el que toca
+	ld ix,0e135h		;7a10   ; la bolsa
 	ld l,(ix+000h)		;7a14
 	ld h,(ix+001h)		;7a17
-L_7A1A:
-	dec b			;7a1a
-	jr z,L_7A39		;7a1b
-	ld c,l			;7a1d
-	ld d,001h		;7a1e
-	call L_6F9C		;7a20
+multiplica_sumando:
+	dec b			;7a1a   ; una vez menos
+	jr z,pinta_el_resultado		;7a1b
+	ld c,l			;7a1d   ; el byte bajo de la bolsa
+	ld d,001h		;7a1e   ; el 1 que se lleva
+	call suma_en_bcd_de_dos_bytes		;7a20   ; sumada a si misma, EN BCD
 	inc ix		;7a23
-	ld c,h			;7a25
+	ld c,h			;7a25   ; y el byte alto
 	ld d,001h		;7a26
-	call L_6F9C		;7a28
-	ld a,(ix+000h)		;7a2b
+	call suma_en_bcd_de_dos_bytes		;7a28
+	ld a,(ix+000h)		;7a2b   ; ¿se ha pasado de 0x10?
 	dec ix		;7a2e
 	cp 010h		;7a30
 	jr nc,L_7A36		;7a32
-	jr L_7A1A		;7a34
+	jr multiplica_sumando		;7a34
 L_7A36:
-	call L_7A60		;7a36
-L_7A39:
-	ld de,0b1bdh		;7a39
+	call L_7A60		;7a36   ; entonces, tope
+pinta_el_resultado:
+	ld de,0b1bdh		;7a39   ; los tres guiones del cartel...
 	call L_7E11		;7a3c
 	ld de,0b1cah		;7a3f
 	call L_7DF7		;7a42
-	ld de,(0e137h)		;7a45
+	ld de,(0e137h)		;7a45   ; ...y el que diga lo que ha salido
 	call L_7DF7		;7a49
 	ld de,0b1eeh		;7a4c
 	call L_7DF7		;7a4f
-	ld hl,03947h		;7a52
-	call L_78B8		;7a55
-	ld a,020h		;7a58
+	ld hl,03947h		;7a52   ; la bolsa, pintada
+	call pinta_la_bolsa		;7a55
+	ld a,020h		;7a58   ; y 0x20 cuadros de espera
 	ld (0e130h),a		;7a5a
 	jp L_784C		;7a5d
 L_7A60:
@@ -3804,31 +4038,31 @@ L_7A60:
 	and 00fh		;7a65
 	ld (ix+001h),a		;7a67
 	ret			;7a6a
-L_7A6B:
-	dec a			;7a6b
-	jr nz,L_7A76		;7a6c
+apostar_paso_7:
+	dec a			;7a6b   ; ¿el paso 7?
+	jr nz,apostar_paso_8		;7a6c
 	ld hl,0e130h		;7a6e
-	dec (hl)			;7a71
-	ret nz			;7a72
+	dec (hl)			;7a71   ; la espera, un cuadro menos
+	ret nz			;7a72   ; y hasta cero, nada
 	jp L_784C		;7a73
-L_7A76:
-	dec a			;7a76
+apostar_paso_8:
+	dec a			;7a76   ; ¿el paso 8?
 	jr nz,L_7AB2		;7a77
-	ld hl,03947h		;7a79
-	call L_78B8		;7a7c
+	ld hl,03947h		;7a79   ; el sitio del cartel en la pantalla
+	call pinta_la_bolsa		;7a7c
 	ld ix,0e135h		;7a7f
 	ld c,001h		;7a83
 	ld d,c			;7a85
-	call L_6F86		;7a86
+	call resta_en_bcd_de_dos_bytes		;7a86
 	jr c,L_7AAA		;7a89
 	ld ix,0e089h		;7a8b
 	ld c,001h		;7a8f
 	ld d,c			;7a91
-	call L_6F9C		;7a92
+	call suma_en_bcd_de_dos_bytes		;7a92
 	ld a,(ix+001h)		;7a95
 	cp 010h		;7a98
 	call nc,L_7A60		;7a9a
-	call 0947bh		;7a9d   ; banco 10
+	call 0947bh		;7a9d   ; banco 2
 	ld a,(0e051h)		;7aa0   ; la prioridad del efecto que suena
 	and a			;7aa3
 	ret nz			;7aa4
@@ -3840,33 +4074,37 @@ L_7AAA:
 	jp L_784C		;7aaf
 L_7AB2:
 	dec a			;7ab2
-	jr nz,L_7ABD		;7ab3
+	jr nz,se_puede_apostar_otra_vez		;7ab3
 	ld a,040h		;7ab5
 	ld (0e130h),a		;7ab7
 	jp L_784C		;7aba
-L_7ABD:
+
+; ----------------------------------------------------------------------
+; ¿OTRA VEZ? Al acabarse la espera mira tres cosas: si el marcador esta a cero se sale, si lo que salio fue 0xFF tambien, y si no, 0xE169 y la cuenta de 0xE134 deciden si se deja seguir apostando.
+; ----------------------------------------------------------------------
+se_puede_apostar_otra_vez:
 	ld hl,0e130h		;7abd
-	dec (hl)			;7ac0
+	dec (hl)			;7ac0   ; la espera, un cuadro menos
 	ret nz			;7ac1
 	ld hl,(0e089h)		;7ac2   ; el marcador, cifras bajas (BCD)
 	ld a,l			;7ac5
 	or h			;7ac6
-	ld a,001h		;7ac7
-	jr z,L_7AE2		;7ac9
-	ld a,(0e132h)		;7acb
-	cp 0ffh		;7ace
+	ld a,001h		;7ac7   ; sin dinero no se sigue
+	jr z,se_acabo_de_apostar		;7ac9
+	ld a,(0e132h)		;7acb   ; lo que salio
+	cp 0ffh		;7ace   ; con 0xFF tampoco
 	ld a,001h		;7ad0
-	jr z,L_7AE2		;7ad2
+	jr z,se_acabo_de_apostar		;7ad2
 	inc a			;7ad4
-	ld hl,0e169h		;7ad5
+	ld hl,0e169h		;7ad5   ; y esto dice cuantas veces se deja
 	ld b,(hl)			;7ad8
 	dec b			;7ad9
 	jr z,L_7AEA		;7ada
 	ld hl,0e134h		;7adc
-	dec (hl)			;7adf
+	dec (hl)			;7adf   ; una menos
 	jr nz,L_7AEA		;7ae0
-L_7AE2:
-	ld (0e096h),a		;7ae2   ; los avisos que deja el cuadro
+se_acabo_de_apostar:
+	ld (0e096h),a		;7ae2   ; el aviso que toque
 	xor a			;7ae5
 	ld (0e134h),a		;7ae6
 	ret			;7ae9
@@ -3882,41 +4120,62 @@ L_7AF0:
 	ld (0e133h),a		;7af9
 L_7AFC:
 	and a			;7afc
-	jr nz,L_7B00		;7afd
+	jr nz,compara_con_lo_que_salio		;7afd
 	inc (hl)			;7aff
-L_7B00:
-	dec c			;7b00
-	jr z,L_7B13		;7b01
+compara_con_lo_que_salio:
+	dec c			;7b00   ; ¿queda alguno?
+	jr z,lo_que_salio_al_final		;7b01
 	inc de			;7b03
-	ld a,(de)			;7b04
+	ld a,(de)			;7b04   ; el byte siguiente
 	ld b,a			;7b05
-	ld a,(0e133h)		;7b06
-	cp b			;7b09
+	ld a,(0e133h)		;7b06   ; contra lo que llevaba
+	cp b			;7b09   ; si es el mismo, sigue valiendo
 	jr z,L_7B10		;7b0a
-	xor a			;7b0c
+	xor a			;7b0c   ; y si no, se borra: ya no hay racha
 	ld (0e133h),a		;7b0d
 L_7B10:
 	ld a,b			;7b10
 	jr L_7AFC		;7b11
-L_7B13:
-	ld a,(0e133h)		;7b13
+lo_que_salio_al_final:
+	ld a,(0e133h)		;7b13   ; lo que llevaba
 	and a			;7b16
-	ret z			;7b17
-	cp 005h		;7b18
+	ret z			;7b17   ; con cero, nada
+	cp 005h		;7b18   ; el 5 es el premio gordo...
 	jr nz,L_7B1F		;7b1a
-	ld (hl),0ffh		;7b1c
+	ld (hl),0ffh		;7b1c   ; ...y se marca con 0xFF
 	ret			;7b1e
 L_7B1F:
-	add a,003h		;7b1f
+	add a,003h		;7b1f   ; y los demas, tres mas
 	ld (hl),a			;7b21
 	ret			;7b22
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7b23..0x7b44  (33 bytes)
-DATA_7B23:
-	defb 001h,002h,004h,008h,00ah,00fh,014h,0a4h,039h,0aah,039h,07ch,088h,08ch,080h,090h	; 7b23  ........9.9|....
-	defb 084h,000h,001h,004h,003h,002h,000h,001h,000h,001h,002h,005h,000h,001h,000h,002h	; 7b33  ................
-	defb 003h	; 7b43
+; DATOS cuentas_7B23: siete bytes que p01:7A09 indexa con A - 1 y lleva a B,
+;   una cuenta
+;   0x7b23..0x7b2a  (7 bytes)
+DATA_cuentas_7B23:
+	defb 001h,002h,004h,008h,00ah,00fh,014h	; 7b23
+
+; ----------------------------------------------------------------------
+; DATOS dos_punteros_7B2A: dos palabras que p01:786E y p01:787E eligen con
+;   (0xE12B), que va y viene entre 0 y 1
+;   0x7b2a..0x7b2e  (4 bytes)
+DATA_dos_punteros_7B2A:
+	defb 0a4h,039h	; 7b2a
+	defb 0aah,039h	; 7b2c
+
+; ----------------------------------------------------------------------
+; DATOS bytes_7B2E: seis bytes que p01:79AE indexa y lleva a C
+;   0x7b2e..0x7b34  (6 bytes)
+DATA_bytes_7B2E:
+	defb 07ch,088h,08ch,080h,090h,084h	; 7b2e
+
+; ----------------------------------------------------------------------
+; DATOS dieciseis_bytes_7B34: dieciseis bytes que p01:79A6 indexa con el
+;   nibble bajo de A y escribe en (DE)
+;   0x7b34..0x7b44  (16 bytes)
+DATA_dieciseis_bytes_7B34:
+	defb 000h,001h,004h,003h,002h,000h,001h,000h,001h,002h,005h,000h,001h,000h,002h,003h	; 7b34  ................
 
 ; ======================================================================
 ; CODIGO 0x7b44..0x7b50  (12 bytes)
@@ -3931,8 +4190,11 @@ L_7B44:
 	ret			;7b4f
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7b50..0x7b5e  (14 bytes)
-DATA_7B50:
+; DATOS codigo_muerto_7B50: catorce bytes que se leen limpios como codigo -`ld
+;   a,(0E0C5h) / and a / ret nz / ld a,(0E115h) / and a / ret z`...- pero a
+;   los que no salta nadie
+;   0x7b50..0x7b5e  (14 bytes)
+DATA_codigo_muerto_7B50:
 	defb 03ah,0c5h,0e0h,0a7h,0c0h,03ah,015h,0e1h,0a7h,0c8h,032h,021h,0e2h,0c9h	; 7b50  :....:....2!..
 
 ; ======================================================================
@@ -4100,14 +4362,14 @@ L_7C79:
 	ld a,(hl)			;7c7a
 	call 0405bh		;7c7b   ; banco 0: a_mas_de
 	inc hl			;7c7e
-L_7C7F:
-	ld a,(hl)			;7c7f
-	inc a			;7c80
+copia_hasta_el_0xFF:
+	ld a,(hl)			;7c7f   ; el byte
+	inc a			;7c80   ; el 0xFF cierra...
 	jr z,L_7C8A		;7c81
-	inc a			;7c83
+	inc a			;7c83   ; ...y el 0xFE abre el trozo siguiente
 	jr z,L_7C79		;7c84
-	ldi		;7c86
-	jr L_7C7F		;7c88
+	ldi		;7c86   ; y lo demas se copia tal cual
+	jr copia_hasta_el_0xFF		;7c88
 L_7C8A:
 	di			;7c8a   ; sin interrupciones mientras cambia el mapa
 	ld a,002h		;7c8b
@@ -4160,31 +4422,42 @@ L_7CD7:
 	ld a,(hl)			;7cd8
 	call 0405bh		;7cd9   ; banco 0: a_mas_de
 	inc hl			;7cdc
-L_7CDD:
-	ld a,(hl)			;7cdd
-	inc a			;7cde
+llena_de_unos_hasta_el_0xFF:
+	ld a,(hl)			;7cdd   ; el byte
+	inc a			;7cde   ; el 0xFF cierra...
 	jr z,L_7CEB		;7cdf
-	inc a			;7ce1
+	inc a			;7ce1   ; ...y el 0xFE abre el trozo siguiente
 	jr z,L_7CD7		;7ce2
-	ld a,001h		;7ce4
+	ld a,001h		;7ce4   ; y lo demas se marca con un 1
 	ld (de),a			;7ce6
 	inc de			;7ce7
 	inc hl			;7ce8
-	jr L_7CDD		;7ce9
+	jr llena_de_unos_hasta_el_0xFF		;7ce9
 L_7CEB:
 	jp L_7C8A		;7ceb
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7cee..0x7cf8  (10 bytes)
-DATA_7CEE:
-	defb 02bh,0edh,02ch,0edh,02dh,0edh,02eh,0edh,02fh,0edh	; 7cee  +.,.-.../.
+; DATOS cinco_bases_E538: cinco direcciones de RAM (0xED2B a 0xED2F) que
+;   p01:7C18 y p01:7CB6 indexan con (0xE537) y dejan en 0xE538, la base de las
+;   tiras del banco 11
+;   0x7cee..0x7cf8  (10 bytes)
+DATA_cinco_bases_E538:
+	defb 02bh,0edh	; 7cee
+	defb 02ch,0edh	; 7cf0
+	defb 02dh,0edh	; 7cf2
+	defb 02eh,0edh	; 7cf4
+	defb 02fh,0edh	; 7cf6
 
 ; ======================================================================
 ; CODIGO 0x7cf8..0x7d6c  (116 bytes)
 ; ======================================================================
 
 
-L_7CF8:
+
+; ----------------------------------------------------------------------
+; LAS CUATRO TIRAS DEL BANCO 11, A LA VRAM. Mete los bancos 10 y 11 y recorre los cuatro registros de 0xE550 con sus sprites a partir del 10. Cada registro, segun su primer byte, o copia dos bytes sueltos (el tipo 1) o descomprime una tira entera de las de 0xAD62.
+; ----------------------------------------------------------------------
+las_cuatro_tiras_a_la_vram:
 	di			;7cf8   ; sin interrupciones mientras cambia el mapa
 	ld a,00ah		;7cf9
 	ld (08000h),a		;7cfb   ; el banco 10 a 0x8000
@@ -4195,81 +4468,87 @@ L_7CF8:
 	ld (0a000h),a		;7d05   ; el banco 11 a 0xA000
 	ld (0f0f3h),a		;7d08   ; y en su copia de RAM
 	ei			;7d0b   ; el mapa ya esta entero
-	ld b,004h		;7d0c
-	ld hl,0e550h		;7d0e
-	ld de,0eea8h		;7d11
-L_7D14:
-	ld a,(hl)			;7d14
-	dec a			;7d15
-	jr z,L_7D58		;7d16
+	ld b,004h		;7d0c   ; cuatro registros
+	ld hl,0e550h		;7d0e   ; los registros
+	ld de,0eea8h		;7d11   ; y sus sprites, desde el 10
+una_tira_a_la_vram:
+	ld a,(hl)			;7d14   ; el tipo del registro
+	dec a			;7d15   ; el 1 va aparte
+	jr z,dos_bytes_sueltos		;7d16
 	push hl			;7d18
 	push de			;7d19
 	dec a			;7d1a
 	ld c,a			;7d1b
-	ld hl,07d6ch		;7d1c
+	ld hl,07d6ch		;7d1c   ; las cuatro bases de destino
 	ld a,b			;7d1f
 	dec a			;7d20
-	call 04055h		;7d21   ; banco 0: dos_por_a_mas_hl
+	call 04055h		;7d21   ; la que toca a este registro
 	ld e,(hl)			;7d24
 	inc hl			;7d25
 	ld d,(hl)			;7d26
 	ld a,c			;7d27
-	ld hl,0ad62h		;7d28
+	ld hl,0ad62h		;7d28   ; las tiras del banco 11
 	call 04055h		;7d2b   ; banco 0: dos_por_a_mas_hl
-	ld a,(hl)			;7d2e
+	ld a,(hl)			;7d2e   ; la que toca
 	inc hl			;7d2f
 	ld h,(hl)			;7d30
 	ld l,a			;7d31
 	ld c,0ffh		;7d32
-	dec hl			;7d34
-L_7D35:
+	dec hl			;7d34   ; y atras uno, que el bucle empieza adelantando
+lee_el_desplazamiento_de_la_tira:
 	inc hl			;7d35
-	ld a,(hl)			;7d36
+	ld a,(hl)			;7d36   ; el desplazamiento, 16 bits
 	inc hl			;7d37
 	push hl			;7d38
 	ld h,(hl)			;7d39
 	ld l,a			;7d3a
-	add hl,de			;7d3b
+	add hl,de			;7d3b   ; sumado a la base
 	ex de,hl			;7d3c
 	pop hl			;7d3d
 	inc hl			;7d3e
-L_7D3F:
-	ld a,(hl)			;7d3f
-	inc a			;7d40
-	jr z,L_7D4A		;7d41
-	inc a			;7d43
-	jr z,L_7D35		;7d44
-	ldi		;7d46
-	jr L_7D3F		;7d48
-L_7D4A:
+copia_los_bytes_de_la_tira:
+	ld a,(hl)			;7d3f   ; el byte
+	inc a			;7d40   ; el 0xFF cierra la tira...
+	jr z,al_registro_siguiente_de_las_tiras		;7d41
+	inc a			;7d43   ; ...y el 0xFE abre el trozo siguiente
+	jr z,lee_el_desplazamiento_de_la_tira		;7d44
+	ldi		;7d46   ; y lo demas, se copia tal cual
+	jr copia_los_bytes_de_la_tira		;7d48
+al_registro_siguiente_de_las_tiras:
 	pop de			;7d4a
 	pop hl			;7d4b
-	ld a,008h		;7d4c
+	ld a,008h		;7d4c   ; ocho bytes el registro...
 	call 04056h		;7d4e   ; banco 0: a_mas_hl
-	ld a,004h		;7d51
+	ld a,004h		;7d51   ; ...y cuatro el sprite
 	call 0405bh		;7d53   ; banco 0: a_mas_de
-	jr L_7D67		;7d56
-L_7D58:
+	jr a_la_tira_siguiente		;7d56
+dos_bytes_sueltos:
 	inc l			;7d58
-	ld a,(hl)			;7d59
+	ld a,(hl)			;7d59   ; el primer byte...
 	ld (de),a			;7d5a
 	inc l			;7d5b
 	inc e			;7d5c
-	ld a,(hl)			;7d5d
+	ld a,(hl)			;7d5d   ; ...y el segundo
 	ld (de),a			;7d5e
-	ld a,006h		;7d5f
+	ld a,006h		;7d5f   ; seis mas hasta el registro siguiente
 	call 04056h		;7d61   ; banco 0: a_mas_hl
 	inc e			;7d64
 	inc e			;7d65
 	inc e			;7d66
-L_7D67:
-	djnz L_7D14		;7d67
+a_la_tira_siguiente:
+	djnz una_tira_a_la_vram		;7d67
 	jp L_7C8A		;7d69
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7d6c..0x7d74  (8 bytes)
-DATA_7D6C:
-	defb 03ah,0eeh,033h,0eeh,02ch,0eeh,025h,0eeh	; 7d6c  :.3.,.%.
+; DATOS cuatro_bases_7D6C: cuatro direcciones de RAM (0xEE3A, 0xEE33, 0xEE2C,
+;   0xEE25) que p01:7D1C indexa con B - 1: la base DE de las tiras largas del
+;   banco 11
+;   0x7d6c..0x7d74  (8 bytes)
+DATA_cuatro_bases_7D6C:
+	defb 03ah,0eeh	; 7d6c
+	defb 033h,0eeh	; 7d6e
+	defb 02ch,0eeh	; 7d70
+	defb 025h,0eeh	; 7d72
 
 ; ======================================================================
 ; CODIGO 0x7d74..0x7ef6  (386 bytes)
@@ -4394,45 +4673,45 @@ L_7E47:
 	ret nz			;7e52
 	ld b,00ch		;7e53
 	ld hl,0e570h		;7e55
-L_7E58:
-	dec (hl)			;7e58
+la_cuenta_y_el_paso_del_centelleo:
+	dec (hl)			;7e58   ; un cuadro menos
 	ld a,(hl)			;7e59
 	inc l			;7e5a
-	dec a			;7e5b
+	dec a			;7e5b   ; al llegar a 1...
 	jr z,L_7E6D		;7e5c
-	inc a			;7e5e
+	inc a			;7e5e   ; ...o a cero, se cambia de paso
 	jr z,L_7E70		;7e5f
 	ld a,b			;7e61
-	cp 008h		;7e62
+	cp 008h		;7e62   ; por debajo de 8, un paso...
 	ld c,0f1h		;7e64
 	jr c,L_7E6A		;7e66
-	ld c,002h		;7e68
+	ld c,002h		;7e68   ; ...y por encima, el otro
 L_7E6A:
 	ld (hl),c			;7e6a
-	jr L_7E75		;7e6b
+	jr escribe_los_tres_bytes_del_centelleo		;7e6b
 L_7E6D:
 	inc (hl)			;7e6d
-	jr L_7E75		;7e6e
+	jr escribe_los_tres_bytes_del_centelleo		;7e6e
 L_7E70:
 	inc (hl)			;7e70
 	dec l			;7e71
 	ld (hl),020h		;7e72
 	inc l			;7e74
-L_7E75:
-	ld a,(hl)			;7e75
+escribe_los_tres_bytes_del_centelleo:
+	ld a,(hl)			;7e75   ; el byte
 	inc l			;7e76
-	ld e,(hl)			;7e77
+	ld e,(hl)			;7e77   ; y donde va
 	inc l			;7e78
 	ld d,(hl)			;7e79
-	ld (de),a			;7e7a
-	inc l			;7e7b
-	djnz L_7E58		;7e7c
+	ld (de),a			;7e7a   ; escrito
+	inc l			;7e7b   ; tres bytes por entrada
+	djnz la_cuenta_y_el_paso_del_centelleo		;7e7c
 	ret			;7e7e
 L_7E7F:
 	call 04224h		;7e7f   ; banco 0: borra_la_pantalla_entera
 	xor a			;7e82
 	ld (0e08fh),a		;7e83
-	call 09346h		;7e86   ; banco 10
+	call 09346h		;7e86   ; banco 2
 	ld hl,0f0f6h		;7e89
 	inc (hl)			;7e8c
 	ld a,(hl)			;7e8d
@@ -4450,41 +4729,50 @@ L_7E7F:
 	ld d,(hl)			;7ea0
 	ld (0e13ah),de		;7ea1
 	call 046e3h		;7ea5   ; banco 0: monta_la_fase_desde_el_decorado
-	ld hl,(0e08dh)		;7ea8   ; la distancia a la que sale el objeto siguiente
+	ld hl,(0e08dh)		;7ea8   ; lo que queda de fase
 	push hl			;7eab
 	ld hl,00000h		;7eac
 	ld (0e089h),hl		;7eaf   ; el marcador, cifras bajas (BCD)
-	ld (0e08dh),hl		;7eb2   ; la distancia a la que sale el objeto siguiente
-	ld (0e08bh),hl		;7eb5   ; el largo de la fase
+	ld (0e08dh),hl		;7eb2   ; lo que queda de fase
+	ld (0e08bh),hl		;7eb5   ; el TIEMPO que queda
 	call 0463fh		;7eb8   ; banco 0: empieza_una_vida
-	call 09431h		;7ebb   ; banco 10
+	call 09431h		;7ebb   ; banco 2
 	pop hl			;7ebe
-	ld (0e08dh),hl		;7ebf   ; la distancia a la que sale el objeto siguiente
+	ld (0e08dh),hl		;7ebf   ; lo que queda de fase
 	ld hl,00100h		;7ec2
-	ld (0e08bh),hl		;7ec5   ; el largo de la fase
+	ld (0e08bh),hl		;7ec5   ; el TIEMPO que queda
 	call 04232h		;7ec8   ; banco 0: borra_el_area_de_juego
 	call 051cdh		;7ecb
 	call 04995h		;7ece
 	call 049fch		;7ed1
 	call 049d2h		;7ed4
-	call 0966bh		;7ed7   ; banco 10
+	call 0966bh		;7ed7   ; banco 2
 	call 057fbh		;7eda
-	call 09689h		;7edd   ; banco 10
-	call L_6000		;7ee0
-	call L_6539		;7ee3
+	call 09689h		;7edd   ; banco 2
+	call monta_el_decorado		;7ee0
+	call anima_el_fondo		;7ee3
 	call 04265h		;7ee6   ; banco 0: sube_el_area_de_juego
 	ld c,002h		;7ee9
-	call 0ba2fh		;7eeb   ; banco 11
+	call 0ba2fh		;7eeb
 	xor a			;7eee
 	ld (0e009h),a		;7eef
 	ld (0e003h),a		;7ef2   ; el contador de cuadros
 	ret			;7ef5
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7ef6..0x7f0e  (24 bytes)
-DATA_7EF6:
-	defb 00dh,030h,0b4h,00eh,0f7h,0b4h,00fh,0b0h,0b5h,011h,07fh,0b6h,012h,038h,0b7h,013h	; 7ef6  .0...........8..
-	defb 027h,0b8h,014h,072h,0b9h,018h,007h,0bah	; 7f06  '..r....
+; DATOS escenas_de_la_demo: ocho entradas de 3 bytes que p01:7E93 elige con
+;   (0xF0F6) & 7: la fase (0xE092) y el puntero a su partida grabada (0xE13A).
+;   Las fases son 13, 14, 15, 17, 18, 19, 20, 24
+;   0x7ef6..0x7f0e  (24 bytes)
+DATA_escenas_de_la_demo:
+	defb 00dh,030h,0b4h	; 7ef6
+	defb 00eh,0f7h,0b4h	; 7ef9
+	defb 00fh,0b0h,0b5h	; 7efc
+	defb 011h,07fh,0b6h	; 7eff
+	defb 012h,038h,0b7h	; 7f02
+	defb 013h,027h,0b8h	; 7f05
+	defb 014h,072h,0b9h	; 7f08
+	defb 018h,007h,0bah	; 7f0b
 
 ; ======================================================================
 ; CODIGO 0x7f0e..0x7f62  (84 bytes)
@@ -4541,8 +4829,10 @@ L_7F5D:
 	jr L_7F48		;7f60
 
 ; ----------------------------------------------------------------------
-; DATOS sin identificar  0x7f62..0x8000  (158 bytes)
-DATA_7F62:
+; DATOS relleno_del_banco_1: 158 bytes a 0xFF hasta el final de los 8 KB del
+;   banco: espacio libre
+;   0x7f62..0x8000  (158 bytes)
+DATA_relleno_del_banco_1:
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 7f62  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 7f72  ................
 	defb 0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh,0ffh	; 7f82  ................
