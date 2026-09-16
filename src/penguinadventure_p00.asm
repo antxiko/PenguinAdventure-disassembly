@@ -4572,7 +4572,7 @@ prepara_el_texto_que_sube:
 	ld hl,0bcf8h		;5f10   ; el guion fijo de 0xBCF8
 	call 07e2dh		;5f13   ; banco 11: a descomprimirlo
 	call L_5B91		;5f16
-	ld a,(0e0b9h)		;5f19   ; y por que linea va
+	ld a,(0e0b9h)		;5f19   ; LA QUE DECIDE EL FINAL: la puso p02:82EA con la cuenta de pausas
 	ld hl,05f35h		;5f1c   ; la tabla de lineas de 0x5F35
 	ld de,05f63h		;5f1f
 	and a			;5f22
@@ -4617,11 +4617,13 @@ DATA_lineas_que_suben_5F35:
 	defb 086h,0bbh	; 5f61
 
 ; ----------------------------------------------------------------------
-; DATOS lineas_que_suben_5F63: punteros a las lineas del texto que sube: las 5
-;   de un tramo corto (0xE147 si (0xE0B9) es cero, p00:5F1F). Cada una apunta
-;   a un byte de duracion y un guion de descomprime de los bancos 10/11
+; DATOS el_final_bueno: EL FINAL BUENO: las cinco lineas que suben cuando
+;   (0xE0B9) vale cero (p00:5F1F). Se leen del 4 al 0, y descomprimidas dicen
+;   EPILOGUE / YOU HAVE SUCCEEDED IN / RESCUING THE PRINCESS AND / SAVING THE
+;   PENGUIN KINGDOM! / CONGRATULATIONS! -el alfabeto del cartucho es A = 0x21
+;   y el espacio 0x00-
 ;   0x5f63..0x5f6d  (10 bytes)
-DATA_lineas_que_suben_5F63:
+DATA_el_final_bueno:
 	defb 027h,0bbh	; 5f63
 	defb 007h,0bbh	; 5f65
 	defb 0e9h,0bah	; 5f67
@@ -4629,11 +4631,13 @@ DATA_lineas_que_suben_5F63:
 	defb 0c0h,0bah	; 5f6b
 
 ; ----------------------------------------------------------------------
-; DATOS lineas_que_suben_5F6D: punteros a las lineas del texto que sube: las 5
-;   del otro tramo corto (p00:5F25). Cada una apunta a un byte de duracion y
-;   un guion de descomprime de los bancos 10/11
+; DATOS el_final_malo: EL FINAL MALO: las cinco lineas de cuando (0xE0B9) NO
+;   vale cero (p00:5F25). Dicen EPILOGUE / YOU HAVE FAILED TO / RESCUE THE
+;   PRINCESS! / PLEASE TRY AGAIN!, y la quinta esta vacia. La primera, el
+;   EPILOGUE de 0xBAC0, es la MISMA que la del final bueno: los dos finales
+;   comparten rotulo y se separan en la linea siguiente
 ;   0x5f6d..0x5f77  (10 bytes)
-DATA_lineas_que_suben_5F6D:
+DATA_el_final_malo:
 	defb 082h,0bbh	; 5f6d
 	defb 06ch,0bbh	; 5f6f
 	defb 053h,0bbh	; 5f71

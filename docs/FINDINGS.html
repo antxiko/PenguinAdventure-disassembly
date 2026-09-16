@@ -96,6 +96,27 @@ audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
 <p>And they are not nine arbitrary keys: they are <b>exactly</b> the letters needed to spell those two names, and no others. If a keyboard code watches an odd handful of keys, those keys are the code&#x27;s alphabet.</p>
 <p><b>The two do not do the same thing.</b> NORIKO leaves 0xFE in 0xF0F7 and KAZUMI 0xFF. With 0xFE or more the CONTINUE appears (p02:8937 and p02:8A32), but with <b>exactly</b> 0xFE the game-over wipe skips the 143 bytes at 0xE160 and the 64 of the screen mirror (p02:8985): NORIKO also keeps what you are carrying.</p>
 <p>Both are verified in openMSX, not merely read off the listing. See <a href="IN-THE-EMULATOR.html">In the emulator</a>.</p>
+<h2 id="the-good-ending-depends-on-how-many-times-you-pause">The good ending depends on how many times you pause</h2>
+<p>The finding is <b>Manuel Pazos&#x27;s</b>, who told it at a talk. What this disassembly adds is where it is written in the binary and the exact rule.</p>
+<p>p02:81EE bumps the counter at <b>0xE0DE</b> every time you <b>enter</b> pause —not when you leave, so pausing and resuming counts as <b>one</b>—. And when stage 24 ends, p02:82DE reads it:</p>
+<pre><code>ld a,(0e0deh)   ; how many times it has been paused
+and 003h        ; its low two bits
+dec a
+ld c,000h
+jr z,...        ; if (count &amp; 3) == 1  -&gt;  c = 0
+inc c           ; anything else         -&gt;  c = 1</code></pre>
+<p>That <code>c</code> goes into 0xE0B9, and the ending text (p00:5F19) picks its list depending on whether it is zero:</p>
+<table><tr><th>times you paused</th><th>ending</th></tr><tr><td><b>1, 5, 9, 13, 17…</b></td><td><b>good</b> — the princess alive</td></tr><tr><td>0, 2, 3, 4, 6, 7, 8…</td><td>bad</td></tr></table>
+<p>That is: <b>the remainder of dividing by four has to be exactly 1</b>, and never pausing gives you the bad ending.</p>
+<p>Two details that change how you play. The count is <b>not</b> cleared when you lose a life —<code>reempieza</code> wipes from 0xE1F0 onwards and does not touch it— but it <b>is</b> cleared by CONTINUE: state 15 wipes 217 bytes from 0xE086 and 0xE0DE falls inside. If you continue, you are back to zero.</p>
+<p>And both texts are in the ROM, decompressed from bank 11. The cartridge&#x27;s alphabet is <code>A = 0x21</code> and space <code>0x00</code>:</p>
+<pre><code>EPILOGUE                        EPILOGUE
+YOU HAVE SUCCEEDED IN           YOU HAVE FAILED TO
+RESCUING THE PRINCESS AND       RESCUE THE PRINCESS!
+SAVING THE PENGUIN KINGDOM!     PLEASE TRY AGAIN!
+CONGRATULATIONS!</code></pre>
+<p>Both share the first line —the EPILOGUE at 0xBAC0— and part company on the next.</p>
+<p><b>Checked in motion</b>, not merely read: dropping the game into state 6, substate 5 —where the decision lives— with stage 24 set, <b>zero</b> pauses gives the bad ending and <b>one</b> gives the good one. And with a watchpoint on 0xE0B9 to see that what writes it is p02:82EA and not the game-over wipe, which is an easy mistake to make: that wipe also leaves it at zero and looks like a good ending.</p>
 <h2 id="the-cherry-is-the-only-symbol-that-counts-alone">The cherry is the only symbol that counts alone</h2>
 <p>The gambling machine&#x27;s reels take their symbol from the R register masked to four bits, and use that index into the sixteen-entry table at 0x7B34:</p>
 <pre><code>00 01 04 03 02 00 01 00 01 02 05 00 01 00 02 03</code></pre>

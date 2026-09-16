@@ -282,7 +282,7 @@ estado_5_jugar:
 	xor a			;81e7
 	ld (0e0b5h),a		;81e8
 	ld (0e126h),a		;81eb
-	ld hl,0e0deh		;81ee   ; la cuenta de veces que se ha parado
+	ld hl,0e0deh		;81ee   ; LA CUENTA DE PAUSAS, y de ella depende el final: sube al ENTRAR en pausa, no al salir, asi que parar y seguir cuenta UNA
 	inc (hl)			;81f1
 	ld a,03ah		;81f2   ; el efecto 0x3A, que reinicia las voces
 	call 0413ah		;81f4   ; banco 0: pide_sonido_si_esta_activo
@@ -393,6 +393,10 @@ estado_6_subestado_3:
 	dec (hl)			;82bc
 	ret nz			;82bd
 	jp avanza_el_subestado		;82be
+
+; ----------------------------------------------------------------------
+; ¿TOCA ALGO AL ACABAR ESTA FASE? Solo en las fases cuyo 1-2-3 de decorado vale 3, que son las multiplos de tres. En la 12 se apunta un 2 en 0xE0B9 y en la 24 se va a decidir el final; en las demas se salta un subestado y no pasa nada.
+; ----------------------------------------------------------------------
 estado_6_mira_si_toca_bonus:
 	djnz estado_6_subestado_5		;82c1
 	ld a,(0e093h)		;82c3   ; el valor 1-2-3 de la fase; el 1-2-3 del decorado
@@ -403,18 +407,23 @@ estado_6_mira_si_toca_bonus:
 	ld c,002h		;82cf
 	jr z,estado_6_apunta_el_bonus		;82d1
 	cp 018h		;82d3   ; ...o la 24
-	jr z,estado_6_bonus_de_la_24		;82d5
+	jr z,decide_el_final		;82d5
 estado_6_sin_bonus:
 	ld hl,0e001h		;82d7   ; el subestado
 	inc (hl)			;82da   ; se salta uno
 	jp avanza_el_subestado		;82db
-estado_6_bonus_de_la_24:
+
+; ----------------------------------------------------------------------
+; EL FINAL BUENO Y EL FINAL MALO, Y DE QUE DEPENDEN. Aqui se decide, y no depende de como se juegue: depende de LAS VECES QUE SE HAYA PULSADO LA PAUSA. Se cogen los dos bits bajos de 0xE0DE y se les resta uno; si queda cero -o sea, si la cuenta de pausas deja resto 1 al dividir entre cuatro- 0xE0B9 se queda a cero, y si no, a uno. Luego p00:5F19 escoge con esa 0xE0B9 cual de los dos textos sube al acabar: con cero el de 0x5F63, que dice que se ha rescatado a la princesa, y con uno el de 0x5F6D, que dice que no.
+; O sea que el final bueno pide haber pausado 1, 5, 9, 13... veces, y CERO no vale. El hallazgo es de MANUEL PAZOS, que lo conto en una charla; lo que hay aqui es donde esta escrito en el binario y la regla exacta.
+; ----------------------------------------------------------------------
+decide_el_final:
 	ld a,(0e0deh)		;82de   ; las veces que se ha parado
-	and 003h		;82e1
-	dec a			;82e3
-	ld c,000h		;82e4
+	and 003h		;82e1   ; sus dos bits bajos
+	dec a			;82e3   ; menos uno: solo el resto 1 deja cero
+	ld c,000h		;82e4   ; con resto 1, el final BUENO
 	jr z,estado_6_apunta_el_bonus		;82e6
-	inc c			;82e8
+	inc c			;82e8   ; y con cualquier otro, el malo
 estado_6_apunta_el_bonus:
 	ld a,c			;82e9
 	ld (0e0b9h),a		;82ea   ; que clase de bonus toca

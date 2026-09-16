@@ -2553,9 +2553,9 @@ D 0x565F 0x5667 cuatro_guiones_al_azar  cuatro punteros a guiones de pinta_sin_c
 F 0x565F 2
 D 0x5F35 0x5F63 lineas_que_suben_5F35  punteros a las lineas del texto que sube: las 23 del tramo largo (0xE149, p00:5ED5). Cada una apunta a un byte de duracion y un guion de descomprime de los bancos 10/11
 F 0x5F35 2
-D 0x5F63 0x5F6D lineas_que_suben_5F63  punteros a las lineas del texto que sube: las 5 de un tramo corto (0xE147 si (0xE0B9) es cero, p00:5F1F). Cada una apunta a un byte de duracion y un guion de descomprime de los bancos 10/11
+D 0x5F63 0x5F6D el_final_bueno  EL FINAL BUENO: las cinco lineas que suben cuando (0xE0B9) vale cero (p00:5F1F). Se leen del 4 al 0, y descomprimidas dicen EPILOGUE / YOU HAVE SUCCEEDED IN / RESCUING THE PRINCESS AND / SAVING THE PENGUIN KINGDOM! / CONGRATULATIONS! -el alfabeto del cartucho es A = 0x21 y el espacio 0x00-
 F 0x5F63 2
-D 0x5F6D 0x5F77 lineas_que_suben_5F6D  punteros a las lineas del texto que sube: las 5 del otro tramo corto (p00:5F25). Cada una apunta a un byte de duracion y un guion de descomprime de los bancos 10/11
+D 0x5F6D 0x5F77 el_final_malo  EL FINAL MALO: las cinco lineas de cuando (0xE0B9) NO vale cero (p00:5F25). Dicen EPILOGUE / YOU HAVE FAILED TO / RESCUE THE PRINCESS! / PLEASE TRY AGAIN!, y la quinta esta vacia. La primera, el EPILOGUE de 0xBAC0, es la MISMA que la del final bueno: los dos finales comparten rotulo y se separan en la linea siguiente
 F 0x5F6D 2
 D 0x5F99 0x5FA0 tira_5F99  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (nivel 0 de la barra de 0x381A) que lee pinta_guion_con_mascara; lo cargan p00:5F96 (7 bytes)
 F 0x5F99 16
@@ -2628,7 +2628,7 @@ L 0x5F01 prepara_el_texto_que_sube
 C 0x5F01 tres velocidades del texto
 C 0x5F10 el guion fijo de 0xBCF8
 C 0x5F13 banco 11: a descomprimirlo
-C 0x5F19 y por que linea va
+C 0x5F19 LA QUE DECIDE EL FINAL: la puso p02:82EA con la cuenta de pausas
 C 0x5F1C la tabla de lineas de 0x5F35
 L 0x42F4 esconde_todos_vuelta
 C 0x42F4 0xE0 en la fila del sprite

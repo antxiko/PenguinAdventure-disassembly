@@ -240,7 +240,7 @@ C 0x81D9 el bit sube al acarreo y baja al 0
 C 0x81DD la bandera de pausa
 C 0x81E0 se le da la vuelta
 C 0x81E4 ¿ha quedado en pausa o ha salido de ella?
-C 0x81EE la cuenta de veces que se ha parado
+C 0x81EE LA CUENTA DE PAUSAS, y de ella depende el final: sube al ENTRAR en pausa, no al salir, asi que parar y seguir cuenta UNA
 C 0x81F2 el efecto 0x3A, que reinicia las voces
 C 0x81F7 el sprite 0
 C 0x81FA 0xD0, que lo deja visible pero abajo del todo
@@ -520,6 +520,7 @@ C 0x8298 la espera
 C 0x829C una bandera
 L 0x82A5 estado_6_subestado_2
 L 0x82B7 estado_6_subestado_3
+B 0x82C1 ¿TOCA ALGO AL ACABAR ESTA FASE? Solo en las fases cuyo 1-2-3 de decorado vale 3, que son las multiplos de tres. En la 12 se apunta un 2 en 0xE0B9 y en la 24 se va a decidir el final; en las demas se salta un subestado y no pasa nada.
 L 0x82C1 estado_6_mira_si_toca_bonus
 C 0x82C6 solo en el 3 puede tocar
 C 0x82CD la 12...
@@ -527,8 +528,14 @@ C 0x82D3 ...o la 24
 L 0x82D7 estado_6_sin_bonus
 C 0x82D7 el subestado
 C 0x82DA se salta uno
-L 0x82DE estado_6_bonus_de_la_24
+B 0x82DE EL FINAL BUENO Y EL FINAL MALO, Y DE QUE DEPENDEN. Aqui se decide, y no depende de como se juegue: depende de LAS VECES QUE SE HAYA PULSADO LA PAUSA. Se cogen los dos bits bajos de 0xE0DE y se les resta uno; si queda cero -o sea, si la cuenta de pausas deja resto 1 al dividir entre cuatro- 0xE0B9 se queda a cero, y si no, a uno. Luego p00:5F19 escoge con esa 0xE0B9 cual de los dos textos sube al acabar: con cero el de 0x5F63, que dice que se ha rescatado a la princesa, y con uno el de 0x5F6D, que dice que no.
+B 0x82DE O sea que el final bueno pide haber pausado 1, 5, 9, 13... veces, y CERO no vale. El hallazgo es de MANUEL PAZOS, que lo conto en una charla; lo que hay aqui es donde esta escrito en el binario y la regla exacta.
+L 0x82DE decide_el_final
 C 0x82DE las veces que se ha parado
+C 0x82E1 sus dos bits bajos
+C 0x82E3 menos uno: solo el resto 1 deja cero
+C 0x82E4 con resto 1, el final BUENO
+C 0x82E8 y con cualquier otro, el malo
 L 0x82E9 estado_6_apunta_el_bonus
 C 0x82EA que clase de bonus toca
 L 0x82F8 estado_6_subestado_5

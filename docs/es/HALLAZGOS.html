@@ -96,6 +96,27 @@ audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
 <p>Y no son nueve teclas cualesquiera: son <b>exactamente</b> las letras que hacen falta para escribir esos dos nombres, y ninguna más. Si una clave de teclado vigila un puñado raro de teclas, esas teclas son el alfabeto de la clave.</p>
 <p><b>Las dos no hacen lo mismo.</b> NORIKO deja 0xFE en 0xF0F7 y KAZUMI 0xFF. Con 0xFE o más aparece el CONTINUE (p02:8937 y p02:8A32), pero con 0xFE <b>justo</b> el borrado del fin de partida se salta los 143 bytes de 0xE160 y los 64 del espejo de pantalla (p02:8985): NORIKO además conserva lo que se lleve encima.</p>
 <p>Las dos están comprobadas en openMSX, no sólo leídas. Ver <a href="EN-EL-EMULADOR.html">En el emulador</a>.</p>
+<h2 id="el-final-bueno-depende-de-cuantas-veces-pauses">El final bueno depende de cuántas veces pauses</h2>
+<p>El hallazgo es de <b>Manuel Pazos</b>, que lo contó en una charla. Lo que aporta este desensamblado es dónde está escrito en el binario y la regla exacta.</p>
+<p>p02:81EE sube el contador de <b>0xE0DE</b> cada vez que se <b>entra</b> en pausa —no al salir, así que parar y volver a seguir cuenta <b>una</b>—. Y al acabar la fase 24, p02:82DE lo lee:</p>
+<pre><code>ld a,(0e0deh)   ; las veces que se ha parado
+and 003h        ; sus dos bits bajos
+dec a
+ld c,000h
+jr z,...        ; si (cuenta &amp; 3) == 1  -&gt;  c = 0
+inc c           ; cualquier otra cosa    -&gt;  c = 1</code></pre>
+<p>Ese <code>c</code> va a 0xE0B9, y el texto del final (p00:5F19) escoge lista según valga cero o no:</p>
+<table><tr><th>veces que has pausado</th><th>final</th></tr><tr><td><b>1, 5, 9, 13, 17…</b></td><td><b>bueno</b> — la princesa viva</td></tr><tr><td>0, 2, 3, 4, 6, 7, 8…</td><td>malo</td></tr></table>
+<p>Es decir: <b>el resto de dividir entre cuatro tiene que ser exactamente 1</b>, y no pausar nunca da el final malo.</p>
+<p>Dos detalles que cambian cómo se juega. La cuenta <b>no</b> se borra al perder una vida —<code>reempieza</code> limpia de 0xE1F0 en adelante y no la toca—, pero <b>sí</b> se borra al usar el CONTINUE: el estado 15 limpia 217 bytes desde 0xE086 y 0xE0DE cae dentro. Si continúas, vuelves a cero.</p>
+<p>Y los dos textos están en la ROM, descomprimidos desde el banco 11. El alfabeto del cartucho es <code>A = 0x21</code> y el espacio <code>0x00</code>:</p>
+<pre><code>EPILOGUE                        EPILOGUE
+YOU HAVE SUCCEEDED IN           YOU HAVE FAILED TO
+RESCUING THE PRINCESS AND       RESCUE THE PRINCESS!
+SAVING THE PENGUIN KINGDOM!     PLEASE TRY AGAIN!
+CONGRATULATIONS!</code></pre>
+<p>Los dos comparten la primera línea —el EPILOGUE de 0xBAC0— y se separan en la siguiente.</p>
+<p><b>Comprobado en marcha</b>, no sólo leído: metiendo el juego en el estado 6, subestado 5 —que es donde está la decisión— con la fase 24 puesta, con <b>cero</b> pausas sale el final malo y con <b>una</b> el bueno. Y con un watchpoint sobre 0xE0B9 para ver que quien la escribe es p02:82EA y no el borrado del fin de partida, que es un error fácil de cometer: ese borrado también la deja a cero y parece un final bueno.</p>
 <h2 id="la-cereza-es-el-unico-simbolo-que-cuenta-suelto">La cereza es el único símbolo que cuenta suelto</h2>
 <p>Los rodillos de la máquina de apostar sacan su símbolo del registro R enmascarado a cuatro bits, y con ese índice leen la tabla de dieciséis de 0x7B34:</p>
 <pre><code>00 01 04 03 02 00 01 00 01 02 05 00 01 00 02 03</code></pre>

@@ -40,6 +40,61 @@ de pantalla (p02:8985): NORIKO además conserva lo que se lleve encima.
 Las dos están comprobadas en openMSX, no sólo leídas. Ver
 [En el emulador](EN-EL-EMULADOR.html).
 
+## El final bueno depende de cuántas veces pauses
+
+El hallazgo es de **Manuel Pazos**, que lo contó en una charla. Lo que aporta
+este desensamblado es dónde está escrito en el binario y la regla exacta.
+
+p02:81EE sube el contador de **0xE0DE** cada vez que se **entra** en pausa —no al
+salir, así que parar y volver a seguir cuenta **una**—. Y al acabar la fase 24,
+p02:82DE lo lee:
+
+```
+ld a,(0e0deh)   ; las veces que se ha parado
+and 003h        ; sus dos bits bajos
+dec a
+ld c,000h
+jr z,...        ; si (cuenta & 3) == 1  ->  c = 0
+inc c           ; cualquier otra cosa    ->  c = 1
+```
+
+Ese `c` va a 0xE0B9, y el texto del final (p00:5F19) escoge lista según valga
+cero o no:
+
+| veces que has pausado | final |
+|---|---|
+| **1, 5, 9, 13, 17…** | **bueno** — la princesa viva |
+| 0, 2, 3, 4, 6, 7, 8… | malo |
+
+Es decir: **el resto de dividir entre cuatro tiene que ser exactamente 1**, y no
+pausar nunca da el final malo.
+
+Dos detalles que cambian cómo se juega. La cuenta **no** se borra al perder una
+vida —`reempieza` limpia de 0xE1F0 en adelante y no la toca—, pero **sí** se
+borra al usar el CONTINUE: el estado 15 limpia 217 bytes desde 0xE086 y 0xE0DE
+cae dentro. Si continúas, vuelves a cero.
+
+Y los dos textos están en la ROM, descomprimidos desde el banco 11. El alfabeto
+del cartucho es `A = 0x21` y el espacio `0x00`:
+
+```
+EPILOGUE                        EPILOGUE
+YOU HAVE SUCCEEDED IN           YOU HAVE FAILED TO
+RESCUING THE PRINCESS AND       RESCUE THE PRINCESS!
+SAVING THE PENGUIN KINGDOM!     PLEASE TRY AGAIN!
+CONGRATULATIONS!
+```
+
+Los dos comparten la primera línea —el EPILOGUE de 0xBAC0— y se separan en la
+siguiente.
+
+**Comprobado en marcha**, no sólo leído: metiendo el juego en el estado 6,
+subestado 5 —que es donde está la decisión— con la fase 24 puesta, con **cero**
+pausas sale el final malo y con **una** el bueno. Y con un watchpoint sobre
+0xE0B9 para ver que quien la escribe es p02:82EA y no el borrado del fin de
+partida, que es un error fácil de cometer: ese borrado también la deja a cero y
+parece un final bueno.
+
 ## La cereza es el único símbolo que cuenta suelto
 
 Los rodillos de la máquina de apostar sacan su símbolo del registro R

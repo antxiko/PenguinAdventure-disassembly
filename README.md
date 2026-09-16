@@ -21,12 +21,12 @@ listing does not *lie* about what it reassembles.
 | reassembles byte for byte | yes, all 16 banks and the whole image |
 | traced code | 32,317 bytes |
 | identified data | 98,755 bytes |
-| listing | 39,168 lines |
+| listing | 39,181 lines |
 | entry points, each with its justification | 359 |
 | named labels | 827 |
-| anchored comments | 7,304 |
+| anchored comments | 7,308 |
 | explained data ranges | 1,412 |
-| commented instructions | 7,244 of 16,227 (44.6 %), and no routine under 10 % |
+| commented instructions | 7,248 of 16,227 (44.7 %), and no routine under 10 % |
 
 ## The cartridge
 

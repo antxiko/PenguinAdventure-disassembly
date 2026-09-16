@@ -40,6 +40,59 @@ the screen mirror (p02:8985): NORIKO also keeps what you are carrying.
 Both are verified in openMSX, not merely read off the listing. See
 [In the emulator](IN-THE-EMULATOR.html).
 
+## The good ending depends on how many times you pause
+
+The finding is **Manuel Pazos's**, who told it at a talk. What this disassembly
+adds is where it is written in the binary and the exact rule.
+
+p02:81EE bumps the counter at **0xE0DE** every time you **enter** pause —not when
+you leave, so pausing and resuming counts as **one**—. And when stage 24 ends,
+p02:82DE reads it:
+
+```
+ld a,(0e0deh)   ; how many times it has been paused
+and 003h        ; its low two bits
+dec a
+ld c,000h
+jr z,...        ; if (count & 3) == 1  ->  c = 0
+inc c           ; anything else         ->  c = 1
+```
+
+That `c` goes into 0xE0B9, and the ending text (p00:5F19) picks its list
+depending on whether it is zero:
+
+| times you paused | ending |
+|---|---|
+| **1, 5, 9, 13, 17…** | **good** — the princess alive |
+| 0, 2, 3, 4, 6, 7, 8… | bad |
+
+That is: **the remainder of dividing by four has to be exactly 1**, and never
+pausing gives you the bad ending.
+
+Two details that change how you play. The count is **not** cleared when you lose
+a life —`reempieza` wipes from 0xE1F0 onwards and does not touch it— but it
+**is** cleared by CONTINUE: state 15 wipes 217 bytes from 0xE086 and 0xE0DE
+falls inside. If you continue, you are back to zero.
+
+And both texts are in the ROM, decompressed from bank 11. The cartridge's
+alphabet is `A = 0x21` and space `0x00`:
+
+```
+EPILOGUE                        EPILOGUE
+YOU HAVE SUCCEEDED IN           YOU HAVE FAILED TO
+RESCUING THE PRINCESS AND       RESCUE THE PRINCESS!
+SAVING THE PENGUIN KINGDOM!     PLEASE TRY AGAIN!
+CONGRATULATIONS!
+```
+
+Both share the first line —the EPILOGUE at 0xBAC0— and part company on the next.
+
+**Checked in motion**, not merely read: dropping the game into state 6, substate
+5 —where the decision lives— with stage 24 set, **zero** pauses gives the bad
+ending and **one** gives the good one. And with a watchpoint on 0xE0B9 to see
+that what writes it is p02:82EA and not the game-over wipe, which is an easy
+mistake to make: that wipe also leaves it at zero and looks like a good ending.
+
 ## The cherry is the only symbol that counts alone
 
 The gambling machine's reels take their symbol from the R register masked to

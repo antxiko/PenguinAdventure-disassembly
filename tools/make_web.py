@@ -26,7 +26,7 @@ DATOS = 98755
 PENDIENTE = 0
 ETIQUETAS = 827
 INSTRUCCIONES = 16227
-COMENTADAS = 7244
+COMENTADAS = 7248
 FASES = 24
 TOTAL = CODIGO + DATOS + PENDIENTE
 
@@ -110,6 +110,18 @@ GALERIA = [
 
 HALLAZGOS = {
     "es": [
+        ("El final bueno depende de cuántas veces pauses",
+         "<p>El hallazgo es de <b>Manuel Pazos</b>, que lo contó en una charla; "
+         "lo que aporta este desensamblado es dónde está escrito y la regla "
+         "exacta. p02:81EE sube un contador cada vez que se <b>entra</b> en "
+         "pausa, y al acabar la fase 24 p02:82DE mira sus dos bits bajos y les "
+         "resta uno: si queda cero, la princesa sale viva.</p><p>O sea que hay "
+         "que haber pausado <b>1, 5, 9, 13…</b> veces —el resto de dividir "
+         "entre cuatro tiene que ser 1— y <b>no pausar nunca da el final "
+         "malo</b>. La cuenta sobrevive a perder una vida, pero el CONTINUE la "
+         "borra. Los dos textos están en la ROM: <i>YOU HAVE SUCCEEDED IN "
+         "RESCUING THE PRINCESS</i> y <i>YOU HAVE FAILED TO RESCUE THE "
+         "PRINCESS</i>.</p>"),
         ("Dos claves de teclado: NORIKO y KAZUMI",
          "<p>Se teclean en la pantalla del título y encienden el "
          "<b>CONTINUE</b>, que sin ellas no existe. p02:9522 vigila NUEVE "
@@ -166,6 +178,17 @@ HALLAZGOS = {
          "trazador se salía al banco vecino por la puerta de atrás.</p>"),
     ],
     "en": [
+        ("The good ending depends on how many times you pause",
+         "<p>The finding is <b>Manuel Pazos&rsquo;s</b>, who told it at a talk; "
+         "what this disassembly adds is where it is written and the exact rule. "
+         "p02:81EE bumps a counter every time you <b>enter</b> pause, and when "
+         "stage 24 ends p02:82DE takes its low two bits and subtracts one: if "
+         "nothing is left, the princess comes out alive.</p><p>So you have to "
+         "have paused <b>1, 5, 9, 13…</b> times —the remainder of dividing by "
+         "four has to be 1— and <b>never pausing gives you the bad ending</b>. "
+         "The count survives losing a life, but CONTINUE wipes it. Both texts "
+         "are in the ROM: <i>YOU HAVE SUCCEEDED IN RESCUING THE PRINCESS</i> "
+         "and <i>YOU HAVE FAILED TO RESCUE THE PRINCESS</i>.</p>"),
         ("Two keyboard codes: NORIKO and KAZUMI",
          "<p>You type them on the title screen and they turn on "
          "<b>CONTINUE</b>, which does not exist without them. p02:9522 watches "
