@@ -131,10 +131,13 @@ que ocupa el sitio de la princesa.
 
 ![El árbol y los dos finales](../imagenes/escenas.png)
 
-Con la figura de nueve sprites de 0xA456 en el árbol y en el final bueno, y
-los dos sprites de 0xAE07 en el malo. Cotejadas con openMSX: las tablas, la
-pantalla con sus mensajes y esos sprites, cero diferencias. El pingüino que
-entra andando no está dibujado: su recorrido no sale de una tabla fija.
+Encima, los sprites tal como están cuando sale el mensaje: en el árbol, la
+figura de nueve de 0xA456 y la manzana que ha caído, quieta en la última de las
+diecisiete parejas de 0xAD88; en el final bueno, esa misma figura; y en el
+malo, el pingüino de espaldas llorando delante del rey (el llanto de 0xADEF),
+con los dos sprites de 0xAE07. Cotejadas con openMSX: las tablas, la pantalla
+con sus mensajes y los sprites, que son los de un cuadro de verdad, ni uno de
+más ni uno de menos. Cero diferencias.
 
 ## El espacio
 

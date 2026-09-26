@@ -132,10 +132,13 @@ what takes the princess's place.
 
 ![The tree and the two endings](imagenes/escenas.png)
 
-With the nine-sprite figure at 0xA456 in the tree and the good ending, and the
-two sprites at 0xAE07 in the bad one. Checked against openMSX: the tables, the
-screen with its messages and those sprites, zero differences. The penguin
-walking in is not drawn: its path does not come from a fixed table.
+On top, the sprites as they are when the message appears: in the tree, the
+nine-sprite figure at 0xA456 and the apple that has fallen, resting on the last
+of the seventeen pairs at 0xAD88; in the good ending, that same figure; and in
+the bad one, the penguin seen from behind, crying in front of the king (the
+tears at 0xADEF), with the two sprites at 0xAE07. Checked against openMSX: the
+tables, the screen with its messages and the sprites, which are those of a real
+frame, not one more and not one fewer. Zero differences.
 
 ## Space
 
