@@ -107,13 +107,29 @@ The last 0x30 of every stage are nine cuts (p01:65CF). Four of them load
 characters and the other five copy onto the map a strip bigger than the one
 before: whatever is approaching. On the stages whose 1-2-3 counter is 3 —3, 6,
 9... up to 24— what approaches is a **dinosaur**, and the fight follows, state
-7.
+7 (below).
 
 ![The dinosaur](imagenes/dinosaurio.png)
 
 On the rest, the goal: two penguins cheering.
 
 ![The goal](imagenes/meta.png)
+
+## The fight
+
+When the dinosaur arrives, four blocks of ice fall from the sky and stay on the
+road (p03:B12B). The dinosaur moves between five columns and always looks
+towards the penguin: nine drawings, three steps by three sides (0xA842). Every
+so often it throws something (p03:B184): first it blinks as a warning, then it
+aims and comes down in three stretches, and in the last one, if it hits you,
+you lose the life and nothing saves you. It takes twenty hits. On the
+twentieth the ice cracks, a hole opens and the dinosaur sinks in ten steps.
+
+![The fight](imagenes/pelea.png)
+
+At the top, the four moments; below, the nine drawings. It all comes from the
+tables and is checked against more than three thousand openMSX dumps of stages
+3, 6 and 9: zero differences.
 
 ## The tree and the two endings
 
@@ -139,6 +155,13 @@ the bad one, the penguin seen from behind, crying in front of the king (the
 tears at 0xADEF), with the two sprites at 0xAE07. Checked against openMSX: the
 tables, the screen with its messages and the sprites, which are those of a real
 frame, not one more and not one fewer. Zero differences.
+
+In all three scenes the penguin walks in from the bottom, seen from behind, and
+goes up one row every four frames (p03:ACE6). In the tree it eats the apple
+that falls and bounces (0xAD88); in the good ending it jumps next to the
+princess (0xADBA); in the bad one, it cries (0xADD7 and 0xADEF).
+
+![What moves in the scenes](imagenes/escenas_andando.png)
 
 ## Space
 

@@ -4,26 +4,12 @@ Lo que no se sabe, dicho como lo que es. Cada byte del cartucho está asignado a
 código o a datos y el listado reensambla byte a byte, pero eso no quiere decir
 que todo esté **entendido**.
 
-## La pelea con el dinosaurio
-
-Está localizada pero no dibujada. Detrás del dinosaurio viene el estado 7 con
-0xE530 puesto: caen del cielo cuatro bloques que se quedan en la carretera
-(0xE550, cada ranura sube hasta 5), lo que se lanza de 0xE540 apunta al
-jugador y el blanco de 0xE535 aguanta veinte aciertos (0xE53C). Lo que se ve en
-el emulador no se ha reconstruido todavía desde las tablas, y por eso no está
-entre los dibujos.
-
 ## Qué banda de distancia es la de cerca
 
 Los bichos escogen uno de sus cuatro dibujos por el byte alto de ix+6 (0x60,
 0x78, 0x90 y 0xA8, p09:AA86), y en la lámina van del más pequeño al más grande.
 Qué banda corresponde a lo que está cerca no se ha medido: los volcados no lo
 zanjan porque los bichos que más salen saltan y su fila no dice la distancia.
-
-## El decorado 9
-
-Lo pone p03:B932 en una escena aparte, fuera de las veinticuatro fases. No se
-ha montado ni cotejado, y por eso no está con los otros nueve.
 
 ## La cabecera del Game Master mete la fase donde el Game Master espera vidas
 

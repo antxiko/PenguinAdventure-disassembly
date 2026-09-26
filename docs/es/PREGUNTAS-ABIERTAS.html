@@ -85,12 +85,8 @@ audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
 <div class="w"><nav class="top"><a href="index.html">Portada</a><a href="EMPEZAR.html">Empezar</a><a href="EL-JUEGO.html">El juego</a><a href="EL-CARTUCHO.html">El cartucho</a><a href="EL-CODIGO.html">El código</a><a href="HALLAZGOS.html">Hallazgos</a><a href="EN-EL-EMULADOR.html">En el emulador</a><a href="PREGUNTAS-ABIERTAS.html" style=color:var(--tinta)>Preguntas abiertas</a><a href="../OPEN-QUESTIONS.html" style="margin-left:auto;color:var(--oro)">English</a></nav>
 <h1 id="preguntas-abiertas">Preguntas abiertas</h1>
 <p>Lo que no se sabe, dicho como lo que es. Cada byte del cartucho está asignado a código o a datos y el listado reensambla byte a byte, pero eso no quiere decir que todo esté <b>entendido</b>.</p>
-<h2 id="la-pelea-con-el-dinosaurio">La pelea con el dinosaurio</h2>
-<p>Está localizada pero no dibujada. Detrás del dinosaurio viene el estado 7 con 0xE530 puesto: caen del cielo cuatro bloques que se quedan en la carretera (0xE550, cada ranura sube hasta 5), lo que se lanza de 0xE540 apunta al jugador y el blanco de 0xE535 aguanta veinte aciertos (0xE53C). Lo que se ve en el emulador no se ha reconstruido todavía desde las tablas, y por eso no está entre los dibujos.</p>
 <h2 id="que-banda-de-distancia-es-la-de-cerca">Qué banda de distancia es la de cerca</h2>
 <p>Los bichos escogen uno de sus cuatro dibujos por el byte alto de ix+6 (0x60, 0x78, 0x90 y 0xA8, p09:AA86), y en la lámina van del más pequeño al más grande. Qué banda corresponde a lo que está cerca no se ha medido: los volcados no lo zanjan porque los bichos que más salen saltan y su fila no dice la distancia.</p>
-<h2 id="el-decorado-9">El decorado 9</h2>
-<p>Lo pone p03:B932 en una escena aparte, fuera de las veinticuatro fases. No se ha montado ni cotejado, y por eso no está con los otros nueve.</p>
 <h2 id="la-cabecera-del-game-master-mete-la-fase-donde-el-game-master-espera-vidas">La cabecera del Game Master mete la fase donde el Game Master espera vidas</h2>
 <p>La segunda cabecera, la de 0x4010, declara trece fases y da las direcciones de lo que el Konami Game Master sabe tocar. Una de ellas cae donde el Game Master espera el contador de vidas y lo que hay ahí es la fase. Puede ser deliberado —para que el Game Master deje cambiar la fase desde su MODIFY MODE— o puede ser un descuido de Konami. No hay forma de decidirlo desde este binario solo.</p>
 <h2 id="que-son-cuatro-de-los-seis-simbolos-de-la-maquina">Qué son cuatro de los seis símbolos de la máquina</h2>

@@ -85,12 +85,8 @@ audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
 <div class="w"><nav class="top"><a href="index.html">Home</a><a href="GETTING-STARTED.html">Start</a><a href="THE-GAME.html">The game</a><a href="THE-CARTRIDGE.html">The cartridge</a><a href="THE-CODE.html">The code</a><a href="FINDINGS.html">Findings</a><a href="IN-THE-EMULATOR.html">In the emulator</a><a href="OPEN-QUESTIONS.html" style=color:var(--tinta)>Open questions</a><a href="es/PREGUNTAS-ABIERTAS.html" style="margin-left:auto;color:var(--oro)">Castellano</a></nav>
 <h1 id="open-questions">Open questions</h1>
 <p>What is not known, said as what it is. Every byte of the cartridge is assigned to code or data and the listing reassembles byte for byte, but that does not mean everything is <b>understood</b>.</p>
-<h2 id="the-fight-with-the-dinosaur">The fight with the dinosaur</h2>
-<p>It is located but not drawn. The dinosaur is followed by state 7 with 0xE530 set: four blocks fall from the sky and stay on the road (0xE550, each slot counts up to 5), what gets thrown from 0xE540 aims at the player and the target at 0xE535 takes twenty hits (0xE53C). What the emulator shows has not been rebuilt from the tables yet, so it is not among the drawings.</p>
 <h2 id="which-distance-band-is-the-near-one">Which distance band is the near one</h2>
 <p>Creatures pick one of their four drawings from the high byte of ix+6 (0x60, 0x78, 0x90 and 0xA8, p09:AA86), and on the sheet they go from smallest to biggest. Which band means close has not been measured: the dumps do not settle it because the most common creatures jump, and their row does not tell the distance.</p>
-<h2 id="backdrop-9">Backdrop 9</h2>
-<p>p03:B932 sets it for a separate scene, outside the twenty-four stages. It has not been built or checked, so it is not with the other nine.</p>
 <h2 id="the-game-master-header-puts-the-stage-where-the-game-master-expects-lives">The Game Master header puts the stage where the Game Master expects lives</h2>
 <p>The second header, the one at 0x4010, declares thirteen stages and gives the addresses of the things the Konami Game Master knows how to touch. One of them lands where the Game Master expects the lives counter, and what is there is the stage. It may be deliberate —so that the Game Master lets you change the stage from its MODIFY MODE— or it may be a slip by Konami. There is no way to decide from this binary alone.</p>
 <h2 id="what-four-of-the-machine-s-six-symbols-are">What four of the machine&#x27;s six symbols are</h2>

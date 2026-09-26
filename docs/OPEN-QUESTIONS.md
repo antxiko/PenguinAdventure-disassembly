@@ -4,14 +4,6 @@ What is not known, said as what it is. Every byte of the cartridge is assigned t
 code or data and the listing reassembles byte for byte, but that does not mean
 everything is **understood**.
 
-## The fight with the dinosaur
-
-It is located but not drawn. The dinosaur is followed by state 7 with 0xE530
-set: four blocks fall from the sky and stay on the road (0xE550, each slot
-counts up to 5), what gets thrown from 0xE540 aims at the player and the target
-at 0xE535 takes twenty hits (0xE53C). What the emulator shows has not been
-rebuilt from the tables yet, so it is not among the drawings.
-
 ## Which distance band is the near one
 
 Creatures pick one of their four drawings from the high byte of ix+6 (0x60,
@@ -19,11 +11,6 @@ Creatures pick one of their four drawings from the high byte of ix+6 (0x60,
 biggest. Which band means close has not been measured: the dumps do not settle
 it because the most common creatures jump, and their row does not tell the
 distance.
-
-## Backdrop 9
-
-p03:B932 sets it for a separate scene, outside the twenty-four stages. It has
-not been built or checked, so it is not with the other nine.
 
 ## The Game Master header puts the stage where the Game Master expects lives
 

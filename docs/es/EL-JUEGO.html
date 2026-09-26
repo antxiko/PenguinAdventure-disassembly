@@ -111,15 +111,21 @@ audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
 <p><img src="../imagenes/bichos.png" alt="Los bichos"></p>
 <p>La clase 7 no se ve. p09:B8B3 le pone el color 0 —transparente— salvo que se lleve 0xE16A, y entonces el 5.</p>
 <h2 id="el-dinosaurio-y-la-meta">El dinosaurio y la meta</h2>
-<p>Las últimas 0x30 de cada fase son nueve cortes (p01:65CF). En cuatro se cargan caracteres y en los otros cinco se copia sobre el mapa una tira más grande que la anterior: lo que se acerca. En las fases cuyo 1-2-3 vale 3 —la 3, la 6, la 9... hasta la 24— lo que se acerca es un <b>dinosaurio</b>, y detrás viene la pelea, el estado 7.</p>
+<p>Las últimas 0x30 de cada fase son nueve cortes (p01:65CF). En cuatro se cargan caracteres y en los otros cinco se copia sobre el mapa una tira más grande que la anterior: lo que se acerca. En las fases cuyo 1-2-3 vale 3 —la 3, la 6, la 9... hasta la 24— lo que se acerca es un <b>dinosaurio</b>, y detrás viene la pelea, el estado 7 (más abajo).</p>
 <p><img src="../imagenes/dinosaurio.png" alt="El dinosaurio"></p>
 <p>En las demás, la meta: dos pingüinos que celebran.</p>
 <p><img src="../imagenes/meta.png" alt="La meta"></p>
+<h2 id="la-pelea">La pelea</h2>
+<p>Cuando el dinosaurio llega, caen del cielo cuatro bloques de hielo que se quedan en la carretera (p03:B12B). El dinosaurio se mueve entre cinco columnas y siempre mira hacia donde está el pingüino: nueve dibujos, tres pasos por tres lados (0xA842). Cada poco lanza algo (p03:B184): primero parpadea como aviso, luego apunta y baja en tres tramos, y en el último, si te da, pierdes la vida sin que nada te salve. Hacen falta veinte aciertos. Al vigésimo el hielo se agrieta, se abre un agujero y el dinosaurio se hunde en diez pasos.</p>
+<p><img src="../imagenes/pelea.png" alt="La pelea"></p>
+<p>Arriba, los cuatro momentos; abajo, los nueve dibujos. Todo sale de las tablas y está cotejado con más de tres mil volcados de openMSX de las fases 3, 6 y 9: cero diferencias.</p>
 <h2 id="el-arbol-y-los-dos-finales">El árbol y los dos finales</h2>
 <p>Al acabar las fases 12 y 24, p02:82C3 deja en 0xE0B9 qué escena toca y p03:AA80 la monta: 2 tras la 12, el <b>árbol</b> de la mitad del camino; tras la 24, 0 el final <b>bueno</b> y 1 el <b>malo</b>, según las veces que se haya pausado (ver <a href="HALLAZGOS.html">Hallazgos</a>).</p>
 <p>Las tres se montan igual. Los caracteres, de p00:48C3 (el jardín) o p00:48FC (el palacio); la pantalla, 32 columnas de 21 filas del banco 13 (0xB2EC el jardín, 0xB5F1 el palacio) que p01:7B85 pinta de una en una <b>del centro hacia fuera</b>; y encima, los mensajes, guiones comprimidos que p01:7BE7 descomprime. El final malo usa el mismo palacio, pero mientras se pintan sus diez columnas del centro p01:7BC4 copia en las filas 8 a 12 los cincuenta bytes de 0xB963: lo que ocupa el sitio de la princesa.</p>
 <p><img src="../imagenes/escenas.png" alt="El árbol y los dos finales"></p>
 <p>Encima, los sprites tal como están cuando sale el mensaje: en el árbol, la figura de nueve de 0xA456 y la manzana que ha caído, quieta en la última de las diecisiete parejas de 0xAD88; en el final bueno, esa misma figura; y en el malo, el pingüino de espaldas llorando delante del rey (el llanto de 0xADEF), con los dos sprites de 0xAE07. Cotejadas con openMSX: las tablas, la pantalla con sus mensajes y los sprites, que son los de un cuadro de verdad, ni uno de más ni uno de menos. Cero diferencias.</p>
+<p>En las tres escenas el pingüino entra de espaldas por abajo y sube una fila cada cuatro cuadros (p03:ACE6). En el árbol se come la manzana que cae y rebota (0xAD88); en el final bueno salta junto a la princesa (0xADBA); en el malo, llora (0xADD7 y 0xADEF).</p>
+<p><img src="../imagenes/escenas_andando.png" alt="Lo que se mueve en las escenas"></p>
 <h2 id="el-espacio">El espacio</h2>
 <p>El bonus no es una fase: es el decorado 8, que p03:B602 pone a mano. Se sube tocando lo que cruza volando por encima de la carretera: p03:B3A0 pone el modo 1 (0xE0A2), escoge una de las diez listas con 0xE0AD y deja al pingüino en el estado 0x10, el de subir.</p>
 <p><img src="../imagenes/espacio.png" alt="El espacio"></p>

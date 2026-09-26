@@ -111,15 +111,21 @@ audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
 <p><img src="imagenes/bichos.png" alt="The creatures"></p>
 <p>Class 7 is invisible. p09:B8B3 gives it colour 0 —transparent— unless 0xE16A is carried, and then colour 5.</p>
 <h2 id="the-dinosaur-and-the-goal">The dinosaur and the goal</h2>
-<p>The last 0x30 of every stage are nine cuts (p01:65CF). Four of them load characters and the other five copy onto the map a strip bigger than the one before: whatever is approaching. On the stages whose 1-2-3 counter is 3 —3, 6, 9... up to 24— what approaches is a <b>dinosaur</b>, and the fight follows, state 7.</p>
+<p>The last 0x30 of every stage are nine cuts (p01:65CF). Four of them load characters and the other five copy onto the map a strip bigger than the one before: whatever is approaching. On the stages whose 1-2-3 counter is 3 —3, 6, 9... up to 24— what approaches is a <b>dinosaur</b>, and the fight follows, state 7 (below).</p>
 <p><img src="imagenes/dinosaurio.png" alt="The dinosaur"></p>
 <p>On the rest, the goal: two penguins cheering.</p>
 <p><img src="imagenes/meta.png" alt="The goal"></p>
+<h2 id="the-fight">The fight</h2>
+<p>When the dinosaur arrives, four blocks of ice fall from the sky and stay on the road (p03:B12B). The dinosaur moves between five columns and always looks towards the penguin: nine drawings, three steps by three sides (0xA842). Every so often it throws something (p03:B184): first it blinks as a warning, then it aims and comes down in three stretches, and in the last one, if it hits you, you lose the life and nothing saves you. It takes twenty hits. On the twentieth the ice cracks, a hole opens and the dinosaur sinks in ten steps.</p>
+<p><img src="imagenes/pelea.png" alt="The fight"></p>
+<p>At the top, the four moments; below, the nine drawings. It all comes from the tables and is checked against more than three thousand openMSX dumps of stages 3, 6 and 9: zero differences.</p>
 <h2 id="the-tree-and-the-two-endings">The tree and the two endings</h2>
 <p>When stages 12 and 24 end, p02:82C3 leaves in 0xE0B9 which scene comes next and p03:AA80 builds it: 2 after stage 12, the <b>tree</b> halfway through; after stage 24, 0 for the <b>good</b> ending and 1 for the <b>bad</b> one, depending on how many times you paused (see <a href="FINDINGS.html">Findings</a>).</p>
 <p>All three are built the same way. The characters, from p00:48C3 (the garden) or p00:48FC (the palace); the screen, 32 columns of 21 rows in bank 13 (0xB2EC the garden, 0xB5F1 the palace) that p01:7B85 paints one at a time <b>from the middle outwards</b>; and on top, the messages, compressed scripts p01:7BE7 unpacks. The bad ending uses the same palace, but while its ten middle columns are being painted p01:7BC4 copies into rows 8 to 12 the fifty bytes at 0xB963: what takes the princess&#x27;s place.</p>
 <p><img src="imagenes/escenas.png" alt="The tree and the two endings"></p>
 <p>On top, the sprites as they are when the message appears: in the tree, the nine-sprite figure at 0xA456 and the apple that has fallen, resting on the last of the seventeen pairs at 0xAD88; in the good ending, that same figure; and in the bad one, the penguin seen from behind, crying in front of the king (the tears at 0xADEF), with the two sprites at 0xAE07. Checked against openMSX: the tables, the screen with its messages and the sprites, which are those of a real frame, not one more and not one fewer. Zero differences.</p>
+<p>In all three scenes the penguin walks in from the bottom, seen from behind, and goes up one row every four frames (p03:ACE6). In the tree it eats the apple that falls and bounces (0xAD88); in the good ending it jumps next to the princess (0xADBA); in the bad one, it cries (0xADD7 and 0xADEF).</p>
+<p><img src="imagenes/escenas_andando.png" alt="What moves in the scenes"></p>
 <h2 id="space">Space</h2>
 <p>The bonus stage is not a stage: it is backdrop 8, which p03:B602 sets by hand. You go up by touching what flies across above the road: p03:B3A0 sets mode 1 (0xE0A2), picks one of the ten lists with 0xE0AD and leaves the penguin in state 0x10, the one for going up.</p>
 <p><img src="imagenes/espacio.png" alt="Space"></p>

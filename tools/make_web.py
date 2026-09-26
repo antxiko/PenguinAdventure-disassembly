@@ -89,6 +89,15 @@ GALERIA = [
      "The dinosaur that closes every third stage, at the five sizes it has "
      "as it approaches: the 0xA76B strips p01:6697 copies at 0x20, 0x10, 5, 2 "
      "and 0 from the goal. The backdrop picks its colour."),
+    ("pelea.png",
+     "La pelea, el estado 7: caen los cuatro bloques, el dinosaurio lanza "
+     "(0xB212) y a los veinte aciertos el hielo se agrieta y se hunde "
+     "(0xAE0A, 0xADA2, 0xAB60). Debajo, sus nueve dibujos de 0xA842: tres "
+     "pasos por tres lados, porque mira hacia el pingüino.",
+     "The fight, state 7: the four blocks fall, the dinosaur throws (0xB212) "
+     "and after twenty hits the ice cracks and it sinks (0xAE0A, 0xADA2, "
+     "0xAB60). Below, its nine drawings at 0xA842: three steps by three "
+     "sides, because it looks towards the penguin."),
     ("escenas.png",
      "Las escenas de p03:AA80: el árbol tras la fase 12 y, tras la 24, el "
      "final bueno y el malo, con sus mensajes. Pantallas de 32 columnas del "
@@ -98,6 +107,15 @@ GALERIA = [
      "good and the bad endings, with their messages. 32-column screens from "
      "bank 13 painted from the middle outwards; in the bad ending the 0xB963 "
      "piece takes the princess's place."),
+    ("escenas_andando.png",
+     "Lo que se mueve en las escenas: el pingüino entra de espaldas y sube una "
+     "fila cada cuatro cuadros (p03:ACE6); en el árbol cae y rebota la manzana "
+     "(0xAD88), en el final bueno salta (0xADBA) y en el malo llora (0xADD7 y "
+     "0xADEF).",
+     "What moves in the scenes: the penguin walks in from behind and goes up "
+     "one row every four frames (p03:ACE6); in the tree the apple falls and "
+     "bounces (0xAD88), in the good ending it jumps (0xADBA) and in the bad "
+     "one it cries (0xADD7 and 0xADEF)."),
     ("espacio.png",
      "El espacio, el bonus: la Tierra, el pingüino y los meteoritos, que son "
      "cosas hechas de caracteres (0x15 a 0x19) con dieciséis dibujos que "

@@ -106,13 +106,29 @@ Las últimas 0x30 de cada fase son nueve cortes (p01:65CF). En cuatro se cargan
 caracteres y en los otros cinco se copia sobre el mapa una tira más grande que
 la anterior: lo que se acerca. En las fases cuyo 1-2-3 vale 3 —la 3, la 6, la
 9... hasta la 24— lo que se acerca es un **dinosaurio**, y detrás viene la
-pelea, el estado 7.
+pelea, el estado 7 (más abajo).
 
 ![El dinosaurio](../imagenes/dinosaurio.png)
 
 En las demás, la meta: dos pingüinos que celebran.
 
 ![La meta](../imagenes/meta.png)
+
+## La pelea
+
+Cuando el dinosaurio llega, caen del cielo cuatro bloques de hielo que se quedan
+en la carretera (p03:B12B). El dinosaurio se mueve entre cinco columnas y
+siempre mira hacia donde está el pingüino: nueve dibujos, tres pasos por tres
+lados (0xA842). Cada poco lanza algo (p03:B184): primero parpadea como aviso,
+luego apunta y baja en tres tramos, y en el último, si te da, pierdes la vida
+sin que nada te salve. Hacen falta veinte aciertos. Al vigésimo el hielo se
+agrieta, se abre un agujero y el dinosaurio se hunde en diez pasos.
+
+![La pelea](../imagenes/pelea.png)
+
+Arriba, los cuatro momentos; abajo, los nueve dibujos. Todo sale de las tablas
+y está cotejado con más de tres mil volcados de openMSX de las fases 3, 6 y 9:
+cero diferencias.
 
 ## El árbol y los dos finales
 
@@ -138,6 +154,13 @@ malo, el pingüino de espaldas llorando delante del rey (el llanto de 0xADEF),
 con los dos sprites de 0xAE07. Cotejadas con openMSX: las tablas, la pantalla
 con sus mensajes y los sprites, que son los de un cuadro de verdad, ni uno de
 más ni uno de menos. Cero diferencias.
+
+En las tres escenas el pingüino entra de espaldas por abajo y sube una fila cada
+cuatro cuadros (p03:ACE6). En el árbol se come la manzana que cae y rebota
+(0xAD88); en el final bueno salta junto a la princesa (0xADBA); en el malo,
+llora (0xADD7 y 0xADEF).
+
+![Lo que se mueve en las escenas](../imagenes/escenas_andando.png)
 
 ## El espacio
 
