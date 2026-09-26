@@ -115,6 +115,11 @@ audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
 <p><img src="../imagenes/dinosaurio.png" alt="El dinosaurio"></p>
 <p>En las demás, la meta: dos pingüinos que celebran.</p>
 <p><img src="../imagenes/meta.png" alt="La meta"></p>
+<h2 id="el-arbol-y-los-dos-finales">El árbol y los dos finales</h2>
+<p>Al acabar las fases 12 y 24, p02:82C3 deja en 0xE0B9 qué escena toca y p03:AA80 la monta: 2 tras la 12, el <b>árbol</b> de la mitad del camino; tras la 24, 0 el final <b>bueno</b> y 1 el <b>malo</b>, según las veces que se haya pausado (ver <a href="HALLAZGOS.html">Hallazgos</a>).</p>
+<p>Las tres se montan igual. Los caracteres, de p00:48C3 (el jardín) o p00:48FC (el palacio); la pantalla, 32 columnas de 21 filas del banco 13 (0xB2EC el jardín, 0xB5F1 el palacio) que p01:7B85 pinta de una en una <b>del centro hacia fuera</b>; y encima, los mensajes, guiones comprimidos que p01:7BE7 descomprime. El final malo usa el mismo palacio, pero mientras se pintan sus diez columnas del centro p01:7BC4 copia en las filas 8 a 12 los cincuenta bytes de 0xB963: lo que ocupa el sitio de la princesa.</p>
+<p><img src="../imagenes/escenas.png" alt="El árbol y los dos finales"></p>
+<p>Con la figura de nueve sprites de 0xA456 en el árbol y en el final bueno, y los dos sprites de 0xAE07 en el malo. Cotejadas con openMSX: las tablas, la pantalla con sus mensajes y esos sprites, cero diferencias. El pingüino que entra andando no está dibujado: su recorrido no sale de una tabla fija.</p>
 <h2 id="el-espacio">El espacio</h2>
 <p>El bonus no es una fase: es el decorado 8, que p03:B602 pone a mano. Se sube tocando lo que cruza volando por encima de la carretera: p03:B3A0 pone el modo 1 (0xE0A2), escoge una de las diez listas con 0xE0AD y deja al pingüino en el estado 0x10, el de subir.</p>
 <p><img src="../imagenes/espacio.png" alt="El espacio"></p>

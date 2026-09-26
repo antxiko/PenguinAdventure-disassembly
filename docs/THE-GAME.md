@@ -115,6 +115,28 @@ On the rest, the goal: two penguins cheering.
 
 ![The goal](imagenes/meta.png)
 
+## The tree and the two endings
+
+When stages 12 and 24 end, p02:82C3 leaves in 0xE0B9 which scene comes next
+and p03:AA80 builds it: 2 after stage 12, the **tree** halfway through; after
+stage 24, 0 for the **good** ending and 1 for the **bad** one, depending on how
+many times you paused (see [Findings](FINDINGS.html)).
+
+All three are built the same way. The characters, from p00:48C3 (the garden)
+or p00:48FC (the palace); the screen, 32 columns of 21 rows in bank 13 (0xB2EC
+the garden, 0xB5F1 the palace) that p01:7B85 paints one at a time **from the
+middle outwards**; and on top, the messages, compressed scripts p01:7BE7
+unpacks. The bad ending uses the same palace, but while its ten middle columns
+are being painted p01:7BC4 copies into rows 8 to 12 the fifty bytes at 0xB963:
+what takes the princess's place.
+
+![The tree and the two endings](imagenes/escenas.png)
+
+With the nine-sprite figure at 0xA456 in the tree and the good ending, and the
+two sprites at 0xAE07 in the bad one. Checked against openMSX: the tables, the
+screen with its messages and those sprites, zero differences. The penguin
+walking in is not drawn: its path does not come from a fixed table.
+
 ## Space
 
 The bonus stage is not a stage: it is backdrop 8, which p03:B602 sets by hand.

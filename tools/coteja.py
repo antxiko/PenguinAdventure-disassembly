@@ -6,7 +6,7 @@ Los volcados los sacan tools/omsx_fases.tcl y los dos lanzadores de tools/ (open
     sh tools/lanza_fases.sh 0 "1 2 ... 24" 7000 150   -> work/fases/n0/fNN/
     sh tools/lanza_fines.sh 0 "1 2 ... 24"            -> work/fines/n0/fNN/
 
-Ocho comprobaciones, y todas tienen que dar cero:
+Nueve comprobaciones, y todas tienen que dar cero:
 
   pantalla  la pantalla de cada fase (tools/pantalla.py) contra el primer
             cuadro de juego: tablas de patrones, de colores, de patrones de
@@ -26,6 +26,8 @@ Ocho comprobaciones, y todas tienen que dar cero:
             cada meteorito (0x15-0x19) con las casillas de su tira.
   warp      la pantalla del decorado 9 contra la escena del WARP (una
             partida con PA_GRIETA en work/grieta).
+  escenas   el arbol y los dos finales (tools/omsx_escenas.tcl, en
+            work/escenas): tablas, espejo con los mensajes y sprites fijos.
   cosas     cada cosa que sale en la carretera (el registro de p01:6852 que
             deja la sonda, LEVEL 1 y LEVEL 2) a la distancia y del tipo que
             dice tools/carretera.py. En las que apuntan al jugador vale
@@ -335,7 +337,32 @@ def warp(cart):
     return vistas > 0 and malas == 0
 
 
-PRUEBAS = {"pantalla": pantalla, "warp": warp, "final": final, "jugador": jugador,
+def escenas(cart):
+    """El arbol y los dos finales (tools/escenas.py) contra los volcados de
+    tools/omsx_escenas.tcl (work/escenas/arbol, bueno y malo): las tablas, el
+    espejo de pantalla con los mensajes y los sprites fijos de cada una."""
+    from escenas import monta_la_escena, sprites_de_la_escena
+    vistas = malas = 0
+    for cual, b9 in (("arbol", 2), ("bueno", 0), ("malo", 1)):
+        rutas = [r for r in _volcados("escenas/%s/*_6_6_b%d.ram" % (cual, b9))]
+        if not rutas:
+            continue
+        r = _lee(rutas[-1])                      # el ultimo: todo pintado
+        v = _lee(rutas[-1][:-4] + ".vram")
+        p = monta_la_escena(cart, cual)
+        _t, dis, _m = compara(p, v, ((0, 0x1800), (0x2000, 0x3800)))
+        esp = sum(1 for a in range(0xEBE0, 0xEE80) if p.ram[a] != r[a - 0xE000])
+        spr = sum(1 for n, y, x, pt, co in sprites_de_la_escena(cart, cual)
+                  if tuple(r[0xE80 + 4 * n:0xE83 + 4 * n]) != (y - 1, x, pt))
+        vistas += 1
+        if dis or esp or spr:
+            malas += 1
+            print("  %s: tablas %d, espejo %d, sprites %d" % (cual, dis, esp, spr))
+    print("escenas: %d, %d con diferencias" % (vistas, malas))
+    return vistas == 3 and malas == 0
+
+
+PRUEBAS = {"pantalla": pantalla, "warp": warp, "escenas": escenas, "final": final, "jugador": jugador,
            "bichos": bichos, "espacio": espacio, "cosas": cosas,
            "carretera": carretera}
 

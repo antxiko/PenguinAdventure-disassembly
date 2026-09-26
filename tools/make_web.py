@@ -89,6 +89,15 @@ GALERIA = [
      "The dinosaur that closes every third stage, at the five sizes it has "
      "as it approaches: the 0xA76B strips p01:6697 copies at 0x20, 0x10, 5, 2 "
      "and 0 from the goal. The backdrop picks its colour."),
+    ("escenas.png",
+     "Las escenas de p03:AA80: el árbol tras la fase 12 y, tras la 24, el "
+     "final bueno y el malo, con sus mensajes. Pantallas de 32 columnas del "
+     "banco 13 pintadas del centro hacia fuera; en el final malo, la pieza de "
+     "0xB963 ocupa el sitio de la princesa.",
+     "The p03:AA80 scenes: the tree after stage 12 and, after stage 24, the "
+     "good and the bad endings, with their messages. 32-column screens from "
+     "bank 13 painted from the middle outwards; in the bad ending the 0xB963 "
+     "piece takes the princess's place."),
     ("espacio.png",
      "El espacio, el bonus: la Tierra, el pingüino y los meteoritos, que son "
      "cosas hechas de caracteres (0x15 a 0x19) con dieciséis dibujos que "

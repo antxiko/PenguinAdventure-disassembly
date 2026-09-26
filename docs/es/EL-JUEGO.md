@@ -114,6 +114,28 @@ En las demás, la meta: dos pingüinos que celebran.
 
 ![La meta](../imagenes/meta.png)
 
+## El árbol y los dos finales
+
+Al acabar las fases 12 y 24, p02:82C3 deja en 0xE0B9 qué escena toca y p03:AA80
+la monta: 2 tras la 12, el **árbol** de la mitad del camino; tras la 24, 0 el
+final **bueno** y 1 el **malo**, según las veces que se haya pausado (ver
+[Hallazgos](HALLAZGOS.html)).
+
+Las tres se montan igual. Los caracteres, de p00:48C3 (el jardín) o p00:48FC
+(el palacio); la pantalla, 32 columnas de 21 filas del banco 13 (0xB2EC el
+jardín, 0xB5F1 el palacio) que p01:7B85 pinta de una en una **del centro hacia
+fuera**; y encima, los mensajes, guiones comprimidos que p01:7BE7 descomprime.
+El final malo usa el mismo palacio, pero mientras se pintan sus diez columnas
+del centro p01:7BC4 copia en las filas 8 a 12 los cincuenta bytes de 0xB963: lo
+que ocupa el sitio de la princesa.
+
+![El árbol y los dos finales](../imagenes/escenas.png)
+
+Con la figura de nueve sprites de 0xA456 en el árbol y en el final bueno, y
+los dos sprites de 0xAE07 en el malo. Cotejadas con openMSX: las tablas, la
+pantalla con sus mensajes y esos sprites, cero diferencias. El pingüino que
+entra andando no está dibujado: su recorrido no sale de una tabla fija.
+
 ## El espacio
 
 El bonus no es una fase: es el decorado 8, que p03:B602 pone a mano. Se sube
