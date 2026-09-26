@@ -96,6 +96,14 @@ GALERIA = [
      "Space, the bonus stage: the Earth, the penguin and the meteorites, "
      "objects built from characters (0x15 to 0x19) with sixteen drawings that "
      "grow until they leave by one side."),
+    ("warp.png",
+     "El WARP, el decorado 9: una grieta de modo 2 pulsando abajo lleva a esta "
+     "cueva y de ahí a otra fase. Son seis atajos: de la 1 a la 6, de la 6 a "
+     "la 9, de la 9 a la 12, de la 13 a la 15, de la 15 a la 18 y de la 18 a "
+     "la 21 (0xB79B).",
+     "The WARP, backdrop 9: a mode-2 crevasse and pressing down lead to this "
+     "cave and from there to another stage. There are six: 1 to 6, 6 to 9, 9 "
+     "to 12, 13 to 15, 15 to 18 and 18 to 21 (0xB79B)."),
     ("items.png",
      "Los peces con alas que se cogen en el espacio, en los dieciséis pasos "
      "de la lista de 0xA545. Debajo, los dos colores entre los que salta el "

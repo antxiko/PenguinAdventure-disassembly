@@ -332,10 +332,21 @@ def lo_que_se_hereda(p):
 
 
 def monta_el_espacio(cart, paso=1, p=None):
+    return monta_la_escena(cart, 8, paso, p)
+
+
+# --- el warp: p02:85E5 (estado 10) hace lo mismo con el decorado 9 que pone
+# p03:B8DD: la cueva del decorado 6 con los colores de su fila de 0x4A89 y de
+# sus tercios, y un recorrido de 0x150 pasos.
+def monta_el_warp(cart, paso=1, p=None):
+    return monta_la_escena(cart, 9, paso, p)
+
+
+def monta_la_escena(cart, d, paso=1, p=None):
+    """Los montajes que no son de una fase (estados 8 y 10)."""
     from sprites import carga_del_decorado
     p = p or Pantalla(cart)
     lo_que_se_hereda(p)
-    d = 8
     p.ram[0xE0A1] = d
     v = cart.leer(COLOR_DEL_FONDO + d, (4, 5, 6))
     for i in range(8):

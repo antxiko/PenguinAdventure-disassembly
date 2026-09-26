@@ -2738,7 +2738,7 @@ choca_con_lo_de_0xE0D7:
 	jp L_BFAB		;b39d
 
 ; ----------------------------------------------------------------------
-; CHOCAR CON EL QUE VUELA. El rectangulo mas grande de los tres -0x20 de ancho por 0x30 de alto- y el unico que acaba mal: pone el modo a 1, que es el de perder, y deja un aviso de 2 para que la maquina de estados se salte dos estados.
+; CHOCAR CON EL QUE VUELA. El rectangulo mas grande de los tres -0x20 de ancho por 0x30 de alto- y el que lleva al ESPACIO: pone el modo a 1, que es el del bonus, y deja un aviso de 2 para que la maquina de estados se salte dos estados.
 ; ----------------------------------------------------------------------
 choca_con_el_que_vuela:
 	ld a,(0e0bdh)		;b3a0   ; ¿esta en pantalla?
@@ -2768,7 +2768,7 @@ choca_con_el_que_vuela:
 	ld (0e1f1h),a		;b3ca
 	ld (0e1f2h),a		;b3cd
 	inc a			;b3d0
-	ld (0e0a2h),a		;b3d1   ; el modo en el que esta el juego; modo 1: se ha perdido
+	ld (0e0a2h),a		;b3d1   ; el modo en el que esta el juego; modo 1: el ESPACIO
 	inc a			;b3d4
 	ld (0e096h),a		;b3d5   ; los avisos que deja el cuadro; y un aviso de 2
 	ld a,(0e0adh)		;b3d8

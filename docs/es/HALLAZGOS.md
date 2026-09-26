@@ -127,12 +127,20 @@ de caracteres, con sus cuatro cargas propias (p00:537A, 5424, 53CF y 5498) y
 el color que escoge el decorado. Detrás viene la pelea, el estado 7. Ver
 [El juego](EL-JUEGO.html).
 
-## El espacio está dentro de una grieta
+## Seis atajos y una tienda, dentro de grietas
 
-El guion de avisos de 0xB046 marca, a su distancia, que la siguiente cosa que
-salga sea una grieta con dos bytes de más: el modo y la lista. Cayendo en ella
-y pulsando abajo (p02:99A2) se entra en el modo 1, el del espacio. Es la única
-forma de llegar: el decorado 8 no es de ninguna de las veinticuatro fases.
+El guion de avisos de 0xB046 convierte en grieta la cosa que sale tras su
+distancia y le pega dos bytes. Con el modo 2, caer dentro y pulsar abajo lleva
+al WARP y de ahí a otra fase: de la 1 a la 6, de la 6 a la 9, de la 9 a la 12,
+de la 13 a la 15, de la 15 a la 18 y de la 18 a la 21 (0xB79B, medidos los
+seis en openMSX). Con los modos 3, 4 y 5, caer en el centro lleva a la tienda
+escondida. Ver [El juego](EL-JUEGO.html).
+
+## Al espacio se sube tocando lo que vuela
+
+p03:B3A0 comprueba si el pingüino toca lo que cruza volando y, si lo toca, pone
+el modo 1 y el aviso 2: el espacio. El listado decía que ese era el modo de
+perder, y era al revés.
 
 ## Un bicho que no se ve
 

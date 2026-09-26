@@ -58,6 +58,15 @@ class Dibujos(unittest.TestCase):
                 v = self.cart.leer(p + i, b)
                 self.assertTrue(0x15 <= v <= 0x1F, "lista %d: %02X" % (k, v))
 
+    def test_los_seis_atajos(self):
+        # p03:B94A: registro de 17 bytes de 0xB79B por lista; el septimo son
+        # las fases que se suman. Medidos en openMSX con PA_GRIETA.
+        origen = {0x0A: 1, 0x0B: 6, 0x0C: 9, 0x0D: 13, 0x0E: 15, 0x0F: 18}
+        llegada = {k: o + self.cart.leer(0xB79B + 17 * k + 6, (1, 2, 3))
+                   for k, o in origen.items()}
+        self.assertEqual(llegada, {0x0A: 6, 0x0B: 9, 0x0C: 12, 0x0D: 15,
+                                   0x0E: 18, 0x0F: 21})
+
     def test_la_pantalla_de_la_cueva_se_monta_entera(self):
         from pantalla import monta_la_pantalla
         p = monta_la_pantalla(self.cart, 2)

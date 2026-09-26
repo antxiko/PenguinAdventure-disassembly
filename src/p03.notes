@@ -122,7 +122,7 @@ C 0xB329 el TIEMPO que queda; y guardado
 C 0xB33B el ESTADO de lo que se maneja
 C 0xB370 el ESTADO de lo que se maneja
 C 0xB3A5 el ESTADO de lo que se maneja
-C 0xB3D1 el modo en el que esta el juego; modo 1: se ha perdido
+C 0xB3D1 el modo en el que esta el juego; modo 1: el ESPACIO
 C 0xB3E0 el ESTADO de lo que se maneja, a 16
 C 0xB3E4 el ESTADO de lo que se maneja
 C 0xB444 el ESTADO de lo que se maneja
@@ -533,7 +533,7 @@ C 0xB38E y 0x20 de ancho
 C 0xB391 lo que era
 C 0xB398 el efecto 0x24
 
-B 0xB3A0 CHOCAR CON EL QUE VUELA. El rectangulo mas grande de los tres -0x20 de ancho por 0x30 de alto- y el unico que acaba mal: pone el modo a 1, que es el de perder, y deja un aviso de 2 para que la maquina de estados se salte dos estados.
+B 0xB3A0 CHOCAR CON EL QUE VUELA. El rectangulo mas grande de los tres -0x20 de ancho por 0x30 de alto- y el que lleva al ESPACIO: pone el modo a 1, que es el del bonus, y deja un aviso de 2 para que la maquina de estados se salte dos estados.
 L 0xB3A0 choca_con_el_que_vuela
 C 0xB3A0 ¿esta en pantalla?
 C 0xB3B4 y la del que vuela

@@ -116,12 +116,10 @@ En las demás, la meta: dos pingüinos que celebran.
 
 ## El espacio
 
-El bonus no es una fase: es el decorado 8, que p03:B602 pone a mano. Y se llega
-desde una grieta. El guion de avisos de 0xB046 marca, al llegar a su
-distancia, la siguiente cosa que salga (p03:B8AB); esa sale como grieta —0x0A,
-0x0B o la 0x2F, que apunta al jugador— y se lleva dos bytes, el modo y la
-lista. Si el pingüino cae dentro y se pulsa abajo, p02:99A2 cambia al modo 1 y
-lo lleva al espacio.
+El bonus no es una fase: es el decorado 8, que p03:B602 pone a mano. Se sube
+tocando lo que cruza volando por encima de la carretera: p03:B3A0 pone el modo
+1 (0xE0A2), escoge una de las diez listas con 0xE0AD y deja al pingüino en el
+estado 0x10, el de subir.
 
 ![El espacio](../imagenes/espacio.png)
 
@@ -137,6 +135,114 @@ salta entre 6 y 0x0A: son las que dan una vida.
 Cada vez que se vuelve al espacio dura menos: los diez largos de 0xB635 van de
 0x85 a 0x40.
 
+## Los atajos
+
+El guion de avisos de 0xB046 marca, al llegar a su distancia, la siguiente cosa
+que salga (p03:B8AB): esa sale como grieta y se lleva dos bytes, el modo y la
+lista. Según el modo, la grieta es una de dos cosas.
+
+Con el modo 2 sale la 0x2F, la que apunta al jugador. Si el pingüino cae
+dentro y se pulsa **abajo**, p02:99A2 pasa al estado 10: el **WARP**, una
+carrera de 0x150 pasos por el decorado 9 —la cueva del 6 con otros colores—
+con ese rótulo en el marcador. Al acabar, p03:B94A lee el registro de 17 bytes
+de 0xB79B que escoge la lista y **suma fases**: se sale en otra, con lo que le
+queda y sus guiones puestos. Son seis, y los seis están medidos en openMSX:
+
+| grieta en la fase | a (0xE08D) | lista | se sale en la fase | con lo que queda |
+|---|---|---|---|---|
+| 1 | 0x0260 | 0x0A | 6 | 0x0280 |
+| 6 | 0x0160 | 0x0B | 9 | 0x0560 |
+| 9 | 0x0350 | 0x0C | 12 | 0x0880 |
+| 13 | 0x0370 | 0x0D | 15 | 0x0525 |
+| 15 | 0x0095 | 0x0E | 18 | 0x0805 |
+| 18 | 0x0432 | 0x0F | 21 | 0x1049 |
+
+![El warp](../imagenes/warp.png)
+
+## Las tiendas escondidas
+
+Con los modos 3, 4 y 5 la grieta del guion de avisos es la 0x0A o la 0x0B, y
+basta con caer en su centro: p01:72F2 pasa al estado 12, la **tienda**
+(---BARTER---). El modo es el tendero, y cada uno tiene su tabla de precios
+(p01:6CC3):
+
+| modo | tendero | precios | cuántas |
+|---|---|---|---|
+| 3 | el de siempre | los de 0x6FD5 | 18 |
+| 4 | el que avisa *HEY YOU! YOU MUST BUY SOMETHING FROM ME!!* | los de 0x6FE5: **el doble**, salvo el artículo 7 (32 y no 34) | 20 |
+| 5 | **Santa Claus** | los de 0x6FF5: **todo a cero**; y tras la primera cosa, p01:6F09 cierra la tienda: **regala una** | 3 |
+
+Los artículos que ofrece salen de la lista de siete de su fase (0xAF90), y los
+que ya se llevan no salen (0xE160 y siguientes). Lo que cuesta cada uno, en BCD
+y restado del marcador:
+
+| artículo | normal | caro | Santa Claus |
+|---|---|---|---|
+| 1 | 19 | 38 | 0 |
+| 2 | 15 | 30 | 0 |
+| 3 | 10 | 20 | 0 |
+| 4 | 8 | 16 | 0 |
+| 5 | 12 | 24 | 0 |
+| 6 | 13 | 26 | 0 |
+| 7 | 17 | 32 | 0 |
+| 8 | 20 | 40 | 0 |
+| 9 | 18 | 36 | 0 |
+| 10 | 22 | 44 | 0 |
+| 11 | 11 | 22 | 0 |
+| 12 | 14 | 28 | 0 |
+| 13 | 21 | 42 | 0 |
+| 16 | 23 | 46 | 0 |
+
+El artículo 13 es 0xE16C, el que deja acabar las fases 12, 18 y 24 sin que el
+registro de p01:6476 las devuelva atrás: sólo lo venden las tiendas de esas
+tres fases, y el Santa Claus de la 12 lo regala.
+
+Las 41 tiendas, con la distancia de su aviso:
+
+| fase | a (0xE08D) | tendero | artículos |
+|---|---|---|---|
+| 1 | 0x0500 | normal | 1 2 3 7 16 |
+| 1 | 0x0350 | normal | 1 2 3 7 16 |
+| 1 | 0x0200 | **caro**, el doble | 1 2 3 7 16 |
+| 2 | 0x0400 | **caro**, el doble | 1 2 3 10 16 9 |
+| 2 | 0x0200 | normal | 1 2 3 10 16 9 |
+| 2 | 0x0100 | **caro**, el doble | 1 2 3 10 16 9 |
+| 3 | 0x0700 | **caro**, el doble | 1 2 3 10 5 |
+| 3 | 0x0680 | **caro**, el doble | 1 2 3 10 5 |
+| 3 | 0x0420 | normal | 1 2 3 10 5 |
+| 3 | 0x0100 | **caro**, el doble | 1 2 3 10 5 |
+| 6 | 0x0350 | normal | 1 2 3 8 7 16 |
+| 6 | 0x0315 | **Santa Claus: gratis** | 1 2 3 8 7 16 |
+| 7 | 0x0580 | **caro**, el doble | 1 2 3 16 11 9 |
+| 7 | 0x0280 | **caro**, el doble | 1 2 3 16 11 9 |
+| 9 | 0x0420 | normal | 7 4 12 5 11 9 |
+| 9 | 0x0200 | normal | 7 4 12 5 11 9 |
+| 12 | 0x0800 | **caro**, el doble | 13 4 1 2 10 16 |
+| 12 | 0x0500 | **caro**, el doble | 13 4 1 2 10 16 |
+| 12 | 0x0450 | normal | 13 4 1 2 10 16 |
+| 12 | 0x0200 | **Santa Claus: gratis** | 13 4 1 2 10 16 |
+| 13 | 0x0380 | **caro**, el doble | 1 2 3 8 7 10 |
+| 13 | 0x0204 | normal | 1 2 3 8 7 10 |
+| 13 | 0x0195 | **caro**, el doble | 1 2 3 8 7 10 |
+| 14 | 0x0195 | normal | 1 4 2 8 3 16 |
+| 14 | 0x0109 | **caro**, el doble | 1 4 2 8 3 16 |
+| 15 | 0x0495 | normal | 1 3 2 6 7 16 |
+| 15 | 0x0450 | normal | 1 3 2 6 7 16 |
+| 16 | 0x0356 | **caro**, el doble | 1 4 2 9 11 5 |
+| 18 | 0x0830 | normal | 13 4 12 6 11 5 |
+| 18 | 0x0460 | **caro**, el doble | 13 4 12 6 11 5 |
+| 18 | 0x0446 | normal | 13 4 12 6 11 5 |
+| 21 | 0x0999 | **Santa Claus: gratis** | 1 2 3 6 10 9 |
+| 21 | 0x0880 | **caro**, el doble | 1 2 3 6 10 9 |
+| 21 | 0x0400 | **caro**, el doble | 1 2 3 6 10 9 |
+| 21 | 0x0198 | normal | 1 2 3 6 10 9 |
+| 22 | 0x0949 | **caro**, el doble | 1 4 12 9 11 5 |
+| 22 | 0x0883 | normal | 1 4 12 9 11 5 |
+| 22 | 0x0851 | normal | 1 4 12 9 11 5 |
+| 22 | 0x0282 | **caro**, el doble | 1 4 12 9 11 5 |
+| 24 | 0x1125 | **caro**, el doble | 13 1 2 6 10 16 |
+| 24 | 0x0601 | normal | 13 1 2 6 10 16 |
+
 ## El tiempo, que corre solo
 
 0xE08B es el tiempo, y baja uno **cada 32 cuadros se ande o no se ande**
@@ -149,7 +255,7 @@ pasa algo distinto (p01:65CF).
 
 ## La tienda y la máquina de apostar
 
-Entre fase y fase hay dos sitios donde gastar los puntos.
+Los puntos se gastan en dos sitios: la tienda de las grietas de arriba y la máquina de apostar.
 
 La **tienda** tiene seis casillas de dos bytes —qué es y cuánto cuesta—, un
 cursor que se mueve con izquierda y derecha con el efecto 0x23, y el marcador

@@ -125,8 +125,10 @@ CONGRATULATIONS!</code></pre>
 <p>It is the classic slot-machine cherry rule, written in Z80. And the payout table painted on the machine itself says the same.</p>
 <h2 id="every-third-stage-a-dinosaur">Every third stage, a dinosaur</h2>
 <p>On the stages whose 1-2-3 counter (0xE093) is 3 —3, 6, 9... up to 24— what approaches at the end is not the goal. p01:6697 copies onto the map the five strips at 0xA76B instead of those at 0xA605, and what grows is a dinosaur made of characters, with its own four loads (p00:537A, 5424, 53CF and 5498) and the colour the backdrop picks. The fight follows, state 7. See <a href="THE-GAME.html">The game</a>.</p>
-<h2 id="space-is-inside-a-crevasse">Space is inside a crevasse</h2>
-<p>The warnings script at 0xB046 flags, at its distance, that the next object to come out is a crevasse carrying two extra bytes: the mode and the list. Falling into it and pressing down (p02:99A2) enters mode 1, space. It is the only way there: backdrop 8 belongs to none of the twenty-four stages.</p>
+<h2 id="six-warps-and-a-shop-inside-crevasses">Six warps and a shop, inside crevasses</h2>
+<p>The warnings script at 0xB046 turns the object that comes out after its distance into a crevasse and attaches two bytes. With mode 2, falling in and pressing down leads to the WARP and from there to another stage: 1 to 6, 6 to 9, 9 to 12, 13 to 15, 15 to 18 and 18 to 21 (0xB79B, all six measured in openMSX). With modes 3, 4 and 5, falling into the middle leads to the hidden shop. See <a href="THE-GAME.html">The game</a>.</p>
+<h2 id="you-reach-space-by-touching-what-flies">You reach space by touching what flies</h2>
+<p>p03:B3A0 checks whether the penguin touches what flies across and, if it does, sets mode 1 and warning 2: space. The listing said that was the losing mode, and it was the other way round.</p>
 <h2 id="a-creature-you-cannot-see">A creature you cannot see</h2>
 <p>Object class 7 appears in the scripts of six stages, but p09:B8B3 gives it colour 0 —transparent— unless 0xE16A is carried. With that set it shows in colour 5.</p>
 <h2 id="the-patterns-nobody-loaded">The patterns nobody loaded</h2>

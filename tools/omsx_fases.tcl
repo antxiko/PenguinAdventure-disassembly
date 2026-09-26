@@ -34,6 +34,15 @@ set SALTA [expr {[info exists ::env(PA_SALTA)] ? $::env(PA_SALTA) : 0}]
 set CADA [expr {[info exists ::env(PA_CADA)] ? $::env(PA_CADA) : 0}]
 set QUEDA [expr {[info exists ::env(PA_QUEDA)] ? $::env(PA_QUEDA) : 0}]
 set RAPIDO [expr {[info exists ::env(PA_RAPIDO)] ? $::env(PA_RAPIDO) : 0}]
+# PA_GRIETA=<cuadro>: en ese cuadro deja al pinguino dentro de una grieta que
+# trae modo (0xE203 = 4, 0xE215 = PA_MODO, 0xE0D2 = PA_LISTA, lo que deja
+# p01:734B al caer en una 0x0C/0x0D) y pulsa ABAJO, que es lo que mira p02:99A2
+set GRIETA [expr {[info exists ::env(PA_GRIETA)] ? $::env(PA_GRIETA) : 0}]
+set MODO [expr {[info exists ::env(PA_MODO)] ? $::env(PA_MODO) : 2}]
+set LISTA [expr {[info exists ::env(PA_LISTA)] ? $::env(PA_LISTA) : 10}]
+# PA_CENTRO=<cuadro>: lo que deja p01:72F2 al caer en el centro de una grieta
+# 0x0A/0x0B que trae modo: 0xE203 = 0x12, 0xE0A2 = PA_MODO y el aviso 0x20
+set CENTRO [expr {[info exists ::env(PA_CENTRO)] ? $::env(PA_CENTRO) : 0}]
 file mkdir $OUT
 set LOG [open "$OUT/fase_[format %02d $FASE]_n$NIVEL.log" w]
 proc say {m} { global LOG; puts $LOG "t=[format %7.2f [machine_info time]]  $m"; flush $LOG }
@@ -97,6 +106,20 @@ proc cuadro {} {
     if {$::SALTA} {
         if {$::cuadro % 60 == 0} { keymatrixdown 8 1 }
         if {$::cuadro % 60 == 8} { keymatrixup 8 1 }
+    }
+    if {$::CENTRO && $::cuadro == $::CENTRO} {
+        pon 0xE203 0x12
+        pon 0xE0A2 $::MODO
+        pon 0xE096 0x20
+        say "centro de una grieta con modo [lee 0xE0A2]"
+    }
+    if {$::GRIETA && $::cuadro == $::GRIETA} {
+        pon 0xE203 4
+        pon 0xE215 $::MODO
+        pon 0xE0D2 $::LISTA
+        keymatrixdown 8 0x40
+        after time 0.3 { keymatrixup 8 0x40 }
+        say "grieta con modo [lee 0xE215] y lista [lee 0xE0D2], y abajo"
     }
     if {$::QUEDA && $::cuadro == 60} {
         pon 0xE08D [expr {$::QUEDA & 0xFF}]

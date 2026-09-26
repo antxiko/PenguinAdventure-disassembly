@@ -304,6 +304,21 @@ def lamina_de_items(cart):
     return img
 
 
+# ------------------------------------------------------------ el warp
+# El decorado 9, que monta el estado 10 (p02:85E5 y p03:B8DD) al entrar por
+# una grieta de modo 2 pulsando abajo: la cueva del decorado 6 con otros
+# colores. El pinguino, en la pose 0 y en su sitio de siempre (0x90, 0x70).
+def lamina_del_warp(cart):
+    from pantalla import monta_el_warp
+    from vram import fondo
+    p = monta_el_warp(cart)
+    img = fondo(p.li.v)
+    poses = poses_de_lo_que_se_maneja(cart)
+    spr = en_cuadro(poses[0]) + [(n, dy + 0x1E, dx, pt, c) for n, dy, dx, pt, c in sombra(4)]
+    pinta_sprites(img, p.li, 0x70, 0x91, spr)
+    return [fila[:] for fila in img[16:]]
+
+
 # ------------------------------------------------------ el final de la fase
 # Los cinco tamanos (cortes 0x20, 0x10, 5, 2 y 0 de p01:65CF) sobre la pantalla
 # de la fase, recortados a la carretera. Una fila por decorado distinto: el
@@ -337,6 +352,7 @@ def main():
     cart = Cartucho()
     print(guarda_png(lamina_del_espacio(cart), os.path.join(IMAGENES, "espacio.png"), escala=2))
     print(guarda_png(lamina_de_items(cart), os.path.join(IMAGENES, "items.png"), escala=3))
+    print(guarda_png(lamina_del_warp(cart), os.path.join(IMAGENES, "warp.png"), escala=2))
     print(guarda_png(lamina_del_final(cart, FILAS_DEL_DINOSAURIO),
                      os.path.join(IMAGENES, "dinosaurio.png"), escala=2))
     print(guarda_png(lamina_del_final(cart, FILAS_DE_LA_META),

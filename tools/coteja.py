@@ -6,7 +6,7 @@ Los volcados los sacan tools/omsx_fases.tcl y los dos lanzadores de tools/ (open
     sh tools/lanza_fases.sh 0 "1 2 ... 24" 7000 150   -> work/fases/n0/fNN/
     sh tools/lanza_fines.sh 0 "1 2 ... 24"            -> work/fines/n0/fNN/
 
-Siete comprobaciones, y todas tienen que dar cero:
+Ocho comprobaciones, y todas tienen que dar cero:
 
   pantalla  la pantalla de cada fase (tools/pantalla.py) contra el primer
             cuadro de juego: tablas de patrones, de colores, de patrones de
@@ -24,6 +24,8 @@ Siete comprobaciones, y todas tienen que dar cero:
   espacio   la pantalla del bonus contra sus volcados, cada pez con alas (las
             cosas de sprite 0x1A-0x1F) en el paso que toca de su trayectoria y
             cada meteorito (0x15-0x19) con las casillas de su tira.
+  warp      la pantalla del decorado 9 contra la escena del WARP (una
+            partida con PA_GRIETA en work/grieta).
   cosas     cada cosa que sale en la carretera (el registro de p01:6852 que
             deja la sonda, LEVEL 1 y LEVEL 2) a la distancia y del tipo que
             dice tools/carretera.py. En las que apuntan al jugador vale
@@ -315,7 +317,25 @@ def carretera(cart):
     return vistos > 0 and malos == 0
 
 
-PRUEBAS = {"pantalla": pantalla, "final": final, "jugador": jugador,
+def warp(cart):
+    """El decorado 9 contra los volcados de la escena del WARP (una partida
+    de tools/omsx_fases.tcl con PA_GRIETA, en work/grieta)."""
+    from pantalla import monta_el_warp
+    vistas = malas = 0
+    for r_ruta in _volcados("grieta/*.ram"):
+        r = _lee(r_ruta)
+        if r[0xA1] != 9 or r[0] != 5:
+            continue
+        v = _lee(r_ruta[:-4] + ".vram")
+        p = monta_el_warp(cart, r[0x4C2] & 3)
+        _t, dis, _m = compara(p, v, ((0, 0x1800), (0x1800, 0x2000), (0x2000, 0x3800)))
+        vistas += 1
+        malas += dis != 0
+    print("warp: %d pantallas, %d con diferencias" % (vistas, malas))
+    return vistas > 0 and malas == 0
+
+
+PRUEBAS = {"pantalla": pantalla, "warp": warp, "final": final, "jugador": jugador,
            "bichos": bichos, "espacio": espacio, "cosas": cosas,
            "carretera": carretera}
 

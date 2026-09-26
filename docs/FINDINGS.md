@@ -123,12 +123,20 @@ of characters, with its own four loads (p00:537A, 5424, 53CF and 5498) and the
 colour the backdrop picks. The fight follows, state 7. See
 [The game](THE-GAME.html).
 
-## Space is inside a crevasse
+## Six warps and a shop, inside crevasses
 
-The warnings script at 0xB046 flags, at its distance, that the next object to
-come out is a crevasse carrying two extra bytes: the mode and the list.
-Falling into it and pressing down (p02:99A2) enters mode 1, space. It is the
-only way there: backdrop 8 belongs to none of the twenty-four stages.
+The warnings script at 0xB046 turns the object that comes out after its
+distance into a crevasse and attaches two bytes. With mode 2, falling in and
+pressing down leads to the WARP and from there to another stage: 1 to 6, 6 to
+9, 9 to 12, 13 to 15, 15 to 18 and 18 to 21 (0xB79B, all six measured in
+openMSX). With modes 3, 4 and 5, falling into the middle leads to the hidden
+shop. See [The game](THE-GAME.html).
+
+## You reach space by touching what flies
+
+p03:B3A0 checks whether the penguin touches what flies across and, if it does,
+sets mode 1 and warning 2: space. The listing said that was the losing mode,
+and it was the other way round.
 
 ## A creature you cannot see
 

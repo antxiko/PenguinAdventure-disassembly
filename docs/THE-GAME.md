@@ -118,11 +118,9 @@ On the rest, the goal: two penguins cheering.
 ## Space
 
 The bonus stage is not a stage: it is backdrop 8, which p03:B602 sets by hand.
-And you get there through a crevasse. The warnings script at 0xB046 flags,
-when its distance is reached, the next object to come out (p03:B8AB); that one
-comes out as a crevasse —0x0A, 0x0B or 0x2F, the one that aims at the player—
-carrying two bytes, the mode and the list. If the penguin falls in and you
-press down, p02:99A2 switches to mode 1 and takes it to space.
+You go up by touching what flies across above the road: p03:B3A0 sets mode 1
+(0xE0A2), picks one of the ten lists with 0xE0AD and leaves the penguin in
+state 0x10, the one for going up.
 
 ![Space](imagenes/espacio.png)
 
@@ -138,6 +136,116 @@ sprite objects 0x1A to 0x1F, with three sixteen-step paths (0xA545, 0xA585 and
 Every return to space is shorter: the ten lengths at 0xB635 go from 0x85 down
 to 0x40.
 
+## The warps
+
+The warnings script at 0xB046 flags, when its distance is reached, the next
+object to come out (p03:B8AB): it comes out as a crevasse carrying two bytes,
+the mode and the list. Depending on the mode, the crevasse is one of two
+things.
+
+With mode 2 it is 0x2F, the one that aims at the player. If the penguin falls
+in and you press **down**, p02:99A2 moves to state 10: the **WARP**, a
+0x150-step run through backdrop 9 —the cave of backdrop 6 in other colours—
+with that word on the status bar. When it ends, p03:B94A reads the 17-byte
+record at 0xB79B picked by the list and **adds stages**: you come out in
+another one, with its distance left and its scripts set. There are six, and
+all six are measured in openMSX:
+
+| crevasse on stage | at (0xE08D) | list | you come out on stage | with distance left |
+|---|---|---|---|---|
+| 1 | 0x0260 | 0x0A | 6 | 0x0280 |
+| 6 | 0x0160 | 0x0B | 9 | 0x0560 |
+| 9 | 0x0350 | 0x0C | 12 | 0x0880 |
+| 13 | 0x0370 | 0x0D | 15 | 0x0525 |
+| 15 | 0x0095 | 0x0E | 18 | 0x0805 |
+| 18 | 0x0432 | 0x0F | 21 | 0x1049 |
+
+![The warp](imagenes/warp.png)
+
+## The hidden shops
+
+With modes 3, 4 and 5 the warnings-script crevasse is 0x0A or 0x0B, and
+falling into its middle is enough: p01:72F2 moves to state 12, the **shop**
+(---BARTER---). The mode is the shopkeeper, and each one has its own price
+table (p01:6CC3):
+
+| mode | shopkeeper | prices | how many |
+|---|---|---|---|
+| 3 | the usual one | those at 0x6FD5 | 18 |
+| 4 | the one who warns *HEY YOU! YOU MUST BUY SOMETHING FROM ME!!* | those at 0x6FE5: **double**, except item 7 (32, not 34) | 20 |
+| 5 | **Santa Claus** | those at 0x6FF5: **all zero**; and after the first item p01:6F09 closes the shop: **he gives one away** | 3 |
+
+The items on offer come from the stage's seven-item list (0xAF90), and those
+already carried are left out (0xE160 onwards). What each one costs, in BCD and
+taken from the score:
+
+| item | usual | expensive | Santa Claus |
+|---|---|---|---|
+| 1 | 19 | 38 | 0 |
+| 2 | 15 | 30 | 0 |
+| 3 | 10 | 20 | 0 |
+| 4 | 8 | 16 | 0 |
+| 5 | 12 | 24 | 0 |
+| 6 | 13 | 26 | 0 |
+| 7 | 17 | 32 | 0 |
+| 8 | 20 | 40 | 0 |
+| 9 | 18 | 36 | 0 |
+| 10 | 22 | 44 | 0 |
+| 11 | 11 | 22 | 0 |
+| 12 | 14 | 28 | 0 |
+| 13 | 21 | 42 | 0 |
+| 16 | 23 | 46 | 0 |
+
+Item 13 is 0xE16C, the one that lets stages 12, 18 and 24 end instead of being
+sent back by the p01:6476 record: only the shops on those three stages sell
+it, and the stage 12 Santa Claus gives it away.
+
+The 41 shops, with the distance of their warning:
+
+| stage | at (0xE08D) | shopkeeper | items |
+|---|---|---|---|
+| 1 | 0x0500 | normal | 1 2 3 7 16 |
+| 1 | 0x0350 | normal | 1 2 3 7 16 |
+| 1 | 0x0200 | **expensive**, double | 1 2 3 7 16 |
+| 2 | 0x0400 | **expensive**, double | 1 2 3 10 16 9 |
+| 2 | 0x0200 | normal | 1 2 3 10 16 9 |
+| 2 | 0x0100 | **expensive**, double | 1 2 3 10 16 9 |
+| 3 | 0x0700 | **expensive**, double | 1 2 3 10 5 |
+| 3 | 0x0680 | **expensive**, double | 1 2 3 10 5 |
+| 3 | 0x0420 | normal | 1 2 3 10 5 |
+| 3 | 0x0100 | **expensive**, double | 1 2 3 10 5 |
+| 6 | 0x0350 | normal | 1 2 3 8 7 16 |
+| 6 | 0x0315 | **Santa Claus: free** | 1 2 3 8 7 16 |
+| 7 | 0x0580 | **expensive**, double | 1 2 3 16 11 9 |
+| 7 | 0x0280 | **expensive**, double | 1 2 3 16 11 9 |
+| 9 | 0x0420 | normal | 7 4 12 5 11 9 |
+| 9 | 0x0200 | normal | 7 4 12 5 11 9 |
+| 12 | 0x0800 | **expensive**, double | 13 4 1 2 10 16 |
+| 12 | 0x0500 | **expensive**, double | 13 4 1 2 10 16 |
+| 12 | 0x0450 | normal | 13 4 1 2 10 16 |
+| 12 | 0x0200 | **Santa Claus: free** | 13 4 1 2 10 16 |
+| 13 | 0x0380 | **expensive**, double | 1 2 3 8 7 10 |
+| 13 | 0x0204 | normal | 1 2 3 8 7 10 |
+| 13 | 0x0195 | **expensive**, double | 1 2 3 8 7 10 |
+| 14 | 0x0195 | normal | 1 4 2 8 3 16 |
+| 14 | 0x0109 | **expensive**, double | 1 4 2 8 3 16 |
+| 15 | 0x0495 | normal | 1 3 2 6 7 16 |
+| 15 | 0x0450 | normal | 1 3 2 6 7 16 |
+| 16 | 0x0356 | **expensive**, double | 1 4 2 9 11 5 |
+| 18 | 0x0830 | normal | 13 4 12 6 11 5 |
+| 18 | 0x0460 | **expensive**, double | 13 4 12 6 11 5 |
+| 18 | 0x0446 | normal | 13 4 12 6 11 5 |
+| 21 | 0x0999 | **Santa Claus: free** | 1 2 3 6 10 9 |
+| 21 | 0x0880 | **expensive**, double | 1 2 3 6 10 9 |
+| 21 | 0x0400 | **expensive**, double | 1 2 3 6 10 9 |
+| 21 | 0x0198 | normal | 1 2 3 6 10 9 |
+| 22 | 0x0949 | **expensive**, double | 1 4 12 9 11 5 |
+| 22 | 0x0883 | normal | 1 4 12 9 11 5 |
+| 22 | 0x0851 | normal | 1 4 12 9 11 5 |
+| 22 | 0x0282 | **expensive**, double | 1 4 12 9 11 5 |
+| 24 | 0x1125 | **expensive**, double | 13 1 2 6 10 16 |
+| 24 | 0x0601 | normal | 13 1 2 6 10 16 |
+
 ## The clock, which runs on its own
 
 0xE08B is the time, and it drops by one **every 32 frames whether you move or
@@ -150,7 +258,7 @@ from the goal, something different happens (p01:65CF).
 
 ## The shop and the gambling machine
 
-Between stages there are two places to spend your points.
+Points are spent in two places: the crevasse shops above and the gambling machine.
 
 The **shop** has six two-byte slots —what it is and what it costs—, a cursor that
 moves left and right with sound 0x23, and the score acting as money. Buying
