@@ -407,11 +407,10 @@ def pantalla_de_apostar(cart, rodillos=(0, 0, 0)):
 POSES = 0xA91D
 N_POSES = 13
 # OJO: los numeros de patron de la tabla son RELATIVOS a la hoja de sprites que
-# tenga cargada cada escena, no absolutos. La misma pose numero 1 es una cosa
-# distinta segun que guion se haya soltado antes en 0x1800, asi que dibujar las
-# trece juntas no significa nada. Y hay un cabo suelto: los patrones 0x00, 0x04,
-# 0x08 y 0x0C, que piden ocho de las trece poses, NO los carga ninguno de los
-# diecinueve guiones de sprite conocidos ni ninguno de los guiones con mascara.
+# tenga cargada cada escena, no absolutos: la misma pose es una cosa distinta
+# segun el terreno. Los patrones 0x00 a 0x14 los sube pinta_bloque (p00:43B3)
+# desde una de tres tiras que escoge p00:57FB; ver tools/sprites.py y
+# tools/figuras.py, que es donde se dibujan las poses.
 
 
 def poses_de_lo_que_se_maneja(cart):
@@ -675,23 +674,34 @@ def main():
     if len(sys.argv) > 1 and sys.argv[1] == "inventario":
         inventario(cart)
         return
+    from pantalla import monta_la_pantalla, monta_el_espacio   # noqa: E402
+    from sprites import decorado_de                             # noqa: E402
+    from vram import fondo                                      # noqa: E402
     hechas = []
     for nom, internacional in (("titulo_japon", False), ("titulo_resto", True)):
         li = titulo(cart, internacional)
         hechas.append(guarda_png(pinta_pantalla(li),
                                  os.path.join(IMAGENES, nom + ".png")))
-    for n in sorted(GUION_DE_NOMBRES):
-        li = decorado(cart, n)
-        hechas.append(guarda_png(pinta_pantalla(li),
+    # los decorados, montados como los monta el juego (tools/pantalla.py): los
+    # ocho de las fases desde la primera fase que usa cada uno, y el 8 -el
+    # espacio- como lo monta el bonus
+    for n in range(9):
+        if n == 8:
+            p = monta_el_espacio(cart)
+        else:
+            fase = next(f for f in range(1, 25) if decorado_de(cart, f) == n)
+            p = monta_la_pantalla(cart, fase)
+        hechas.append(guarda_png(fondo(p.li.v)[16:],
                                  os.path.join(IMAGENES, "decorado_%d.png" % n)))
-    for jug in sorted(TERRENO):
-        img = mapa_de_fases(cart, jug)
-        hechas.append(guarda_png(img, os.path.join(
-            IMAGENES, "fases_%s.png" % jug.lower().replace(" ", "_")), escala=2))
-    for guion in GUIONES_DE_SPRITE:
-        _li, img = hoja_de_sprites_de(cart, guion)
-        hechas.append(guarda_png(img, os.path.join(
-            IMAGENES, "sprites_%04X.png" % guion), escala=3))
+    # y los nueve juntos, en tres filas de tres
+    juntos = [[1] * (3 * 256 + 8) for _ in range(3 * 176 + 8)]
+    for n in range(9):
+        p = monta_el_espacio(cart) if n == 8 else monta_la_pantalla(
+            cart, next(f for f in range(1, 25) if decorado_de(cart, f) == n))
+        pan = fondo(p.li.v)[16:]
+        for y in range(176):
+            juntos[(n // 3) * 180 + y][(n % 3) * 260:(n % 3) * 260 + 256] = pan[y]
+    hechas.append(guarda_png(juntos, os.path.join(IMAGENES, "decorados.png"), escala=1))
     hechas.append(guarda_png(pinta_pantalla(pantalla_de_apostar(cart, (0, 0, 0))),
                              os.path.join(IMAGENES, "apostar.png")))
     hechas.append(guarda_png(hoja_de_los_simbolos(cart),

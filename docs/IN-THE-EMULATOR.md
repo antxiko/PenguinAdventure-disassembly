@@ -75,12 +75,33 @@ Mind the two tables at p00:4105 and p00:4113, which **only cover the first
 thirteen** of the twenty-four: that is one of the
 [open questions](OPEN-QUESTIONS.html).
 
-## Checking a drawing against the VRAM
+## Checking the drawings against openMSX
 
-The images on this site are drawn by running the cartridge's routines in Python.
-The way to check one is right is not to look at it: it is to dump the emulator's
-16 KB of VRAM at the same instant and compare byte for byte. If it comes out at
-zero differences, the image is the cartridge's.
+The images on this site are drawn by reading the cartridge's tables with our
+own code. What says they are right is not looking at them: it is comparing
+them with emulator dumps.
 
-And if one or two come out, look first at whether it is the **instant** of the
-dump —an animation caught halfway— before touching anything.
+`tools/omsx_fases.tcl` forces the stage and the level at p00:46E3 —where both
+the normal set-up and the Game Master one go through— and dumps VRAM, RAM and
+the VDP registers every so many frames, on every state change and at every
+cut of the ending; and it logs every object that comes out on the road
+(p01:6852). To reach the end of the long stages it sets the step period
+(0xE4C0) to 1 right before walking, at p00:4560, and it keeps 0xE1F1 so the
+penguin does not die.
+
+`make coteja` compares against those dumps:
+
+| what | how many | differences |
+|---|---|---|
+| each stage's screen | 24 stages | 0 bytes |
+| the ending: goal and dinosaur | 144 cuts | 0 |
+| the penguin, pose and placement | 1,107 frames | 0 |
+| the creatures, drawing by class and distance | 510 objects | 0 |
+| space | 9 screens, 8 fish, 13 meteorites | 0 |
+| the road objects, LEVEL 1 and 2 | 5,414 | 0 |
+| the screen mirror, walking the stage | 424 dumps | 0 |
+
+Two traps. At the dump point (p00:451C) the VRAM name table lags one frame
+behind the RAM mirror, so cells are compared in the mirror. And stages 12, 18
+and 24 never end without the item at 0xE16C: a late dump is on another pass,
+with the script indices the same and the slots not.

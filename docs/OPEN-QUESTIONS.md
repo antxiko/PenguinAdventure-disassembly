@@ -4,24 +4,26 @@ What is not known, said as what it is. Every byte of the cartridge is assigned t
 code or data and the listing reassembles byte for byte, but that does not mean
 everything is **understood**.
 
-## Nobody loads sprite patterns 0x00 to 0x0C
+## The fight with the dinosaur
 
-Eight of the thirteen poses in the table at 0xA91D ask for sprite patterns 0x00,
-0x04, 0x08 and 0x0C. And that area of VRAM —0x1800 to 0x187F— **is written by
-none** of the nineteen known sprite scripts, nor by any of the masked scripts the
-bank 1 bridges emit.
+It is located but not drawn. The dinosaur is followed by state 7 with 0xE530
+set: four blocks fall from the sky and stay on the road (0xE550, each slot
+counts up to 5), what gets thrown from 0xE540 aims at the player and the target
+at 0xE535 takes twenty hits (0xE53C). What the emulator shows has not been
+rebuilt from the tables yet, so it is not among the drawings.
 
-The two explanations that fit:
+## Which distance band is the near one
 
-1. there is a load the script sweep does not see, for instance an uncompressed
-   copy with a computed destination;
-2. the sprite pattern base —VDP register 6— changes in some scene, and then those
-   numbers point somewhere else.
+Creatures pick one of their four drawings from the high byte of ix+6 (0x60,
+0x78, 0x90 and 0xA8, p09:AA86), and on the sheet they go from smallest to
+biggest. Which band means close has not been measured: the dumps do not settle
+it because the most common creatures jump, and their row does not tell the
+distance.
 
-It has not been settled. And until it is, drawing the thirteen poses together
-means nothing: the pattern numbers are **relative to whichever sprite sheet each
-scene has loaded**, so the same pose is a different thing depending on what was
-dropped into 0x1800 beforehand.
+## Backdrop 9
+
+p03:B932 sets it for a separate scene, outside the twenty-four stages. It has
+not been built or checked, so it is not with the other nine.
 
 ## The Game Master header puts the stage where the Game Master expects lives
 

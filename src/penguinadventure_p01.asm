@@ -1586,7 +1586,7 @@ L_6A96:
 	jp L_69A1		;6aa5
 
 ; ----------------------------------------------------------------------
-; LOS COLORES QUE DAN VUELTAS. Solo en cinco de los diez decorados, y con dos anchos distintos: cuatro tablas en los decorados 0, 2 y 4, y dos en el 1 y el 3. Cuando la barra de nueve esta clavada -0xE4C0 y 0xE4C1 iguales- cuenta cuadros en 0xE405 y, uno de cada dos, gira las tablas de color de 0xA420 (banco 10) por 0xE409: cada una sube una posicion y vuelve a cero al llegar a diez. Eso es lo que hace que el decorado parezca moverse sin mover un solo byte de la pantalla.
+; LO QUE PASA POR LOS LADOS DE LA CARRETERA (no son colores: se decia "los colores que dan vueltas" y no toca ni un color). Solo en cinco de los diez decorados: cuatro tiras en los decorados 0, 2 y 4 y dos en el 1 y el 3, de la tabla de 0xA420 del banco 11, cada una de diez pasos. En cada cuadro con la barra clavada -0xE4C0 igual a 0xE4C1- y solo uno de cada dos (0xE405): borra el paso anterior con unos (p00:41AD) y pinta el siguiente (p00:41BF). Va por cuadros, no por distancia.
 ; ----------------------------------------------------------------------
 los_colores_que_dan_vueltas:
 	ld a,(0e203h)		;6aa8   ; el ESTADO de lo que se maneja

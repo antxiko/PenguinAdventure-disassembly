@@ -4,24 +4,26 @@ Lo que no se sabe, dicho como lo que es. Cada byte del cartucho está asignado a
 código o a datos y el listado reensambla byte a byte, pero eso no quiere decir
 que todo esté **entendido**.
 
-## Los patrones de sprite 0x00 a 0x0C no los carga nadie
+## La pelea con el dinosaurio
 
-Ocho de las trece poses de la tabla de 0xA91D piden los patrones de sprite 0x00,
-0x04, 0x08 y 0x0C. Y esa zona de la VRAM —de 0x1800 a 0x187F— **no la escribe
-ninguno** de los diecinueve guiones de sprite conocidos, ni ninguno de los
-guiones con máscara que sueltan los puentes del banco 1.
+Está localizada pero no dibujada. Detrás del dinosaurio viene el estado 7 con
+0xE530 puesto: caen del cielo cuatro bloques que se quedan en la carretera
+(0xE550, cada ranura sube hasta 5), lo que se lanza de 0xE540 apunta al
+jugador y el blanco de 0xE535 aguanta veinte aciertos (0xE53C). Lo que se ve en
+el emulador no se ha reconstruido todavía desde las tablas, y por eso no está
+entre los dibujos.
 
-Las dos explicaciones que caben:
+## Qué banda de distancia es la de cerca
 
-1. que haya una carga que el barrido de guiones no ve, por ejemplo una copia sin
-   comprimir con destino calculado;
-2. que la base de los patrones de sprite —el registro 6 del VDP— cambie en
-   alguna escena, y entonces esos números apunten a otro sitio.
+Los bichos escogen uno de sus cuatro dibujos por el byte alto de ix+6 (0x60,
+0x78, 0x90 y 0xA8, p09:AA86), y en la lámina van del más pequeño al más grande.
+Qué banda corresponde a lo que está cerca no se ha medido: los volcados no lo
+zanjan porque los bichos que más salen saltan y su fila no dice la distancia.
 
-No se ha zanjado. Y hasta que se zanje, dibujar las trece poses juntas no
-significa nada: los números de patrón son **relativos a la hoja de sprites que
-tenga cargada cada escena**, así que la misma pose es una cosa distinta según lo
-que se haya soltado antes en 0x1800.
+## El decorado 9
+
+Lo pone p03:B932 en una escena aparte, fuera de las veinticuatro fases. No se
+ha montado ni cotejado, y por eso no está con los otros nueve.
 
 ## La cabecera del Game Master mete la fase donde el Game Master espera vidas
 

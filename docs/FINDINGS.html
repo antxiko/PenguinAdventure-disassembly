@@ -123,6 +123,16 @@ CONGRATULATIONS!</code></pre>
 <p>The cherry —symbol 0— takes <b>five</b> of the sixteen slots: 31.2 % per reel, and at least one on <b>67.5 %</b> of the spins.</p>
 <p>And the payout code at p01:7AF0 treats it apart. There are two separate counts: one that requires all three reels to match, and an <code>inc (hl)</code> that bumps a counter <b>for each</b> reel showing a zero. The seven multipliers at 0x7B23 are 1, 2, 4, 8, 10, 15 and 20, and the first three are for one, two and three cherries. Every other symbol pays only in threes, and symbol 5 is marked 0xFF: the jackpot.</p>
 <p>It is the classic slot-machine cherry rule, written in Z80. And the payout table painted on the machine itself says the same.</p>
+<h2 id="every-third-stage-a-dinosaur">Every third stage, a dinosaur</h2>
+<p>On the stages whose 1-2-3 counter (0xE093) is 3 —3, 6, 9... up to 24— what approaches at the end is not the goal. p01:6697 copies onto the map the five strips at 0xA76B instead of those at 0xA605, and what grows is a dinosaur made of characters, with its own four loads (p00:537A, 5424, 53CF and 5498) and the colour the backdrop picks. The fight follows, state 7. See <a href="THE-GAME.html">The game</a>.</p>
+<h2 id="space-is-inside-a-crevasse">Space is inside a crevasse</h2>
+<p>The warnings script at 0xB046 flags, at its distance, that the next object to come out is a crevasse carrying two extra bytes: the mode and the list. Falling into it and pressing down (p02:99A2) enters mode 1, space. It is the only way there: backdrop 8 belongs to none of the twenty-four stages.</p>
+<h2 id="a-creature-you-cannot-see">A creature you cannot see</h2>
+<p>Object class 7 appears in the scripts of six stages, but p09:B8B3 gives it colour 0 —transparent— unless 0xE16A is carried. With that set it shows in colour 5.</p>
+<h2 id="the-patterns-nobody-loaded">The patterns nobody loaded</h2>
+<p>The penguin&#x27;s sprite patterns 0x00 to 0x14 are not loaded by any compressed script: the cartridge&#x27;s other painter uploads them, <code>pinta_bloque</code> (p00:43B3), which reads uncompressed sixteen-byte columns and, with bit 0 of C, paints each column twice, the second time mirrored. p00:57FB calls it with one of three strips depending on the terrain.</p>
+<h2 id="the-roadsides-are-not-colours">The roadsides are not colours</h2>
+<p>The listing called p01:6AA8 &quot;the colours that go round&quot;. It touches no colours: it erases with ones and paints with p00:41BF, step by step, what goes by at the sides of the road, from the strips at 0xA420. And it does not run on distance but on frames with the speed bar pinned, so it depends on how you accelerate.</p>
 <h2 id="twenty-four-stages-not-thirteen">Twenty-four stages, not thirteen</h2>
 <p>Thirteen is what the cartridge declares to the Konami Game Master in the header at 0x4010. p02:8328 compares the stage with 0x19, and the three script tables close at exactly twenty-four entries. And LEVEL 2 from the title menu is a whole different design: not one section matches the LEVEL 1 ones byte for byte.</p>
 <h2 id="the-clock-runs-whether-you-move-or-not">The clock runs whether you move or not</h2>

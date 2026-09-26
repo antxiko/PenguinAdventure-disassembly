@@ -169,11 +169,21 @@ test:
 	@echo "=================================================================="
 	@python3 -m unittest discover -s tests -v
 
-# Las imagenes de la web NO son capturas: tools/graficos.py ejecuta en Python
-# los descompresores del cartucho y dibuja las pantallas, los sprites y los
-# mapas desde la ROM.
+# Las imagenes de la web NO son capturas: se dibujan leyendo las tablas de la
+# ROM con codigo nuestro. tools/graficos.py hace las portadas, los decorados y
+# la maquina de apostar; tools/figuras.py el pinguino, los bichos, el espacio,
+# los peces, el dinosaurio y la meta; tools/recorridos.py las veinticuatro
+# fases de cada LEVEL, andadas paso a paso por tools/carretera.py.
 imagenes: $(ROM)
 	@python3 tools/graficos.py
+	@python3 tools/figuras.py
+	@python3 tools/recorridos.py
+
+# Y todo lo dibujado se coteja con volcados de openMSX (tools/omsx_fases.tcl;
+# los lanzadores tools/lanza_fases.sh y tools/lanza_fines.sh los sacan: ver la
+# cabecera de tools/coteja.py).
+coteja: $(ROM)
+	@python3 tools/coteja.py
 
 web: imagenes
 	@python3 tools/md2html.py docs en
@@ -187,4 +197,4 @@ clean:
 	      $(WORK)/penguinadventure_reensamblada.rom $(WORK)/pasmo.err
 
 .PHONY: all comprueba reconoce marca paginas semillas trace listado verify \
-        sanity cifras densidad test imagenes web clean
+        sanity cifras densidad test imagenes coteja web clean

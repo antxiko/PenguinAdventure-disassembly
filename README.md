@@ -91,6 +91,9 @@ here**; read [LEGAL-NOTICE.md](LEGAL-NOTICE.md).
     make sanity        what reassembly cannot catch
     make test          the tests
     make densidad      how much is commented, bank by bank
+    make imagenes      the site's drawings, read from the ROM's tables
+    make coteja        those drawings against openMSX dumps (see
+                       tools/coteja.py for how to get the dumps)
 
 ## Licence
 

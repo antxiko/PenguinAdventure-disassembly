@@ -74,12 +74,34 @@ Ojo con las dos tablas de p00:4105 y p00:4113, que **sólo cubren las trece
 primeras** de las veinticuatro: es una de las
 [preguntas abiertas](PREGUNTAS-ABIERTAS.html).
 
-## Cotejar un dibujo contra la VRAM
+## Cotejar lo dibujado contra openMSX
 
-Las imágenes de esta web se dibujan ejecutando las rutinas del cartucho en
-Python. La forma de comprobar que una está bien no es mirarla: es volcar los
-16 KB de VRAM del emulador en el mismo instante y compararlos byte a byte. Si
-salen cero diferencias, la imagen es la del cartucho.
+Las imágenes de esta web se dibujan leyendo las tablas del cartucho con código
+nuestro. Lo que dice que están bien no es mirarlas: es compararlas con
+volcados del emulador.
 
-Y si salen una o dos, mirar primero si es el **instante** del volcado —una
-animación pillada a medias— antes de tocar nada.
+`tools/omsx_fases.tcl` fuerza la fase y el nivel en p00:46E3 —por donde pasan
+el montaje normal y el del Game Master— y vuelca la VRAM, la RAM y los
+registros del VDP cada tantos cuadros, en cada cambio de estado y en cada
+corte del final; y apunta cada cosa que sale en la carretera (p01:6852). Para
+llegar al final de las fases largas pone a 1 el periodo del paso (0xE4C0)
+justo antes de andar, en p00:4560, y para que el pingüino no se muera mantiene
+0xE1F1.
+
+`make coteja` compara con esos volcados:
+
+| qué | cuánto | diferencias |
+|---|---|---|
+| la pantalla de cada fase | 24 fases | 0 bytes |
+| el final: la meta y el dinosaurio | 144 cortes | 0 |
+| el pingüino, pose y colocación | 1.107 cuadros | 0 |
+| los bichos, dibujo por clase y distancia | 510 objetos | 0 |
+| el espacio | 9 pantallas, 8 peces, 13 meteoritos | 0 |
+| las cosas de la carretera, LEVEL 1 y 2 | 5.414 | 0 |
+| el espejo de pantalla, andando la fase | 424 volcados | 0 |
+
+Dos trampas. En el punto de volcado (p00:451C) la tabla de nombres de la VRAM
+va un cuadro por detrás del espejo de RAM, así que las casillas se miran en el
+espejo. Y las fases 12, 18 y 24 no se acaban sin el objeto de 0xE16C: un
+volcado tardío va por otra pasada, con los índices de los guiones iguales y
+las ranuras no.

@@ -118,6 +118,43 @@ marca con 0xFF: el premio gordo.
 Es la regla clásica de las cerezas de una tragaperras, escrita en Z80. Y la
 tabla de premios pintada en la propia máquina dice lo mismo.
 
+## Cada tres fases, un dinosaurio
+
+En las fases cuyo 1-2-3 (0xE093) vale 3 —la 3, la 6, la 9... hasta la 24— lo
+que se acerca al final no es la meta. p01:6697 copia sobre el mapa las cinco
+tiras de 0xA76B en vez de las de 0xA605, y lo que crece es un dinosaurio hecho
+de caracteres, con sus cuatro cargas propias (p00:537A, 5424, 53CF y 5498) y
+el color que escoge el decorado. Detrás viene la pelea, el estado 7. Ver
+[El juego](EL-JUEGO.html).
+
+## El espacio está dentro de una grieta
+
+El guion de avisos de 0xB046 marca, a su distancia, que la siguiente cosa que
+salga sea una grieta con dos bytes de más: el modo y la lista. Cayendo en ella
+y pulsando abajo (p02:99A2) se entra en el modo 1, el del espacio. Es la única
+forma de llegar: el decorado 8 no es de ninguna de las veinticuatro fases.
+
+## Un bicho que no se ve
+
+La clase de objeto 7 sale en los guiones de seis fases, pero p09:B8B3 le pone
+el color 0 —transparente— salvo que se lleve 0xE16A. Con eso puesto sale en el
+color 5.
+
+## Los patrones que no cargaba nadie
+
+Los patrones de sprite 0x00 a 0x14 del pingüino no los carga ningún guion
+comprimido: los sube el otro pintor del cartucho, `pinta_bloque` (p00:43B3),
+que lee columnas de dieciséis bytes sin comprimir y, con el bit 0 de C, pinta
+cada columna dos veces, la segunda espejada. p00:57FB lo llama con una de tres
+tiras según el terreno.
+
+## Los lados de la carretera no son colores
+
+El listado llamaba a p01:6AA8 "los colores que dan vueltas". No toca colores:
+borra con unos y pinta con p00:41BF, paso a paso, lo que pasa por los lados de
+la carretera, desde las tiras de 0xA420. Y no va por distancia sino por
+cuadros con la barra de velocidad clavada, así que depende de cómo se acelere.
+
 ## Veinticuatro fases, no trece
 
 Los trece son lo que el cartucho le declara al Konami Game Master en la cabecera

@@ -114,6 +114,44 @@ Every other symbol pays only in threes, and symbol 5 is marked 0xFF: the jackpot
 It is the classic slot-machine cherry rule, written in Z80. And the payout table
 painted on the machine itself says the same.
 
+## Every third stage, a dinosaur
+
+On the stages whose 1-2-3 counter (0xE093) is 3 —3, 6, 9... up to 24— what
+approaches at the end is not the goal. p01:6697 copies onto the map the five
+strips at 0xA76B instead of those at 0xA605, and what grows is a dinosaur made
+of characters, with its own four loads (p00:537A, 5424, 53CF and 5498) and the
+colour the backdrop picks. The fight follows, state 7. See
+[The game](THE-GAME.html).
+
+## Space is inside a crevasse
+
+The warnings script at 0xB046 flags, at its distance, that the next object to
+come out is a crevasse carrying two extra bytes: the mode and the list.
+Falling into it and pressing down (p02:99A2) enters mode 1, space. It is the
+only way there: backdrop 8 belongs to none of the twenty-four stages.
+
+## A creature you cannot see
+
+Object class 7 appears in the scripts of six stages, but p09:B8B3 gives it
+colour 0 —transparent— unless 0xE16A is carried. With that set it shows in
+colour 5.
+
+## The patterns nobody loaded
+
+The penguin's sprite patterns 0x00 to 0x14 are not loaded by any compressed
+script: the cartridge's other painter uploads them, `pinta_bloque`
+(p00:43B3), which reads uncompressed sixteen-byte columns and, with bit 0 of
+C, paints each column twice, the second time mirrored. p00:57FB calls it with
+one of three strips depending on the terrain.
+
+## The roadsides are not colours
+
+The listing called p01:6AA8 "the colours that go round". It touches no
+colours: it erases with ones and paints with p00:41BF, step by step, what goes
+by at the sides of the road, from the strips at 0xA420. And it does not run on
+distance but on frames with the speed bar pinned, so it depends on how you
+accelerate.
+
 ## Twenty-four stages, not thirteen
 
 Thirteen is what the cartridge declares to the Konami Game Master in the header

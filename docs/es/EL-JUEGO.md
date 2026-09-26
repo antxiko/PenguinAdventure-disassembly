@@ -14,34 +14,128 @@ rótulo: el dibujo de fondo es el mismo.
 ## Veinticuatro fases, no trece
 
 El cartucho le *declara* trece al Konami Game Master en su segunda cabecera, la
-de 0x4010. El juego dice otra cosa: p02:8328 compara la fase con 0x19 y las
-tres tablas de guion —terreno, enemigos y la tercera— cierran en veinticuatro
-entradas justas.
+de 0x4010. El juego dice otra cosa: p02:8328 compara la fase con 0x19, y las
+tablas de cada fase cierran en veinticuatro entradas justas.
 
-![Las veinticuatro fases del LEVEL 1](../imagenes/fases_level_1.png)
+Cada fase se anda: 0xE08D es lo que queda y baja uno, en BCD, con cada paso. Y
+a cada paso le toca algo de cuatro guiones:
 
-Cada fila es una fase. Los bloques de color son los tramos de terreno en el
-orden en que salen, y las marcas de debajo, los bichos que el guion suelta. Las
-tres primeras fases no sueltan ninguno: su guion es un `0xFF` pelado.
+| guion | dónde | qué |
+|---|---|---|
+| el terreno | banco 10, 0x8000 (LEVEL 1) y 0x80F9 (LEVEL 2) | un byte cada 100 pasos; cada byte son ocho cosas de 0x84EA, que salen de una en una cada 6 pasos |
+| las curvas | banco 13, 0xADE8 | distancia y hacia dónde tira la carretera (0xE0A6) |
+| los bichos | banco 9, 0xA8FB | clase y cuánto hay que andar hasta el siguiente |
+| los avisos | banco 13, 0xB046 | la distancia a la que la siguiente cosa sale como grieta especial |
+
+Cada cosa del terreno es un dibujo de caracteres en dieciséis tamaños (0x8682,
+banco 10): en cada paso p01:68CA borra el anterior con unos y pinta el
+siguiente, y al decimosexto la ranura queda libre. Con eso la carretera se
+puede andar entera desde las tablas:
+
+![Las veinticuatro fases del LEVEL 1](../imagenes/recorridos_level_1.png)
+
+Ocho vistas por fase, de la salida a la meta, y debajo de cada una los bichos
+que salen en ese tramo. Lo que no sale, dicho: lo que pasa por los lados de la
+carretera (p01:6AA8 va por cuadros con la barra de velocidad clavada, no por
+distancia), los bichos en movimiento (su recorrido lo sortea el registro R) y
+la otra variante de las cosas que apuntan al jugador: aquí va por el centro.
+
+Todo está cotejado con openMSX (`tools/coteja.py`): las 5.414 cosas que
+salieron en las partidas de prueba, a la misma distancia y del mismo tipo, y el
+espejo de pantalla de 424 volcados, casilla a casilla, con cero diferencias.
 
 El menú del título deja elegir entre **LEVEL 1** y **LEVEL 2**, y esa elección
-no cambia lo difícil que es un tramo: cambia **los veinticuatro recorridos
-enteros**. Son dos tablas de terreno distintas del banco 10 —0x8000 y 0x80F9— y
-p01:675B escoge con 0xE08F, que es la copia que p02:813B hace de 0xE082 al
-empezar la partida. Ni un solo tramo coincide byte a byte entre las dos.
+no cambia lo difícil que es un tramo: cambia el guion del terreno entero.
+p01:675B escoge tabla con 0xE08F, la copia que p02:813B hace de 0xE082 al
+empezar la partida. Los bichos, las curvas y los avisos son los mismos.
 
-![Las veinticuatro del LEVEL 2](../imagenes/fases_level_2.png)
+![Las veinticuatro del LEVEL 2](../imagenes/recorridos_level_2.png)
 
-## Diez decorados
+Las fases 12, 18 y 24 tienen trampa: a 0x50 de la meta, p01:6476 carga un
+registro de once bytes (0x64C6, 0x64D1 o 0x64DC) que devuelve atrás lo que
+queda de fase y los guiones de bichos, curvas y terreno. Sin el objeto de
+0xE16C, esas tres fases no se acaban nunca.
 
-El terreno se monta con diez decorados, cada uno con sus caracteres —tres
-cargas, una por tercio de pantalla— y 672 bytes de tabla de nombres que
-p01:6000 descomprime en 0xEBE0.
+## Los decorados
 
-![El primer decorado](../imagenes/decorado_0.png)
+Ocho decorados para las veinticuatro fases, y uno más: el espacio. p02:816D
+los monta por piezas: los tres tercios de caracteres, las diez piezas de
+p02:966B —cada una con su condición sobre el decorado y una tabla de color de
+24 bytes que p00:440D aplica al pintar—, el mapa de 672 bytes que p01:6000
+descomprime en 0xEBE0 y el primer paso de la animación del suelo.
 
-Los decorados 8 y 9 no los usa ninguna de las veinticuatro fases: los ponen a
-mano p03:B602 y p03:B932 para dos escenas de por medio.
+![Los nueve decorados](../imagenes/decorados.png)
+
+El hielo, el bosque nevado, el desierto, el bosque, el mar en la superficie, el
+cañón con el río, la cueva, el fondo del mar y el espacio. Montados así dan
+cero bytes distintos contra el primer cuadro de cada fase en openMSX.
+
+## El pingüino
+
+Negro y de espaldas: las poses de la tabla de 0xA91D llevan el color 1. Corre
+con las poses 0-1-0-2 (p02:978E, una cada ocho cuadros), y los patrones cambian
+con el terreno: p00:57FB lo carga de una de tres tiras —0x8600 en tierra,
+0x78F1 en el hielo, 0x79C7 en el mar y en el espacio— con el otro pintor del
+cartucho, `pinta_bloque` (p00:43B3), que sube columnas de dieciséis bytes y, si
+se le pide, la misma columna espejada.
+
+![El pingüino](../imagenes/jugador.png)
+
+Nadando en la superficie no hay pose de la tabla: p02:9A1D pone la 10 y cambia
+los dos sprites de abajo por espuma cada dieciséis cuadros. Bajo el mar las
+poses 7, 8 y 9 van en T (p02:9C3A), y en el espacio esa misma figura lleva los
+colores que le pisa p03:A778.
+
+## Los bichos
+
+Los tres huecos de objeto de 0xE310 admiten quince clases (p09:A8D1), y las que
+se ven escogen su dibujo por la distancia: cuatro bandas y, si aletean, dos
+dibujos por banda que se turnan con el bit 2 del contador de cuadros
+(p09:AA86). Qué es cada dibujo depende de lo que cargue la fase —p02:9689
+carga los suyos—, así que la misma clase puede ser un bicho en unas fases y
+otro en otras.
+
+![Los bichos](../imagenes/bichos.png)
+
+La clase 7 no se ve. p09:B8B3 le pone el color 0 —transparente— salvo que se
+lleve 0xE16A, y entonces el 5.
+
+## El dinosaurio y la meta
+
+Las últimas 0x30 de cada fase son nueve cortes (p01:65CF). En cuatro se cargan
+caracteres y en los otros cinco se copia sobre el mapa una tira más grande que
+la anterior: lo que se acerca. En las fases cuyo 1-2-3 vale 3 —la 3, la 6, la
+9... hasta la 24— lo que se acerca es un **dinosaurio**, y detrás viene la
+pelea, el estado 7.
+
+![El dinosaurio](../imagenes/dinosaurio.png)
+
+En las demás, la meta: dos pingüinos que celebran.
+
+![La meta](../imagenes/meta.png)
+
+## El espacio
+
+El bonus no es una fase: es el decorado 8, que p03:B602 pone a mano. Y se llega
+desde una grieta. El guion de avisos de 0xB046 marca, al llegar a su
+distancia, la siguiente cosa que salga (p03:B8AB); esa sale como grieta —0x0A,
+0x0B o la 0x2F, que apunta al jugador— y se lleva dos bytes, el modo y la
+lista. Si el pingüino cae dentro y se pulsa abajo, p02:99A2 cambia al modo 1 y
+lo lleva al espacio.
+
+![El espacio](../imagenes/espacio.png)
+
+Allí lo que sale no viene del terreno sino de las diez listas de 0x81F2 (banco
+10). Los meteoritos son cosas de caracteres, de la 0x15 a la 0x19, con sus
+dieciséis dibujos como las de la carretera; y lo que se coge son peces con
+alas, las cosas de sprite 0x1A a 0x1F, con tres trayectorias de dieciséis pasos
+(0xA545, 0xA585 y 0xA5C5). Las tres últimas repiten trayectoria pero su color
+salta entre 6 y 0x0A: son las que dan una vida.
+
+![Los peces con alas](../imagenes/items.png)
+
+Cada vez que se vuelve al espacio dura menos: los diez largos de 0xB635 van de
+0x85 a 0x40.
 
 ## El tiempo, que corre solo
 

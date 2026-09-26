@@ -88,15 +88,39 @@ audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
 <p><img src="imagenes/titulo_resto.png" alt="The title screen"></p>
 <p>There are <b>two title screens</b> and the cartridge picks one from the BIOS country byte (0x002B). The difference is one extra script, 0xA463, and it only touches the lettering: the background picture is the same.</p>
 <h2 id="twenty-four-stages-not-thirteen">Twenty-four stages, not thirteen</h2>
-<p>The cartridge <em>declares</em> thirteen to the Konami Game Master in its second header, the one at 0x4010. The game says otherwise: p02:8328 compares the stage with 0x19 and the three script tables —terrain, creatures and the third one— close at exactly twenty-four entries.</p>
-<p><img src="imagenes/fases_level_1.png" alt="The twenty-four LEVEL 1 stages"></p>
-<p>Each row is a stage. The coloured blocks are its terrain sections in the order they come, and the marks below are the creatures the script spawns. The first three stages spawn none: their script is a bare <code>0xFF</code>.</p>
-<p>The title menu lets you pick between <b>LEVEL 1</b> and <b>LEVEL 2</b>, and that choice does not change how hard a section is: it changes <b>all twenty-four routes</b>. They are two different terrain tables in bank 10 —0x8000 and 0x80F9— and p01:675B picks with 0xE08F, which is the copy p02:813B makes of 0xE082 when the game starts. Not one section matches byte for byte between them.</p>
-<p><img src="imagenes/fases_level_2.png" alt="The twenty-four LEVEL 2 ones"></p>
-<h2 id="ten-backdrops">Ten backdrops</h2>
-<p>The terrain is built from ten backdrops, each with its characters —three loads, one per third of the screen— and 672 bytes of name table that p01:6000 decompresses at 0xEBE0.</p>
-<p><img src="imagenes/decorado_0.png" alt="The first backdrop"></p>
-<p>Backdrops 8 and 9 are used by none of the twenty-four stages: p03:B602 and p03:B932 set them by hand for two interludes.</p>
+<p>The cartridge <em>declares</em> thirteen to the Konami Game Master in its second header, the one at 0x4010. The game says otherwise: p02:8328 compares the stage with 0x19, and every per-stage table ends at exactly twenty-four entries.</p>
+<p>A stage is walked: 0xE08D is what is left, and it drops by one, in BCD, with every step. Each step takes something from four scripts:</p>
+<table><tr><th>script</th><th>where</th><th>what</th></tr><tr><td>terrain</td><td>bank 10, 0x8000 (LEVEL 1) and 0x80F9 (LEVEL 2)</td><td>one byte every 100 steps; each byte is eight objects from 0x84EA, released one at a time every 6 steps</td></tr><tr><td>curves</td><td>bank 13, 0xADE8</td><td>distance and which way the road bends (0xE0A6)</td></tr><tr><td>creatures</td><td>bank 9, 0xA8FB</td><td>class and how far to walk until the next one</td></tr><tr><td>warnings</td><td>bank 13, 0xB046</td><td>the distance at which the next object comes out as a special crevasse</td></tr></table>
+<p>Every terrain object is a character drawing at sixteen sizes (0x8682, bank 10): on each step p01:68CA erases the previous one with ones and draws the next, and after the sixteenth the slot is freed. With that, the whole road can be walked from the tables:</p>
+<p><img src="imagenes/recorridos_level_1.png" alt="The twenty-four LEVEL 1 stages"></p>
+<p>Eight views per stage, from the start to the goal, and under each one the creatures that spawn in that stretch. What is left out, stated plainly: what goes by at the roadsides (p01:6AA8 runs on frames with the speed bar pinned, not on distance), creatures in motion (their path is drawn from the R register) and the other variant of the objects that aim at the player: here he runs down the middle.</p>
+<p>All of it is checked against openMSX (<code>tools/coteja.py</code>): the 5,414 objects that came out in the test runs, at the same distance and of the same type, and the screen mirror of 424 dumps, cell by cell, with zero differences.</p>
+<p>The title menu lets you choose <b>LEVEL 1</b> or <b>LEVEL 2</b>, and that choice does not change how hard a section is: it changes the whole terrain script. p01:675B picks the table from 0xE08F, the copy p02:813B makes of 0xE082 when the game starts. Creatures, curves and warnings are the same.</p>
+<p><img src="imagenes/recorridos_level_2.png" alt="The twenty-four LEVEL 2 ones"></p>
+<p>Stages 12, 18 and 24 have a catch: 0x50 away from the goal, p01:6476 loads an eleven-byte record (0x64C6, 0x64D1 or 0x64DC) that sends the distance left and the creature, curve and terrain scripts back. Without the item at 0xE16C those three stages never end.</p>
+<h2 id="the-backdrops">The backdrops</h2>
+<p>Eight backdrops for the twenty-four stages, plus one: space. p02:816D builds them piece by piece: the three thirds of characters, the ten pieces of p02:966B —each with its own condition on the backdrop and a 24-byte colour table that p00:440D applies while painting—, the 672-byte map p01:6000 decompresses at 0xEBE0 and the first step of the ground animation.</p>
+<p><img src="imagenes/decorados.png" alt="The nine backdrops"></p>
+<p>Ice, snowy forest, desert, forest, the sea surface, the river canyon, the cave, the sea bed and space. Built that way they come out at zero differing bytes against the first frame of each stage in openMSX.</p>
+<h2 id="the-penguin">The penguin</h2>
+<p>Black and seen from behind: the poses in the 0xA91D table carry colour 1. It runs with poses 0-1-0-2 (p02:978E, one every eight frames), and its patterns change with the terrain: p00:57FB loads it from one of three strips —0x8600 on land, 0x78F1 on ice, 0x79C7 at sea and in space— with the cartridge&#x27;s other painter, <code>pinta_bloque</code> (p00:43B3), which uploads sixteen-byte columns and, on request, the same column mirrored.</p>
+<p><img src="imagenes/jugador.png" alt="The penguin"></p>
+<p>Swimming at the surface there is no pose from the table: p02:9A1D sets pose 10 and swaps the two lower sprites for a splash every sixteen frames. Under the sea, poses 7, 8 and 9 are laid out in a T (p02:9C3A), and in space that same figure wears the colours p03:A778 forces on it.</p>
+<h2 id="the-creatures">The creatures</h2>
+<p>The three object slots at 0xE310 take fifteen classes (p09:A8D1), and the visible ones pick their drawing by distance: four bands and, if they flap, two drawings per band that alternate with bit 2 of the frame counter (p09:AA86). What each drawing is depends on what the stage loads —p02:9689 loads its own—, so the same class can be one creature in some stages and another elsewhere.</p>
+<p><img src="imagenes/bichos.png" alt="The creatures"></p>
+<p>Class 7 is invisible. p09:B8B3 gives it colour 0 —transparent— unless 0xE16A is carried, and then colour 5.</p>
+<h2 id="the-dinosaur-and-the-goal">The dinosaur and the goal</h2>
+<p>The last 0x30 of every stage are nine cuts (p01:65CF). Four of them load characters and the other five copy onto the map a strip bigger than the one before: whatever is approaching. On the stages whose 1-2-3 counter is 3 —3, 6, 9... up to 24— what approaches is a <b>dinosaur</b>, and the fight follows, state 7.</p>
+<p><img src="imagenes/dinosaurio.png" alt="The dinosaur"></p>
+<p>On the rest, the goal: two penguins cheering.</p>
+<p><img src="imagenes/meta.png" alt="The goal"></p>
+<h2 id="space">Space</h2>
+<p>The bonus stage is not a stage: it is backdrop 8, which p03:B602 sets by hand. And you get there through a crevasse. The warnings script at 0xB046 flags, when its distance is reached, the next object to come out (p03:B8AB); that one comes out as a crevasse —0x0A, 0x0B or 0x2F, the one that aims at the player— carrying two bytes, the mode and the list. If the penguin falls in and you press down, p02:99A2 switches to mode 1 and takes it to space.</p>
+<p><img src="imagenes/espacio.png" alt="Space"></p>
+<p>There, objects do not come from the terrain but from the ten lists at 0x81F2 (bank 10). The meteorites are character objects, 0x15 to 0x19, with sixteen drawings each like the road ones; and what you catch are winged fish, the sprite objects 0x1A to 0x1F, with three sixteen-step paths (0xA545, 0xA585 and 0xA5C5). The last three repeat a path but their colour flickers between 6 and 0x0A: those are the extra-life ones.</p>
+<p><img src="imagenes/items.png" alt="The winged fish"></p>
+<p>Every return to space is shorter: the ten lengths at 0xB635 go from 0x85 down to 0x40.</p>
 <h2 id="the-clock-which-runs-on-its-own">The clock, which runs on its own</h2>
 <p>0xE08B is the time, and it drops by one <b>every 32 frames whether you move or not</b> (p02:922D). Below 0x15 it beeps every other frame, and when the stage ends p02:94D1 turns it into points 0x20 at a time.</p>
 <p>What goes down with the terrain is something else, 0xE08D, and the nine end-of-stage cues come from it: at 0x30, 0x25, 0x20, 0x15, 0x10, 8, 5, 2 and 0 from the goal, something different happens (p01:65CF).</p>

@@ -91,6 +91,9 @@ aquí**; lee [AVISO-LEGAL.md](AVISO-LEGAL.md).
     make sanity        lo que el reensamblado no puede cazar
     make test          los tests
     make densidad      cuánto está comentado, banco a banco
+    make imagenes      los dibujos de la web, leyendo las tablas de la ROM
+    make coteja        esos dibujos contra volcados de openMSX (ver
+                       tools/coteja.py para sacar los volcados)
 
 ## Licencia
 

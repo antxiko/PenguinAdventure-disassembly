@@ -62,13 +62,62 @@ GALERIA = [
      "And the one for the rest of the world. The cartridge picks one or the "
      "other from the BIOS country byte (0x002B): the difference is ONE extra "
      "script, 0xA463, and it only touches the lettering."),
+    ("jugador.png",
+     "El pingüino, de espaldas y en negro, con las poses de la tabla de 0xA91D "
+     "sobre los patrones que carga cada terreno. De arriba abajo: en tierra, "
+     "en el hielo, nadando (la pose 10 y una espuma que alterna cada 16 "
+     "cuadros, p02:9A1D), bajo el mar (poses 7, 8 y 9) y en el espacio, con "
+     "los colores que le pisa p03:A778.",
+     "The penguin, seen from behind and black, in the poses of the 0xA91D "
+     "table over the patterns each terrain loads. Top to bottom: on land, on "
+     "ice, swimming (pose 10 plus a splash that alternates every 16 frames, "
+     "p02:9A1D), under the sea (poses 7, 8 and 9) and in space, with the "
+     "colours p03:A778 forces on it."),
+    ("bichos.png",
+     "Los diez bichos de los guiones de las fases, cada uno en sus cuatro "
+     "tamaños y, si aletea, en sus dos pasos, con su clase y las fases que lo "
+     "sacan. El de la clase 7 no se ve: p09:B8B3 le da el color 0 salvo que se "
+     "lleve 0xE16A.",
+     "The ten creatures of the stage scripts, each at its four sizes and, if "
+     "it flaps, in both steps, with its class and the stages that spawn it. "
+     "Class 7 is invisible: p09:B8B3 gives it colour 0 unless 0xE16A is "
+     "carried."),
+    ("dinosaurio.png",
+     "El dinosaurio que cierra cada tres fases, en los cinco tamaños con que "
+     "se acerca: las tiras de 0xA76B que p01:6697 copia a 0x20, 0x10, 5, 2 y "
+     "0 de la meta. El color lo escoge el decorado.",
+     "The dinosaur that closes every third stage, at the five sizes it has "
+     "as it approaches: the 0xA76B strips p01:6697 copies at 0x20, 0x10, 5, 2 "
+     "and 0 from the goal. The backdrop picks its colour."),
+    ("espacio.png",
+     "El espacio, el bonus: la Tierra, el pingüino y los meteoritos, que son "
+     "cosas hechas de caracteres (0x15 a 0x19) con dieciséis dibujos que "
+     "crecen hasta salirse por un lado.",
+     "Space, the bonus stage: the Earth, the penguin and the meteorites, "
+     "objects built from characters (0x15 to 0x19) with sixteen drawings that "
+     "grow until they leave by one side."),
+    ("items.png",
+     "Los peces con alas que se cogen en el espacio, en los dieciséis pasos "
+     "de la lista de 0xA545. Debajo, los dos colores entre los que salta el "
+     "que da una vida (p01:6A04).",
+     "The winged fish you catch in space, in the sixteen steps of the 0xA545 "
+     "list. Below, the two colours the extra-life one flickers between "
+     "(p01:6A04)."),
+    ("recorridos_level_1.png",
+     "Las veinticuatro fases del LEVEL 1, andadas paso a paso desde sus "
+     "tablas: ocho vistas de la carretera por fase, de la salida a la meta, "
+     "con lo que sale del guion del terreno y las curvas; debajo, los bichos "
+     "de cada tramo.",
+     "The twenty-four LEVEL 1 stages, walked step by step from their tables: "
+     "eight views of the road per stage, start to goal, with what the terrain "
+     "script puts on it and the curves; below, each stretch's creatures."),
     ("decorado_0.png",
-     "El primero de los diez decorados, descomprimido desde la ROM. Cada uno "
-     "son tres cargas de caracteres -una por tercio de pantalla- y 672 bytes "
-     "de tabla de nombres que p01:6000 suelta en 0xEBE0.",
-     "The first of the ten backdrops, decompressed from the ROM. Each one is "
-     "three character loads -one per third of the screen- and 672 bytes of "
-     "name table that p01:6000 drops at 0xEBE0."),
+     "Uno de los ocho decorados de las fases, montado como lo monta el juego: "
+     "las diez piezas de p02:966B con su tabla de color, el mapa de p01:6000 "
+     "y la animación del suelo.",
+     "One of the eight stage backdrops, built the way the game builds it: the "
+     "ten pieces of p02:966B with their colour table, the p01:6000 map and "
+     "the ground animation."),
     ("apostar.png",
      "La máquina de apostar, con tres cerezas. La tabla de premios está "
      "pintada en la propia máquina y dice lo mismo que el código: una cereza "
@@ -83,31 +132,6 @@ GALERIA = [
      "The six reel symbols, with how many of the sixteen slots in the table at "
      "0x7B34 fall to each. The cherry gets five: it is the most likely symbol "
      "and the only one that counts on its own."),
-    ("fases_level_1.png",
-     "Las veinticuatro fases del LEVEL 1: cada fila es una fase, los bloques "
-     "de color son los tramos de terreno en orden y las marcas de debajo, los "
-     "bichos que salen. Son 24 y no 13: los trece son lo que el cartucho le "
-     "declara al Konami Game Master en su cabecera de 0x4010.",
-     "The twenty-four LEVEL 1 stages: each row is a stage, the coloured "
-     "blocks are its terrain sections in order and the marks below are the "
-     "creatures it spawns. There are 24 and not 13: thirteen is what the "
-     "cartridge declares to the Konami Game Master in its 0x4010 header."),
-    ("fases_level_2.png",
-     "Y las del LEVEL 2, que son OTRO diseño: ni un solo tramo coincide byte "
-     "a byte con los del LEVEL 1. El menú del título no cambia lo dificil que "
-     "es un tramo: cambia los veinticuatro recorridos enteros.",
-     "And the LEVEL 2 ones, which are a DIFFERENT design: not one section "
-     "matches the LEVEL 1 table byte for byte. The title menu does not change "
-     "how hard a section is: it changes all twenty-four routes."),
-    ("sprites_9846.png",
-     "Una de las diecinueve hojas de sprites, la del título. Los dos colores "
-     "son blanco y gris a propósito: en el MSX1 un sprite es de un solo color "
-     "y el color no está en el dibujo sino en el cuarto byte de la entrada de "
-     "la tabla de atributos, así que estas hojas enseñan qué capa pone qué.",
-     "One of the nineteen sprite sheets, the title one. The two colours are "
-     "white and grey on purpose: on the MSX1 a sprite has a single colour and "
-     "that colour is not in the drawing but in the fourth byte of the "
-     "attribute table entry, so these sheets show which layer puts what."),
 ]
 
 HALLAZGOS = {
