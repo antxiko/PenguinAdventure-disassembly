@@ -126,6 +126,21 @@ def sprites_de_la_escena(cart, cual):
     return fuera
 
 
+def sprites_del_panel(cart, cual):
+    """Los sprites de cada escena cuando ya esta el mensaje: los fijos; en el
+    arbol, ademas, la manzana que ha caido, quieta en la ultima de las
+    diecisiete parejas de 0xAD88 (los sprites 28 a 31); y en el final malo, el
+    pinguino llorando delante del rey (el llanto de 0xADEF, el cuadro con las
+    lagrimas; los sprites 0 a 5). Con la fila ya sumada, como
+    sprites_de_la_escena()."""
+    fuera = sprites_de_la_escena(cart, cual)
+    if cual == "arbol":
+        fuera += [(n, y + 1, x, pt, co) for n, y, x, pt, co in lo_que_cae(cart, 16)]
+    elif cual == "malo":
+        fuera = [(n, y + 1, x, pt, co) for n, y, x, pt, co in llanto(cart, 1)] + fuera
+    return fuera
+
+
 def lamina_de_las_escenas(cart):
     from vram import fondo
     from figuras import pinta_sprites
@@ -135,8 +150,7 @@ def lamina_de_las_escenas(cart):
         if cual == "bueno":
             figura_del_final_bueno(p)
         img = fondo(p.li.v)
-        spr = [(n, y, x, pt, co) for n, y, x, pt, co in sprites_de_la_escena(cart, cual)]
-        pinta_sprites(img, p.li, 0, 0, [(n, y, x, pt, co) for n, y, x, pt, co in spr])
+        pinta_sprites(img, p.li, 0, 0, sprites_del_panel(cart, cual))
         paneles.append([fila[:] for fila in img[24:]])
     alto, ancho = len(paneles[0]), 256
     img = [[1] * (3 * ancho + 16) for _ in range(alto)]
@@ -245,7 +259,8 @@ RECORTE_ANDANDO = (0x48, 0xC0, 0x40, 0xC0)      # filas y columnas en pixeles
 
 def fotos_andando(cart):
     filas = []
-    fijos = {"malo": sprites_de_la_escena(cart, "malo")}
+    # _foto() suma la fila a todos; sprites_de_la_escena() ya la lleva sumada
+    fijos = {"malo": [(n, y - 1, x, pt, co) for n, y, x, pt, co in sprites_de_la_escena(cart, "malo")]}
     for cual in ("arbol", "bueno", "malo"):
         _paso, x, hasta = DONDE_ANDA[cual]
         fila = []

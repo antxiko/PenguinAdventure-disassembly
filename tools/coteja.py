@@ -343,11 +343,25 @@ def warp(cart):
     return vistas > 0 and malas == 0
 
 
+def _sprites_a_la_vista(r):
+    """Los sprites del espejo 0xEE80 que se ven: {numero: (Y, X, patron)}."""
+    vistos = {}
+    for n in range(32):
+        y, x, pt, co = r[0xE80 + 4 * n:0xE84 + 4 * n]
+        if y == 0xD0:
+            break
+        if co & 0x0F and (y < 0xBF or y >= 0xF0):
+            vistos[n] = (y, x, pt)
+    return vistos
+
+
 def escenas(cart):
     """El arbol y los dos finales (tools/escenas.py) contra los volcados de
     tools/omsx_escenas.tcl (work/escenas/arbol, bueno y malo): las tablas, el
-    espejo de pantalla con los mensajes y los sprites fijos de cada una."""
-    from escenas import monta_la_escena, sprites_de_la_escena
+    espejo de pantalla con los mensajes, y los sprites del panel, que han de
+    ser los de un cuadro de verdad del ultimo paso: ni uno de mas ni uno de
+    menos a la vista."""
+    from escenas import monta_la_escena, sprites_del_panel
     vistas = malas = 0
     for cual, b9 in (("arbol", 2), ("bueno", 0), ("malo", 1)):
         rutas = [r for r in _volcados("escenas/%s/*_6_6_b%d.ram" % (cual, b9))]
@@ -358,8 +372,9 @@ def escenas(cart):
         p = monta_la_escena(cart, cual)
         _t, dis, _m = compara(p, v, ((0, 0x1800), (0x2000, 0x3800)))
         esp = sum(1 for a in range(0xEBE0, 0xEE80) if p.ram[a] != r[a - 0xE000])
-        spr = sum(1 for n, y, x, pt, co in sprites_de_la_escena(cart, cual)
-                  if tuple(r[0xE80 + 4 * n:0xE83 + 4 * n]) != (y - 1, x, pt))
+        panel = {(n, (y - 1, x, pt)) for n, y, x, pt, co in sprites_del_panel(cart, cual) if co}
+        del_paso = [f for f in map(_lee, rutas) if f[0xB7] == r[0xB7]]
+        spr = min(len(panel ^ set(_sprites_a_la_vista(f).items())) for f in del_paso)
         vistas += 1
         if dis or esp or spr:
             malas += 1
