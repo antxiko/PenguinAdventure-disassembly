@@ -34,6 +34,25 @@ proc vuelca {} {
     close $f
     if {$::n < 120} { after time 0.5 vuelca } else { say "fin" ; exit 0 }
 }
+# PA_CADA=<n>: ademas, un volcado cada n pasadas por p03:AA80 (la escena, una
+# vez por cuadro), con el paso (0xE0B7) en el nombre: sNNNNN_bB_pPP. Asi la
+# RAM de la escena y los sprites de su espejo son los del mismo cuadro.
+set CADA [expr {[info exists ::env(PA_CADA)] ? $::env(PA_CADA) : 0}]
+set ::n_aa80 0
+proc en_la_escena {} {
+    global OUT
+    if {!$::CADA || [lee 0xE000] != 6} return
+    incr ::n_aa80
+    if {$::n_aa80 % $::CADA} return
+    set nombre [format "s%05d_b%d_p%02d" $::n_aa80 [lee 0xE0B9] [lee 0xE0B7]]
+    set f [open "$OUT/$nombre.vram" wb]
+    puts -nonewline $f [debug read_block VRAM 0 16384]
+    close $f
+    set f [open "$OUT/$nombre.ram" wb]
+    puts -nonewline $f [debug read_block memory 0xE000 4096]
+    close $f
+}
+debug set_bp 0xAA80 {} {en_la_escena}
 set throttle off
 after time 12 { pulsa 8 1 }
 after time 15 { pulsa 8 1 }

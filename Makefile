@@ -173,12 +173,14 @@ test:
 # ROM con codigo nuestro. tools/graficos.py hace las portadas, los decorados y
 # la maquina de apostar; tools/figuras.py el pinguino, los bichos, el espacio,
 # los peces, el dinosaurio y la meta; tools/recorridos.py las veinticuatro
-# fases de cada LEVEL, andadas paso a paso por tools/carretera.py.
+# fases de cada LEVEL, andadas paso a paso por tools/carretera.py, y
+# tools/pelea.py la pelea con el dinosaurio.
 imagenes: $(ROM)
 	@python3 tools/graficos.py
 	@python3 tools/figuras.py
 	@python3 tools/recorridos.py
 	@python3 tools/escenas.py
+	@python3 tools/pelea.py
 
 # Y todo lo dibujado se coteja con volcados de openMSX (tools/omsx_fases.tcl;
 # los lanzadores tools/lanza_fases.sh y tools/lanza_fines.sh los sacan: ver la

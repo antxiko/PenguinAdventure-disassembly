@@ -196,7 +196,58 @@ proc vigila {} {
 set ::n_vigila 0
 after time 16 vigila
 
+# PA_GANA=1: la pelea se gana sola. Mientras caen los bloques (estado 7.2) se
+# vuelca cada dos pasadas por p02:83CE (pelea_bNNNN). Luego se pelea
+# PA_GANA_TRAS pasadas por p01:7799 (7.3) volcando cada tres (pelea_aNNNN) y
+# apartando al pinguino (0xE205) cuando lo lanzado llega al tramo 3, para que
+# el tramo 4 no le de (hacia la izquierda; con PA_GANA_DERECHA=1, hacia la
+# derecha, que es como el blanco llega a las columnas 3 y 4). Despues la cuenta de aciertos pasa a 19 y lo disparado
+# (0xE502, 0xE503) se pone encima del blanco (0xE535, 0xE536) hasta el
+# vigesimo. Desde ahi, un volcado cada dos pasadas por p01:7799 (7.3) y por
+# p02:8461 (7.4, el blanco que se hunde), con el nombre pelea_gNNNN.
+set GANA [expr {[info exists ::env(PA_GANA)] ? $::env(PA_GANA) : 0}]
+set GANA_DERECHA [expr {[info exists ::env(PA_GANA_DERECHA)] ? $::env(PA_GANA_DERECHA) : 0}]
+set GANA_TRAS [expr {[info exists ::env(PA_GANA_TRAS)] ? $::env(PA_GANA_TRAS) : 0}]
+set ::n_gana 0
+set ::n_antes 0
+set ::n_caen 0
+proc caen {} {
+    if {!$::GANA || [lee 0xE000] != 7 || [lee 0xE001] != 2} return
+    incr ::n_caen
+    if {$::n_caen % 2 == 0} { vuelca [format "f%02d_n%d_pelea_b%04d" $::FASE $::NIVEL $::n_caen] }
+}
+proc gana {} {
+    if {!$::GANA || [lee 0xE000] != 7} return
+    set s [lee 0xE001]
+    if {$s == 3 && [lee 0xE53C] < 0x14 && $::n_antes < $::GANA_TRAS} {
+        incr ::n_antes
+        if {[lee 0xE540] == 3} {
+            set x [lee 0xE549]
+            if {$::GANA_DERECHA} {
+                pon 0xE205 [expr {$x < 0xA0 ? $x + 0x40 : $x - 0x60}]
+            } else {
+                pon 0xE205 [expr {$x < 0x70 ? $x + 0x40 : $x - 0x40}]
+            }
+        }
+        if {$::n_antes % 3 == 0} { vuelca [format "f%02d_n%d_pelea_a%04d" $::FASE $::NIVEL $::n_antes] }
+        return
+    }
+    if {$s == 3 && [lee 0xE53C] < 0x14} {
+        if {[lee 0xE53C] < 0x13} { pon 0xE53C 0x13 }
+        pon 0xE502 [expr {[lee 0xE535] - 0x10}]
+        pon 0xE503 [expr {[lee 0xE536] - 0x10}]
+        return
+    }
+    if {($s == 3 || $s == 4) && [lee 0xE53C] >= 0x14} {
+        incr ::n_gana
+        if {$::n_gana % 2 == 0} { vuelca [format "f%02d_n%d_pelea_g%04d" $::FASE $::NIVEL $::n_gana] }
+    }
+}
+
 set throttle off
+debug set_bp 0x7799 {} {seguro gana}
+debug set_bp 0x8461 {} {seguro gana}
+debug set_bp 0x83CE {} {seguro caen}
 debug set_bp 0x46E3 {} {seguro fuerza}
 debug set_bp 0x451C {} {seguro cuadro}
 # el paso se pone justo antes de andar (p00:4560 llama a p01:64F0), porque la

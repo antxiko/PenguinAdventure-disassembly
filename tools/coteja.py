@@ -6,7 +6,7 @@ Los volcados los sacan tools/omsx_fases.tcl y los dos lanzadores de tools/ (open
     sh tools/lanza_fases.sh 0 "1 2 ... 24" 7000 150   -> work/fases/n0/fNN/
     sh tools/lanza_fines.sh 0 "1 2 ... 24"            -> work/fines/n0/fNN/
 
-Nueve comprobaciones, y todas tienen que dar cero:
+Once comprobaciones, y todas tienen que dar cero:
 
   pantalla  la pantalla de cada fase (tools/pantalla.py) contra el primer
             cuadro de juego: tablas de patrones, de colores, de patrones de
@@ -35,8 +35,14 @@ Nueve comprobaciones, y todas tienen que dar cero:
   carretera el espejo de pantalla del motor contra los volcados de cada fase,
             con las variantes que escogio el emulador y sin las casillas de lo
             que pasa por los lados (p01:6AA8 va por cuadros, no por distancia).
+  andando   lo que se mueve en las escenas (el pinguino que entra, el salto,
+            lo que cae del arbol y el llanto) contra los volcados de
+            tools/lanza_escenas.sh, un cuadro de cada dos: sprites y patrones.
+  pelea     la pelea con el dinosaurio (tools/pelea.py) contra los volcados
+            de tools/lanza_pelea.sh (work/pelea): la caida de los bloques, el
+            blanco y lo que lanza, la grieta, el agujero y el hundimiento.
 
-Uso:  coteja.py [pantalla|final|jugador|bichos|espacio|cosas|carretera ...]
+Uso:  coteja.py [pantalla|final|jugador|bichos|espacio|cosas|carretera|pelea|andando ...]
 """
 import glob
 import os
@@ -362,9 +368,22 @@ def escenas(cart):
     return vistas == 3 and malas == 0
 
 
+def andando(cart):
+    """Lo que se mueve en las escenas: tools/escenas.py contra
+    work/escenas_en_marcha (tools/lanza_escenas.sh)."""
+    from escenas import coteja_andando
+    return coteja_andando(cart)
+
+
+def pelea(cart):
+    """La pelea con el dinosaurio: tools/pelea.py contra work/pelea."""
+    from pelea import coteja
+    return coteja(cart)
+
+
 PRUEBAS = {"pantalla": pantalla, "warp": warp, "escenas": escenas, "final": final, "jugador": jugador,
            "bichos": bichos, "espacio": espacio, "cosas": cosas,
-           "carretera": carretera}
+           "carretera": carretera, "pelea": pelea, "andando": andando}
 
 
 def main():
