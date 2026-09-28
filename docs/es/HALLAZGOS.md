@@ -127,14 +127,18 @@ de caracteres, con sus cuatro cargas propias (p00:537A, 5424, 53CF y 5498) y
 el color que escoge el decorado. Detrás viene la pelea, el estado 7. Ver
 [El juego](EL-JUEGO.html).
 
-## Seis atajos y una tienda, dentro de grietas
+## Seis atajos y tres tenderos, dentro de grietas
 
 El guion de avisos de 0xB046 convierte en grieta la cosa que sale tras su
-distancia y le pega dos bytes. Con el modo 2, caer dentro y pulsar abajo lleva
-al WARP y de ahí a otra fase: de la 1 a la 6, de la 6 a la 9, de la 9 a la 12,
-de la 13 a la 15, de la 15 a la 18 y de la 18 a la 21 (0xB79B, medidos los
-seis en openMSX). Con los modos 3, 4 y 5, caer en el centro lleva a la tienda
-escondida. Ver [El juego](EL-JUEGO.html).
+distancia y le pega dos bytes. Con el modo 2, caer dentro y pulsar abajo
+(p02:999C) lleva al WARP y de ahí a otra fase: de la 1 a la 6, de la 6 a la 9,
+de la 9 a la 12, de la 13 a la 15, de la 15 a la 18 y de la 18 a la 21 (0xB79B,
+medidos los seis en openMSX). Con los modos 3, 4 y 5, caer en el centro lleva
+a la tienda escondida, y el modo es el tendero: el de siempre, el que cobra el
+doble —*HEY YOU! YOU MUST BUY SOMETHING FROM ME!!*— y Santa Claus, que lo da
+todo a cero y cierra tras la primera cosa. Son 41 tiendas: 18, 20 y 3. Las
+seis pantallas —el saludo y la despedida de cada uno— están dibujadas desde las
+tablas y cotejadas contra 14 volcados. Ver [El juego](EL-JUEGO.html).
 
 ## Al espacio se sube tocando lo que vuela
 

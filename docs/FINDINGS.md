@@ -123,14 +123,19 @@ of characters, with its own four loads (p00:537A, 5424, 53CF and 5498) and the
 colour the backdrop picks. The fight follows, state 7. See
 [The game](THE-GAME.html).
 
-## Six warps and a shop, inside crevasses
+## Six warps and three shopkeepers, inside crevasses
 
 The warnings script at 0xB046 turns the object that comes out after its
 distance into a crevasse and attaches two bytes. With mode 2, falling in and
-pressing down leads to the WARP and from there to another stage: 1 to 6, 6 to
-9, 9 to 12, 13 to 15, 15 to 18 and 18 to 21 (0xB79B, all six measured in
-openMSX). With modes 3, 4 and 5, falling into the middle leads to the hidden
-shop. See [The game](THE-GAME.html).
+pressing down (p02:999C) leads to the WARP and from there to another stage: 1
+to 6, 6 to 9, 9 to 12, 13 to 15, 15 to 18 and 18 to 21 (0xB79B, all six
+measured in openMSX). With modes 3, 4 and 5, falling into the middle leads to
+the hidden shop, and the mode is the shopkeeper: the usual one, the one who
+charges double —*HEY YOU! YOU MUST BUY SOMETHING FROM ME!!*— and Santa Claus,
+who prices everything at zero and closes after the first item. There are 41
+shops: 18, 20 and 3. The six screens —each one's greeting and farewell— are
+drawn from the tables and checked against 14 dumps. See
+[The game](THE-GAME.html).
 
 ## You reach space by touching what flies
 

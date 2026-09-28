@@ -1363,7 +1363,10 @@ DATA_cuadros_de_cuatro_AF50:
 ; DATOS listas_por_fase_AF90: 24 entradas de 7 bytes, una por fase: p01:6CE9
 ;   salta a (0xE092 - 1) * 7 y lee bytes hasta un cero, cada uno un indice en
 ;   la tabla de 0xE160 y en la de IX (0x6FD5, 0x6FE5 o 0x6FF5 segun el modo).
-;   Estaba mal atribuida al banco 13: p01:6CC6 pone antes el 10 y el 11
+;   Estaba mal atribuida al banco 13: p01:6CC6 pone antes el 10 y el 11; SON
+;   LOS ARTICULOS QUE VENDE LA TIENDA DE CADA FASE, hasta seis (catorce
+;   distintos en total; el 13, el que deja acabar las fases 12, 18 y 24, solo
+;   en las listas de esas tres)
 ;   0xaf90..0xb038  (168 bytes)
 DATA_listas_por_fase_AF90:
 	defb 001h,002h,003h,007h,010h,000h,000h	; af90
@@ -1394,7 +1397,9 @@ DATA_listas_por_fase_AF90:
 ; ----------------------------------------------------------------------
 ; DATOS tira_B038: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (la
 ;   primera mitad del rotulo del modo 3 (0xE119)) que lee
-;   pinta_guion_lee_destino (p01:6F32); lo cargan p01:6E4E (45 bytes)
+;   pinta_guion_lee_destino (p01:6F32); lo cargan p01:6E4E (45 bytes); el
+;   saludo del tendero de siempre: MAY I HELP YOU? GET WHATEVER YOU LIKE. (la
+;   tienda lo pinta cada cuadro y al cerrarse lo borra con la mascara a cero)
 ;   0xb038..0xb065  (45 bytes)
 DATA_tira_B038:
 	defb 0cch,038h,02dh,021h,039h,000h,029h,000h,028h,025h,02ch,030h,000h,039h,02fh,035h	; b038  .8-!9.).(%,0.9/5
@@ -1404,7 +1409,8 @@ DATA_tira_B038:
 ; ----------------------------------------------------------------------
 ; DATOS tira_B065: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (la
 ;   primera mitad del rotulo del modo 4 (0xE119)) que lee
-;   pinta_guion_lee_destino (p01:6F32); lo cargan p01:6E4E (47 bytes)
+;   pinta_guion_lee_destino (p01:6F32); lo cargan p01:6E4E (47 bytes); el
+;   saludo del que cobra el doble: HEY YOU! YOU MUST BUY SOMETHING FROM ME!!
 ;   0xb065..0xb094  (47 bytes)
 DATA_tira_B065:
 	defb 0cch,038h,028h,025h,039h,000h,039h,02fh,035h,01fh,0feh,0ech,038h,039h,02fh,035h	; b065  .8(%9.9/5...89/5
@@ -1414,7 +1420,8 @@ DATA_tira_B065:
 ; ----------------------------------------------------------------------
 ; DATOS tira_B094: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (la
 ;   segunda mitad (0xE11B)) que lee pinta_guion_con_mascara (p01:6F39); lo
-;   cargan p01:6E52 (42 bytes)
+;   cargan p01:6E52 (42 bytes); la despedida del tendero de siempre, al pulsar
+;   END: THANK YOU VERY MUCH. SEE YOU AGAIN!
 ;   0xb094..0xb0be  (42 bytes)
 DATA_tira_B094:
 	defb 0cch,038h,034h,028h,021h,02eh,02bh,001h,039h,02fh,035h,0feh,0ech,038h,036h,025h	; b094  .84(!.+.9/5..86%
@@ -1424,7 +1431,8 @@ DATA_tira_B094:
 ; ----------------------------------------------------------------------
 ; DATOS tira_B0BE: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (la
 ;   segunda mitad (0xE11B)) que lee pinta_guion_con_mascara (p01:6F39); lo
-;   cargan p01:6E52 (31 bytes)
+;   cargan p01:6E52 (31 bytes); la despedida del que cobra el doble: BUY MORE!
+;   WAIT! DAMN IT!!
 ;   0xb0be..0xb0dd  (31 bytes)
 DATA_tira_B0BE:
 	defb 0cch,038h,022h,035h,039h,000h,02dh,02fh,032h,025h,01fh,0feh,0ech,038h,037h,021h	; b0be  .8"59.-/2%...87!
@@ -1434,7 +1442,8 @@ DATA_tira_B0BE:
 ; DATOS tira_B0DD: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (la
 ;   primera mitad del rotulo del otro modo (0xE119)) que lee
 ;   pinta_guion_con_mascara (por el puente de 6E59) y pinta_guion_lee_destino
-;   (p01:6F32); lo cargan p01:6E4E, p01:6E59 (40 bytes)
+;   (p01:6F32); lo cargan p01:6E4E, p01:6E59 (40 bytes); el saludo de Santa
+;   Claus: WELCOME! I WILL GIVE YOU A JEWEL.
 ;   0xb0dd..0xb105  (40 bytes)
 DATA_tira_B0DD:
 	defb 0cch,038h,037h,025h,02ch,023h,02fh,02dh,025h,01fh,0feh,0ech,038h,029h,000h,037h	; b0dd  .87%,#/-%...8).7
@@ -1444,7 +1453,8 @@ DATA_tira_B0DD:
 ; ----------------------------------------------------------------------
 ; DATOS tira_B105: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (la
 ;   segunda mitad (0xE11B)) que lee pinta_guion_con_mascara (p01:6F39); lo
-;   cargan p01:6E52 (31 bytes)
+;   cargan p01:6E52 (31 bytes); la despedida de Santa Claus: OK! BE CAREFUL!
+;   SEE YOU!
 ;   0xb105..0xb124  (31 bytes)
 DATA_tira_B105:
 	defb 0cch,038h,02fh,02bh,01fh,0feh,0ech,038h,022h,025h,000h,023h,021h,032h,025h,026h	; b105  .8/+...8"%.#!2%&
@@ -1454,14 +1464,17 @@ DATA_tira_B105:
 ; DATOS tira_B124: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) que
 ;   lee pinta_guion_con_mascara (por el puente de 6E10) y
 ;   pinta_guion_lee_destino (por el puente de 6E0D); lo cargan p01:6E0D,
-;   p01:6E10 (10 bytes)
+;   p01:6E10 (10 bytes); la bolsa de apostar (los caracteres 0x5A a 0x5D,
+;   filas 18 y 19): solo se pinta con puntos (0xE134), y el cursor sobre ella
+;   lleva a la maquina de apostar
 ;   0xb124..0xb12e  (10 bytes)
 DATA_tira_B124:
 	defb 045h,03ah,05ah,05bh,0feh,065h,03ah,05ch,05dh,0ffh	; b124  E:Z[.e:\].
 
 ; ----------------------------------------------------------------------
 ; DATOS guion_B12E: guion comprimido que lee pinta_sin_color; lo cargan
-;   p01:6E62 (48 bytes)
+;   p01:6E62 (48 bytes); el bocadillo del tendero: el marco de las filas 5 a
+;   9, columnas 11 a 30
 ;   0xb12e..0xb15e  (48 bytes)
 DATA_guion_B12E:
 	defb 0abh,038h,081h,05eh,012h,046h,081h,06dh,080h,0cbh,038h,081h,047h,080h,0deh,038h	; b12e  .8.^.F.m..8.G..8

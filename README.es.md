@@ -21,12 +21,12 @@ que además el listado no *mienta* sobre lo que reensambla.
 | reensambla byte a byte | sí, los 16 bancos y la imagen entera |
 | código trazado | 32.317 bytes |
 | datos identificados | 98.755 bytes |
-| listado | 39.181 líneas |
+| listado | 39.232 líneas |
 | puntos de entrada, cada uno con su justificación | 359 |
-| etiquetas con nombre | 827 |
-| comentarios anclados | 7.308 |
+| etiquetas con nombre | 830 |
+| comentarios anclados | 7.310 |
 | rangos de datos con explicación | 1.412 |
-| instrucciones comentadas | 7.248 de 16.227 (44.7 %), y ninguna rutina por debajo del 10 % |
+| instrucciones comentadas | 7.250 de 16.227 (44.7 %), y ninguna rutina por debajo del 10 % |
 
 ## El cartucho
 

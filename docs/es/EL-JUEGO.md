@@ -240,32 +240,67 @@ basta con caer en su centro: p01:72F2 pasa al estado 12, la **tienda**
 | 4 | el que avisa *HEY YOU! YOU MUST BUY SOMETHING FROM ME!!* | los de 0x6FE5: **el doble**, salvo el artículo 7 (32 y no 34) | 20 |
 | 5 | **Santa Claus** | los de 0x6FF5: **todo a cero**; y tras la primera cosa, p01:6F09 cierra la tienda: **regala una** | 3 |
 
+![Las tres tiendas: arriba el saludo, abajo la despedida](../imagenes/tienda.png)
+
+La pantalla la monta p01:6BEF de golpe: los caracteres de la tienda (0x88CA
+del banco 5; en el modo 4, encima, los colores de 0x8ABB, que son la cara del
+enfadado), los del marcador (0xB71B, que son también los dibujos de los
+artículos), el rótulo del modo (0xA563, 0xA59D o 0xA5D7: ---BARTER---, el
+tendero y END) y las seis casillas de 0xE100, con el precio dos filas más
+abajo y el cursor en la primera llena. Luego el pingüino entra por arriba
+(p02:9FC9, tres filas por cuadro hasta la 0x90) y la tienda (p01:6E1E) pinta
+cada cuadro el saludo del tendero dentro del bocadillo de 0xB12E:
+
+| tendero | saludo | despedida |
+|---|---|---|
+| el de siempre | *MAY I HELP YOU? GET WHATEVER YOU LIKE.* (0xB038) | *THANK YOU VERY MUCH. SEE YOU AGAIN!* (0xB094) |
+| el del doble | *HEY YOU! YOU MUST BUY SOMETHING FROM ME!!* (0xB065) | *BUY MORE! WAIT! DAMN IT!!* (0xB0BE) |
+| Santa Claus | *WELCOME! I WILL GIVE YOU A JEWEL.* (0xB0DD) | *OK! BE CAREFUL! SEE YOU!* (0xB105) |
+
+Izquierda y derecha mueven el cursor por las ocho posiciones de 0x7005: las
+seis casillas, la bolsa de la izquierda —que sólo sale con puntos (0xE134) y
+lleva a la máquina de apostar— y END, que borra el saludo con su mismo guion y
+la máscara a cero (p01:6F2E), pinta la despedida, espera 0x80 cuadros y sale.
+El disparo compra: resta el precio del marcador en BCD y p03:BA2F apunta el
+artículo en 0xE160 + k. Las seis pantallas de la lámina están cotejadas contra
+14 volcados de openMSX (tools/omsx_tienda.tcl): cero diferencias.
+
 Los artículos que ofrece salen de la lista de siete de su fase (0xAF90), y los
-que ya se llevan no salen (0xE160 y siguientes). Lo que cuesta cada uno, en BCD
-y restado del marcador:
+que ya se llevan no salen (0xE160 y siguientes). Son dieciséis, dibujados con
+los caracteres del marcador, cuatro por artículo desde el 0xB2:
 
-| artículo | normal | caro | Santa Claus |
-|---|---|---|---|
-| 1 | 19 | 38 | 0 |
-| 2 | 15 | 30 | 0 |
-| 3 | 10 | 20 | 0 |
-| 4 | 8 | 16 | 0 |
-| 5 | 12 | 24 | 0 |
-| 6 | 13 | 26 | 0 |
-| 7 | 17 | 32 | 0 |
-| 8 | 20 | 40 | 0 |
-| 9 | 18 | 36 | 0 |
-| 10 | 22 | 44 | 0 |
-| 11 | 11 | 22 | 0 |
-| 12 | 14 | 28 | 0 |
-| 13 | 21 | 42 | 0 |
-| 16 | 23 | 46 | 0 |
+![Los dieciséis artículos, con su precio normal y el caro](../imagenes/articulos.png)
 
-El artículo 13 es 0xE16C, el que deja acabar las fases 12, 18 y 24 sin que el
-registro de p01:6476 las devuelva atrás: sólo lo venden las tiendas de esas
-tres fases, y el Santa Claus de la 12 lo regala.
+Lo que hace cada uno sale de quién lee su bandera de 0xE160 + k; el valor que
+se apunta al comprarlo está en 0xBABB. Los nombres son los del dibujo, no los
+del manual:
 
-Las 41 tiendas, con la distancia de su aviso:
+| # | qué es | qué hace |
+|---|---|---|
+| 1 | las botas verdes | la barra de velocidad sube antes: tope 5 en vez de 7 (p02:91C4) |
+| 2 | la gorra de hélice | cambia el salto: el estado 2 en vez del 1 (p02:975F), y nadando el 7 en vez del 6 |
+| 3 | la pistola | el segundo botón dispara (p03:BD8A) |
+| 4 | el casco | para tres golpes de la clase 6 de los otros huecos (p01:76E0); se gasta uno por golpe |
+| 5 | el yelmo blanco | para tres golpes de las clases 6 y 12 (p01:75E4) |
+| 6 | la coraza roja | para tres golpes de las clases 1 y 13 (p01:75FA) |
+| 7 | la campana | suena el efecto 0x31 cuando el guion de avisos suelta una grieta de modo 2, un atajo (p03:B8C4) |
+| 8 | el anillo | despierta el secreto de la fase 6, que da el artículo 13 (p03:BE7D) |
+| 9 | la moneda de oro | en el decorado 7 impide entrar por las grietas 0x13 y 0x14 (p01:740D) |
+| 10 | el colgante rojo | se puede apostar sin límite: sin él, tres tiradas (0xE134) y fuera (p01:7AD5) |
+| 11 | las gafas | el bicho de la clase 7 se ve, en color 5 (p09:B8B3); dura dos fases (p00:46C5) |
+| 12 | la antorcha | la clase 4 de 0xE370, la que para el juego 0x80 cuadros, no hace nada (p01:76CE); dura dos fases |
+| 13 | el pájaro blanco | deja acabar las fases 12, 18 y 24 sin que p01:6476 las devuelva atrás (p01:65C2) |
+| 14 | las botas azules | se anda de lado al doble, dos píxeles por cuadro (p03:A889); no se vende: es el premio del secreto de la fase 13 |
+| 15 | las botas rojas | quita el arrastre de lado de 0xE0A6 (p03:A8BB); no lo vende ni lo da nada que hayamos encontrado |
+| 16 | la pluma | en el aire se puede cambiar de dirección (p02:979D) |
+
+El artículo 13 sólo lo venden las tiendas de las fases 12, 18 y 24, y el Santa
+Claus de la 12 lo regala. Los premios de los secretos —el 13, el 14, el 16 y
+los 17 y 18, que no tienen dibujo— entran por otra puerta: salen a la
+carretera y se cogen (p03:B36B).
+
+Las 41 tiendas, con la distancia de su aviso (la tabla la escribe
+`tools/tienda.py tabla`):
 
 | fase | a (0xE08D) | tendero | artículos |
 |---|---|---|---|
@@ -328,7 +363,8 @@ Los puntos se gastan en dos sitios: la tienda de las grietas de arriba y la máq
 La **tienda** tiene seis casillas de dos bytes —qué es y cuánto cuesta—, un
 cursor que se mueve con izquierda y derecha con el efecto 0x23, y el marcador
 haciendo de dinero. Comprar resta en BCD; si no llega, suena el 0x25 y no pasa
-nada.
+nada. Está entera más arriba, en *Las tiendas escondidas*; de la tienda a la
+máquina se pasa por la bolsa, la casilla 6 del cursor (aviso 2, p02:8751).
 
 Y la **máquina de apostar**:
 
@@ -354,11 +390,11 @@ Cinco ranuras en 0xE440, y lo que llevan decide si un golpe mata o no:
 | lo que se lleva | de qué salva |
 |---|---|
 | 0xE1F1 | de todo: para cualquier golpe y cualquier hueco |
-| 0xE164 | de los bichos de clase 6 y 12; se gasta uno por golpe |
-| 0xE165 | de las clases 1 y 13; se gasta uno por golpe |
-| 0xE170 | de las clases 5 y 14; esta no se gasta |
-| 0xE163 | de la clase 6 de los otros huecos |
-| 0xE16B | de la clase 4, que no mata: sólo para el juego 0x80 cuadros |
+| 0xE164, el yelmo blanco (5) | de los bichos de clase 6 y 12; se gasta uno por golpe |
+| 0xE165, la coraza roja (6) | de las clases 1 y 13; se gasta uno por golpe |
+| 0xE170, el premio del secreto de la fase 9 | de las clases 5 y 14; esta no se gasta |
+| 0xE163, el casco (4) | de la clase 6 de los otros huecos |
+| 0xE16B, la antorcha (12) | de la clase 4, que no mata: sólo para el juego 0x80 cuadros |
 
 Y los huecos del suelo —los objetos de clase 14— cuestan la vida salvo que se
 lleve 0xE1F1, 0xE171 o 0xE172. Con 0xE1F1 puesto no sólo no se cae: el hueco

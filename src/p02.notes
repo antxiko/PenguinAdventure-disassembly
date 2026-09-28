@@ -157,7 +157,7 @@ C 0x98CD el contador de cuadros
 C 0x993C el ESTADO de lo que se maneja
 C 0x996E las teclas recien pulsadas
 C 0x9984 el ESTADO de lo que se maneja
-C 0x99A2 las teclas recien pulsadas
+C 0x99A2 abajo, recien pulsado
 C 0x99AB el ESTADO de lo que se maneja
 C 0x99B1 el modo en el que esta el juego
 C 0x99C3 el contador de cuadros
@@ -992,7 +992,7 @@ C 0x8A87 banco 0: pide_sonido
 # la instruccion que la carga con el banco 2 puesto de verdad.
 D 0x8D09 0x8D85 listas_de_sprites_para_IX  ocho listas que p02:8B9A, 8BA2, 8C01, 8C0A, 8C14, 8C1D, 8C24 y 8C2D ponen en IX: un byte con la cuenta B y B atributos de sprite de 4 bytes que p02:8BA6 manda a 0x3B00 (las de 13 bytes llevan tres, las de 17 cuatro)
 F 0x8D09 17
-D 0x8D85 0x8DAF entradas_de_7_8D85  seis entradas de 7 bytes: p02:8B20 multiplica A por siete sobre 0x8D85
+D 0x8D85 0x8DAF entradas_de_7_8D85  seis entradas de 7 bytes: p02:8B20 multiplica A por siete sobre 0x8D85; SON LOS SEIS ATAJOS DEL MAPA de antes de cada fase: cuenta, texto (parejas direccion-caracter que dibujan el camino de puntos) y guion, una entrada por bandera 0xE0C6-0xE0CB (p02:8B15)
 F 0x8D85 7
 D 0x8DD1 0x8DE7 dos_rotulos_8DD1  dos guiones de bytes (0xFF acaba) que p02:93EB y 93F0 pasan en DE a p00:42C1 con HL = 0x3869: uno u otro segun A
 F 0x8DD1 11
@@ -1000,9 +1000,9 @@ D 0x8E07 0x8E0A tres_bytes_8E07  el guion `1B 1C FF` que p02:9215 pasa a p00:42C
 F 0x8E07 3
 D 0x8E66 0x8E71 rotulo_8E66  guion con su destino delante (0x380A) y bytes hasta el 0xFF, que p02:9457 carga en DE para el pintor con mascara
 F 0x8E66 11
-D 0x8E7C 0x8FE8 imagen_de_14_filas  una imagen de 14 filas de 26 caracteres: p02:8C83 copia la fila (0xE126) - 1 con copia_a_vram a 0x3923 + 0x20 por fila, y a la fila 15 lo deja (p02:8C79)
+D 0x8E7C 0x8FE8 imagen_de_14_filas  una imagen de 14 filas de 26 caracteres: p02:8C83 copia la fila (0xE126) - 1 con copia_a_vram a 0x3923 + 0x20 por fila, y a la fila 15 lo deja (p02:8C79); ES EL MAPA de antes de cada fase (el estado 4, STAGE n): el dibujo de las veinticuatro fases
 F 0x8E7C 26
-D 0x8FE8 0x917B tira_de_E11F  la tira que p02:8B51 va leyendo byte a byte con (0xE11F): p02:8CDD pone el puntero en 0x8FE7, el byte ANTERIOR, porque 0x8B55 incrementa antes de leer. Lleva direcciones de VRAM y valores; llega hasta la tabla de 0x917B
+D 0x8FE8 0x917B tira_de_E11F  la tira que p02:8B51 va leyendo byte a byte con (0xE11F): p02:8CDD pone el puntero en 0x8FE7, el byte ANTERIOR, porque 0x8B55 incrementa antes de leer. Lleva direcciones de VRAM y valores; llega hasta la tabla de 0x917B; es el guion del camino del mapa: registros de fase, entrada (atajo) y direccion de color con los que p02:8B51 pasa a rojo el camino ya andado, hasta la fase de ahora
 F 0x8FE8 16
 D 0x917B 0x91AD palabras_por_fase_917B  25 palabras: p02:8CD0 lleva a 0xE122 la de la fase (0xE092) - 1
 F 0x917B 2
@@ -1083,6 +1083,8 @@ C 0x9875 la direccion congelada mientras dura el salto
 C 0x988A el paso dentro del salto
 C 0x9995 el hueco de sprite 4
 C 0x9998 el hueco de sprite 5
+B 0x999C CAER EN UNA GRIETA CON MODO Y PULSAR ABAJO. Si el objeto en el que se ha caido trae modo (0xE215, lo que deja p01:734B en las grietas 0x0C y 0x0D) y se pulsa abajo, lo que se maneja pasa al estado 0x12, el modo a 0xE0A2, la lista (0xE0D2) a 0xE0A3 y queda el aviso 8. Con el modo 2 es la entrada al WARP: el estado 10 (p03:B8DD monta el decorado 9 y, al acabar la carrera, p03:B94A suma las fases del registro de 0xB79B). Los seis atajos entran por aqui.
+L 0x999C abajo_en_la_grieta_con_modo
 C 0x99F3 el paso dentro del salto
 C 0x99F8 el tramo del salto: 1 subiendo, 2 bajando
 C 0x99FB hacia donde se mueve lo que se maneja: 4 izquierda, 8 derecha

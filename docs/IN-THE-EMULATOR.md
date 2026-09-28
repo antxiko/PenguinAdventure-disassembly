@@ -87,7 +87,9 @@ the VDP registers every so many frames, on every state change and at every
 cut of the ending; and it logs every object that comes out on the road
 (p01:6852). To reach the end of the long stages it sets the step period
 (0xE4C0) to 1 right before walking, at p00:4560, and it keeps 0xE1F1 so the
-penguin does not die.
+penguin does not die. The scenes, the map, the fight and the shop have their
+own probes (tools/omsx_escenas.tcl, omsx_mapa.tcl, lanza_pelea.sh and
+omsx_tienda.tcl).
 
 `make coteja` compares against those dumps:
 
@@ -100,6 +102,12 @@ penguin does not die.
 | space | 9 screens, 8 fish, 13 meteorites | 0 |
 | the road objects, LEVEL 1 and 2 | 5,414 | 0 |
 | the screen mirror, walking the stage | 424 dumps | 0 |
+| the WARP, backdrop 9 | 21 screens | 0 |
+| the tree and the two endings | 3 scenes | 0 |
+| what moves in the scenes | 1,337 dumps | 0 |
+| the fight with the dinosaur | 3,246 dumps | 0 |
+| the map before every stage | 32 dumps | 0 |
+| the shop: the three shopkeepers, open and closing | 14 dumps | 0 |
 
 Two traps. At the dump point (p00:451C) the VRAM name table lags one frame
 behind the RAM mirror, so cells are compared in the mirror. And stages 12, 18

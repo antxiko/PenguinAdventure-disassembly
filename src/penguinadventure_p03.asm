@@ -2732,7 +2732,7 @@ choca_con_lo_de_0xE0D7:
 	ret nc			;b390
 	ld a,(0e0d7h)		;b391   ; lo que era
 	ld c,a			;b394
-	call L_BA2F		;b395
+	call L_BA2F		;b395   ; y se apunta como articulo (p03:BA2F), igual que si se comprara: por aqui entran los premios de los secretos (0xE110 -> 0xE0D7, p03:BF60)
 	ld a,024h		;b398   ; el efecto 0x24
 	call 0413ah		;b39a   ; banco 0: pide_sonido_si_esta_activo
 	jp L_BFAB		;b39d
@@ -3348,7 +3348,11 @@ L_B6F8:
 ; ----------------------------------------------------------------------
 ; DATOS registros_de_17_por_E0A3: dieciseis registros de 17 bytes que p03:B72F
 ;   indexa con (0xE0A3) * 17: la distancia (0xE08D), el valor de la fase
-;   (0xE093), el decorado (0xE0A1), (0xE0B6), (0xE0A9) y el resto
+;   (0xE093), el decorado (0xE0A1), (0xE0B6), (0xE0A9) y el resto; SON LOS
+;   SEIS ATAJOS: las listas 0x0A a 0x0F son los seis WARP y su septimo byte es
+;   lo que p03:B995 suma a la fase: de la 1 a la 6, de la 6 a la 9, de la 9 a
+;   la 12, de la 13 a la 15, de la 15 a la 18 y de la 18 a la 21, medidos en
+;   openMSX
 ;   0xb79b..0xb8ab  (272 bytes)
 DATA_registros_de_17_por_E0A3:
 	defb 070h,002h,001h,003h,002h,000h,000h,0ffh,0ffh,003h,000h,000h,0ffh,0ffh,000h,000h,002h	; b79b  p................
@@ -3444,7 +3448,11 @@ L_B8DD:
 	ld (0e08dh),de		;b940   ; lo que queda de fase
 	call 062b8h		;b944   ; banco 1
 	jp 06323h		;b947   ; banco 1
-L_B94A:
+
+; ----------------------------------------------------------------------
+; EL WARP SUMA FASES. Al acabar la carrera del decorado 9 borra las ranuras (0xE280, 0x920 bytes) y el espejo de pantalla (0xEBE0, 672), lee el registro de 17 bytes de 0xB79B que escoge la lista (0xE0A3) y lo reparte: lo que queda de fase, el 1-2-3 a 3, el decorado, 0xE0B6, 0xE0A9 y, en el septimo byte, LAS FASES QUE SE SUMAN: p03:B995 se las suma al numero pintado (0xE091, con `daa`) y a la fase (0xE092). Con las seis listas 0x0A a 0x0F salen los seis atajos: de la 1 a la 6, de la 6 a la 9, de la 9 a la 12, de la 13 a la 15, de la 15 a la 18 y de la 18 a la 21.
+; ----------------------------------------------------------------------
+el_warp_suma_fases:
 	xor a			;b94a
 	ld hl,0e280h		;b94b
 	ld de,0e281h		;b94e
@@ -3487,7 +3495,7 @@ L_B94A:
 	inc hl			;b990
 	ld c,(hl)			;b991
 	ld a,(0e091h)		;b992   ; el numero de fase tal como se pinta
-	add a,c			;b995
+	add a,c			;b995   ; y se le suman las fases del atajo
 	daa			;b996
 	ld (0e091h),a		;b997   ; el numero de fase tal como se pinta
 	ld a,(0e092h)		;b99a   ; la FASE, de 1 a 24
@@ -3651,7 +3659,10 @@ L_BAA3:
 ; ----------------------------------------------------------------------
 ; DATOS siete_direcciones_y_valores: siete direcciones de la tabla de nombres
 ;   (0x3822, 0x3824...) que p03:BA58 indexa con A - 3, y detras (0xBABB)
-;   diecinueve bytes que p03:BA35 lleva a 0xE160
+;   diecinueve bytes que p03:BA35 lleva a 0xE160; los diecinueve valores de
+;   0xBABB son lo que vale cada articulo al apuntarlo: 3 para el 4, el 5 y el
+;   6 (tres golpes que se gastan), 2 para el 11 y el 12 (dos fases, p00:46C5)
+;   y 1 para los demas
 ;   0xbaad..0xbace  (33 bytes)
 DATA_siete_direcciones_y_valores:
 	defb 022h,038h	; baad

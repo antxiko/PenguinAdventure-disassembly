@@ -72,6 +72,53 @@ class Dibujos(unittest.TestCase):
         p = monta_la_pantalla(self.cart, 2)
         self.assertEqual(sum(p.li.tocado[0x3860:0x3B00]), 21 * 32)
 
+    def test_las_41_tiendas(self):
+        # p03:B8AB sobre el guion de avisos de 0xB046: las grietas que no son
+        # de modo 2 son tiendas, y el modo es el tendero (p01:6CC3).
+        from tienda import tiendas
+        t = tiendas(self.cart)
+        cuantas = {m: sum(1 for _f, _d, modo in t if modo == m) for m in (3, 4, 5)}
+        self.assertEqual(len(t), 41)
+        self.assertEqual(cuantas, {3: 18, 4: 20, 5: 3})
+        self.assertEqual([f for f, _d, m in t if m == 5], [6, 12, 21])
+
+    def test_los_precios_de_los_tres_tenderos(self):
+        # 0x6FD5, 0x6FE5 y 0x6FF5: el caro es el doble en BCD salvo el 7 (32 y
+        # no 34), Santa Claus lo da todo a cero, y el 14 y el 15 no se venden.
+        from tienda import precios
+        pn, pc, ps = (precios(self.cart, m) for m in (3, 4, 5))
+        self.assertEqual(ps, [0] * 16)
+        no_doble = [k + 1 for k in range(16)
+                    if int("%X" % pc[k]) != 2 * int("%X" % pn[k])]
+        self.assertEqual(no_doble, [7])
+        self.assertEqual([k + 1 for k in range(16) if not pn[k]], [14, 15])
+
+    def test_lo_que_venden_las_listas_de_0xAF90(self):
+        # Catorce articulos distintos entre las 24 listas, y el 13 -el que
+        # deja acabar las fases 12, 18 y 24- solo en las de esas tres fases.
+        from tienda import lista_de_la_fase
+        listas = {f: lista_de_la_fase(self.cart, f) for f in range(1, 25)}
+        vendidos = set(a for l in listas.values() for a in l)
+        self.assertEqual(vendidos, set(range(1, 14)) | {16})
+        self.assertEqual([f for f, l in listas.items() if 13 in l], [12, 18, 24])
+        self.assertTrue(all(len(l) <= 6 for l in listas.values()))
+
+    def test_la_tienda_pone_sus_seis_casillas_y_el_saludo(self):
+        # p01:6C6A pinta cada casilla en las direcciones de 0x6DC5 (cuatro
+        # caracteres desde 0xB2 + 4k) y la tienda pinta el saludo dentro del
+        # bocadillo de 0xB12E; con END, la despedida.
+        from tienda import monta_la_tienda
+        p, sprites = monta_la_tienda(self.cart, 1, 3, puntos=0x0250)
+        v = p.li.v
+        self.assertEqual(v[0x3987], 0xB2)                  # el articulo 1
+        self.assertEqual(v[0x39C7], 0x11)                  # cuesta 19
+        self.assertEqual(v[0x39E7:0x39E9], b"\x44\x45")    # el cursor
+        self.assertEqual(v[0x38CC:0x38CF], b"\x2d\x21\x39")  # MAY
+        self.assertEqual(len(sprites), 6)
+        q, _s = monta_la_tienda(self.cart, 1, 3, puntos=0x0250, cierre=True)
+        self.assertEqual(q.li.v[0x38CC:0x38D0], b"\x34\x28\x21\x2e")  # THAN
+        self.assertEqual(q.li.v[0x3A98:0x3A9A], b"\x44\x45")  # el cursor en END
+
 
 if __name__ == "__main__":
     unittest.main()

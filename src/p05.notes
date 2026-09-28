@@ -12,13 +12,13 @@ D 0x8826 0x889C guion_8826  guion comprimido (colores con espejo del tercio del 
 F 0x8826 16
 D 0x889C 0x88CA guion_889C  guion comprimido (colores con espejo del tercio de abajo; colores del tercio de abajo) que lee pinta; se entra por 0x889C, 0x889E; lo cargan tercio de abajo[9] (46 bytes)
 F 0x889C 16
-D 0x88CA 0x89FD guion_88CA  guion comprimido que lee pinta_en_los_tres y pinta_en_los_tres_con_color; se entra por 0x88CA, 0x898A; lo cargan p00:4BDE, p00:4BE7 (307 bytes)
+D 0x88CA 0x89FD guion_88CA  guion comprimido que lee pinta_en_los_tres y pinta_en_los_tres_con_color; se entra por 0x88CA, 0x898A; lo cargan p00:4BDE, p00:4BE7 (307 bytes); LOS CARACTERES DE LA TIENDA (patrones 0x40 a 0x7B: END, el cursor, el bocadillo, la bolsa y los tres tenderos), que p00:4BBF carga en los tres tercios, el segundo tramo con espejo
 F 0x88CA 16
-D 0x89FD 0x8ABB guion_89FD  guion comprimido que lee pinta_en_los_tres; se entra por 0x89FD, 0x8A6C; lo cargan p00:4BF0, p00:4BF9 (190 bytes)
+D 0x89FD 0x8ABB guion_89FD  guion comprimido que lee pinta_en_los_tres; se entra por 0x89FD, 0x8A6C; lo cargan p00:4BF0, p00:4BF9 (190 bytes); sus colores
 F 0x89FD 16
-D 0x8ABB 0x8AF0 guion_8ABB  guion comprimido que lee pinta_en_los_tres; lo cargan p00:4C09 (53 bytes)
+D 0x8ABB 0x8AF0 guion_8ABB  guion comprimido que lee pinta_en_los_tres; lo cargan p00:4C09 (53 bytes); la cara del tendero del modo 4, el que cobra el doble: solo cambian colores
 F 0x8ABB 16
-D 0x8AF0 0x8AFB guion_8AF0  guion comprimido que lee pinta_en_los_tres; lo cargan p00:4C12, p00:4C1B (11 bytes)
+D 0x8AF0 0x8AFB guion_8AF0  guion comprimido que lee pinta_en_los_tres; lo cargan p00:4C12, p00:4C1B (11 bytes); dos tramos mas de colores del modo 4
 F 0x8AF0 16
 D 0x8AFB 0x9BB6 guion_8AFB  guion comprimido que lee pinta_sin_color; lo cargan p00:48DF (4283 bytes)
 F 0x8AFB 16

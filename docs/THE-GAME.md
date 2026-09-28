@@ -234,7 +234,7 @@ zero differences.
 
 With modes 3, 4 and 5 the warnings-script crevasse is 0x0A or 0x0B, and
 falling into its middle is enough: p01:72F2 moves to state 12, the **shop**
-(---BARTER---). The mode is the shopkeeper, and each one has its own price
+(---BARTER---). The mode is the shopkeeper, and each one has his own price
 table (p01:6CC3):
 
 | mode | shopkeeper | prices | how many |
@@ -243,32 +243,67 @@ table (p01:6CC3):
 | 4 | the one who warns *HEY YOU! YOU MUST BUY SOMETHING FROM ME!!* | those at 0x6FE5: **double**, except item 7 (32, not 34) | 20 |
 | 5 | **Santa Claus** | those at 0x6FF5: **all zero**; and after the first item p01:6F09 closes the shop: **he gives one away** | 3 |
 
+![The three shops: greeting on top, farewell below](imagenes/tienda.png)
+
+p01:6BEF builds the screen in one go: the shop characters (0x88CA from bank
+5; in mode 4, on top, the colours at 0x8ABB, which are the angry face), the
+status-bar ones (0xB71B, which are also the item drawings), the mode's
+lettering (0xA563, 0xA59D or 0xA5D7: ---BARTER---, the shopkeeper and END)
+and the six slots at 0xE100, with the price two rows below and the cursor on
+the first full one. Then the penguin walks in from the top (p02:9FC9, three
+rows per frame down to row 0x90) and the shop (p01:6E1E) paints the
+shopkeeper's greeting every frame inside the speech bubble at 0xB12E:
+
+| shopkeeper | greeting | farewell |
+|---|---|---|
+| the usual one | *MAY I HELP YOU? GET WHATEVER YOU LIKE.* (0xB038) | *THANK YOU VERY MUCH. SEE YOU AGAIN!* (0xB094) |
+| the double one | *HEY YOU! YOU MUST BUY SOMETHING FROM ME!!* (0xB065) | *BUY MORE! WAIT! DAMN IT!!* (0xB0BE) |
+| Santa Claus | *WELCOME! I WILL GIVE YOU A JEWEL.* (0xB0DD) | *OK! BE CAREFUL! SEE YOU!* (0xB105) |
+
+Left and right move the cursor through the eight positions at 0x7005: the six
+slots, the purse on the left —which only shows up with points (0xE134) and
+leads to the gambling machine— and END, which wipes the greeting with its own
+script and the mask at zero (p01:6F2E), paints the farewell, waits 0x80 frames
+and leaves. Fire buys: it subtracts the price from the score in BCD and
+p03:BA2F records the item at 0xE160 + k. The six screens in the picture are
+checked against 14 openMSX dumps (tools/omsx_tienda.tcl): zero differences.
+
 The items on offer come from the stage's seven-item list (0xAF90), and those
-already carried are left out (0xE160 onwards). What each one costs, in BCD and
-taken from the score:
+already carried are left out (0xE160 onwards). There are sixteen, drawn with
+the status-bar characters, four per item from 0xB2:
 
-| item | usual | expensive | Santa Claus |
-|---|---|---|---|
-| 1 | 19 | 38 | 0 |
-| 2 | 15 | 30 | 0 |
-| 3 | 10 | 20 | 0 |
-| 4 | 8 | 16 | 0 |
-| 5 | 12 | 24 | 0 |
-| 6 | 13 | 26 | 0 |
-| 7 | 17 | 32 | 0 |
-| 8 | 20 | 40 | 0 |
-| 9 | 18 | 36 | 0 |
-| 10 | 22 | 44 | 0 |
-| 11 | 11 | 22 | 0 |
-| 12 | 14 | 28 | 0 |
-| 13 | 21 | 42 | 0 |
-| 16 | 23 | 46 | 0 |
+![The sixteen items, with their usual and expensive prices](imagenes/articulos.png)
 
-Item 13 is 0xE16C, the one that lets stages 12, 18 and 24 end instead of being
-sent back by the p01:6476 record: only the shops on those three stages sell
-it, and the stage 12 Santa Claus gives it away.
+What each one does comes from whoever reads its flag at 0xE160 + k; the value
+recorded on purchase is at 0xBABB. The names are what the drawings show, not
+the manual's:
 
-The 41 shops, with the distance of their warning:
+| # | what it is | what it does |
+|---|---|---|
+| 1 | the green boots | the speed bar rises sooner: cap 5 instead of 7 (p02:91C4) |
+| 2 | the propeller cap | changes the jump: state 2 instead of 1 (p02:975F), and 7 instead of 6 when swimming |
+| 3 | the pistol | the second button shoots (p03:BD8A) |
+| 4 | the helmet | stops three hits from class 6 of the other slots (p01:76E0); one is spent per hit |
+| 5 | the white helm | stops three hits from classes 6 and 12 (p01:75E4) |
+| 6 | the red armour | stops three hits from classes 1 and 13 (p01:75FA) |
+| 7 | the bell | sound 0x31 plays when the warnings script releases a mode-2 crevasse, a warp (p03:B8C4) |
+| 8 | the ring | wakes up the stage 6 secret, which gives item 13 (p03:BE7D) |
+| 9 | the gold coin | on backdrop 7 it stops you entering crevasses 0x13 and 0x14 (p01:740D) |
+| 10 | the red pendant | unlimited gambling: without it, three spins (0xE134) and out (p01:7AD5) |
+| 11 | the glasses | the class 7 creature becomes visible, in colour 5 (p09:B8B3); lasts two stages (p00:46C5) |
+| 12 | the torch | class 4 at 0xE370, the one that freezes the game for 0x80 frames, does nothing (p01:76CE); lasts two stages |
+| 13 | the white bird | lets stages 12, 18 and 24 end instead of p01:6476 sending you back (p01:65C2) |
+| 14 | the blue boots | sideways at double speed, two pixels per frame (p03:A889); not for sale: it is the prize of the stage 13 secret |
+| 15 | the red boots | removes the sideways drift at 0xE0A6 (p03:A8BB); nobody sells it and nothing we have found gives it |
+| 16 | the feather | you can change direction in mid-air (p02:979D) |
+
+Item 13 is sold only by the shops on stages 12, 18 and 24, and the stage 12
+Santa Claus gives it away. The secrets' prizes —13, 14, 16, and 17 and 18,
+which have no drawing— come in through another door: they appear on the road
+and get picked up (p03:B36B).
+
+The 41 shops, with the distance of their warning (the table is written
+by `tools/tienda.py tabla`):
 
 | stage | at (0xE08D) | shopkeeper | items |
 |---|---|---|---|
@@ -331,6 +366,8 @@ Points are spent in two places: the crevasse shops above and the gambling machin
 The **shop** has six two-byte slots —what it is and what it costs—, a cursor that
 moves left and right with sound 0x23, and the score acting as money. Buying
 subtracts in BCD; if you cannot afford it, sound 0x25 plays and nothing happens.
+It is all above, under *The hidden shops*; from the shop you reach the machine
+through the purse, cursor position 6 (warning 2, p02:8751).
 
 And the **gambling machine**:
 
@@ -356,11 +393,11 @@ Five slots at 0xE440, and what they hold decides whether a hit kills:
 | what you carry | what it saves you from |
 |---|---|
 | 0xE1F1 | everything: any hit and any hole |
-| 0xE164 | creature classes 6 and 12; one is spent per hit |
-| 0xE165 | classes 1 and 13; one is spent per hit |
-| 0xE170 | classes 5 and 14; this one is not spent |
-| 0xE163 | class 6 of the other creature slots |
-| 0xE16B | class 4, which does not kill: it only freezes the game for 0x80 frames |
+| 0xE164, the white helm (5) | creature classes 6 and 12; one is spent per hit |
+| 0xE165, the red armour (6) | classes 1 and 13; one is spent per hit |
+| 0xE170, the stage 9 secret's prize | classes 5 and 14; this one is not spent |
+| 0xE163, the helmet (4) | class 6 of the other creature slots |
+| 0xE16B, the torch (12) | class 4, which does not kill: it only freezes the game for 0x80 frames |
 
 And the holes in the ground —the class 14 objects— cost a life unless you carry
 0xE1F1, 0xE171 or 0xE172. With 0xE1F1 you not only do not fall: the hole changes

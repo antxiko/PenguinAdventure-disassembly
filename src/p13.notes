@@ -20,11 +20,11 @@ D 0xA4A5 0xA505 tira_A4A5  guion de bytes sueltos (0xFF acaba, 0xFE otro destino
 F 0xA4A5 16
 D 0xA505 0xA563 tira_A505  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (cuadro 3 de la animacion del fondo) que lee copia_bloques; lo cargan p01:655A por 0xA3DD[3] (94 bytes)
 F 0xA505 16
-D 0xA563 0xA59D tira_A563  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (el rotulo del modo 3 (0xE0A2)) que lee pinta_guion_con_mascara; lo cargan p01:6C61 (58 bytes)
+D 0xA563 0xA59D tira_A563  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (LA PANTALLA DE LA TIENDA del modo 3: ---BARTER---, el tendero de siempre en las filas 6 a 9 y END) que lee pinta_guion_con_mascara; lo cargan p01:6C61 (58 bytes)
 F 0xA563 16
-D 0xA59D 0xA5D7 tira_A59D  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (el rotulo del modo 4 (0xE0A2)) que lee pinta_guion_con_mascara; lo cargan p01:6C61 (58 bytes)
+D 0xA59D 0xA5D7 tira_A59D  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (la del modo 4: el mismo tendero con la cara del que cobra el doble) que lee pinta_guion_con_mascara; lo cargan p01:6C61 (58 bytes)
 F 0xA59D 16
-D 0xA5D7 0xA613 tira_A5D7  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (el rotulo del otro modo (0xE0A2)) que lee pinta_guion_con_mascara; lo cargan p01:6C61 (60 bytes)
+D 0xA5D7 0xA613 tira_A5D7  guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (la de Santa Claus, el modo 5) que lee pinta_guion_con_mascara; lo cargan p01:6C61 (60 bytes)
 F 0xA5D7 16
 D 0xA613 0xA627 animacion_por_decorado_A613  un puntero por decorado (0xE0A1) a una tabla de cuatro cuadros de animacion; la lee p01:6576 con (0xE0A6) = 1 y el cuadro lo da (0xE4C2) & 3
 F 0xA613 2
@@ -230,7 +230,7 @@ D 0xAFF2 0xB019 segundo_guion_fase_23  el segundo guion de la fase 23: entradas 
 F 0xAFF2 3
 D 0xB019 0xB046 segundo_guion_fase_24  el segundo guion de la fase 24: entradas de 3 bytes -la distancia en BCD (0xE0A7) y el byte que dice que pasa (0xE0A6)- que p01:6713 lee con (0xE0A9), y una ultima FF FF 00 a la que no se llega
 F 0xB019 3
-D 0xB046 0xB076 tabla_por_fase_B046  24 punteros, uno por fase, a listas de entradas de 4 bytes que p01:638F indexa con (0xE0B6): una palabra a 0xE0AF y dos bytes a 0xE0B1 y 0xE0B2
+D 0xB046 0xB076 tabla_por_fase_B046  24 punteros, uno por fase, a listas de entradas de 4 bytes que p01:638F indexa con (0xE0B6): una palabra a 0xE0AF y dos bytes a 0xE0B1 y 0xE0B2; ES EL GUION DE AVISOS: cada entrada es una distancia (0xE08D) a la que p03:B8AB convierte en grieta la siguiente cosa que sale, con el modo y la lista en los dos bytes: modo 2, un atajo (WARP); modos 3, 4 y 5, una tienda con ese tendero (normal, caro, Santa Claus). Salen 6 atajos y 41 tiendas
 F 0xB046 2
 D 0xB076 0xB08A lista_B046_B076  entradas de 4 bytes de la fase 1 (tabla_por_fase_B046)
 F 0xB076 4

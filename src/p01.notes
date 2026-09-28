@@ -703,7 +703,7 @@ C 0x6CCD el modo en el que esta el juego
 C 0x6CDF la FASE, de 1 a 24
 C 0x6E2C el modo en el que esta el juego
 C 0x6E68 las teclas recien pulsadas
-C 0x6F09 el modo en el que esta el juego
+C 0x6F09 con Santa Claus (modo 5) la primera compra cierra la tienda: regala una cosa
 C 0x6F29 la prioridad del efecto que suena
 C 0x7015 la distancia a la que toca el objeto siguiente
 C 0x7018 por que pareja del guion de la fase va
@@ -1064,11 +1064,11 @@ D 0x64C6 0x64E7 tres_registros_de_11  tres registros de 11 bytes: p01:6477 escog
 F 0x64C6 11
 D 0x6CC0 0x6CC3 salida_de_lo_que_se_maneja  tres bytes que p01:6C07 reparte: el estado de lo que se maneja (0xE203), la Y (0xE204) y la X (0xE205) de lo que se maneja
 F 0x6CC0 3
-D 0x6DC5 0x6DD1 seis_direcciones_de_nombres  seis palabras, direcciones de la tabla de nombres (0x3987, 0x398A...): p01:6D2B coge la de B y p01:6DD6 las recorre las seis
+D 0x6DC5 0x6DD1 seis_direcciones_de_nombres  seis palabras, direcciones de la tabla de nombres (0x3987, 0x398A...): p01:6D2B coge la de B y p01:6DD6 las recorre las seis: la fila 12, columnas 7, 10, 13, 17, 20 y 23, donde van los dibujos de los articulos
 F 0x6DC5 2
-D 0x6FD5 0x7005 tablas_de_IX_por_modo  tres tablas de 16 bytes, una por modo (0xE0A2 = 3, 4 u otro): p01:6CC9, 6CD4 y 6CDB ponen IX en 0x6FD5, 0x6FE5 o 0x6FF5, y p01:6D04 lee de IX con los indices de las listas del banco 11 (0xAF90)
+D 0x6FD5 0x7005 tablas_de_IX_por_modo  tres tablas de 16 bytes, una por modo (0xE0A2 = 3, 4 u otro): p01:6CC9, 6CD4 y 6CDB ponen IX en 0x6FD5, 0x6FE5 o 0x6FF5, y p01:6D04 lee de IX con los indices de las listas del banco 11 (0xAF90); son los PRECIOS de los tres tenderos: el caro es el doble en BCD salvo el 7 (32 y no 34), el de Santa Claus esta todo a cero, y el 14 y el 15 valen 0 en las tres: no se venden
 F 0x6FD5 16
-D 0x7005 0x7015 ocho_punteros_E10C  ocho palabras que p01:6E73 y p01:6EA3 indexan con (0xE10C)
+D 0x7005 0x7015 ocho_punteros_E10C  las ocho posiciones del cursor de la tienda en la tabla de nombres, que p01:6E73 y p01:6EA3 indexan con (0xE10C): las seis casillas en la fila 15, la bolsa de apostar (fila 20, columna 5) y END (fila 20, columna 24)
 F 0x7005 2
 D 0x7085 0x70D1 despacho_de_7082  38 punteros pegados detras del `call despacha` de p01:7082: la rutina de cada clase de objeto, indexada con (ix+1) - 1. Varias clases comparten rutina
 F 0x7085 2
@@ -1296,7 +1296,7 @@ C 0x72DF por debajo, fuera
 C 0x72E2 por encima, fuera
 C 0x72E5 por delante del primer corte se entra de lado...
 C 0x72EC ...y por detras del segundo, tambien
-C 0x72F2 en medio: el estado 0x12, encima
+C 0x72F2 en medio: el estado 0x12, LA TIENDA (el estado 12 de p02:86C6), con el tendero que traiga el objeto
 C 0x72F7 el modo del juego lo trae el objeto
 C 0x72FD la fila 0x98, clavada
 C 0x72FF y la columna, la que hubiera
@@ -1736,12 +1736,12 @@ L 0x6E1E la_tienda
 C 0x6E1E ¿ya se esta cerrando?
 C 0x6E25 ¿o ya se ha comprado?
 C 0x6E2C el modo del juego
-C 0x6E2F los dos guiones y el efecto del modo 3...
-C 0x6E3B ...los del 4...
-C 0x6E46 ...y los de los demas
+C 0x6E2F los dos guiones y el efecto del modo 3: el saludo (MAY I HELP YOU?), la despedida (THANK YOU VERY MUCH.) y el 0x9B...
+C 0x6E3B ...los del 4: HEY YOU! YOU MUST BUY SOMETHING FROM ME!!, BUY MORE! WAIT! DAMN IT!! y el 0x9E...
+C 0x6E46 ...y los de Santa Claus: WELCOME! I WILL GIVE YOU A JEWEL., OK! BE CAREFUL! SEE YOU! y el 0x9B
 C 0x6E4E guardados los dos guiones...
 C 0x6E56 ...y el efecto
-C 0x6E5F el guion de la tienda
+C 0x6E5F el bocadillo del tendero (0xB12E)
 C 0x6E62 banco 0: y a pintarlo
 C 0x6E65 devueltos los bancos 2 y 3
 C 0x6E68 las teclas
@@ -1765,8 +1765,8 @@ C 0x6EB8 y el 0x44 y el 0x45 donde esta
 B 0x6EC4 COMPRAR. La casilla 6 deja el aviso 2 y la 7 cierra la tienda; las demas cuestan lo que diga su segundo byte, restado EN BCD del marcador. Si no llega el dinero suena el efecto 0x25 y no pasa nada mas. Si llega, la casilla se borra -sus dos bytes a cero-, se repinta vacia y el banco 3 se queda con el objeto.
 L 0x6EC4 comprar
 C 0x6EC4 en que casilla esta
-C 0x6EC7 la 6 solo deja el aviso 2...
-C 0x6ECC ...y la 7 cierra la tienda
+C 0x6EC7 la 6 es la bolsa: el aviso 2 lleva a la maquina de apostar (p02:8751 -> p01:7809)...
+C 0x6ECC ...y la 7 es END: la despedida y, con el aviso 1, se sale
 C 0x6ED1 las seis casillas, de dos en dos
 C 0x6ED7 lo que cuesta
 C 0x6ED8 y el 1 que se lleva al byte alto si hay que pedir prestado
@@ -1780,8 +1780,8 @@ C 0x6EF1 la casilla, vacia
 C 0x6EFA y repintada
 L 0x6F29 la_tienda_se_cierra
 C 0x6F29 se espera a que se calle el efecto
-C 0x6F2E el primero de los dos guiones
-C 0x6F35 y el segundo
+C 0x6F2E el saludo, borrado con su mismo guion y la mascara a cero
+C 0x6F35 y la despedida, pintada encima
 C 0x6F3C con el efecto del modo
 C 0x6F44 ya se esta cerrando
 C 0x6F47 y 0x80 cuadros de espera

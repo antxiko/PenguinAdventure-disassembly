@@ -1818,7 +1818,11 @@ DATA_tercio_abajo_por_decorado:
 ; ======================================================================
 
 
-L_4BBF:
+
+; ----------------------------------------------------------------------
+; LOS CARACTERES DE LA TIENDA. Con el trio 4-5-6 puesto carga en los tres tercios los patrones de 0x88CA y 0x898A (este con espejo: 0x42A4 entra con C = 1) y los colores de 0x89FD y 0x8A6C: el bocadillo, el cursor, la bolsa y los tres tenderos. Y si el modo es el 4, encima los colores de 0x8ABB y 0x8AF0, que es lo unico que distingue al tendero que cobra el doble: la cara.
+; ----------------------------------------------------------------------
+carga_los_caracteres_de_la_tienda:
 	di			;4bbf   ; sin interrupciones mientras cambia el mapa
 	push hl			;4bc0   ; HL va a apuntar a las copias
 	ld hl,0f0f1h		;4bc1   ; las tres copias, seguidas

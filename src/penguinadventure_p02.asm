@@ -1752,7 +1752,9 @@ DATA_listas_de_sprites_para_IX:
 
 ; ----------------------------------------------------------------------
 ; DATOS entradas_de_7_8D85: seis entradas de 7 bytes: p02:8B20 multiplica A
-;   por siete sobre 0x8D85
+;   por siete sobre 0x8D85; SON LOS SEIS ATAJOS DEL MAPA de antes de cada
+;   fase: cuenta, texto (parejas direccion-caracter que dibujan el camino de
+;   puntos) y guion, una entrada por bandera 0xE0C6-0xE0CB (p02:8B15)
 ;   0x8d85..0x8daf  (42 bytes)
 DATA_entradas_de_7_8D85:
 	defb 008h,0dch,090h,013h,090h,0c6h,0e0h	; 8d85
@@ -1867,7 +1869,8 @@ DATA_tira_8E71:
 ; ----------------------------------------------------------------------
 ; DATOS imagen_de_14_filas: una imagen de 14 filas de 26 caracteres: p02:8C83
 ;   copia la fila (0xE126) - 1 con copia_a_vram a 0x3923 + 0x20 por fila, y a
-;   la fila 15 lo deja (p02:8C79)
+;   la fila 15 lo deja (p02:8C79); ES EL MAPA de antes de cada fase (el estado
+;   4, STAGE n): el dibujo de las veinticuatro fases
 ;   0x8e7c..0x8fe8  (364 bytes)
 DATA_imagen_de_14_filas:
 	defb 044h,045h,046h,047h,048h,049h,04ah,04bh,04ch,043h,04dh,043h,043h,04dh,04dh,043h,043h,043h,045h,046h,048h,049h,04ah,045h,043h,0ceh	; 8e7c  DEFGHIJKLCMCCMMCCCEFHIJEC.
@@ -1889,7 +1892,9 @@ DATA_imagen_de_14_filas:
 ; DATOS tira_de_E11F: la tira que p02:8B51 va leyendo byte a byte con
 ;   (0xE11F): p02:8CDD pone el puntero en 0x8FE7, el byte ANTERIOR, porque
 ;   0x8B55 incrementa antes de leer. Lleva direcciones de VRAM y valores;
-;   llega hasta la tabla de 0x917B
+;   llega hasta la tabla de 0x917B; es el guion del camino del mapa: registros
+;   de fase, entrada (atajo) y direccion de color con los que p02:8B51 pasa a
+;   rojo el camino ya andado, hasta la fase de ahora
 ;   0x8fe8..0x917b  (403 bytes)
 DATA_tira_de_E11F:
 	defb 001h,000h,070h,00ch,001h,001h,078h,00ch,002h,000h,080h,00ch,002h,000h,088h,00ch	; 8fe8  ..p...x.........
@@ -3194,11 +3199,11 @@ L_9961:
 	and a			;9968
 	jr z,L_996E		;9969
 	dec (hl)			;996b
-	jr L_999C		;996c
+	jr abajo_en_la_grieta_con_modo		;996c
 L_996E:
 	ld a,(0e006h)		;996e   ; las teclas recien pulsadas
 	and 010h		;9971
-	jr z,L_999C		;9973
+	jr z,abajo_en_la_grieta_con_modo		;9973
 	ld a,090h		;9975
 	ld (0e204h),a		;9977   ; la Y en la pantalla de lo que se maneja
 	call 062a4h		;997a   ; banco 1
@@ -3214,11 +3219,15 @@ L_996E:
 	ld (0ee90h),a		;9995   ; el hueco de sprite 4
 	ld (0ee94h),a		;9998   ; el hueco de sprite 5
 	ret			;999b
-L_999C:
+
+; ----------------------------------------------------------------------
+; CAER EN UNA GRIETA CON MODO Y PULSAR ABAJO. Si el objeto en el que se ha caido trae modo (0xE215, lo que deja p01:734B en las grietas 0x0C y 0x0D) y se pulsa abajo, lo que se maneja pasa al estado 0x12, el modo a 0xE0A2, la lista (0xE0D2) a 0xE0A3 y queda el aviso 8. Con el modo 2 es la entrada al WARP: el estado 10 (p03:B8DD monta el decorado 9 y, al acabar la carrera, p03:B94A suma las fases del registro de 0xB79B). Los seis atajos entran por aqui.
+; ----------------------------------------------------------------------
+abajo_en_la_grieta_con_modo:
 	ld a,(0e215h)		;999c
 	and a			;999f
 	jr z,L_99C0		;99a0
-	ld a,(0e006h)		;99a2   ; las teclas recien pulsadas
+	ld a,(0e006h)		;99a2   ; abajo, recien pulsado
 	and 002h		;99a5
 	jr z,L_99C0		;99a7
 	ld a,012h		;99a9

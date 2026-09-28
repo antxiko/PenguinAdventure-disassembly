@@ -164,9 +164,10 @@ DATA_tira_A505:
 	defb 061h,0eeh,003h,056h,080h,01eh,0feh,07ch,0eeh,0aah,0adh,0cdh,029h,0ffh	; a555  a..V...|....).
 
 ; ----------------------------------------------------------------------
-; DATOS tira_A563: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (el
-;   rotulo del modo 3 (0xE0A2)) que lee pinta_guion_con_mascara; lo cargan
-;   p01:6C61 (58 bytes)
+; DATOS tira_A563: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (LA
+;   PANTALLA DE LA TIENDA del modo 3: ---BARTER---, el tendero de siempre en
+;   las filas 6 a 9 y END) que lee pinta_guion_con_mascara; lo cargan p01:6C61
+;   (58 bytes)
 ;   0xa563..0xa59d  (58 bytes)
 DATA_tira_A563:
 	defb 08ah,038h,020h,020h,020h,022h,021h,032h,034h,025h,032h,020h,020h,020h,0feh,0c5h	; a563  .8   "!24%2   ..
@@ -175,9 +176,9 @@ DATA_tira_A563:
 	defb 058h,03ah,040h,041h,0feh,078h,03ah,042h,043h,0ffh	; a593  X:@A.x:BC.
 
 ; ----------------------------------------------------------------------
-; DATOS tira_A59D: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (el
-;   rotulo del modo 4 (0xE0A2)) que lee pinta_guion_con_mascara; lo cargan
-;   p01:6C61 (58 bytes)
+; DATOS tira_A59D: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (la
+;   del modo 4: el mismo tendero con la cara del que cobra el doble) que lee
+;   pinta_guion_con_mascara; lo cargan p01:6C61 (58 bytes)
 ;   0xa59d..0xa5d7  (58 bytes)
 DATA_tira_A59D:
 	defb 08ah,038h,020h,020h,020h,022h,021h,032h,034h,025h,032h,020h,020h,020h,0feh,0c5h	; a59d  .8   "!24%2   ..
@@ -186,8 +187,8 @@ DATA_tira_A59D:
 	defb 058h,03ah,040h,041h,0feh,078h,03ah,042h,043h,0ffh	; a5cd  X:@A.x:BC.
 
 ; ----------------------------------------------------------------------
-; DATOS tira_A5D7: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (el
-;   rotulo del otro modo (0xE0A2)) que lee pinta_guion_con_mascara; lo cargan
+; DATOS tira_A5D7: guion de bytes sueltos (0xFF acaba, 0xFE otro destino) (la
+;   de Santa Claus, el modo 5) que lee pinta_guion_con_mascara; lo cargan
 ;   p01:6C61 (60 bytes)
 ;   0xa5d7..0xa613  (60 bytes)
 DATA_tira_A5D7:
@@ -1447,7 +1448,11 @@ DATA_segundo_guion_fase_24:
 ; ----------------------------------------------------------------------
 ; DATOS tabla_por_fase_B046: 24 punteros, uno por fase, a listas de entradas
 ;   de 4 bytes que p01:638F indexa con (0xE0B6): una palabra a 0xE0AF y dos
-;   bytes a 0xE0B1 y 0xE0B2
+;   bytes a 0xE0B1 y 0xE0B2; ES EL GUION DE AVISOS: cada entrada es una
+;   distancia (0xE08D) a la que p03:B8AB convierte en grieta la siguiente cosa
+;   que sale, con el modo y la lista en los dos bytes: modo 2, un atajo
+;   (WARP); modos 3, 4 y 5, una tienda con ese tendero (normal, caro, Santa
+;   Claus). Salen 6 atajos y 41 tiendas
 ;   0xb046..0xb076  (48 bytes)
 DATA_tabla_por_fase_B046:
 	defb 076h,0b0h	; b046

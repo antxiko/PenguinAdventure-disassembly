@@ -2065,7 +2065,8 @@ borra_una_casilla_traducida:
 ; ----------------------------------------------------------------------
 ; DATOS seis_direcciones_de_nombres: seis palabras, direcciones de la tabla de
 ;   nombres (0x3987, 0x398A...): p01:6D2B coge la de B y p01:6DD6 las recorre
-;   las seis
+;   las seis: la fila 12, columnas 7, 10, 13, 17, 20 y 23, donde van los
+;   dibujos de los articulos
 ;   0x6dc5..0x6dd1  (12 bytes)
 DATA_seis_direcciones_de_nombres:
 	defb 087h,039h	; 6dc5
@@ -2148,17 +2149,17 @@ la_tienda:
 	and a			;6e28
 	jp nz,la_tienda_se_cierra		;6e29
 	ld a,(0e0a2h)		;6e2c   ; el modo del juego
-	ld de,0b038h		;6e2f   ; los dos guiones y el efecto del modo 3...
+	ld de,0b038h		;6e2f   ; los dos guiones y el efecto del modo 3: el saludo (MAY I HELP YOU?), la despedida (THANK YOU VERY MUCH.) y el 0x9B...
 	ld hl,0b094h		;6e32
 	ld b,09bh		;6e35
 	sub 003h		;6e37
 	jr z,L_6E4E		;6e39
-	ld de,0b065h		;6e3b   ; ...los del 4...
+	ld de,0b065h		;6e3b   ; ...los del 4: HEY YOU! YOU MUST BUY SOMETHING FROM ME!!, BUY MORE! WAIT! DAMN IT!! y el 0x9E...
 	ld hl,0b0beh		;6e3e
 	ld b,09eh		;6e41
 	dec a			;6e43
 	jr z,L_6E4E		;6e44
-	ld de,0b0ddh		;6e46   ; ...y los de los demas
+	ld de,0b0ddh		;6e46   ; ...y los de Santa Claus: WELCOME! I WILL GIVE YOU A JEWEL., OK! BE CAREFUL! SEE YOU! y el 0x9B
 	ld hl,0b105h		;6e49
 	ld b,09bh		;6e4c
 L_6E4E:
@@ -2168,7 +2169,7 @@ L_6E4E:
 	ld (0e10dh),a		;6e56   ; ...y el efecto
 	call L_7DF7		;6e59
 	call pon_los_bancos_10_y_11		;6e5c
-	ld de,0b12eh		;6e5f   ; el guion de la tienda
+	ld de,0b12eh		;6e5f   ; el bocadillo del tendero (0xB12E)
 	call 04381h		;6e62   ; banco 0: y a pintarlo
 	call pon_los_bancos_2_y_3		;6e65   ; devueltos los bancos 2 y 3
 	ld a,(0e006h)		;6e68   ; las teclas
@@ -2235,9 +2236,9 @@ borra_y_pinta_el_cursor:
 ; ----------------------------------------------------------------------
 comprar:
 	ld a,(0e10ch)		;6ec4   ; en que casilla esta
-	cp 006h		;6ec7   ; la 6 solo deja el aviso 2...
+	cp 006h		;6ec7   ; la 6 es la bolsa: el aviso 2 lleva a la maquina de apostar (p02:8751 -> p01:7809)...
 	jp z,deja_el_aviso_2		;6ec9
-	cp 007h		;6ecc   ; ...y la 7 cierra la tienda
+	cp 007h		;6ecc   ; ...y la 7 es END: la despedida y, con el aviso 1, se sale
 	jp z,la_tienda_se_cierra		;6ece
 	ld hl,0e101h		;6ed1   ; las seis casillas, de dos en dos
 	call 04055h		;6ed4   ; banco 0: dos_por_a_mas_hl
@@ -2266,7 +2267,7 @@ comprar:
 	call 0947bh		;6f00   ; banco 2
 	call si_el_marcador_esta_a_cero		;6f03
 	call el_marcador_por_uno_de_los_dos_puentes		;6f06
-	ld a,(0e0a2h)		;6f09   ; el modo en el que esta el juego
+	ld a,(0e0a2h)		;6f09   ; con Santa Claus (modo 5) la primera compra cierra la tienda: regala una cosa
 	cp 005h		;6f0c
 	jr z,la_tienda_se_cierra_del_todo		;6f0e
 	ld c,008h		;6f10
@@ -2284,9 +2285,9 @@ la_tienda_se_cierra:
 	ld a,(0e051h)		;6f29   ; se espera a que se calle el efecto
 	and a			;6f2c
 	ret nz			;6f2d
-	ld de,(0e119h)		;6f2e   ; el primero de los dos guiones
+	ld de,(0e119h)		;6f2e   ; el saludo, borrado con su mismo guion y la mascara a cero
 	call L_7E11		;6f32
-	ld de,(0e11bh)		;6f35   ; y el segundo
+	ld de,(0e11bh)		;6f35   ; y la despedida, pintada encima
 	call L_7DF7		;6f39
 	ld a,(0e10dh)		;6f3c   ; con el efecto del modo
 	call 0413ah		;6f3f   ; banco 0: pide_sonido_si_esta_activo
@@ -2391,7 +2392,10 @@ borra_las_seis_casillas:
 ; ----------------------------------------------------------------------
 ; DATOS tablas_de_IX_por_modo: tres tablas de 16 bytes, una por modo (0xE0A2 =
 ;   3, 4 u otro): p01:6CC9, 6CD4 y 6CDB ponen IX en 0x6FD5, 0x6FE5 o 0x6FF5, y
-;   p01:6D04 lee de IX con los indices de las listas del banco 11 (0xAF90)
+;   p01:6D04 lee de IX con los indices de las listas del banco 11 (0xAF90);
+;   son los PRECIOS de los tres tenderos: el caro es el doble en BCD salvo el
+;   7 (32 y no 34), el de Santa Claus esta todo a cero, y el 14 y el 15 valen
+;   0 en las tres: no se venden
 ;   0x6fd5..0x7005  (48 bytes)
 DATA_tablas_de_IX_por_modo:
 	defb 019h,015h,010h,008h,012h,013h,017h,020h,018h,022h,011h,014h,021h,000h,000h,023h	; 6fd5  ....... ."..!..#
@@ -2399,8 +2403,10 @@ DATA_tablas_de_IX_por_modo:
 	defb 000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h,000h	; 6ff5  ................
 
 ; ----------------------------------------------------------------------
-; DATOS ocho_punteros_E10C: ocho palabras que p01:6E73 y p01:6EA3 indexan con
-;   (0xE10C)
+; DATOS ocho_punteros_E10C: las ocho posiciones del cursor de la tienda en la
+;   tabla de nombres, que p01:6E73 y p01:6EA3 indexan con (0xE10C): las seis
+;   casillas en la fila 15, la bolsa de apostar (fila 20, columna 5) y END
+;   (fila 20, columna 24)
 ;   0x7005..0x7015  (16 bytes)
 DATA_ocho_punteros_E10C:
 	defb 0e7h,039h	; 7005
@@ -2874,7 +2880,7 @@ L_72DC:
 	cp (hl)			;72ec   ; ...y por detras del segundo, tambien
 	ld c,080h		;72ed
 	jp nc,entra_de_lado		;72ef
-	ld a,012h		;72f2   ; en medio: el estado 0x12, encima
+	ld a,012h		;72f2   ; en medio: el estado 0x12, LA TIENDA (el estado 12 de p02:86C6), con el tendero que traiga el objeto
 	ld (0e203h),a		;72f4   ; el ESTADO de lo que se maneja
 	ld a,(ix+004h)		;72f7   ; el modo del juego lo trae el objeto
 	ld (0e0a2h),a		;72fa   ; el modo en el que esta el juego

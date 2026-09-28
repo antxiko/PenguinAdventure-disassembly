@@ -190,7 +190,9 @@ DATA_guion_889C:
 ; ----------------------------------------------------------------------
 ; DATOS guion_88CA: guion comprimido que lee pinta_en_los_tres y
 ;   pinta_en_los_tres_con_color; se entra por 0x88CA, 0x898A; lo cargan
-;   p00:4BDE, p00:4BE7 (307 bytes)
+;   p00:4BDE, p00:4BE7 (307 bytes); LOS CARACTERES DE LA TIENDA (patrones 0x40
+;   a 0x7B: END, el cursor, el bocadillo, la bolsa y los tres tenderos), que
+;   p00:4BBF carga en los tres tercios, el segundo tramo con espejo
 ;   0x88ca..0x89fd  (307 bytes)
 DATA_guion_88CA:
 	defb 088h,0f8h,080h,0f0h,080h,0f8h,000h,004h,006h,006h,000h,002h,040h,083h,005h,004h	; 88ca  ............@...
@@ -216,7 +218,7 @@ DATA_guion_88CA:
 
 ; ----------------------------------------------------------------------
 ; DATOS guion_89FD: guion comprimido que lee pinta_en_los_tres; se entra por
-;   0x89FD, 0x8A6C; lo cargan p00:4BF0, p00:4BF9 (190 bytes)
+;   0x89FD, 0x8A6C; lo cargan p00:4BF0, p00:4BF9 (190 bytes); sus colores
 ;   0x89fd..0x8abb  (190 bytes)
 DATA_guion_89FD:
 	defb 040h,0f0h,006h,071h,005h,0a1h,003h,051h,007h,041h,00bh,0a1h,005h,0f1h,083h,0f2h	; 89fd  @..q...Q.A......
@@ -234,7 +236,8 @@ DATA_guion_89FD:
 
 ; ----------------------------------------------------------------------
 ; DATOS guion_8ABB: guion comprimido que lee pinta_en_los_tres; lo cargan
-;   p00:4C09 (53 bytes)
+;   p00:4C09 (53 bytes); la cara del tendero del modo 4, el que cobra el
+;   doble: solo cambian colores
 ;   0x8abb..0x8af0  (53 bytes)
 DATA_guion_8ABB:
 	defb 003h,0a1h,003h,081h,007h,061h,00bh,0a1h,005h,0f1h,083h,0f5h,085h,085h,003h,065h	; 8abb  .....a.........e
@@ -244,7 +247,7 @@ DATA_guion_8ABB:
 
 ; ----------------------------------------------------------------------
 ; DATOS guion_8AF0: guion comprimido que lee pinta_en_los_tres; lo cargan
-;   p00:4C12, p00:4C1B (11 bytes)
+;   p00:4C12, p00:4C1B (11 bytes); dos tramos mas de colores del modo 4
 ;   0x8af0..0x8afb  (11 bytes)
 DATA_guion_8AF0:
 	defb 005h,0f5h,003h,0a9h,003h,045h,002h,041h,003h,061h,000h	; 8af0  .....E.A.a.

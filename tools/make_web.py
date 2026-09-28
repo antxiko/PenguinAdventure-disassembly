@@ -24,9 +24,9 @@ from estilo_web import ESTILO                                   # noqa: E402
 CODIGO = 32317
 DATOS = 98755
 PENDIENTE = 0
-ETIQUETAS = 827
+ETIQUETAS = 830
 INSTRUCCIONES = 16227
-COMENTADAS = 7248
+COMENTADAS = 7250
 FASES = 24
 TOTAL = CODIGO + DATOS + PENDIENTE
 
@@ -138,6 +138,27 @@ GALERIA = [
      "The WARP, backdrop 9: a mode-2 crevasse and pressing down lead to this "
      "cave and from there to another stage. There are six: 1 to 6, 6 to 9, 9 "
      "to 12, 13 to 15, 15 to 18 and 18 to 21 (0xB79B)."),
+    ("tienda.png",
+     "Las tres tiendas escondidas, el estado 12: el tendero de siempre, el que "
+     "cobra el doble y Santa Claus, cada uno con su saludo (0xB038, 0xB065 y "
+     "0xB0DD) y, debajo, su despedida al pulsar END. Los artículos y los "
+     "precios salen de la lista de la fase (0xAF90) y de la tabla del tendero "
+     "(0x6FD5, 0x6FE5 y 0x6FF5); la bolsa de la izquierda sólo sale con puntos.",
+     "The three hidden shops, state 12: the usual shopkeeper, the one who "
+     "charges double and Santa Claus, each with his greeting (0xB038, 0xB065 "
+     "and 0xB0DD) and, below, his farewell when you press END. The items and "
+     "the prices come from the stage's list (0xAF90) and the shopkeeper's "
+     "table (0x6FD5, 0x6FE5 and 0x6FF5); the purse on the left only shows up "
+     "when you have points."),
+    ("articulos.png",
+     "Los dieciséis artículos, dibujados con los caracteres del marcador "
+     "(0xB71B, cuatro por artículo desde el 0xB2), con su precio normal y el "
+     "caro. El 14 y el 15 no los vende nadie: el 14 es el premio del secreto "
+     "de la fase 13 (p03:BEC0), y el 15 no lo da nada que hayamos encontrado.",
+     "The sixteen items, drawn with the status-bar characters (0xB71B, four "
+     "per item from 0xB2), with their usual and expensive prices. Nobody "
+     "sells 14 or 15: 14 is the prize of the stage 13 secret (p03:BEC0), and "
+     "nothing we have found gives you 15."),
     ("items.png",
      "Los peces con alas que se cogen en el espacio, en los dieciséis pasos "
      "de la lista de 0xA545. Debajo, los dos colores entre los que salta el "
@@ -213,6 +234,31 @@ HALLAZGOS = {
          "símbolos sólo pagan si salen los tres iguales: ×8, ×10, ×15, ×20 y "
          "el premio gordo. Es la regla clásica de las cerezas, escrita en el "
          "Z80.</p>"),
+        ("Santa Claus regala, y el tendero enfadado cobra el doble",
+         "<p>Caer en el centro de una grieta de modo 3, 4 o 5 (p01:72F2) abre "
+         "la tienda, y el modo es el tendero. Los tres venden lo mismo —la "
+         "lista de siete de la fase, 0xAF90— pero cada uno con su tabla de "
+         "precios: la normal (0x6FD5), la del <b>doble</b> (0x6FE5, salvo el "
+         "artículo 7, que sube de 17 a 32 y no a 34) y la de <b>Santa "
+         "Claus</b>, que está a cero (0x6FF5) y cierra la tienda tras la "
+         "primera compra (p01:6F09): regala una cosa. Son <b>41 tiendas</b> "
+         "en 18 fases: 18 normales, 20 caras y tres de Santa, en las fases 6, "
+         "12 y 21.</p><p>Y cada tendero habla: <i>MAY I HELP YOU? GET "
+         "WHATEVER YOU LIKE.</i>, <i>HEY YOU! YOU MUST BUY SOMETHING FROM "
+         "ME!!</i> y <i>WELCOME! I WILL GIVE YOU A JEWEL.</i>; al pulsar END "
+         "se despiden, el enfadado con un <i>BUY MORE! WAIT! DAMN IT!!</i>. "
+         "Las seis pantallas están dibujadas desde las tablas y cotejadas "
+         "contra 14 volcados de openMSX: cero diferencias.</p>"),
+        ("Seis atajos, escondidos en grietas",
+         "<p>El guion de avisos de 0xB046 convierte en grieta la cosa que "
+         "sale tras su distancia y le pega dos bytes: el modo y la lista. Con "
+         "el modo 2, caer dentro y pulsar abajo (p02:999C) lleva al "
+         "<b>WARP</b>, una carrera de 0x150 pasos por el decorado 9, y al "
+         "acabar p03:B94A lee el registro de 17 bytes de 0xB79B que escoge "
+         "la lista y <b>suma fases</b>. Son seis: de la 1 a la 6, de la 6 a "
+         "la 9, de la 9 a la 12, de la 13 a la 15, de la 15 a la 18 y de la "
+         "18 a la 21, medidos los seis en openMSX. Y en el mapa de antes de "
+         "cada fase salen como caminos de puntos (0x8D85).</p>"),
         ("Veinticuatro fases, no trece",
          f"<p>Los trece son lo que el cartucho le <i>declara</i> al Konami "
          f"Game Master en su segunda cabecera, la de 0x4010. El juego dice "
@@ -279,6 +325,32 @@ HALLAZGOS = {
          "4. Every other symbol pays only on three of a kind: ×8, ×10, ×15, "
          "×20 and the jackpot. It is the classic cherry rule, written in "
          "Z80.</p>"),
+        ("Santa Claus gives things away, and the angry shopkeeper charges double",
+         "<p>Falling into the middle of a mode 3, 4 or 5 crevasse (p01:72F2) "
+         "opens the shop, and the mode is the shopkeeper. All three sell the "
+         "same —the stage's seven-item list, 0xAF90— but each with his own "
+         "price table: the usual one (0x6FD5), the <b>double</b> one (0x6FE5, "
+         "except item 7, which goes from 17 to 32 and not 34) and <b>Santa "
+         "Claus&rsquo;s</b>, all zeros (0x6FF5), who closes the shop after the "
+         "first purchase (p01:6F09): he gives one thing away. There are "
+         "<b>41 shops</b> on 18 stages: 18 usual, 20 expensive and three "
+         "Santas, on stages 6, 12 and 21.</p><p>And every shopkeeper talks: "
+         "<i>MAY I HELP YOU? GET WHATEVER YOU LIKE.</i>, <i>HEY YOU! YOU MUST "
+         "BUY SOMETHING FROM ME!!</i> and <i>WELCOME! I WILL GIVE YOU A "
+         "JEWEL.</i>; press END and they say goodbye, the angry one with "
+         "<i>BUY MORE! WAIT! DAMN IT!!</i>. The six screens are drawn from "
+         "the tables and checked against 14 openMSX dumps: zero "
+         "differences.</p>"),
+        ("Six warps, hidden in crevasses",
+         "<p>The warnings script at 0xB046 turns the object that comes out "
+         "after its distance into a crevasse and attaches two bytes: the mode "
+         "and the list. With mode 2, falling in and pressing down (p02:999C) "
+         "leads to the <b>WARP</b>, a 0x150-step run through backdrop 9, and "
+         "when it ends p03:B94A reads the 17-byte record at 0xB79B picked by "
+         "the list and <b>adds stages</b>. There are six: 1 to 6, 6 to 9, 9 "
+         "to 12, 13 to 15, 15 to 18 and 18 to 21, all six measured in openMSX. "
+         "And on the map before every stage they show up as dotted roads "
+         "(0x8D85).</p>"),
         ("Twenty-four stages, not thirteen",
          f"<p>Thirteen is what the cartridge <i>declares</i> to the Konami "
          f"Game Master in its second header, the one at 0x4010. The game says "

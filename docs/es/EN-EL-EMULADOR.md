@@ -86,7 +86,8 @@ registros del VDP cada tantos cuadros, en cada cambio de estado y en cada
 corte del final; y apunta cada cosa que sale en la carretera (p01:6852). Para
 llegar al final de las fases largas pone a 1 el periodo del paso (0xE4C0)
 justo antes de andar, en p00:4560, y para que el pingüino no se muera mantiene
-0xE1F1.
+0xE1F1. Las escenas, el mapa, la pelea y la tienda tienen su propia sonda
+(tools/omsx_escenas.tcl, omsx_mapa.tcl, lanza_pelea.sh y omsx_tienda.tcl).
 
 `make coteja` compara con esos volcados:
 
@@ -99,6 +100,12 @@ justo antes de andar, en p00:4560, y para que el pingüino no se muera mantiene
 | el espacio | 9 pantallas, 8 peces, 13 meteoritos | 0 |
 | las cosas de la carretera, LEVEL 1 y 2 | 5.414 | 0 |
 | el espejo de pantalla, andando la fase | 424 volcados | 0 |
+| el WARP, el decorado 9 | 21 pantallas | 0 |
+| el árbol y los dos finales | 3 escenas | 0 |
+| lo que se mueve en las escenas | 1.337 volcados | 0 |
+| la pelea con el dinosaurio | 3.246 volcados | 0 |
+| el mapa de antes de cada fase | 32 volcados | 0 |
+| la tienda: los tres tenderos, abierta y al cerrarse | 14 volcados | 0 |
 
 Dos trampas. En el punto de volcado (p00:451C) la tabla de nombres de la VRAM
 va un cuadro por detrás del espejo de RAM, así que las casillas se miran en el

@@ -6,7 +6,7 @@ Los volcados los sacan tools/omsx_fases.tcl y los dos lanzadores de tools/ (open
     sh tools/lanza_fases.sh 0 "1 2 ... 24" 7000 150   -> work/fases/n0/fNN/
     sh tools/lanza_fines.sh 0 "1 2 ... 24"            -> work/fines/n0/fNN/
 
-Doce comprobaciones, y todas tienen que dar cero:
+Trece comprobaciones, y todas tienen que dar cero:
 
   pantalla  la pantalla de cada fase (tools/pantalla.py) contra el primer
             cuadro de juego: tablas de patrones, de colores, de patrones de
@@ -43,8 +43,11 @@ Doce comprobaciones, y todas tienen que dar cero:
   pelea     la pelea con el dinosaurio (tools/pelea.py) contra los volcados
             de tools/lanza_pelea.sh (work/pelea): la caida de los bloques, el
             blanco y lo que lanza, la grieta, el agujero y el hundimiento.
+  tienda    la tienda escondida (tools/tienda.py) contra los volcados de
+            tools/lanza_tiendas.sh (work/tiendas): los tres tenderos, abierta
+            con el saludo y tras END con la despedida, tablas y sprites.
 
-Uso:  coteja.py [pantalla|final|jugador|bichos|espacio|cosas|carretera|pelea|andando|mapa ...]
+Uso:  coteja.py [pantalla|final|jugador|bichos|espacio|warp|escenas|cosas|carretera|pelea|andando|mapa|tienda ...]
 """
 import glob
 import os
@@ -404,9 +407,16 @@ def pelea(cart):
     return coteja(cart)
 
 
+def tienda(cart):
+    """La tienda escondida: tools/tienda.py contra work/tiendas."""
+    from tienda import coteja
+    return coteja(cart)
+
+
 PRUEBAS = {"pantalla": pantalla, "warp": warp, "escenas": escenas, "final": final, "jugador": jugador,
            "bichos": bichos, "espacio": espacio, "cosas": cosas,
-           "carretera": carretera, "pelea": pelea, "andando": andando, "mapa": mapa}
+           "carretera": carretera, "pelea": pelea, "andando": andando, "mapa": mapa,
+           "tienda": tienda}
 
 
 def main():
