@@ -207,6 +207,26 @@ queda y sus guiones puestos. Son seis, y los seis están medidos en openMSX:
 
 ![El warp](../imagenes/warp.png)
 
+## El mapa
+
+Antes de cada fase (el estado 4, p02:81A0) sale el mapa de las veinticuatro
+fases, con STAGE y LIVES encima. Lo pinta el guion de escena de p02:8AEC, un
+paso por cuadro. Primero van las catorce líneas del dibujo de 0x8E7C. Después
+recorre los registros de 0x8FE7 (fase, entrada y dirección de color) y pasa de
+negro a rojo el camino ya andado, hasta llegar a la fase de ahora, donde pone
+el pingüino. Su casilla sale de la tabla de 0x917B; desde la fase 15 mira al
+otro lado.
+
+Si un registro nombra uno de los seis atajos (0x8D85) y su bandera está puesta
+(0xE0C6-0xE0CB), el guion salta a la entrada del atajo y escribe su trazo: en
+el mapa, el atajo se ve como un camino de puntos.
+
+Arriba, las fases 1, 13 y 24 sin atajos; abajo, las 7, 16 y 24 con atajos.
+Cotejado contra 32 volcados de openMSX (las 24 fases y siete con atajos): cero
+diferencias.
+
+![El mapa](../imagenes/mapa.png)
+
 ## Las tiendas escondidas
 
 Con los modos 3, 4 y 5 la grieta del guion de avisos es la 0x0A o la 0x0B, y

@@ -181,6 +181,7 @@ imagenes: $(ROM)
 	@python3 tools/recorridos.py
 	@python3 tools/escenas.py
 	@python3 tools/pelea.py
+	@python3 tools/mapa.py
 
 # Y todo lo dibujado se coteja con volcados de openMSX (tools/omsx_fases.tcl;
 # los lanzadores tools/lanza_fases.sh y tools/lanza_fines.sh los sacan: ver la

@@ -6,7 +6,7 @@ Los volcados los sacan tools/omsx_fases.tcl y los dos lanzadores de tools/ (open
     sh tools/lanza_fases.sh 0 "1 2 ... 24" 7000 150   -> work/fases/n0/fNN/
     sh tools/lanza_fines.sh 0 "1 2 ... 24"            -> work/fines/n0/fNN/
 
-Once comprobaciones, y todas tienen que dar cero:
+Doce comprobaciones, y todas tienen que dar cero:
 
   pantalla  la pantalla de cada fase (tools/pantalla.py) contra el primer
             cuadro de juego: tablas de patrones, de colores, de patrones de
@@ -38,11 +38,13 @@ Once comprobaciones, y todas tienen que dar cero:
   andando   lo que se mueve en las escenas (el pinguino que entra, el salto,
             lo que cae del arbol y el llanto) contra los volcados de
             tools/lanza_escenas.sh, un cuadro de cada dos: sprites y patrones.
+  mapa      el mapa de antes de cada fase (tools/mapa.py) contra los volcados
+            de tools/lanza_mapas.sh: las 24 fases y siete con atajos.
   pelea     la pelea con el dinosaurio (tools/pelea.py) contra los volcados
             de tools/lanza_pelea.sh (work/pelea): la caida de los bloques, el
             blanco y lo que lanza, la grieta, el agujero y el hundimiento.
 
-Uso:  coteja.py [pantalla|final|jugador|bichos|espacio|cosas|carretera|pelea|andando ...]
+Uso:  coteja.py [pantalla|final|jugador|bichos|espacio|cosas|carretera|pelea|andando|mapa ...]
 """
 import glob
 import os
@@ -390,6 +392,12 @@ def andando(cart):
     return coteja_andando(cart)
 
 
+def mapa(cart):
+    """El mapa de antes de cada fase: tools/mapa.py contra work/mapas."""
+    from mapa import coteja
+    return coteja(cart)
+
+
 def pelea(cart):
     """La pelea con el dinosaurio: tools/pelea.py contra work/pelea."""
     from pelea import coteja
@@ -398,7 +406,7 @@ def pelea(cart):
 
 PRUEBAS = {"pantalla": pantalla, "warp": warp, "escenas": escenas, "final": final, "jugador": jugador,
            "bichos": bichos, "espacio": espacio, "cosas": cosas,
-           "carretera": carretera, "pelea": pelea, "andando": andando}
+           "carretera": carretera, "pelea": pelea, "andando": andando, "mapa": mapa}
 
 
 def main():

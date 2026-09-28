@@ -210,6 +210,26 @@ all six are measured in openMSX:
 
 ![The warp](imagenes/warp.png)
 
+## The map
+
+Before every stage (state 4, p02:81A0) the map of the twenty-four stages shows
+up, with STAGE and LIVES on top. The scene script at p02:8AEC draws it, one
+step per frame. First come the fourteen lines of the picture at 0x8E7C. Then it
+walks the 0x8FE7 records (stage, entry and colour address) and turns the road
+already travelled from black to red, until it reaches the current stage, where
+it puts the penguin. Its square comes from the 0x917B table; from stage 15
+onwards it faces the other way.
+
+If a record names one of the six warps (0x8D85) and its flag is set
+(0xE0C6-0xE0CB), the script jumps to the warp's entry and writes its trace: on
+the map, the warp shows up as a dotted road.
+
+Top row: stages 1, 13 and 24 with no warps; bottom row: 7, 16 and 24 with
+warps. Checked against 32 openMSX dumps (the 24 stages and seven with warps):
+zero differences.
+
+![The map](imagenes/mapa.png)
+
 ## The hidden shops
 
 With modes 3, 4 and 5 the warnings-script crevasse is 0x0A or 0x0B, and

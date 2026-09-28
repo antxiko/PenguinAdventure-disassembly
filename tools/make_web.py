@@ -107,6 +107,13 @@ GALERIA = [
      "good and the bad endings, with their messages. 32-column screens from "
      "bank 13 painted from the middle outwards; in the bad ending the 0xB963 "
      "piece takes the princess's place."),
+    ("mapa.png",
+     "El mapa de antes de cada fase: el camino andado en rojo, el pingüino en "
+     "la fase de ahora y los atajos cogidos como caminos de puntos (p02:8AEC, "
+     "0x8FE7, 0x8D85).",
+     "The map before every stage: the road travelled in red, the penguin on "
+     "the current stage and the warps taken as dotted roads (p02:8AEC, "
+     "0x8FE7, 0x8D85)."),
     ("escenas_andando.png",
      "Lo que se mueve en las escenas: el pingüino entra de espaldas y sube una "
      "fila cada cuatro cuadros (p03:ACE6); en el árbol cae y rebota la manzana "
