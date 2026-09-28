@@ -1107,7 +1107,7 @@ mueve_de_lado:
 	jr z,y_luego_el_arrastre		;a883
 	cp 008h		;a885   ; el 8 es la derecha
 	jr z,L_A89E		;a887
-	ld a,(0e16dh)		;a889   ; ¿va al doble?
+	ld a,(0e16dh)		;a889   ; ¿va al doble? (las botas azules, articulo 14: el premio de la fase 6)
 	and a			;a88c
 	ld c,001h		;a88d   ; un pixel...
 	jr z,mueve_a_la_izquierda		;a88f
@@ -1142,7 +1142,7 @@ y_luego_el_arrastre:
 	ld a,(0e003h)		;a8b6   ; el contador de cuadros
 	rra			;a8b9   ; y solo un cuadro de cada dos
 	ret nc			;a8ba
-	ld a,(0e16eh)		;a8bb   ; esto tambien lo frena
+	ld a,(0e16eh)		;a8bb   ; esto tambien lo frena (las botas rojas, articulo 15: el premio de la fase 13)
 	and a			;a8be
 	ret nz			;a8bf
 	ld a,(0e0a6h)		;a8c0   ; y si no hay arrastre, nada
@@ -2843,7 +2843,7 @@ recoger_descuenta:
 	cp 007h		;b453
 	jr nz,recoger_suena_y_borra		;b455
 L_B457:
-	ld hl,0e111h		;b457   ; ...se descuenta uno de 0xE111
+	ld hl,0e111h		;b457   ; ...se descuenta uno de 0xE111: los cinco peces que pide el secreto de la fase 6 (p03:BE7D), y solo cuentan los que se cogen saltando (estados 1, 2, 6 y 7)
 	dec (hl)			;b45a
 recoger_suena_y_borra:
 	push bc			;b45b
@@ -4270,11 +4270,11 @@ prepara_lo_propio_de_la_fase:
 	ld bc,00708h		;be19   ; los valores de la 3
 	cp 003h		;be1c   ; la fase 3...
 	jr z,guarda_lo_propio_de_la_fase		;be1e
-	ld hl,0e111h		;be20   ; ...los de la 6...
+	ld hl,0e111h		;be20   ; ...los de la 6: cinco peces en 0xE111...
 	ld bc,00005h		;be23
 	cp 006h		;be26   ; ...la fase 6...
 	jr z,guarda_lo_propio_de_la_fase		;be28
-	ld hl,0e112h		;be2a   ; ...y los de la 13
+	ld hl,0e112h		;be2a   ; ...y los de la 13: 0xB4 cuadros en 0xE112
 	ld c,0b4h		;be2d
 	cp 00dh		;be2f   ; si no es ninguna de las tres, nada
 	ret nz			;be31
@@ -4338,15 +4338,15 @@ DATA_secretos_por_fase:
 
 
 secreto_de_la_fase_6:
-	ld a,(0e167h)		;be7d   ; una bandera
+	ld a,(0e167h)		;be7d   ; el anillo (0xE167, articulo 8)
 	and a			;be80
 	jr nz,secreto_de_la_fase_6_activo		;be81
-	ld hl,(0e116h)		;be83   ; y si no esta, se devuelve el valor guardado
+	ld hl,(0e116h)		;be83   ; y sin el, los cinco peces vuelven a contarse desde el principio
 	ld (0e111h),hl		;be86
 	ret			;be89
 secreto_de_la_fase_6_activo:
 	ld de,0e111h		;be8a
-	ld c,00dh		;be8d   ; el premio 0x0D
+	ld c,00dh		;be8d   ; el premio 0x0D: 0xE16D, las botas azules (articulo 14)
 	ld a,(de)			;be8f   ; y hasta que 0xE111 no llegue a cero, nada
 	or a			;be90
 	ret nz			;be91
@@ -4363,7 +4363,7 @@ consigue_el_premio:
 	ld (hl),001h		;bea3   ; y encendido el aviso
 	ret			;bea5
 secreto_de_la_fase_9:
-	ld c,011h		;bea6   ; el premio 0x11
+	ld c,011h		;bea6   ; el premio 0x11: 0xE171, sin dibujo (articulo 18)
 	ld a,(0e203h)		;bea8   ; el ESTADO de lo que se maneja
 	cp 010h		;beab   ; solo en el 0x10
 	jp nz,falla_la_secuencia		;bead
@@ -4375,23 +4375,23 @@ secreto_de_la_fase_9:
 	ret z			;bebd   ; si no, a esperar
 	jr avanza_la_secuencia		;bebe
 secreto_de_la_fase_13:
-	ld a,(0e167h)		;bec0   ; una bandera
+	ld a,(0e167h)		;bec0   ; el anillo (0xE167, articulo 8)
 	and a			;bec3
 	ret z			;bec4
 	ld hl,0e112h		;bec5   ; el contador de este
-	ld c,00eh		;bec8   ; el premio 0x0E
-	ld a,(0e0a6h)		;beca   ; en que va
+	ld c,00eh		;bec8   ; el premio 0x0E: 0xE16E, las botas rojas (articulo 15)
+	ld a,(0e0a6h)		;beca   ; el arrastre de la curva
 	cp 001h		;becd
-	ld d,01ch		;becf   ; con un 1, el tope es 0x1C...
-	jr z,secreto_de_la_fase_13_por_arriba		;bed1
+	ld d,01ch		;becf   ; con un 1 (la curva lleva a la derecha) hay que estar a la izquierda de 0x1C...
+	jr z,secreto_de_la_fase_13_a_la_izquierda		;bed1
 	cp 002h		;bed3
 	jp nz,L_BE3A		;bed5
-	ld d,0c4h		;bed8   ; ...y con un 2, 0xC4
+	ld d,0c4h		;bed8   ; ...y con un 2 (lleva a la izquierda), de 0xC4 en adelante; sin curva, la cuenta vuelve a 0xB4 (p03:BE3A)
 	ld a,(0e205h)		;beda   ; la X en la pantalla de lo que se maneja
 	cp d			;bedd   ; contra el tope
 	ret c			;bede
 	jp secreto_de_la_fase_13_cuenta		;bedf
-secreto_de_la_fase_13_por_arriba:
+secreto_de_la_fase_13_a_la_izquierda:
 	ld a,(0e205h)		;bee2   ; la X en la pantalla de lo que se maneja
 	cp d			;bee5
 	ret nc			;bee6
@@ -4404,7 +4404,7 @@ secreto_de_la_fase_13_cuenta:
 ; SECRETO DE LA FASE 14: DOS DIRECCIONES SEGUIDAS. Izquierda y derecha, en ese orden y sin equivocarse, mientras el paso de la transicion sea 4.
 ; ----------------------------------------------------------------------
 secreto_de_la_fase_14:
-	ld a,(0e167h)		;beec   ; una bandera
+	ld a,(0e167h)		;beec   ; el anillo (0xE167, articulo 8)
 	and a			;beef
 	ret z			;bef0
 	ld a,(0e203h)		;bef1   ; el ESTADO de lo que se maneja
@@ -4412,7 +4412,7 @@ secreto_de_la_fase_14:
 	jp nz,falla_la_secuencia		;bef6
 	ld hl,0bf2ch		;bef9   ; la secuencia: dos pasos
 	ld b,002h		;befc   ; dos
-	ld c,010h		;befe   ; y el premio 0x10
+	ld c,010h		;befe   ; y el premio 0x10: 0xE170, sin dibujo (articulo 17)
 comprueba_la_secuencia:
 	ld a,(0e114h)		;bf00   ; por que paso va
 	cp b			;bf03   ; si ya estan todos, premio
@@ -4438,7 +4438,7 @@ secreto_de_la_fase_16:
 	jr z,falla_la_secuencia		;bf1c   ; sin pausa, ni se mira
 	ld hl,0bf2eh		;bf1e   ; la secuencia: cuatro pasos
 	ld b,004h		;bf21   ; cuatro
-	ld c,012h		;bf23   ; y el premio 0x12
+	ld c,012h		;bf23   ; y el premio 0x12: 0xE172, sin dibujo (articulo 19)
 	jr comprueba_la_secuencia		;bf25
 falla_la_secuencia:
 	xor a			;bf27

@@ -153,12 +153,12 @@ GALERIA = [
     ("articulos.png",
      "Los dieciséis artículos, dibujados con los caracteres del marcador "
      "(0xB71B, cuatro por artículo desde el 0xB2), con su precio normal y el "
-     "caro. El 14 y el 15 no los vende nadie: el 14 es el premio del secreto "
-     "de la fase 13 (p03:BEC0), y el 15 no lo da nada que hayamos encontrado.",
+     "caro. El 14 y el 15 no los vende nadie: son los premios de los secretos "
+     "de la fase 6 (p03:BE7D) y de la 13 (p03:BEC0).",
      "The sixteen items, drawn with the status-bar characters (0xB71B, four "
      "per item from 0xB2), with their usual and expensive prices. Nobody "
-     "sells 14 or 15: 14 is the prize of the stage 13 secret (p03:BEC0), and "
-     "nothing we have found gives you 15."),
+     "sells 14 or 15: they are the prizes of the stage 6 secret (p03:BE7D) "
+     "and the stage 13 secret (p03:BEC0)."),
     ("items.png",
      "Los peces con alas que se cogen en el espacio, en los dieciséis pasos "
      "de la lista de 0xA545. Debajo, los dos colores entre los que salta el "

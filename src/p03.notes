@@ -570,7 +570,7 @@ C 0xB43A al llegar a 0x10...
 C 0xB43E ...el marcador se queda en su tope
 L 0xB444 recoger_descuenta
 C 0xB447 en cuatro de ellos -1, 2, 6 y 7-...
-C 0xB457 ...se descuenta uno de 0xE111
+C 0xB457 ...se descuenta uno de 0xE111: los cinco peces que pide el secreto de la fase 6 (p03:BE7D), y solo cuentan los que se cogen saltando (estados 1, 2, 6 y 7)
 L 0xB45B recoger_suena_y_borra
 C 0xB45C las banderas de la partida
 C 0xB45F el bit 6, el del sonido
@@ -735,9 +735,9 @@ C 0xBE01 los seis bytes de 0xE110
 C 0xBE07 cinco mas el primero
 C 0xBE19 los valores de la 3
 C 0xBE1C la fase 3...
-C 0xBE20 ...los de la 6...
+C 0xBE20 ...los de la 6: cinco peces en 0xE111...
 C 0xBE26 ...la fase 6...
-C 0xBE2A ...y los de la 13
+C 0xBE2A ...y los de la 13: 0xB4 cuadros en 0xE112
 C 0xBE2F si no es ninguna de las tres, nada
 L 0xBE32 guarda_lo_propio_de_la_fase
 C 0xBE35 y una copia aparte
@@ -767,6 +767,14 @@ C 0xBE35 y una copia aparte
 # Cuando una de las cinco se cumple, todas acaban en 0xBE92, que apunta el
 # numero del premio en 0xE110 y enciende 0xE115. Los cinco numeros son 0x0D
 # (fase 6), 0x11 (fase 9), 0x0E (fase 13), 0x10 (fase 14) y 0x12 (fase 16).
+# Ese numero es la BANDERA, no el articulo: 0xBE92 mira 0xE160 + n y p03:BA2F
+# apunta en 0xE160 + n sin restar uno, mientras que la tienda resta uno antes
+# de llamarla (p01:6EEA). Asi que los premios son los articulos 14 (0xE16D,
+# las botas azules), 18 (0xE171), 15 (0xE16E, las botas rojas), 17 (0xE170)
+# y 19 (0xE172); los tres ultimos no tienen dibujo. Las fases 6, 13 y 14
+# piden ademas el anillo (0xE167). Cotejado en openMSX (tools/omsx_secreto.tcl):
+# la 6 con cinco peces cogidos saltando pone 0xE16D, y la 13 con izquierda
+# pulsada en la curva de 0x0600 (arrastre 1) cuenta 0xB4 cuadros y pone 0xE16E.
 B 0xBE41 EL PORTERO DE LOS SECRETOS. Se despacha por la fase, y diecinueve de las veinticuatro entradas van a un `ret`. Ademas, si 0xE115 ya esta encendido -o sea, si el premio de esta fase ya se ha conseguido- no se vuelve a mirar.
 L 0xBE41 mira_el_secreto_de_la_fase
 C 0xBE41 ¿ya se ha conseguido el premio?
@@ -775,10 +783,10 @@ C 0xBE49 la tabla va desde 1
 D 0xBE4D 0xBE7D secretos_por_fase  Una entrada por cada una de las veinticuatro fases. Diecinueve apuntan a 0xBF2B, que es un `ret`: en esas fases no hay secreto. Las cinco que si lo tienen son la 6 (0xBE7D), la 9 (0xBEA6), la 13 (0xBEC0), la 14 (0xBEEC) y la 16 (0xBF18).
 F 0xBE4D w1
 L 0xBE7D secreto_de_la_fase_6
-C 0xBE7D una bandera
-C 0xBE83 y si no esta, se devuelve el valor guardado
+C 0xBE7D el anillo (0xE167, articulo 8)
+C 0xBE83 y sin el, los cinco peces vuelven a contarse desde el principio
 L 0xBE8A secreto_de_la_fase_6_activo
-C 0xBE8D el premio 0x0D
+C 0xBE8D el premio 0x0D: 0xE16D, las botas azules (articulo 14)
 C 0xBE8F y hasta que 0xE111 no llegue a cero, nada
 L 0xBE92 consigue_el_premio
 C 0xBE92 la lista de premios ya conseguidos
@@ -786,31 +794,31 @@ C 0xBE9A si ya lo tiene, no se repite
 C 0xBE9F apuntado
 C 0xBEA3 y encendido el aviso
 L 0xBEA6 secreto_de_la_fase_9
-C 0xBEA6 el premio 0x11
+C 0xBEA6 el premio 0x11: 0xE171, sin dibujo (articulo 18)
 C 0xBEAB solo en el 0x10
 C 0xBEB0 un contador
 C 0xBEB3 a los diez, premio
 C 0xBEBB el bit 4: la barra o el disparo
 C 0xBEBD si no, a esperar
 L 0xBEC0 secreto_de_la_fase_13
-C 0xBEC0 una bandera
+C 0xBEC0 el anillo (0xE167, articulo 8)
 C 0xBEC5 el contador de este
-C 0xBEC8 el premio 0x0E
-C 0xBECA en que va
-C 0xBECF con un 1, el tope es 0x1C...
-C 0xBED8 ...y con un 2, 0xC4
+C 0xBEC8 el premio 0x0E: 0xE16E, las botas rojas (articulo 15)
+C 0xBECA el arrastre de la curva
+C 0xBECF con un 1 (la curva lleva a la derecha) hay que estar a la izquierda de 0x1C...
+C 0xBED8 ...y con un 2 (lleva a la izquierda), de 0xC4 en adelante; sin curva, la cuenta vuelve a 0xB4 (p03:BE3A)
 C 0xBEDD contra el tope
-L 0xBEE2 secreto_de_la_fase_13_por_arriba
+L 0xBEE2 secreto_de_la_fase_13_a_la_izquierda
 L 0xBEE7 secreto_de_la_fase_13_cuenta
 C 0xBEE7 un paso menos
 C 0xBEE8 y a cero, premio
 B 0xBEEC SECRETO DE LA FASE 14: DOS DIRECCIONES SEGUIDAS. Izquierda y derecha, en ese orden y sin equivocarse, mientras el paso de la transicion sea 4.
 L 0xBEEC secreto_de_la_fase_14
-C 0xBEEC una bandera
+C 0xBEEC el anillo (0xE167, articulo 8)
 C 0xBEF4 solo en el 4
 C 0xBEF9 la secuencia: dos pasos
 C 0xBEFC dos
-C 0xBEFE y el premio 0x10
+C 0xBEFE y el premio 0x10: 0xE170, sin dibujo (articulo 17)
 L 0xBF00 comprueba_la_secuencia
 C 0xBF00 por que paso va
 C 0xBF03 si ya estan todos, premio
@@ -826,7 +834,7 @@ L 0xBF18 secreto_de_la_fase_16
 C 0xBF1C sin pausa, ni se mira
 C 0xBF1E la secuencia: cuatro pasos
 C 0xBF21 cuatro
-C 0xBF23 y el premio 0x12
+C 0xBF23 y el premio 0x12: 0xE172, sin dibujo (articulo 19)
 L 0xBF27 falla_la_secuencia
 C 0xBF28 el paso, a cero: hay que empezar de nuevo
 L 0xBF2B no_hay_secreto_en_esta_fase
@@ -1028,7 +1036,7 @@ C 0xA87A la columna
 C 0xA87D izquierda y derecha
 C 0xA87F con ninguna o con las dos, no se mueve
 C 0xA885 el 8 es la derecha
-C 0xA889 ¿va al doble?
+C 0xA889 ¿va al doble? (las botas azules, articulo 14: el premio de la fase 6)
 C 0xA88D un pixel...
 C 0xA891 ...o dos
 L 0xA892 mueve_a_la_izquierda
@@ -1040,7 +1048,7 @@ C 0xA8AB y el de la derecha 0xCC
 L 0xA8B1 y_luego_el_arrastre
 C 0xA8B1 si esto esta puesto, no se arrastra
 C 0xA8B9 y solo un cuadro de cada dos
-C 0xA8BB esto tambien lo frena
+C 0xA8BB esto tambien lo frena (las botas rojas, articulo 15: el premio de la fase 13)
 C 0xA8C0 y si no hay arrastre, nada
 C 0xA8C5 el bit 0 dice hacia que lado
 L 0xA8CC arrastra_con_sus_topes

@@ -61,13 +61,6 @@ cambia la marca +0x0E y la partitura pasa de lenguaje de efecto a lenguaje de
 música—, pero no se ha escrito un reproductor que las saque fuera del cartucho.
 Mientras no lo haya, lo que hay es una descripción, no una prueba.
 
-## Quién da las botas rojas
-
-El artículo 15 (0xE16E) quita el arrastre de lado (p03:A8BB), tiene su dibujo
-en 0xB71B y vale cero en las tres tablas de precios. Ninguna lista de 0xAF90 lo
-vende y ninguno de los cinco secretos lo da —sus premios son el 13, el 17, el
-14, el 16 y el 18—. No hemos encontrado qué lo pone, y puede que nada lo ponga.
-
 ## Lo que pasa por los lados
 
 p01:6AA8 va por cuadros y no por distancia, y el cotejo de la carretera se

@@ -214,6 +214,44 @@ class Cartucho(unittest.TestCase):
         self.assertEqual(list(self.rom[p:p + 5]),
                          [0x3A, 0x06, 0xE0, 0xE6, 0x80])
 
+    def test_los_premios_de_los_secretos_son_banderas(self):
+        """El numero del premio es la bandera 0xE160 + n, no el articulo.
+
+        0xBE92 mira 0xE160 + n y p03:BA3C apunta en 0xE160 + n sin restar
+        nada; la tienda si resta uno antes de llamar a p03:BA2F (p01:6EEA,
+        `dec c`). Asi que la fase 6 (0x0D) pone 0xE16D, las botas azules
+        (articulo 14), que p03:A889 lee para ir de lado al doble; y la 13
+        (0x0E) pone 0xE16E, las botas rojas (articulo 15), que p03:A8BB lee
+        para quitar el arrastre. Las fases 6, 13 y 14 piden el anillo
+        (0xE167); la 6 cuenta cinco peces y la 13, 0xB4 cuadros contra el
+        lado al que empuja la curva (0x1C y 0xC4).
+        """
+        banco3 = 3 * TAM_PAGINA
+
+        def b3(a, n):
+            o = banco3 + (a - 0xA000)
+            return list(self.rom[o:o + n])
+        premios = {6: 0xBE8D, 9: 0xBEA6, 13: 0xBEC8, 14: 0xBEFE, 16: 0xBF23}
+        n = {f: b3(a, 2)[1] for f, a in premios.items() if b3(a, 1) == [0x0E]}
+        self.assertEqual(n, {6: 0x0D, 9: 0x11, 13: 0x0E, 14: 0x10, 16: 0x12})
+        # ld hl,0xE160 / ld a,c / call a_mas_hl, sin dec
+        self.assertEqual(b3(0xBE92, 7), [0x21, 0x60, 0xE1, 0x79, 0xCD, 0x56, 0x40])
+        self.assertEqual(b3(0xBA3C, 8), [0x79, 0x21, 0x60, 0xE1, 0xCD, 0x56, 0x40, 0x70])
+        # la tienda: ld a,(hl) / ld c,a / dec c / ... / call 0xBA2F
+        o = TAM_PAGINA + (0x6EE8 - 0x6000)
+        self.assertEqual(list(self.rom[o:o + 8]),
+                         [0x7E, 0x4F, 0x0D, 0xC5, 0xE5, 0xCD, 0x2F, 0xBA])
+        # quien lee las dos banderas de las botas
+        self.assertEqual(b3(0xA889, 3), [0x3A, 0x6D, 0xE1])
+        self.assertEqual(b3(0xA8BB, 3), [0x3A, 0x6E, 0xE1])
+        # el anillo en las fases 6, 13 y 14
+        for a in (0xBE7D, 0xBEC0, 0xBEEC):
+            self.assertEqual(b3(a, 3), [0x3A, 0x67, 0xE1])
+        # cinco peces (ld bc,5) y 0xB4 cuadros (ld c,0xB4); los topes 0x1C y 0xC4
+        self.assertEqual(b3(0xBE23, 3), [0x01, 0x05, 0x00])
+        self.assertEqual(b3(0xBE2D, 2), [0x0E, 0xB4])
+        self.assertEqual(b3(0xBECF, 2) + b3(0xBED8, 2), [0x16, 0x1C, 0x16, 0xC4])
+
 
 if __name__ == "__main__":
     unittest.main()

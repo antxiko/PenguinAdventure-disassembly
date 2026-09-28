@@ -284,20 +284,23 @@ del manual:
 | 5 | el yelmo blanco | para tres golpes de las clases 6 y 12 (p01:75E4) |
 | 6 | la coraza roja | para tres golpes de las clases 1 y 13 (p01:75FA) |
 | 7 | la campana | suena el efecto 0x31 cuando el guion de avisos suelta una grieta de modo 2, un atajo (p03:B8C4) |
-| 8 | el anillo | despierta el secreto de la fase 6, que da el artículo 13 (p03:BE7D) |
+| 8 | el anillo | despierta los secretos de las fases 6, 13 y 14 (p03:BE7D, BEC0 y BEEC): sin él no dan nada |
 | 9 | la moneda de oro | en el decorado 7 impide entrar por las grietas 0x13 y 0x14 (p01:740D) |
 | 10 | el colgante rojo | se puede apostar sin límite: sin él, tres tiradas (0xE134) y fuera (p01:7AD5) |
 | 11 | las gafas | el bicho de la clase 7 se ve, en color 5 (p09:B8B3); dura dos fases (p00:46C5) |
 | 12 | la antorcha | la clase 4 de 0xE370, la que para el juego 0x80 cuadros, no hace nada (p01:76CE); dura dos fases |
 | 13 | el pájaro blanco | deja acabar las fases 12, 18 y 24 sin que p01:6476 las devuelva atrás (p01:65C2) |
-| 14 | las botas azules | se anda de lado al doble, dos píxeles por cuadro (p03:A889); no se vende: es el premio del secreto de la fase 13 |
-| 15 | las botas rojas | quita el arrastre de lado de 0xE0A6 (p03:A8BB); no lo vende ni lo da nada que hayamos encontrado |
+| 14 | las botas azules | se anda de lado al doble, dos píxeles por cuadro (p03:A889); no se vende: es el premio del secreto de la fase 6, con el anillo y cinco peces cogidos saltando (p03:BE7D) |
+| 15 | las botas rojas | quitan el arrastre de lado de las curvas (0xE0A6, p03:A8BB); no se venden: son el premio del secreto de la fase 13, con el anillo y 0xB4 cuadros dentro de una misma curva pegado al lado contrario al que empuja (p03:BEC0): tres de sus cuatro curvas empujan a la derecha, así que casi siempre es a la izquierda |
 | 16 | la pluma | en el aire se puede cambiar de dirección (p02:979D) |
 
 El artículo 13 sólo lo venden las tiendas de las fases 12, 18 y 24, y el Santa
-Claus de la 12 lo regala. Los premios de los secretos —el 13, el 14, el 16 y
-los 17 y 18, que no tienen dibujo— entran por otra puerta: salen a la
-carretera y se cogen (p03:B36B).
+Claus de la 12 lo regala. Los premios de los secretos —el 14 (fase 6), el 18
+(fase 9), el 15 (fase 13), el 17 (fase 14) y el 19 (fase 16); los tres últimos
+no tienen dibujo— entran por otra puerta: cruzan la carretera y se cogen
+(p03:B36B). El número que apunta cada secreto es la bandera, no el artículo:
+p03:BA2F escribe en 0xE160 + n, y la tienda le resta uno antes de llamarla
+(p01:6EEA).
 
 Las 41 tiendas, con la distancia de su aviso (la tabla la escribe
 `tools/tienda.py tabla`):
@@ -392,7 +395,7 @@ Cinco ranuras en 0xE440, y lo que llevan decide si un golpe mata o no:
 | 0xE1F1 | de todo: para cualquier golpe y cualquier hueco |
 | 0xE164, el yelmo blanco (5) | de los bichos de clase 6 y 12; se gasta uno por golpe |
 | 0xE165, la coraza roja (6) | de las clases 1 y 13; se gasta uno por golpe |
-| 0xE170, el premio del secreto de la fase 9 | de las clases 5 y 14; esta no se gasta |
+| 0xE170, el premio del secreto de la fase 14 (artículo 17) | de las clases 5 y 14; esta no se gasta |
 | 0xE163, el casco (4) | de la clase 6 de los otros huecos |
 | 0xE16B, la antorcha (12) | de la clase 4, que no mata: sólo para el juego 0x80 cuadros |
 

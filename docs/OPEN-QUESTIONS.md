@@ -63,13 +63,6 @@ The scores are fully declared and the language is understood —`FE 00` changes 
 language— but no player has been written to get them out of the cartridge. Until
 there is one, what there is is a description, not a proof.
 
-## Who gives you the red boots
-
-Item 15 (0xE16E) removes the sideways drift (p03:A8BB), has its drawing in
-0xB71B and costs zero in all three price tables. No 0xAF90 list sells it and
-none of the five secrets gives it —their prizes are 13, 17, 14, 16 and 18—. We
-have not found what sets it, and maybe nothing does.
-
 ## What goes by on the sides
 
 p01:6AA8 works by frames, not by distance, and the road check skips its cells.

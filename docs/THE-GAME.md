@@ -287,20 +287,23 @@ the manual's:
 | 5 | the white helm | stops three hits from classes 6 and 12 (p01:75E4) |
 | 6 | the red armour | stops three hits from classes 1 and 13 (p01:75FA) |
 | 7 | the bell | sound 0x31 plays when the warnings script releases a mode-2 crevasse, a warp (p03:B8C4) |
-| 8 | the ring | wakes up the stage 6 secret, which gives item 13 (p03:BE7D) |
+| 8 | the ring | wakes up the stage 6, 13 and 14 secrets (p03:BE7D, BEC0 and BEEC): without it they give nothing |
 | 9 | the gold coin | on backdrop 7 it stops you entering crevasses 0x13 and 0x14 (p01:740D) |
 | 10 | the red pendant | unlimited gambling: without it, three spins (0xE134) and out (p01:7AD5) |
 | 11 | the glasses | the class 7 creature becomes visible, in colour 5 (p09:B8B3); lasts two stages (p00:46C5) |
 | 12 | the torch | class 4 at 0xE370, the one that freezes the game for 0x80 frames, does nothing (p01:76CE); lasts two stages |
 | 13 | the white bird | lets stages 12, 18 and 24 end instead of p01:6476 sending you back (p01:65C2) |
-| 14 | the blue boots | sideways at double speed, two pixels per frame (p03:A889); not for sale: it is the prize of the stage 13 secret |
-| 15 | the red boots | removes the sideways drift at 0xE0A6 (p03:A8BB); nobody sells it and nothing we have found gives it |
+| 14 | the blue boots | sideways at double speed, two pixels per frame (p03:A889); not for sale: it is the prize of the stage 6 secret, with the ring and five fish caught while jumping (p03:BE7D) |
+| 15 | the red boots | remove the sideways drift of the curves (0xE0A6, p03:A8BB); not for sale: they are the prize of the stage 13 secret, with the ring and 0xB4 frames within one curve against the side it pushes you to (p03:BEC0): three of its four curves push right, so it is nearly always the left |
 | 16 | the feather | you can change direction in mid-air (p02:979D) |
 
 Item 13 is sold only by the shops on stages 12, 18 and 24, and the stage 12
-Santa Claus gives it away. The secrets' prizes —13, 14, 16, and 17 and 18,
-which have no drawing— come in through another door: they appear on the road
-and get picked up (p03:B36B).
+Santa Claus gives it away. The secrets' prizes —14 (stage 6), 18 (stage 9), 15
+(stage 13), 17 (stage 14) and 19 (stage 16); the last three have no drawing—
+come in through another door: they cross the road and get picked up
+(p03:B36B). The number each secret stores is the flag, not the item: p03:BA2F
+writes to 0xE160 + n, and the shop subtracts one before calling it
+(p01:6EEA).
 
 The 41 shops, with the distance of their warning (the table is written
 by `tools/tienda.py tabla`):
@@ -395,7 +398,7 @@ Five slots at 0xE440, and what they hold decides whether a hit kills:
 | 0xE1F1 | everything: any hit and any hole |
 | 0xE164, the white helm (5) | creature classes 6 and 12; one is spent per hit |
 | 0xE165, the red armour (6) | classes 1 and 13; one is spent per hit |
-| 0xE170, the stage 9 secret's prize | classes 5 and 14; this one is not spent |
+| 0xE170, the stage 14 secret's prize (item 17) | classes 5 and 14; this one is not spent |
 | 0xE163, the helmet (4) | class 6 of the other creature slots |
 | 0xE16B, the torch (12) | class 4, which does not kill: it only freezes the game for 0x80 frames |
 
