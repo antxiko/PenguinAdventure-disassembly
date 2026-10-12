@@ -1,0 +1,182 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The music — Penguin Adventure (Konami, 1986)</title>
+<style>
+:root{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;--linea:#23262e;
+  --rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+@media (prefers-color-scheme:light){:root{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;
+  --panel:#f7f6f2;--linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}}
+:root[data-theme="dark"]{--tinta:#cfd0d4;--suave:#83868f;--fondo:#000;--panel:#0c0e13;
+  --linea:#23262e;--rojo:#ff897d;--cyan:#65dbef;--verde:#3eb849;--oro:#ded087}
+:root[data-theme="light"]{--tinta:#191a1e;--suave:#5a5d66;--fondo:#e9e7e1;--panel:#f7f6f2;
+  --linea:#d0cdc5;--rojo:#b23f34;--cyan:#1c6b7c;--verde:#2b7734;--oro:#8a7420}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--tinta);padding:0 1.25rem 6rem;
+  font:15px/1.7 ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+.w{max-width:1120px;margin:0 auto}
+.n{max-width:68ch}
+h1,h2,h3,h4{font-weight:400;text-wrap:balance}
+a{color:var(--cyan)}
+img{image-rendering:pixelated;max-width:100%;height:auto;display:block}
+header.top{display:flex;flex-direction:column;align-items:center;gap:1.5rem;
+  padding:4rem 0 2rem;text-align:center}
+header.top img{width:min(100%,642px)}
+.claim{max-width:60ch;color:var(--suave);font-size:1.05rem}
+.claim b{color:var(--tinta);font-weight:400}
+.ficha{display:flex;flex-wrap:wrap;justify-content:center;gap:0 1.5rem;width:100%;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--suave);
+  border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);padding:.85rem 0}
+.ficha b{color:var(--rojo);font-weight:400}
+nav{display:flex;flex-wrap:wrap;gap:1.25rem;justify-content:center;padding:1.25rem 0;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+nav a{color:var(--suave);text-decoration:none;border-bottom:1px solid transparent}
+nav a:hover,nav a:focus{color:var(--tinta);border-bottom-color:var(--rojo)}
+nav.docs{border-top:1px solid var(--linea);border-bottom:1px solid var(--linea);
+  margin-bottom:1rem}
+section{margin-top:4.5rem;scroll-margin-top:1rem}
+section>h2{font-size:1rem;letter-spacing:.1em;text-transform:uppercase;
+  border-left:3px solid var(--rojo);padding-left:.9rem;margin:0 0 1.5rem}
+.cifras{display:grid;gap:1px;background:var(--linea);border:1px solid var(--linea);
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
+.cifra{background:var(--panel);padding:1.1rem}
+.cifra b{display:block;font-size:1.7rem;color:var(--oro);font-weight:400;
+  font-variant-numeric:tabular-nums;line-height:1.2}
+.cifra span{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--suave)}
+.hall{border-top:1px solid var(--linea);padding-top:1.75rem;margin-top:2.5rem}
+.hall:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.hall h3{margin:0 0 .75rem;font-size:1.15rem;color:var(--rojo)}
+.hall h4{color:var(--oro);margin:1.5rem 0 .5rem;font-size:.95rem}
+.hall p{margin:0 0 1rem}
+pre.asm{background:var(--panel);border-left:2px solid var(--verde);margin:1.25rem 0;
+  padding:1rem 1.1rem;overflow-x:auto;font-size:13px;line-height:1.6;color:var(--tinta)}
+.par{display:grid;gap:1.25rem;grid-template-columns:1fr}
+@media(min-width:820px){.par{grid-template-columns:1fr 1fr}}
+.par figure{margin:0}
+table{border-collapse:collapse;width:100%;margin:1.25rem 0;font-size:13px;display:block;
+  overflow-x:auto}
+th,td{text-align:left;padding:.5rem .75rem;border-bottom:1px solid var(--linea)}
+th{color:var(--suave);font-weight:400;font-size:11px;letter-spacing:.07em;text-transform:uppercase}
+td.num{font-variant-numeric:tabular-nums;color:var(--oro)}
+.nivel{margin-top:2rem}
+.nivel h3{margin:0 0 .9rem;font-size:.95rem;letter-spacing:.06em;text-transform:uppercase}
+.nivel em{color:var(--cyan);font-style:normal}
+.sep{color:var(--suave);margin:0 .6rem}
+.rejilla{display:grid;gap:.9rem;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.rejilla figure{margin:0;background:var(--panel);box-shadow:0 0 0 1px var(--linea)}
+.rejilla figcaption{display:flex;justify-content:space-between;padding:.45rem .65rem;
+  font-size:11px;color:var(--suave);border-top:1px solid var(--linea)}
+.dir{font-variant-numeric:tabular-nums;color:var(--verde)}
+footer{margin-top:5rem;padding-top:1.5rem;border-top:1px solid var(--linea);
+  color:var(--suave);font-size:12px}
+
+/* Aviso de trabajo en curso: tiene que verse antes que las cifras, porque un
+   100% mal leido hace mas dano que no ponerlo. */
+.aviso{background:#3a2a10;border-left:3px solid var(--oro);margin:1.5rem auto;
+  padding:1rem 1.2rem;max-width:900px;border-radius:4px}
+.aviso p{margin:0;color:var(--tinta);font-size:15px;line-height:1.65}
+.galeria{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:1.5rem;margin:1.5rem 0}
+.galeria figure{margin:0}
+.galeria img{width:100%;height:auto;image-rendering:pixelated;
+  border:1px solid var(--linea);border-radius:3px}
+.galeria figcaption{color:var(--suave);font-size:13px;margin-top:.5rem}
+audio{display:block;width:100%;max-width:640px;margin:.75rem 0 1.5rem}
+</style>
+<div class="w"><nav class="top"><a href="index.html">Home</a><a href="GETTING-STARTED.html">Start</a><a href="THE-GAME.html">The game</a><a href="THE-CARTRIDGE.html">The cartridge</a><a href="THE-CODE.html">The code</a><a href="THE-MUSIC.html" style=color:var(--tinta)>The music</a><a href="FINDINGS.html">Findings</a><a href="IN-THE-EMULATOR.html">In the emulator</a><a href="OPEN-QUESTIONS.html">Open questions</a><a href="es/LA-MUSICA.html" style="margin-left:auto;color:var(--oro)">Castellano</a></nav>
+<h1 id="the-music">The music</h1>
+<p>Everything you hear here comes from running the cartridge&#x27;s own sound engine (<code>cuadro_de_sonido</code>, 0x8082 of bank 14, and the routine at p14:86BA which shares the channels; the interrupt calls it at p00:4030) on an emulated Z80, frame by frame at 60 per second, just as the game calls it. What the engine writes to the PSG is turned into sound with an AY-3-8910 (<code>tools/musica.py</code>). Each MP3 is the whole piece up to where it starts again, plus 8 seconds of the repeat fading out; those that do not repeat end where the engine ends.</p>
+<h2 id="checked-against-openmsx">Checked against openMSX</h2>
+<p>The PSG writes have been compared frame by frame with those of openMSX (C-BIOS MSX1 japonés). In every frame the PSG ends up the same:</p>
+<ul><li>track 0x3B, its first 218 frames;</li><li>track 0x44, its first 218 frames.</li></ul>
+<p>The timbre is not checked: it is a textbook AY-3-8910, not a recording of the emulator. The probes are <code>tools/omsx_psg.tcl</code> and <code>tools/coteja_psg.py</code>.</p>
+<h2 id="how-a-piece-is-asked-for">How a piece is asked for</h2>
+<p><code>pide_sonido</code> (p00:4145) and <code>pide_sonido_si_esta_activo</code> (p00:413A, which first checks bit 6 of 0xE002) save the registers, map banks 14 and 15 and call the routine at p14:86BA with the number in A. Low numbers are effects and from 0x3B up there is music; the game computes each stage&#x27;s, so almost all are tracks «in the table». The voices take 21 bytes from 0xE010 and 0xE079 holds the copy of the PSG mixer, which start-up leaves at 0xB8. Tracks that last over 75 seconds without starting again are cut at 75, and each one says so. Only two tracks have been checked against openMSX, 0x3B and 0x44; the rest come out of the same engine.</p>
+<h2 id="the-tunes">The tunes</h2>
+<p><b>The <code>estado_9_ultimo</code> tune</b> (0x56)</p>
+<p>Asked for by <code>estado_9_ultimo</code>; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_56.mp3?v=62bf9e27"></audio>
+<p><b>The tune at 0x74EC</b> (0x38)</p>
+<p>Asked for by <code>L_74EC</code>; lasts 1.3 s.</p>
+<audio controls preload="none" src="audio/musica_38.mp3?v=5f85e65c"></audio>
+<p><b>Table track 0x3B</b> (0x3B)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; lasts 26.4 s and starts again at second 0.2.</p>
+<audio controls preload="none" src="audio/musica_3B.mp3?v=3e4adf00"></audio>
+<p><b>Table track 0x3C</b> (0x3C)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_3C.mp3?v=a4679b54"></audio>
+<p><b>Table track 0x3D</b> (0x3D)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_3D.mp3?v=eb7581dc"></audio>
+<p><b>Table track 0x3E</b> (0x3E)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_3E.mp3?v=8f6a9784"></audio>
+<p><b>Table track 0x3F</b> (0x3F)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_3F.mp3?v=d6aa0258"></audio>
+<p><b>Table track 0x40</b> (0x40)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_40.mp3?v=3c718116"></audio>
+<p><b>Table track 0x41</b> (0x41)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; lasts 22.4 s and starts again at second 0.0.</p>
+<audio controls preload="none" src="audio/musica_41.mp3?v=3e07a5ab"></audio>
+<p><b>Table track 0x42</b> (0x42)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_42.mp3?v=4dc9da26"></audio>
+<p><b>Table track 0x43</b> (0x43)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_43.mp3?v=13c3e149"></audio>
+<p><b>Table track 0x44</b> (0x44)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_44.mp3?v=be8f4cbe"></audio>
+<p><b>Table track 0x45</b> (0x45)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_45.mp3?v=41589fbc"></audio>
+<p><b>Table track 0x46</b> (0x46)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_46.mp3?v=546c6f4e"></audio>
+<p><b>Table track 0x47</b> (0x47)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_47.mp3?v=15806152"></audio>
+<p><b>Table track 0x48</b> (0x48)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_48.mp3?v=1cbd4dc6"></audio>
+<p><b>Table track 0x49</b> (0x49)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_49.mp3?v=e60630e0"></audio>
+<p><b>Table track 0x4A</b> (0x4A)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; lasts 44.8 s and starts again at second 5.6.</p>
+<audio controls preload="none" src="audio/musica_4A.mp3?v=b9f45cbd"></audio>
+<p><b>Table track 0x4B</b> (0x4B)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_4B.mp3?v=f1c96e15"></audio>
+<p><b>Table track 0x4C</b> (0x4C)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_4C.mp3?v=1735471f"></audio>
+<p><b>Table track 0x4D</b> (0x4D)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; lasts 32.0 s and starts again at second 0.0.</p>
+<audio controls preload="none" src="audio/musica_4D.mp3?v=33a7cf66"></audio>
+<p><b>Table track 0x4E</b> (0x4E)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_4E.mp3?v=69397aa8"></audio>
+<p><b>Table track 0x4F</b> (0x4F)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_4F.mp3?v=e323273e"></audio>
+<p><b>Table track 0x50</b> (0x50)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; lasts 21.3 s and starts again at second 0.0.</p>
+<audio controls preload="none" src="audio/musica_50.mp3?v=7a0d4975"></audio>
+<p><b>Table track 0x51</b> (0x51)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_51.mp3?v=461f2765"></audio>
+<p><b>Table track 0x52</b> (0x52)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_52.mp3?v=79ed4288"></audio>
+<p><b>Table track 0x53</b> (0x53)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; lasts 24.0 s and starts again at second 0.8.</p>
+<audio controls preload="none" src="audio/musica_53.mp3?v=2f14628a"></audio>
+<p><b>Table track 0x54</b> (0x54)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_54.mp3?v=f68babbf"></audio>
+<p><b>Table track 0x55</b> (0x55)</p>
+<p>Asked for by ninguna llamada directa: sale de la tabla de pistas por un número calculado; is cut at 75 s (the piece goes on).</p>
+<audio controls preload="none" src="audio/musica_55.mp3?v=3da72aac"></audio>
+<footer><p><em>Penguin Adventure / Yume Tairiku Adventure</em> was published by Konami for the MSX in 1986; its catalogue number is RC-743 and it is 128 KB. All rights in the game remain with their holders. This is preservation, study and documentation work, and the cartridge image is not distributed.</p></footer></div>
