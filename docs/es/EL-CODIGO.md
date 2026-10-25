@@ -134,3 +134,30 @@ bicho, y p01:79A1 para los rodillos de la máquina de apostar.
 
 Es barato y no es azar: R es un contador, y dos lecturas separadas por un trozo
 de código fijo se diferencian en una cantidad **fija**.
+
+## Código compartido con otros cartuchos de Konami
+
+Este desensamblado se ha comparado, instrucción por instrucción, con
+todos los demás de Konami de la serie. Cuenta un bloque cuando las
+mismas instrucciones, al menos seis desde una etiqueta hasta su `ret`
+o su salto sin condición, están en los dos cartuchos; las direcciones
+no se miran, porque cambian de un cartucho a otro. De los otros 57,
+**41** tienen al menos un bloque en común con este; estos son los
+que más comparten:
+
+| Cartucho | Bloques | Instrucciones | Por ejemplo (aquí = allí) |
+|---|---:|---:|---|
+| [Twin Bee](https://antxiko.github.io/TwinBee-disassembly/es/) | 24 | 279 | `pon_la_mezcla` (p14:8049) = `pon_el_mezclador` |
+| [Q*bert](https://antxiko.github.io/Qbert-disassembly/es/) | 20 | 232 | `destapa_una_columna` (p02:8AB8) = `destapa_una_linea_del_logotipo` |
+| [Hinotori](https://antxiko.github.io/Hinotori-disassembly/es/) | 12 | 104 | `pon_la_mezcla` (p14:8049) = `pon_mezclador_del_canal` |
+| [Knightmare](https://antxiko.github.io/Knightmare-disassembly/es/) | 12 | 162 | `salida_de_la_presentacion` (p02:8A55) = `mira_si_se_ha_pulsado_algo` |
+| [Nemesis / Gradius](https://antxiko.github.io/Nemesis-disassembly/es/) | 12 | 139 | `pon_la_mezcla` (p14:8049) |
+| [Metal Gear](https://antxiko.github.io/MetalGear-disassembly/es/) | 11 | 102 | `pon_la_mezcla` (p14:8049) = `mezclador` |
+| [Konami’s Soccer](https://antxiko.github.io/KonamisSoccer-disassembly/es/) | 11 | 115 | `llena_los_tres_tercios` (p00:4293) = `rellena_los_tres_tercios` |
+| [Shalom: Knightmare III](https://antxiko.github.io/Shalom-disassembly/es/) | 10 | 101 | `maquina_de_estados` (p02:8000) = `cuadro` |
+| [Yie Ar Kung-Fu II](https://antxiko.github.io/YieArKungFu2-disassembly/es/) | 10 | 97 | `llena_los_tres_tercios` (p00:4293) = `rellena_los_tres_bancos` |
+| [King's Valley II](https://antxiko.github.io/KingsValley2-disassembly/es/) | 9 | 100 | `mira_hacia_donde_se_pide_ir` (p03:A84B) |
+
+La matriz entera, los 58 cartuchos entre sí, está en
+[Las rutinas](https://antxiko.github.io/MSX-disassembly-database/es/LAS-RUTINAS.html) de la base de datos de la
+serie, con el método y el programa que la mide.

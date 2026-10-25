@@ -134,3 +134,30 @@ creature's side and shove, and p01:79A1 for the gambling machine's reels.
 
 It is cheap and it is not random: R is a counter, and two reads separated by a
 fixed piece of code differ by a **fixed** amount.
+
+## Code shared with other Konami cartridges
+
+This disassembly has been compared, instruction by instruction, with
+every other Konami one in the series. A block counts when the same
+instructions, at least six of them from a label to its `ret` or its
+unconditional jump, are in both cartridges; the addresses are left
+aside, because they change from one cartridge to the next. Of the
+other 57, **41** have at least one block in common with this one;
+these are the ones that share the most:
+
+| Cartridge | Blocks | Instructions | For example (here = there) |
+|---|---:|---:|---|
+| [Twin Bee](https://antxiko.github.io/TwinBee-disassembly/) | 24 | 279 | `pon_la_mezcla` (p14:8049) = `pon_el_mezclador` |
+| [Q*bert](https://antxiko.github.io/Qbert-disassembly/) | 20 | 232 | `destapa_una_columna` (p02:8AB8) = `destapa_una_linea_del_logotipo` |
+| [Hinotori](https://antxiko.github.io/Hinotori-disassembly/) | 12 | 104 | `pon_la_mezcla` (p14:8049) = `pon_mezclador_del_canal` |
+| [Knightmare](https://antxiko.github.io/Knightmare-disassembly/) | 12 | 162 | `salida_de_la_presentacion` (p02:8A55) = `mira_si_se_ha_pulsado_algo` |
+| [Nemesis / Gradius](https://antxiko.github.io/Nemesis-disassembly/) | 12 | 139 | `pon_la_mezcla` (p14:8049) |
+| [Metal Gear](https://antxiko.github.io/MetalGear-disassembly/) | 11 | 102 | `pon_la_mezcla` (p14:8049) = `mezclador` |
+| [Konami’s Soccer](https://antxiko.github.io/KonamisSoccer-disassembly/) | 11 | 115 | `llena_los_tres_tercios` (p00:4293) = `rellena_los_tres_tercios` |
+| [Shalom: Knightmare III](https://antxiko.github.io/Shalom-disassembly/) | 10 | 101 | `maquina_de_estados` (p02:8000) = `cuadro` |
+| [Yie Ar Kung-Fu II](https://antxiko.github.io/YieArKungFu2-disassembly/) | 10 | 97 | `llena_los_tres_tercios` (p00:4293) = `rellena_los_tres_bancos` |
+| [King's Valley II](https://antxiko.github.io/KingsValley2-disassembly/) | 9 | 100 | `mira_hacia_donde_se_pide_ir` (p03:A84B) |
+
+The whole matrix, the 58 cartridges against each other, is on
+[The routines](https://antxiko.github.io/MSX-disassembly-database/THE-ROUTINES.html) in the series database, along
+with the method and the program that measures it.

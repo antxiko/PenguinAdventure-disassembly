@@ -80,6 +80,18 @@ EXTENSIONES = (".py", ".md", ".txt", ".html", ".sh", ".tcl", ".notes",
                ".entries", ".nocode", ".yml")
 NOMBRES_SUELTOS = ("Makefile", "LICENSE", ".gitignore")
 
+# La seccion del codigo compartido con los otros Konami de la serie los
+# nombra a proposito: la escribe pon_en_webs.py, de MSX-disassembly-database.
+_COMPARTIDO = re.compile(
+    r"(?:^## |<h2[^>]*>)(?:Code shared with other Konami cartridges|"
+    r"C\u00f3digo compartido con otros cartuchos de Konami)"
+    r".*?(?=^## |<h2|</main>|<footer|\Z)", re.S | re.M)
+
+
+def sin_compartido(texto):
+    """El texto sin la seccion del codigo compartido."""
+    return _COMPARTIDO.sub("", texto)
+
 
 def ficheros_del_repo():
     for base, dirs, ficheros in os.walk(RAIZ):
@@ -99,7 +111,7 @@ class NombreDelJuego(unittest.TestCase):
             rel = os.path.relpath(ruta, RAIZ)
             permitidos = PERMITIDO.get(rel, ())
             try:
-                texto = open(ruta, encoding="utf-8").read()
+                texto = sin_compartido(open(ruta, encoding="utf-8").read())
             except (UnicodeDecodeError, OSError):
                 continue
             justificado = ()
